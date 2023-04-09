@@ -4,4 +4,4 @@ from .endpoints import *
 from .handle_exceptions import *
 from .models import *
 
-__version__ = '0.1.0'
+__version__ = '0.1.2'

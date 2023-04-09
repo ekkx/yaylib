@@ -29,21 +29,20 @@ yay = Yay()
 yay.login(email='メールアドレス', password='パスワード') # ログイン
 
 
-user_data = yay.get_user('123')  # IDが'123'のユーザーのプロフィールを取得
-print(user_data.display_name)  # 取得したユーザーの名前を表示
-print(user_data.biography)  # 取得したユーザーの自己紹介を表示
+user = yay.get_user('123')  # IDが'123'のユーザーのプロフィールを取得
+print(user.display_name)  # 取得したユーザーの名前を表示
+print(user.biography)  # 取得したユーザーの自己紹介を表示
 
 
-post_data = yay.get_post(post_id='456')  # IDが'456'の投稿を取得
-print(post_data.author_display_name)  # 投稿者の名前を表示
-print(post_data.text)  # 投稿本文を表示
-yay.like_post(post_id='456')  # 投稿をいいねする
+post = yay.get_post('456')  # IDが'456'の投稿を取得
+print(post.author_display_name)  # 投稿者の名前を表示
+print(post.text)  # 投稿本文を表示
+yay.like_post('456')  # 投稿をいいねする
 
 
 followers = yay.get_user_followers('123')  # IDが'123'のユーザーのフォロワーを取得する
 for follower in followers:
-    user_id = follower.id
-    yay.follow_user(user_id)  # 取得したユーザーをフォローする
+    yay.follow_user(follower.id)  # 取得したユーザーをフォローする
 
 ```
 

@@ -53,8 +53,17 @@ class YayAuth(object):
             timeout=self.timeout
         )
 
-        self.access_token = response.json()['access_token']
-        self.logged_in_as = response.json()['user_id']
+        if response.status_code == 429:
+            print('Rate limit exceeded')
+        elif response.status_code == 403:
+            print('Invalid password or email')
+        else:
+            self.access_token = response.json()['access_token']
+            self.logged_in_as = response.json()['user_id']
+            self.headers.setdefault(
+                'Authorization', f'Bearer {self.access_token}'
+            )
+            print('Login Successful.')
 
     def logout(self):
         if self.access_token:

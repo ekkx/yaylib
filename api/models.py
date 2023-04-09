@@ -1,13 +1,35 @@
 class User:
-    def __init__(self, id, display_name, biography, followers_count,
-                 is_private, posts_count, joined_groups_count, reviews_count,
-                 age_verified, country_code, is_vip, hide_vip, online_status,
-                 profile_icon, profile_icon_thumbnail, cover_image,
-                 cover_image_thumbnail, last_loggedin_at, mutual_chat,
-                 chat_request, chat_required_phone_verification,
-                 age_restricted_on_review, following_restricted_on_review,
-                 restricted_review_by, is_recently_banned, is_dangerous_user,
-                 is_new_user, interests_selected):
+    def __init__(
+        self,
+        id,
+        display_name,
+        biography,
+        followers_count,
+        is_private,
+        posts_count,
+        joined_groups_count,
+        reviews_count,
+        age_verified,
+        country_code,
+        is_vip,
+        hide_vip,
+        online_status,
+        profile_icon,
+        profile_icon_thumbnail,
+        cover_image,
+        cover_image_thumbnail,
+        last_loggedin_at,
+        mutual_chat,
+        chat_request,
+        chat_required_phone_verification,
+        age_restricted_on_review,
+        following_restricted_on_review,
+        restricted_review_by,
+        is_recently_banned,
+        is_dangerous_user,
+        is_new_user,
+        interests_selected
+    ):
         self.id = id
         self.display_name = display_name
         self.biography = biography
@@ -41,7 +63,7 @@ class User:
         return f"User(id={self.id}, display_name='{self.display_name}', biography='{self.biography}')"
 
 
-class GroupUser:
+class GroupUser(User):
     def __init__(
         self,
         is_moderator,
@@ -49,25 +71,105 @@ class GroupUser:
         pending_transfer,
         pending_deputize,
         title,
-        # 残りはUserオブジェクトと共通
+        id,
+        display_name,
+        biography,
+        followers_count,
+        is_private,
+        posts_count,
+        joined_groups_count,
+        reviews_count,
+        age_verified,
+        country_code,
+        is_vip,
+        hide_vip,
+        online_status,
+        profile_icon,
+        profile_icon_thumbnail,
+        cover_image,
+        cover_image_thumbnail,
+        last_loggedin_at,
+        mutual_chat,
+        chat_request,
+        chat_required_phone_verification,
+        age_restricted_on_review,
+        following_restricted_on_review,
+        restricted_review_by,
+        is_recently_banned,
+        is_dangerous_user,
+        is_new_user,
+        interests_selected
     ):
+        super().__init__(
+            id,
+            display_name,
+            biography,
+            followers_count,
+            is_private,
+            posts_count,
+            joined_groups_count,
+            reviews_count,
+            age_verified,
+            country_code,
+            is_vip,
+            hide_vip,
+            online_status,
+            profile_icon,
+            profile_icon_thumbnail,
+            cover_image,
+            cover_image_thumbnail,
+            last_loggedin_at,
+            mutual_chat,
+            chat_request,
+            chat_required_phone_verification,
+            age_restricted_on_review,
+            following_restricted_on_review,
+            restricted_review_by,
+            is_recently_banned,
+            is_dangerous_user,
+            is_new_user,
+            interests_selected
+        )
         self.is_moderator = is_moderator
         self.banned = banned
         self.pending_transfer = pending_transfer
         self.pending_deputize = pending_deputize
         self.title = title
-        # 残りはUserオブジェクトと共通
 
     def __repr__(self):
-        return f"GroupUser(id={self.id}, display_name='{self.display_name}', biography='{self.biography}')"
+        return f"GroupUser(id={self.id}, display_name='{self.display_name}', is_moderator='{self.is_moderator}')"
 
 
 class Post:
-    def __init__(self, post_id, author_id, author_display_name, text, group_id,
-                 font_size, is_liked, likes_count, post_type, color, reposts_count, created_at,
-                 updated_at, edited_at, reported_count, in_reply_to_post, in_reply_to_post_count,
-                 is_repostable, is_highlighted, is_hidden, thread_id, message_tags,
-                 conversation_id, attachment, attachment_thumbnail, shared_url):
+    def __init__(
+        self,
+        post_id,
+        author_id,
+        author_display_name,
+        text,
+        group_id,
+        font_size,
+        is_liked,
+        likes_count,
+        post_type,
+        color,
+        reposts_count,
+        created_at,
+        updated_at,
+        edited_at,
+        reported_count,
+        in_reply_to_post,
+        in_reply_to_post_count,
+        is_repostable,
+        is_highlighted,
+        is_hidden,
+        thread_id,
+        message_tags,
+        conversation_id,
+        attachment,
+        attachment_thumbnail,
+        shared_url
+    ):
         self.post_id = post_id
         self.author_id = author_id
         self.author_display_name = author_display_name
