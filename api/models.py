@@ -5,6 +5,7 @@ class User:
         display_name,
         biography,
         followers_count,
+        followings_count,
         is_private,
         posts_count,
         joined_groups_count,
@@ -34,6 +35,7 @@ class User:
         self.display_name = display_name
         self.biography = biography
         self.followers_count = followers_count
+        self.followings_count = followings_count
         self.is_private = is_private
         self.posts_count = posts_count
         self.joined_groups_count = joined_groups_count

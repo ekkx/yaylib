@@ -14,7 +14,6 @@ from models import *
 class Yay(object):
 
     def __init__(self, token=None, proxy=None, timeout=10):
-        self.timeout = timeout
         self.auth = YayAuth(proxy=proxy, timeout=timeout)
 
         if token:
@@ -38,7 +37,7 @@ class Yay(object):
         response = requests.get(url, headers=self.auth.headers,
                                 proxies={'http': self.auth.proxy,
                                          'https': self.auth.proxy},
-                                timeout=self.timeout)
+                                timeout=self.auth.timeout)
         self._handle_response(response)
         return response.json()
 
@@ -47,7 +46,7 @@ class Yay(object):
                                  headers=self.auth.headers,
                                  proxies={'http': self.auth.proxy,
                                           'https': self.auth.proxy},
-                                 timeout=self.timeout)
+                                 timeout=self.auth.timeout)
         self._handle_response(response)
         return response.json()
 
@@ -56,7 +55,7 @@ class Yay(object):
                                 headers=self.auth.headers,
                                 proxies={'http': self.auth.proxy,
                                          'https': self.auth.proxy},
-                                timeout=self.timeout)
+                                timeout=self.auth.timeout)
         self._handle_response(response)
         return response.json()
 
@@ -65,7 +64,7 @@ class Yay(object):
                                    headers=self.auth.headers,
                                    proxies={'http': self.auth.proxy,
                                             'https': self.auth.proxy},
-                                   timeout=self.timeout)
+                                   timeout=self.auth.timeout)
         self._handle_response(response)
         return response.json()
 
@@ -92,16 +91,45 @@ class Yay(object):
             users.append(user)
         return users
 
-    def get_letters(self, user_id, amount=100):
-        # あとで100以上のレターを表示できるようにする
-        # {ep.USER_v1}/reviews/{user_id}?from_id=111&not_active=false&number=100
-        response = self._get(
-            f'{ep.USER_v1}/reviews/{user_id}?not_active=false&number={amount}')
-        reviews_data = response['reviews']
+    def get_letters_from_dict(self, response: dict):
+        assert 'reviews' in response, "'reviews' key not found"
+        reviews_data = response.get('reviews')
         reviews = []
         for review_data in reviews_data:
             review = self.create_review_object(review_data)
             reviews.append(review)
+        return reviews
+
+    def get_letters(self, user_id, amount: int = None):
+        amount = float('inf') if amount is None else amount
+        number = min(amount, 100)
+
+        response = self._get(
+            f'{ep.USER_v1}/reviews/{user_id}?not_active=false&number={number}')
+        reviews = self.get_letters_from_dict(response)
+
+        next_item = response.get('reviews')[-1]
+        next_id = next_item.get('id')
+        reviews_count = self.get_user(user_id).reviews_count if amount == float(
+            'inf') else amount
+        amount -= 100
+
+        with tqdm(total=reviews_count, desc='Extracting Letters') as pbar:
+            while next_id and amount > 0:
+                number = min(amount, 100)
+
+                response = self._get(
+                    f'{ep.USER_v1}/reviews/{user_id}?from_id={next_id}&not_active=false&number={number}')
+                reviews.extend(self.get_letters_from_dict(response))
+
+                if len(response.get('reviews')) == 0:
+                    break
+                next_item = response.get('reviews')[-1]
+                next_id = next_item.get('id')
+                amount -= 100
+
+                pbar.update(number)
+
         return reviews
 
     def get_joined_groups(self, user_id, amount=100):
@@ -110,27 +138,58 @@ class Yay(object):
         return self.get_groups_from_dict(response)
 
     def get_user_followers(self, user_id, amount: int = None):
-        response = self._get(
-            f'{ep.USER_v2}/{user_id}/web_followers?number=50')
-        return self.get_users_from_dict(response)
+        amount = float('inf') if amount is None else amount
+        number = min(amount, 50)
 
-    def get_followings(self, user_id, amount=50):
-        # need a fix
-        number = amount if amount < 50 else 50
-        located = 0
+        response = self._get(
+            f'{ep.USER_v2}/{user_id}/web_followers?number={number}')
+        users = self.get_users_from_dict(response)
+
+        next_id = response.get('last_follow_id')
+        followers_count = self.get_user(user_id).followers_count if amount == float(
+            'inf') else amount
+        amount -= 50
+
+        with tqdm(total=followers_count, desc='Extracting Followers') as pbar:
+            while next_id and amount > 0:
+                number = min(amount, 50)
+
+                response = self._get(
+                    f'{ep.USER_v2}/{user_id}/web_followers?from_follow_id={next_id}&number={number}')
+                users.extend(self.get_users_from_dict(response))
+
+                next_id = response.get('last_follow_id')
+                amount -= 50
+
+                pbar.update(number)
+
+        return users
+
+    def get_user_followings(self, user_id, amount: int = None):
+        amount = float('inf') if amount is None else amount
+        number = min(amount, 50)
 
         response = self._get(
             f'{ep.USER_v2}/{user_id}/web_followings?number={number}')
-        last_value = response.get('last_follow_id')
         users = self.get_users_from_dict(response)
-        located += number
 
-        while located < amount:
-            response = self._get(
-                f'{ep.USER_v2}/{user_id}/web_followings?from_follow_id={last_value}&number=50')
-            last_value = response.get('last_follow_id')
-            users.append(self.get_users_from_dict(response))
-            located += number
+        next_id = response.get('last_follow_id')
+        followings_count = self.get_user(user_id).followings_count if amount == float(
+            'inf') else amount
+        amount -= 50
+
+        with tqdm(total=followings_count, desc='Extracting Followings') as pbar:
+            while next_id and amount > 0:
+                number = min(amount, 50)
+
+                response = self._get(
+                    f'{ep.USER_v2}/{user_id}/web_followings?from_follow_id={next_id}&number=50')
+                users.extend(self.get_users_from_dict(response))
+
+                next_id = response.get('last_follow_id')
+                amount -= 50
+
+                pbar.update(number)
 
         return users
 
@@ -146,7 +205,7 @@ class Yay(object):
         post_id = response['post'].get('id')
         return self.get_post(post_id)
 
-    def get_blocked_users(self, amount=100):
+    def get_blocked_users(self, amount: int = 100):
         response = self._get(
             f'{ep.USER_v2}/blocked')
         return self.get_users_from_dict(response)
@@ -191,7 +250,7 @@ class Yay(object):
             f'{ep.GET_FOLLOWING_TIMELINE}?number=50')
         return self.get_posts_from_dict(response)
 
-    def get_conversation(self, conversation_id, post_id=None, amount=100):
+    def get_conversation(self, conversation_id: str = None, post_id: str = None, amount=100):
         if post_id:
             conversation_id = self.get_post(post_id).conversation_id
         response = self._get(
@@ -278,6 +337,15 @@ class Yay(object):
             chats.append(chat)
         return chats
 
+    def get_chat_messages_from_dict(self, response: dict):
+        assert 'messages' in response, "'messages' key not found"
+        messages_data = response.get('messages')
+        messages = []
+        for message_data in messages_data:
+            message = self.create_message_object(message_data)
+            messages.append(message)
+        return messages
+
     def get_chat_room_id_from_user(self, user_id):
         data = {'with_user_id': user_id}
         response = self._post(
@@ -288,15 +356,6 @@ class Yay(object):
         response = self._get(
             f'{ep.CHATROOM_v2}/{chatroom_id}/messages?number=100')
         return self.get_chat_messages_from_dict(response)
-
-    def get_chat_messages_from_dict(self, response: dict):
-        assert 'messages' in response, "'messages' key not found"
-        messages_data = response.get('messages')
-        messages = []
-        for message_data in messages_data:
-            message = self.create_message_object(message_data)
-            messages.append(message)
-        return messages
 
     def get_chat_rooms(self, amount=None):
         response = self._get(
@@ -335,38 +394,38 @@ class Yay(object):
     # -----------------------
 
     def follow_user(self, user_id):
-        response_data = self._post(f'{ep.USER_v2}/{user_id}/follow')
-        return response_data
+        response = self._post(f'{ep.USER_v2}/{user_id}/follow')
+        return response
 
     def unfollow_user(self, user_id):
-        response_data = self._post(f'{ep.USER_v2}/{user_id}/unfollow')
-        return response_data
+        response = self._post(f'{ep.USER_v2}/{user_id}/unfollow')
+        return response
 
     def accept_follow_request(self, user_id):
-        response_data = self._post(
+        response = self._post(
             f'{ep.USER_v2}/{user_id}/follow_request?action=accept')
-        return response_data
+        return response
 
     def reject_follow_request(self, user_id):
-        response_data = self._post(
+        response = self._post(
             f'{ep.USER_v2}/{user_id}/follow_request?action=reject')
-        return response_data
+        return response
 
     def send_letter(self, user_id, message):
         data = {'comment': message}
-        response_data = self._post(
+        response = self._post(
             f'{ep.USER_v1}/reviews/{user_id}', data)
-        return response_data
+        return response
 
     def block_user(self, user_id):
-        response_data = self._post(
+        response = self._post(
             f'{ep.USER_v1}/{user_id}/block')
-        return response_data
+        return response
 
     def unblock_user(self, user_id):
-        response_data = self._post(
+        response = self._post(
             f'{ep.USER_v1}/{user_id}/unblock')
-        return response_data
+        return response
 
     # ----- ACTION POST -----
 
@@ -387,9 +446,9 @@ class Yay(object):
             'color': color,
             'font_size': font_size
         }
-        response_data = self._post(
+        response = self._post(
             f'{ep.BASE_URL}/v1/web/posts/new', data)
-        return response_data
+        return response
 
     def create_post_in_group(self, group_id, text, color=0, font_size=0):
         data = {
@@ -400,8 +459,8 @@ class Yay(object):
             'post_type': 'text',
             'uuid': ''
         }
-        response_data = self._post('https://yay.space/api/posts', data)
-        return self.get_post(response_data['id'])
+        response = self._post('https://yay.space/api/posts', data)
+        return self.get_post(response['id'])
 
     def create_repost(self, text, post_id, color=0, font_size=0):
         data = {
@@ -412,9 +471,9 @@ class Yay(object):
             'message_tags': '[]',
             'post_type': 'text'
         }
-        response_data = self._post(
+        response = self._post(
             f'{ep.POST_v3}/repost', data)
-        return response_data
+        return response
 
     def create_reply(self, text, post_id, color=0, font_size=0):
         data = {
@@ -423,37 +482,37 @@ class Yay(object):
             'font_size': font_size,
             'in_reply_to': post_id
         }
-        response_data = self._post(
+        response = self._post(
             f'{ep.BASE_URL}/v1/web/posts/new', data)
-        return response_data
+        return response
 
     def delete_post(self, post_id):
         data = {'posts_ids[]': post_id}
-        response_data = self._post(
+        response = self._post(
             f'{ep.POST_v2}/mass_destroy', data)
-        return response_data
+        return response
 
     def pin_post(self, post_id):
         data = {'id': post_id}
-        response_data = self._post(
+        response = self._post(
             f'{ep.PIN_v1}/posts', data)
-        return response_data
+        return response
 
     def unpin_post(self, post_id):
-        response_data = self._post(
+        response = self._post(
             f'{ep.PIN_v1}/posts/{post_id}')
-        return response_data
+        return response
 
     def like_post(self, post_id):
         data = {'post_ids': post_id}
-        response_data = self._post(
+        response = self._post(
             f'{ep.POST_v2}/like', data)
-        return response_data
+        return response
 
     def unlike_post(self, post_id):
-        response_data = self._post(
+        response = self._post(
             f'{ep.POST_v1}/{post_id}/unlike')
-        return response_data
+        return response
 
     # ----- ACTION GROUP -----
 
@@ -499,15 +558,15 @@ class Yay(object):
             'generation_groups_limit': generation_groups_limit
         }
         # {ep.BASE_URL}/v1/groups/new   method=post
-        response_data = self._post(
+        response = self._post(
             f'{ep.GROUP_v1}/new', data)
-        return response_data
+        return response
 
     def delete_group(self, group_id):
         data = {'groupId': group_id}
-        response_data = self._delete(
+        response = self._delete(
             f'{ep.GROUP_v1}/{group_id}/leave', data)
-        return response_data
+        return response
 
     def change_group_settings(
         self,
@@ -565,9 +624,9 @@ class Yay(object):
             'uuid': '',
             'user_id': user_id
         }
-        response_data = self._post(
+        response = self._post(
             f'https://yay.space/api/groups/{group_id}/transfer', data)
-        return response_data
+        return response
 
     def offer_group_sub_owner(self, group_id, user_id):
         # need a fix. json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
@@ -684,6 +743,7 @@ class Yay(object):
             display_name=get_val('nickname'),
             biography=get_val('biography'),
             followers_count=get_val('followers_count'),
+            followings_count=get_val('followers_count'),
             is_private=get_val('is_private'),
             posts_count=get_val('posts_count'),
             joined_groups_count=get_val('groups_users_count'),
