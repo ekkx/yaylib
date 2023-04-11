@@ -69,7 +69,7 @@ class YayAuth(object):
     def logout(self):
         if not self.access_token:
             print("User is not logged in.")
-
+            return
 
         self.session.headers.pop('Authorization', None)
         self.access_token = None
