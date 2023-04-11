@@ -24,6 +24,9 @@ class YayAuth(object):
             'Origin': 'https://yay.space'
         }
         self.session = requests.Session()
+        self.api_key = None
+        self.access_token = None
+        self.logged_in_as = None
 
     def login(self, email, password):
         self.session.headers.update(self.headers)
@@ -55,16 +58,20 @@ class YayAuth(object):
 
         self.access_token = resp.json()['access_token']
         self.logged_in_as = resp.json()['user_id']
-        self.session.headers.update(
-            'Authorization', f'Bearer {self.access_token}'
-        )
-        print('Login Successful.')
+        if self.access_token:
+            self.session.headers.update(
+                'Authorization', f'Bearer {self.access_token}'
+            )
+            print('Login Successful.')
+        else:
+            print("Login Failed.")
 
     def logout(self):
-        if self.access_token:
-            self.session.headers.pop('Authorization', None)
-            self.access_token = None
-            self.logged_in_as = None
-            print('Logout Successful.')
-        else:
+        if not self.access_token:
             print("User is not logged in.")
+
+
+        self.session.headers.pop('Authorization', None)
+        self.access_token = None
+        self.logged_in_as = None
+        print('Logout Successful.')
