@@ -23,12 +23,11 @@ class YayAuth(object):
             'X-Device-Info': f'Yay 3.12.1 Web ({self.user_agent})',
             'Origin': 'https://yay.space'
         }
-        self.api_key = None
         self.access_token = None
         self.logged_in_as = None
 
     def login(self, email, password):
-        resp = requests.get(
+        response = requests.get(
             'https://yay.space/?modalMode=login',
             headers=self.headers,
             proxies={'http': self.proxy, 'https': self.proxy},
@@ -53,22 +52,22 @@ class YayAuth(object):
         )
         resp.raise_for_status()
 
-        self.access_token = resp.json()['access_token']
-        self.logged_in_as = resp.json()['user_id']
-        if self.access_token:
+        if response.status_code == 429:
+            print('Rate limit exceeded')
+        elif response.status_code == 403:
+            print('Invalid password or email')
+        else:
+            self.access_token = response.json()['access_token']
+            self.logged_in_as = response.json()['user_id']
             self.headers.setdefault(
                 'Authorization', f'Bearer {self.access_token}'
             )
             print('Login Successful.')
-        else:
-            print("Login Failed.")
 
     def logout(self):
-        if not self.access_token:
+        if self.access_token:
+            self.headers.pop('Authorization', None)
+            self.access_token = None
+            self.logged_in_as = None
+        else:
             print("User is not logged in.")
-            return
-
-        self.headers.pop('Authorization', None)
-        self.access_token = None
-        self.logged_in_as = None
-        print('Logout Successful.')
