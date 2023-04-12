@@ -8,3 +8,11 @@ class AuthenticationError(YayError):
 
 class RateLimitError(YayError):
     pass
+
+
+class ExceedCallQuotaError(YayError):
+    pass
+
+
+class UnknownError(YayError):
+    pass

@@ -34,69 +34,73 @@ class Yay(object):
         self.logged_in_as = None
 
     def _get(self, url: str):
-        response = requests.get(url, headers=self.auth.headers,
-                                proxies={'http': self.auth.proxy,
-                                         'https': self.auth.proxy},
-                                timeout=self.auth.timeout)
-        self._handle_response(response)
-        return response.json()
+        resp = requests.get(url, headers=self.auth.headers,
+                            proxies={'http': self.auth.proxy,
+                                     'https': self.auth.proxy},
+                            timeout=self.auth.timeout)
+        self._handle_response(resp)
+        return resp.json()
 
     def _post(self, url: str, data: dict = None):
-        response = requests.post(url, params=data,
-                                 headers=self.auth.headers,
-                                 proxies={'http': self.auth.proxy,
-                                          'https': self.auth.proxy},
-                                 timeout=self.auth.timeout)
-        self._handle_response(response)
-        return response.json()
+        resp = requests.post(url, params=data,
+                             headers=self.auth.headers,
+                             proxies={'http': self.auth.proxy,
+                                      'https': self.auth.proxy},
+                             timeout=self.auth.timeout)
+        self._handle_response(resp)
+        return resp.json()
 
     def _put(self, url: str, data: dict = None):
-        response = requests.put(url, params=data,
-                                headers=self.auth.headers,
-                                proxies={'http': self.auth.proxy,
-                                         'https': self.auth.proxy},
-                                timeout=self.auth.timeout)
-        self._handle_response(response)
-        return response.json()
+        resp = requests.put(url, params=data,
+                            headers=self.auth.headers,
+                            proxies={'http': self.auth.proxy,
+                                     'https': self.auth.proxy},
+                            timeout=self.auth.timeout)
+        self._handle_response(resp)
+        return resp.json()
 
     def _delete(self, url: str, data: dict = None):
-        response = requests.delete(url, params=data,
-                                   headers=self.auth.headers,
-                                   proxies={'http': self.auth.proxy,
-                                            'https': self.auth.proxy},
-                                   timeout=self.auth.timeout)
-        self._handle_response(response)
-        return response.json()
+        resp = requests.delete(url, params=data,
+                               headers=self.auth.headers,
+                               proxies={'http': self.auth.proxy,
+                                        'https': self.auth.proxy},
+                               timeout=self.auth.timeout)
+        self._handle_response(resp)
+        return resp.json()
 
-    def _handle_response(self, response):
-        if response.status_code == 401:
+    def _handle_response(self, resp):
+        if resp.status_code == 401:
             raise AuthenticationError('Failed to authenticate')
-        if response.status_code == 429:
+        if resp.status_code == 429:
             raise RateLimitError('Rate limit exceeded')
+
+        resp_json = resp.json()
+
+        if resp_json.get('error_code') == '-343':
+            raise ExceedCallQuotaError('Exceed call quota')
 
     # ----- GET USER -----
 
     def get_user(self, user_id: str):
-        response = self._get(f'{ep.USER_v2}/{user_id}')
-        user_data = response.get('user')
-        user = self.create_user_object(user_data)
-        return user
+        resp = self._get(f'{ep.USER_v2}/{user_id}')
+        user_data = resp.get('user')
+        return self.user_object(user_data)
 
-    def get_users_from_dict(self, response: dict):
-        assert 'users' in response, "'users' key not found"
-        users_data = response.get('users')
+    def get_users_from_dict(self, resp: dict):
+        assert 'users' in resp, "'users' key not found"
+        users_data = resp.get('users')
         users = []
         for user_data in users_data:
-            user = self.create_user_object(user_data)
+            user = self.user_object(user_data)
             users.append(user)
         return users
 
-    def get_letters_from_dict(self, response: dict):
-        assert 'reviews' in response, "'reviews' key not found"
-        reviews_data = response.get('reviews')
+    def get_letters_from_dict(self, resp: dict):
+        assert 'reviews' in resp, "'reviews' key not found"
+        reviews_data = resp.get('reviews')
         reviews = []
         for review_data in reviews_data:
-            review = self.create_review_object(review_data)
+            review = self.review_object(review_data)
             reviews.append(review)
         return reviews
 
@@ -104,11 +108,11 @@ class Yay(object):
         amount = float('inf') if amount is None else amount
         number = min(amount, 100)
 
-        response = self._get(
+        resp = self._get(
             f'{ep.USER_v1}/reviews/{user_id}?not_active=false&number={number}')
-        reviews = self.get_letters_from_dict(response)
+        reviews = self.get_letters_from_dict(resp)
 
-        next_item = response.get('reviews')[-1]
+        next_item = resp.get('reviews')[-1]
         next_id = next_item.get('id')
         reviews_count = self.get_user(user_id).reviews_count if amount == float(
             'inf') else amount
@@ -118,13 +122,13 @@ class Yay(object):
             while next_id and amount > 0:
                 number = min(amount, 100)
 
-                response = self._get(
+                resp = self._get(
                     f'{ep.USER_v1}/reviews/{user_id}?from_id={next_id}&not_active=false&number={number}')
-                reviews.extend(self.get_letters_from_dict(response))
+                reviews.extend(self.get_letters_from_dict(resp))
 
-                if len(response.get('reviews')) == 0:
+                if len(resp.get('reviews')) == 0:
                     break
-                next_item = response.get('reviews')[-1]
+                next_item = resp.get('reviews')[-1]
                 next_id = next_item.get('id')
                 amount -= 100
 
@@ -133,19 +137,19 @@ class Yay(object):
         return reviews
 
     def get_joined_groups(self, user_id, amount=100):
-        response = self._get(
+        resp = self._get(
             f'{ep.GROUP_v1}/user_group_list?number={amount}&page=0&user_id={user_id}')
-        return self.get_groups_from_dict(response)
+        return self.get_groups_from_dict(resp)
 
     def get_user_followers(self, user_id, amount: int = None):
         amount = float('inf') if amount is None else amount
         number = min(amount, 50)
 
-        response = self._get(
+        resp = self._get(
             f'{ep.USER_v2}/{user_id}/web_followers?number={number}')
-        users = self.get_users_from_dict(response)
+        users = self.get_users_from_dict(resp)
 
-        next_id = response.get('last_follow_id')
+        next_id = resp.get('last_follow_id')
         followers_count = self.get_user(user_id).followers_count if amount == float(
             'inf') else amount
         amount -= 50
@@ -154,11 +158,11 @@ class Yay(object):
             while next_id and amount > 0:
                 number = min(amount, 50)
 
-                response = self._get(
+                resp = self._get(
                     f'{ep.USER_v2}/{user_id}/web_followers?from_follow_id={next_id}&number={number}')
-                users.extend(self.get_users_from_dict(response))
+                users.extend(self.get_users_from_dict(resp))
 
-                next_id = response.get('last_follow_id')
+                next_id = resp.get('last_follow_id')
                 amount -= 50
 
                 pbar.update(number)
@@ -169,11 +173,11 @@ class Yay(object):
         amount = float('inf') if amount is None else amount
         number = min(amount, 50)
 
-        response = self._get(
+        resp = self._get(
             f'{ep.USER_v2}/{user_id}/web_followings?number={number}')
-        users = self.get_users_from_dict(response)
+        users = self.get_users_from_dict(resp)
 
-        next_id = response.get('last_follow_id')
+        next_id = resp.get('last_follow_id')
         followings_count = self.get_user(user_id).followings_count if amount == float(
             'inf') else amount
         amount -= 50
@@ -182,11 +186,11 @@ class Yay(object):
             while next_id and amount > 0:
                 number = min(amount, 50)
 
-                response = self._get(
+                resp = self._get(
                     f'{ep.USER_v2}/{user_id}/web_followings?from_follow_id={next_id}&number=50')
-                users.extend(self.get_users_from_dict(response))
+                users.extend(self.get_users_from_dict(resp))
 
-                next_id = response.get('last_follow_id')
+                next_id = resp.get('last_follow_id')
                 amount -= 50
 
                 pbar.update(number)
@@ -195,197 +199,194 @@ class Yay(object):
 
     def get_follow_requests(self, amount=100):
         # has last_timestamp: 1658812381
-        response = self._get(
+        resp = self._get(
             f'{ep.USER_v2}/follow_requests?number=50')
-        return self.get_users_from_dict(response)
+        return self.get_users_from_dict(resp)
 
     def get_user_active_call(self, user_id):
-        response = self._get(
+        resp = self._get(
             f'{ep.POST_v1}/active_call?user_id={user_id}')
-        post_id = response['post'].get('id')
+        post_id = resp['post'].get('id')
         return self.get_post(post_id)
 
     def get_blocked_users(self, amount: int = 100):
-        response = self._get(
+        resp = self._get(
             f'{ep.USER_v2}/blocked')
-        return self.get_users_from_dict(response)
+        return self.get_users_from_dict(resp)
 
     # ----- GET POST -----
 
     def get_post(self, post_id: str):
-        response = self._get(f'{ep.POST_v2}/{post_id}')
-        post_data = response.get('post')
-        post = self.create_post_object(post_data)
-        return post
+        resp = self._get(f'{ep.POST_v2}/{post_id}')
+        post_data = resp.get('post')
+        return self.post_object(post_data)
 
-    def get_posts_from_dict(self, response: dict):
-        assert 'posts' in response, "'posts' key not found"
-        posts_data = response.get('posts')
+    def get_posts_from_dict(self, resp: dict):
+        assert 'posts' in resp, "'posts' key not found"
+        posts_data = resp.get('posts')
         posts = []
         for post_data in posts_data:
-            post = self.create_post_object(post_data)
+            post = self.post_object(post_data)
             posts.append(post)
         return posts
 
     def get_timeline(self, user_id=None, keyword=None, hashtag=None, amount=100):
         if user_id:
-            response = self._get(
+            resp = self._get(
                 f'{ep.GET_USER_TIMELINE}?number={amount}&user_id={user_id}')
         elif keyword:
-            response = self._get(
+            resp = self._get(
                 f'{ep.GET_TIMELINE_BY_KEYWORD}?keyword={keyword}&number={amount}')
         elif hashtag:
-            response = self._get(
+            resp = self._get(
                 f'{ep.GET_TIMELINE_BY_HASHTAG}/{hashtag}?number={amount}')
         else:
-            response = self._get(
+            resp = self._get(
                 f'{ep.GET_TIMELINE}?number={amount}')
-        return self.get_posts_from_dict(response)
+        return self.get_posts_from_dict(resp)
 
     def get_following_timeline(self, amount=50):
         if amount > 50:
             pass
         # has next_page_value
-        response = self._get(
+        resp = self._get(
             f'{ep.GET_FOLLOWING_TIMELINE}?number=50')
-        return self.get_posts_from_dict(response)
+        return self.get_posts_from_dict(resp)
 
     def get_conversation(self, conversation_id: str = None, post_id: str = None, amount=100):
         if post_id:
             conversation_id = self.get_post(post_id).conversation_id
-        response = self._get(
+        resp = self._get(
             f'{ep.GET_CONVERSATION}/{conversation_id}?number={amount}&reverse=true')
-        return self.get_posts_from_dict(response)
+        return self.get_posts_from_dict(resp)
 
     def get_reposts(self, post_id, amount=100):
-        response = self._get(
+        resp = self._get(
             f'{ep.POST_v2}/{post_id}/reposts?number=100')
-        return self.get_posts_from_dict(response)
+        return self.get_posts_from_dict(resp)
 
     def get_post_likers(self, post_id, amount=50):
         # has last_id
-        response = self._get(
+        resp = self._get(
             f'{ep.POST_v1}/{post_id}/likers')
-        return self.get_users_from_dict(response)
+        return self.get_users_from_dict(resp)
 
     # ----- GET GROUP -----
 
     def get_group(self, group_id: str):
-        response = self._get(f'{ep.GROUP_v1}/{group_id}')
-        group_data = response.get('group')
-        group = self.create_group_object(group_data)
-        return group
+        resp = self._get(f'{ep.GROUP_v1}/{group_id}')
+        group_data = resp.get('group')
+        return self.group_object(group_data)
 
-    def get_groups_from_dict(self, response: dict):
-        assert 'groups' in response, "'groups' key not found"
-        groups_data = response.get('groups')
+    def get_groups_from_dict(self, resp: dict):
+        assert 'groups' in resp, "'groups' key not found"
+        groups_data = resp.get('groups')
         groups = []
         for group_data in groups_data:
-            group = self.create_group_object(group_data)
+            group = self.group_object(group_data)
             groups.append(group)
         return groups
 
-    def get_group_users_from_dict(self, response: dict):
-        assert 'group_users' in response, "'group_users' key not found"
-        users_data = response.get('group_users')
+    def get_group_users_from_dict(self, resp: dict):
+        assert 'group_users' in resp, "'group_users' key not found"
+        users_data = resp.get('group_users')
         users = []
         for user_data in users_data:
-            user = self.create_group_user_object(user_data)
+            user = self.group_user_object(user_data)
             users.append(user)
         return users
 
     def get_group_timeline(self, group_id, amount=100):
         # {ep.POST_v2}/group_timeline?from_post_id=111&group_id={group_id}&number=100
-        response = self._get(
+        resp = self._get(
             f'{ep.POST_v2}/group_timeline?group_id={group_id}&number=100')
-        return self.get_posts_from_dict(response)
+        return self.get_posts_from_dict(resp)
 
     def get_group_call(self, group_id):
-        response = self._get(
+        resp = self._get(
             f'{ep.POST_v2}/call_timeline?group_id={group_id}&number=20')
-        return self.get_posts_from_dict(response)
+        return self.get_posts_from_dict(resp)
 
     def get_group_members(self, group_id, amount=100):
-        response = self._get(
+        resp = self._get(
             f'{ep.GROUP_v2}/{group_id}/members?number=100')
-        return self.get_group_users_from_dict(response)
+        return self.get_group_users_from_dict(resp)
 
     def get_pending_users_in_group(self, group_id, amount=100):
-        response = self._get(
+        resp = self._get(
             f'{ep.GROUP_v2}/{group_id}/{group_id}/members?mode=pending&number=100')
-        return self.get_users_from_dict(response)
+        return self.get_users_from_dict(resp)
 
     def get_banned_user_from_group(self, group_id, amount=100):
-        response = self._get(
+        resp = self._get(
             f'{ep.GROUP_v1}/{group_id}/{group_id}/ban_list?number=100')
-        return self.get_users_from_dict(response)
+        return self.get_users_from_dict(resp)
 
     # ----- GET CHAT -----
 
     def get_chat_room(self, chatroom_id: str):
-        response = self._get(f'{ep.CHATROOM_v2}/{chatroom_id}')
-        chat_room_data = response.get('chat')
-        chat = self.create_chat_room_object(chat_room_data)
-        return chat
+        resp = self._get(f'{ep.CHATROOM_v2}/{chatroom_id}')
+        chat_room_data = resp.get('chat')
+        return self.chat_room_object(chat_room_data)
 
-    def get_chat_rooms_from_dict(self, response: dict):
-        assert 'chat_rooms' in response, "'chat_rooms' key not found"
-        chat_rooms_data = response.get('chat_rooms')
+    def get_chat_rooms_from_dict(self, resp: dict):
+        assert 'chat_rooms' in resp, "'chat_rooms' key not found"
+        chat_rooms_data = resp.get('chat_rooms')
         chats = []
         for chat_room_data in chat_rooms_data:
-            chat = self.create_chat_room_object(chat_room_data)
+            chat = self.chat_room_object(chat_room_data)
             chats.append(chat)
         return chats
 
-    def get_chat_messages_from_dict(self, response: dict):
-        assert 'messages' in response, "'messages' key not found"
-        messages_data = response.get('messages')
+    def get_chat_messages_from_dict(self, resp: dict):
+        assert 'messages' in resp, "'messages' key not found"
+        messages_data = resp.get('messages')
         messages = []
         for message_data in messages_data:
-            message = self.create_message_object(message_data)
+            message = self.message_object(message_data)
             messages.append(message)
         return messages
 
     def get_chat_room_id_from_user(self, user_id):
         data = {'with_user_id': user_id}
-        response = self._post(
+        resp = self._post(
             f'{ep.CHATROOM_v1}/new', data)
-        return response['room_id']
+        return resp['room_id']
 
     def get_chat_messages(self, chatroom_id=None, user_id=None, amount=None):
-        response = self._get(
+        resp = self._get(
             f'{ep.CHATROOM_v2}/{chatroom_id}/messages?number=100')
-        return self.get_chat_messages_from_dict(response)
+        return self.get_chat_messages_from_dict(resp)
 
     def get_chat_rooms(self, amount=None):
-        response = self._get(
+        resp = self._get(
             f'{ep.CHATROOM_v1}/main_list?number=100')
-        return self.get_chat_rooms_from_dict(response)
+        return self.get_chat_rooms_from_dict(resp)
 
     def get_chat_requests(self, amount=None):
-        response = self._get(
+        resp = self._get(
             f'{ep.CHATROOM_v1}/request_list?number=100')
-        return self.get_chat_rooms_from_dict(response)
+        return self.get_chat_rooms_from_dict(resp)
 
     # ----- GET NOTIFICATION -----
 
-    def get_activity_from_dict(self, response: dict):
-        assert 'activities' in response, "'activities' key not found"
-        activities_data = response.get('activities')
+    def get_activities_from_dict(self, resp: dict):
+        assert 'activities' in resp, "'activities' key not found"
+        activities_data = resp.get('activities')
         activities = []
         for activity_data in activities_data:
-            activity = self.create_activity_object(activity_data)
+            activity = self.activity_object(activity_data)
             activities.append(activity)
         return activities
 
     def get_notification(self, important=True):
         if important:
-            response = self._get(
+            resp = self._get(
                 f'{ep.CAS_BASE_URL}/api/user_activities?important=true&number=100')
         else:
-            response = self._get(
+            resp = self._get(
                 f'{ep.CAS_BASE_URL}/api/user_activities?important=false&number=100')
-        return self.get_activity_from_dict(response)
+        return self.get_activities_from_dict(resp)
 
     # -----------------------
 
@@ -394,38 +395,38 @@ class Yay(object):
     # -----------------------
 
     def follow_user(self, user_id):
-        response = self._post(f'{ep.USER_v2}/{user_id}/follow')
-        return response
+        resp = self._post(f'{ep.USER_v2}/{user_id}/follow')
+        return resp
 
     def unfollow_user(self, user_id):
-        response = self._post(f'{ep.USER_v2}/{user_id}/unfollow')
-        return response
+        resp = self._post(f'{ep.USER_v2}/{user_id}/unfollow')
+        return resp
 
     def accept_follow_request(self, user_id):
-        response = self._post(
+        resp = self._post(
             f'{ep.USER_v2}/{user_id}/follow_request?action=accept')
-        return response
+        return resp
 
     def reject_follow_request(self, user_id):
-        response = self._post(
+        resp = self._post(
             f'{ep.USER_v2}/{user_id}/follow_request?action=reject')
-        return response
+        return resp
 
     def send_letter(self, user_id, message):
         data = {'comment': message}
-        response = self._post(
+        resp = self._post(
             f'{ep.USER_v1}/reviews/{user_id}', data)
-        return response
+        return resp
 
     def block_user(self, user_id):
-        response = self._post(
+        resp = self._post(
             f'{ep.USER_v1}/{user_id}/block')
-        return response
+        return resp
 
     def unblock_user(self, user_id):
-        response = self._post(
+        resp = self._post(
             f'{ep.USER_v1}/{user_id}/unblock')
-        return response
+        return resp
 
     # ----- ACTION POST -----
 
@@ -446,9 +447,9 @@ class Yay(object):
             'color': color,
             'font_size': font_size
         }
-        response = self._post(
+        resp = self._post(
             f'{ep.BASE_URL}/v1/web/posts/new', data)
-        return response
+        return resp
 
     def create_post_in_group(self, group_id, text, color=0, font_size=0):
         data = {
@@ -459,8 +460,8 @@ class Yay(object):
             'post_type': 'text',
             'uuid': ''
         }
-        response = self._post('https://yay.space/api/posts', data)
-        return self.get_post(response['id'])
+        resp = self._post('https://yay.space/api/posts', data)
+        return self.get_post(resp['id'])
 
     def create_repost(self, text, post_id, color=0, font_size=0):
         data = {
@@ -471,9 +472,9 @@ class Yay(object):
             'message_tags': '[]',
             'post_type': 'text'
         }
-        response = self._post(
+        resp = self._post(
             f'{ep.POST_v3}/repost', data)
-        return response
+        return resp
 
     def create_reply(self, text, post_id, color=0, font_size=0):
         data = {
@@ -482,37 +483,37 @@ class Yay(object):
             'font_size': font_size,
             'in_reply_to': post_id
         }
-        response = self._post(
+        resp = self._post(
             f'{ep.BASE_URL}/v1/web/posts/new', data)
-        return response
+        return resp
 
     def delete_post(self, post_id):
         data = {'posts_ids[]': post_id}
-        response = self._post(
+        resp = self._post(
             f'{ep.POST_v2}/mass_destroy', data)
-        return response
+        return resp
 
     def pin_post(self, post_id):
         data = {'id': post_id}
-        response = self._post(
+        resp = self._post(
             f'{ep.PIN_v1}/posts', data)
-        return response
+        return resp
 
     def unpin_post(self, post_id):
-        response = self._post(
+        resp = self._post(
             f'{ep.PIN_v1}/posts/{post_id}')
-        return response
+        return resp
 
     def like_post(self, post_id):
         data = {'post_ids': post_id}
-        response = self._post(
+        resp = self._post(
             f'{ep.POST_v2}/like', data)
-        return response
+        return resp
 
     def unlike_post(self, post_id):
-        response = self._post(
+        resp = self._post(
             f'{ep.POST_v1}/{post_id}/unlike')
-        return response
+        return resp
 
     # ----- ACTION GROUP -----
 
@@ -558,15 +559,15 @@ class Yay(object):
             'generation_groups_limit': generation_groups_limit
         }
         # {ep.BASE_URL}/v1/groups/new   method=post
-        response = self._post(
+        resp = self._post(
             f'{ep.GROUP_v1}/new', data)
-        return response
+        return resp
 
     def delete_group(self, group_id):
         data = {'groupId': group_id}
-        response = self._delete(
+        resp = self._delete(
             f'{ep.GROUP_v1}/{group_id}/leave', data)
-        return response
+        return resp
 
     def change_group_settings(
         self,
@@ -613,44 +614,44 @@ class Yay(object):
             'generation_groups_limit': generation_groups_limit,
             'uuid': ''
         }
-        response = self._put(
+        resp = self._put(
             f'https://yay.space/api/groups/{group_id}', data)
-        return self.create_group_object(response.get('group'))
+        return self.group_object(resp.get('group'))
 
     def transfer_group_ownership(self, group_id, user_id):
         # need a fix. json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-        # the response: <Response [400]>, probably the uuid is invalid.
+        # the resp: <Response [400]>, probably the uuid is invalid.
         data = {
             'uuid': '',
             'user_id': user_id
         }
-        response = self._post(
+        resp = self._post(
             f'https://yay.space/api/groups/{group_id}/transfer', data)
-        return response
+        return resp
 
     def offer_group_sub_owner(self, group_id, user_id):
         # need a fix. json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-        # the response: <Response [400]>, probably the uuid is invalid.
+        # the resp: <Response [400]>, probably the uuid is invalid.
         data = {'uuid': '', 'user_ids[]': user_id}
-        response = self._post(
+        resp = self._post(
             f'https://yay.space/api/groups/{group_id}/deputize', data)
-        return response
+        return resp
 
     def undo_group_ownership_transfer(self, group_id, user_id):
         data = {'user_id': user_id}
-        response = self._put(
+        resp = self._put(
             f'{ep.GROUP_v1}/{group_id}/transfer/withdraw', data)
-        return response
+        return resp
 
     def undo_group_sub_owner_offer(self, group_id, user_id):
-        response = self._put(
+        resp = self._put(
             f'{ep.GROUP_v1}/{group_id}/deputize/{user_id}/withdraw')
-        return response
+        return resp
 
     def fire_group_sub_owner(self, group_id, user_id):
-        response = self._post(
+        resp = self._post(
             f'{ep.GROUP_v1}/{group_id}/fire/{user_id}')
-        return response
+        return resp
 
     def accept_group_join_request(self, group_id, user_id):
         data = {
@@ -658,9 +659,9 @@ class Yay(object):
             'mode': 'accept',
             'userId': user_id
         }
-        response = self._post(
+        resp = self._post(
             f'{ep.GROUP_v1}/{group_id}/accept/{user_id}', data)
-        return response
+        return resp
 
     def decline_group_join_request(self, group_id, user_id):
         data = {
@@ -668,37 +669,37 @@ class Yay(object):
             'mode': 'decline',
             'userId': user_id
         }
-        response = self._post(
+        resp = self._post(
             f'{ep.GROUP_v1}/{group_id}/decline/{user_id}', data)
-        return response
+        return resp
 
     def invite_user_to_group(self, group_id, user_id):
         data = {'user_ids[]': user_id}
-        response = self._post(
+        resp = self._post(
             f'{ep.GROUP_v1}/{group_id}/invite', data)
-        return response
+        return resp
 
     def pin_group_post(self, group_id, post_id):
         data = {'group_id': group_id, 'post_id': post_id}
-        response = self._put(
+        resp = self._put(
             f'{ep.POST_v2}/group_pinned_post', data)
-        return response
+        return resp
 
     def unpin_group_post(self, group_id):
         data = {'group_id': group_id}
-        response = self._delete(
+        resp = self._delete(
             f'{ep.POST_v2}/group_pinned_post', data)
-        return response
+        return resp
 
     def ban_user_from_group(self, group_id, user_id):
-        response = self._post(
+        resp = self._post(
             f'{ep.GROUP_v1}/{group_id}/ban/{user_id}')
-        return response
+        return resp
 
     def unban_user_from_group(self, group_id, user_id):
-        response = self._post(
+        resp = self._post(
             f'{ep.GROUP_v1}/{group_id}/unban/{user_id}')
-        return response
+        return resp
 
     def join_group(self, group_id):
         self._post(f'{ep.GROUP_v1}/{group_id}/join')
@@ -706,9 +707,9 @@ class Yay(object):
 
     def leave_group(self, group_id):
         data = {'groupId': group_id}
-        response = self._delete(
+        resp = self._delete(
             f'{ep.GROUP_v1}/{group_id}/leave', data)
-        return response
+        return resp
 
     # ----- ACTION CHAT -----
 
@@ -716,136 +717,137 @@ class Yay(object):
         if user_id:
             chat_room_id = self.get_chat_room_id_from_user(user_id)
         data = {'message_type': 'text', 'text': message}
-        response = self._post(
+        resp = self._post(
             f'{ep.CHATROOM_v1}/{chat_room_id}/messages/new', data)
-        return response
+        return resp
 
     def accept_chat_request(self, chat_room_id):
         data = {'chat_room_ids[]': chat_room_id}
-        response = self._post(
+        resp = self._post(
             f'{ep.CHATROOM_v1}/accept_chat_request', data)
-        return response
+        return resp
 
     def delete_chat_room(self, chat_room_id):
         data = {'chat_room_ids[]': chat_room_id}
-        response = self._post(
+        resp = self._post(
             f'{ep.CHATROOM_v1}/mass_destroy', data)
-        return response
+        return resp
 
     # ----- CREATE OBJECTS -----
 
-    def create_user_object(self, user_data: dict) -> User:
+    def user_object(self, user_data: dict) -> User:
         def get_val(key):
             return user_data.get(key, None)
 
         user = User(
             id=get_val('id'),
-            display_name=get_val('nickname'),
-            biography=get_val('biography'),
-            followers_count=get_val('followers_count'),
-            followings_count=get_val('followers_count'),
-            is_private=get_val('is_private'),
-            posts_count=get_val('posts_count'),
-            joined_groups_count=get_val('groups_users_count'),
-            reviews_count=get_val('reviews_count'),
-            age_verified=get_val('age_verified'),
+            username=get_val('nickname'),
+            bio=get_val('biography'),
+            badge=user_data.get('title', None),
+            num_followers=get_val('followers_count'),
+            num_followings=get_val('followers_count'),
+            private_user=get_val('is_private'),
+            num_posts=get_val('posts_count'),
+            num_joined_groups=get_val('groups_users_count'),
+            num_reviews=get_val('reviews_count'),
+            verified_age=get_val('age_verified'),
             country_code=get_val('country_code'),
             is_vip=get_val('vip'),
             hide_vip=get_val('hide_vip'),
             online_status=get_val('online_status'),
-            profile_icon=get_val('profile_icon'),
-            profile_icon_thumbnail=get_val(
+            profile_image=get_val('profile_icon'),
+            profile_thumbnail=get_val(
                 'profile_icon_thumbnail'),
             cover_image=get_val('cover_image'),
-            cover_image_thumbnail=get_val('cover_image_thumbnail'),
-            last_loggedin_at=get_val('last_loggedin_at'),
-            mutual_chat=get_val('mutual_chat'),
-            chat_request=get_val('chat_request'),
-            chat_required_phone_verification=get_val(
+            cover_thumbnail=get_val('cover_image_thumbnail'),
+            last_logged_in_at=get_val('last_loggedin_at'),
+            mutual_chat_enabled=get_val('mutual_chat'),
+            chat_request_enabled=get_val('chat_request'),
+            chat_phone_verification_required=get_val(
                 'chat_required_phone_verification'),
-            age_restricted_on_review=get_val(
+            age_restricted_review=get_val(
                 'age_restricted_on_review'),
-            following_restricted_on_review=get_val(
+            following_restricted_review=get_val(
                 'following_restricted_on_review'),
-            restricted_review_by=get_val('restricted_review_by'),
-            is_recently_banned=get_val('recently_kenta'),
-            is_dangerous_user=get_val('dangerous_user'),
-            is_new_user=get_val('new_user'),
-            interests_selected=get_val('interests_selected')
+            review_restricted_by=get_val('restricted_review_by'),
+            recently_banned=get_val('recently_kenta'),
+            dangerous_user=get_val('dangerous_user'),
+            new_user=get_val('new_user'),
+            selected_interests=get_val('interests_selected')
         )
         return user
 
-    def create_group_user_object(self, user_data: dict) -> User:
+    def group_user_object(self, user_data: dict) -> User:
         def get_val(key):
             return user_data['user'].get(key, None)
 
         group_user = GroupUser(
-            is_moderator=user_data.get('is_moderator', None),
+            moderator=user_data.get('is_moderator', None),
             banned=user_data.get('banned', None),
             pending_transfer=user_data.get('pending_transfer', None),
             pending_deputize=user_data.get('pending_deputize', None),
-            title=user_data.get('title', None),
+            badge=user_data.get('title', None),
             id=get_val('id'),
-            display_name=get_val('nickname'),
-            biography=get_val('biography'),
-            followers_count=get_val('followers_count'),
+            username=get_val('nickname'),
+            bio=get_val('biography'),
+            num_followers=get_val('followers_count'),
             is_private=get_val('is_private'),
-            posts_count=get_val('posts_count'),
-            joined_groups_count=get_val('groups_users_count'),
-            reviews_count=get_val('reviews_count'),
-            age_verified=get_val('age_verified'),
+            num_posts=get_val('posts_count'),
+            num_joined_groups=get_val('groups_users_count'),
+            num_reviews=get_val('reviews_count'),
+            verified_age=get_val('age_verified'),
             country_code=get_val('country_code'),
             is_vip=get_val('vip'),
             hide_vip=get_val('hide_vip'),
             online_status=get_val('online_status'),
-            profile_icon=get_val('profile_icon'),
-            profile_icon_thumbnail=get_val(
+            profile_image=get_val('profile_icon'),
+            profile_thumbnail=get_val(
                 'profile_icon_thumbnail'),
             cover_image=get_val('cover_image'),
-            cover_image_thumbnail=get_val('cover_image_thumbnail'),
-            last_loggedin_at=get_val('last_loggedin_at'),
-            mutual_chat=get_val('mutual_chat'),
-            chat_request=get_val('chat_request'),
-            chat_required_phone_verification=get_val(
+            cover_thumbnail=get_val('cover_image_thumbnail'),
+            last_logged_in_at=get_val('last_loggedin_at'),
+            mutual_chat_enabled=get_val('mutual_chat'),
+            chat_request_enabled=get_val('chat_request'),
+            chat_phone_verification_required=get_val(
                 'chat_required_phone_verification'),
-            age_restricted_on_review=get_val(
+            age_restricted_review=get_val(
                 'age_restricted_on_review'),
-            following_restricted_on_review=get_val(
+            following_restricted_review=get_val(
                 'following_restricted_on_review'),
-            restricted_review_by=get_val('restricted_review_by'),
-            is_recently_banned=get_val('recently_kenta'),
-            is_dangerous_user=get_val('dangerous_user'),
-            is_new_user=get_val('new_user'),
-            interests_selected=get_val('interests_selected')
+            review_restricted_by=get_val('restricted_review_by'),
+            recently_banned=get_val('recently_kenta'),
+            dangerous_user=get_val('dangerous_user'),
+            new_user=get_val('new_user'),
+            selected_interests=get_val('interests_selected')
         )
         return group_user
 
-    def create_post_object(self, post_data: dict) -> Post:
+    def post_object(self, post_data: dict) -> Post:
         def get_val(key):
             return post_data.get(key, None)
 
         post = Post(
-            post_id=get_val('id'),
+            id=get_val('id'),
             author_id=post_data['user'].get('id'),
-            author_display_name=post_data['user'].get('nickname', None),
+            author_username=post_data['user'].get('nickname', None),
             text=get_val('text'),
             group_id=get_val('group_id'),
             font_size=get_val('font_size'),
-            is_liked=get_val('liked'),
-            likes_count=get_val('likes_count'),
-            post_type=get_val('post_type'),
+            liked=get_val('liked'),
+            num_likes=get_val('likes_count'),
+            type=get_val('post_type'),
             color=get_val('color'),
-            reposts_count=get_val('reposts_count'),
+            num_reposted=get_val('reposts_count'),
             created_at=get_val('created_at'),
             updated_at=get_val('updated_at'),
             edited_at=get_val('edited_at'),
-            reported_count=get_val('reported_count'),
-            in_reply_to_post=get_val('in_reply_to_post'),
-            in_reply_to_post_count=get_val(
+            num_reported=get_val('reported_count'),
+            reply_to_id=get_val('in_reply_to_post'),
+            num_reply_to=get_val(
                 'in_reply_to_post_count'),
-            is_repostable=get_val('repostable'),
-            is_highlighted=get_val('highlighted'),
-            is_hidden=get_val('hidden'),
+            repostable=get_val('repostable'),
+            highlighted=get_val('highlighted'),
+            hidden=get_val('hidden'),
             thread_id=get_val('thread_id'),
             message_tags=get_val('message_tags'),
             conversation_id=get_val('conversation_id'),
@@ -855,7 +857,7 @@ class Yay(object):
         )
         return post
 
-    def create_review_object(self, review_data: dict) -> Post:
+    def review_object(self, review_data: dict) -> Post:
         def get_val(key):
             return review_data.get(key, None)
 
@@ -863,77 +865,77 @@ class Yay(object):
             text=get_val('comment'),
             created_at=get_val('created_at'),
             id=get_val('id'),
-            mutual_review=get_val('mutual_review'),
-            reported_count=get_val('reported_count'),
+            mutual_review_enabled=get_val('mutual_review'),
+            num_reported=get_val('reported_count'),
             author_id=review_data['reviewer'].get('id', None),
-            author_display_name=review_data['reviewer'].get('nickname', None),
+            author_username=review_data['reviewer'].get('nickname', None),
         )
 
         return review
 
-    def create_group_object(self, group_data: dict) -> Group:
+    def group_object(self, group_data: dict) -> Group:
         def get_val(key):
             return group_data.get(key, None)
 
         group = Group(
-            allow_members_to_post_image_and_video=get_val(
+            members_can_post_image_and_video=get_val(
                 'allow_members_to_post_image_and_video'),
-            allow_members_to_post_url=get_val('allow_members_to_post_url'),
-            allow_ownership_transfer=get_val('allow_ownership_transfer'),
-            allow_thread_creation_by=get_val('allow_thread_creation_by'),
-            call_timeline_display=get_val('call_timeline_display'),
+            members_can_post_url=get_val('allow_members_to_post_url'),
+            ownership_transfer_allowed=get_val('allow_ownership_transfer'),
+            allowed_thread_creators=get_val('allow_thread_creation_by'),
+            call_timeline=get_val('call_timeline_display'),
             cover_image=get_val('cover_image'),
-            cover_image_thumbnail=get_val('cover_image_thumbnail'),
+            cover_thumbnail=get_val('cover_image_thumbnail'),
             description=get_val('description'),
             gender=get_val('gender'),
             generation_groups_limit=get_val('generation_groups_limit'),
-            group_category_id=get_val('group_category_id'),
-            group_icon=get_val('group_icon'),
-            groups_users_count=get_val('groups_users_count'),
+            category_id=get_val('group_category_id'),
+            icon=get_val('group_icon'),
+            num_groups_members=get_val('groups_users_count'),
             guidelines=get_val('guidelines'),
-            hide_conference_call=get_val('hide_conference_call'),
-            hide_from_game_eight=get_val('hide_from_game_eight'),
-            hide_reported_posts=get_val('hide_reported_posts'),
-            highlighted_count=get_val('highlighted_count'),
+            conference_call_hidden=get_val('hide_conference_call'),
+            game_eight_hidden=get_val('hide_from_game_eight'),
+            reported_posts_hidden=get_val('hide_reported_posts'),
+            num_highlighted=get_val('highlighted_count'),
             homepage=get_val('homepage'),
-            group_id=get_val('group_id'),
+            id=get_val('group_id'),
             invited_to_join=get_val('invited_to_join'),
-            is_joined=get_val('is_joined'),
-            is_pending=get_val('is_pending'),
-            is_private=get_val('is_private'),
+            joined=get_val('is_joined'),
+            pending=get_val('is_pending'),
+            private_group=get_val('is_private'),
             moderator_ids=get_val('moderator_ids'),
-            only_mobile_verified=get_val('only_mobile_verified'),
-            only_verified_age=get_val('only_verified_age'),
+            mobile_verified_only=get_val('only_mobile_verified'),
+            verified_age_only=get_val('only_verified_age'),
             owner_id=get_val('user_id'),
-            owner_display_name=group_data['owner'].get('nickname', None),
-            pending_count=get_val('pending_count'),
+            owner_username=group_data['owner'].get('nickname', None),
+            num_pendings=get_val('pending_count'),
             pending_deputize_ids=get_val('pending_deputize_ids'),
             pending_transfer_id=get_val('pending_transfer_id'),
             place=get_val('place'),
-            posts_count=get_val('posts_count'),
-            related_count=get_val('related_count'),
-            safe_mode=get_val('safe_mode'),
-            secret=get_val('secret'),
+            num_posts=get_val('posts_count'),
+            num_related_groups=get_val('related_count'),
+            safe_mode_enabled=get_val('safe_mode'),
+            hidden_grouop=get_val('secret'),
             seizable=get_val('seizable'),
             seizable_before=get_val('seizable_before'),
             sub_category_id=get_val('sub_category_id'),
-            threads_count=get_val('threads_count'),
-            title=get_val('title'),
-            topic=get_val('topic'),
-            unread_threads_count=get_val('unread_threads_count'),
+            num_threads=get_val('threads_count'),
+            category=get_val('title'),
+            group_name=get_val('topic'),
+            num_unread_threads=get_val('unread_threads_count'),
             updated_at=get_val('updated_at'),
-            views_count=get_val('views_count'),
+            num_views=get_val('views_count'),
             walkthrough_requested=get_val('walkthrough_requested'),
         )
 
         return group
 
-    def create_chat_room_object(self, chat_room_data: dict) -> Post:
+    def chat_room_object(self, chat_room_data: dict) -> Post:
         def get_val(key):
             return chat_room_data.get(key, None)
 
         chat_room = ChatRoom(
-            background=get_val('background'),
+            background_image=get_val('background'),
             background_thumbnail=get_val('background_thumbnail'),
             icon=get_val('icon'),
             icon_thumbnail=get_val('icon_thumbnail'),
@@ -943,16 +945,16 @@ class Yay(object):
             last_message=chat_room_data['last_message'].get('text', None),
             member_ids=[member.get('id', None)
                         for member in chat_room_data['members']],
-            member_display_names=[member.get(
+            member_usernames=[member.get(
                 'nickname', None) for member in chat_room_data['members']],
-            name=get_val('name'),
-            unread_count=get_val('unread_count'),
+            chat_title=get_val('name'),
+            num_unread=get_val('unread_count'),
             updated_at=get_val('updated_at')
         )
 
         return chat_room
 
-    def create_message_object(self, message_data: dict) -> Post:
+    def message_object(self, message_data: dict) -> Post:
         def get_val(key):
             return message_data.get(key, None)
 
@@ -962,13 +964,13 @@ class Yay(object):
             attachment_thumbnail=get_val('attachment_thumbnail'),
             created_at=get_val('created_at'),
             font_size=get_val('font_size'),
-            id=get_val('id'),
-            message_type=get_val('message_type'),
+            message_id=get_val('id'),
+            type=get_val('message_type'),
             reacted=get_val('reacted'),
-            reactions_count=get_val('reactions_count'),
+            num_reactions=get_val('reactions_count'),
             room_id=get_val('room_id'),
             text=get_val('text'),
-            user_id=get_val('user_id'),
+            author_id=get_val('user_id'),
             video_processed=get_val('video_processed'),
             video_thumbnail_big_url=get_val('video_thumbnail_big_url'),
             video_thumbnail_url=get_val('video_thumbnail_url'),
@@ -977,7 +979,7 @@ class Yay(object):
 
         return message
 
-    def create_activity_object(self, activity_data: dict) -> Post:
+    def activity_object(self, activity_data: dict) -> Post:
         def get_val(key):
             return activity_data.get(key, None)
 
@@ -992,8 +994,8 @@ class Yay(object):
             metadata=get_val('metadata'),
             type=get_val('type'),
             from_user_id=get_val_2('user', 'id'),
-            from_user_display_name=get_val_2('user', 'nickname'),
-            from_user_profile_icon_thumbnail=get_val_2(
+            from_user_username=get_val_2('user', 'nickname'),
+            from_user_profile_thumbnail=get_val_2(
                 'user', 'from_user_profile_icon_thumbnail')
         )
 
