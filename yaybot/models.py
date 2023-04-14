@@ -1,8 +1,9 @@
 class User:
+
     def __init__(
         self,
         id,
-        username,
+        screen_name,
         bio,
         badge,
         num_followers,
@@ -33,7 +34,7 @@ class User:
         selected_interests
     ):
         self.id = id
-        self.username = username
+        self.screen_name = screen_name
         self.bio = bio
         self.badge = badge
         self.num_followers = num_followers
@@ -64,10 +65,11 @@ class User:
         self.selected_interests = selected_interests
 
     def __repr__(self):
-        return f"User(id={self.id}, display_name='{self.username}', biography='{self.bio}')"
+        return f'User(screen_name={self.screen_name})'
 
 
 class GroupUser(User):
+
     def __init__(
         self,
         moderator,
@@ -76,7 +78,7 @@ class GroupUser(User):
         pending_deputize,
         badge,
         id,
-        username,
+        screen_name,
         bio,
         num_followers,
         is_private,
@@ -106,7 +108,7 @@ class GroupUser(User):
     ):
         super().__init__(
             id,
-            username,
+            screen_name,
             bio,
             num_followers,
             is_private,
@@ -141,15 +143,16 @@ class GroupUser(User):
         self.badge = badge
 
     def __repr__(self):
-        return f"GroupUser(id={self.id}, username='{self.username}', moderator='{self.moderator}')"
+        return f''
 
 
 class Post:
+
     def __init__(
         self,
         id,
         author_id,
-        author_username,
+        author_screen_name,
         text,
         group_id,
         font_size,
@@ -176,7 +179,7 @@ class Post:
     ):
         self.id = id
         self.author_id = author_id
-        self.author_username = author_username
+        self.author_screen_name = author_screen_name
         self.text = text
         self.group_id = group_id
         self.font_size = font_size
@@ -202,25 +205,27 @@ class Post:
         self.shared_url = shared_url
 
     def __repr__(self):
-        return f"Post(id={self.id}, author_username='{self.author_username}', text='{self.text}')"
+        return str(self)
 
 
 class Review:
+
     def __init__(self, text, created_at, id, mutual_review_enabled,
-                 num_reported, author_id, author_username):
+                 num_reported, author_id, author_screen_name):
         self.text = text
         self.created_at = created_at
         self.id = id
         self.mutual_review_enabled = mutual_review_enabled
         self.num_reported = num_reported
         self.author_id = author_id
-        self.author_username = author_username
+        self.author_screen_name = author_screen_name
 
     def __repr__(self):
-        return f"Review(text={self.text}, created_at='{self.created_at}', id='{self.id}'), mutual_review='{self.mutual_review_enabled}'), reported_count='{self.num_reported}'), author_id='{self.author_id}'), author_display_name='{self.author_username}')"
+        return f'Review(author_screen_name={self.author_screen_name}, text={self.text})'
 
 
 class Group:
+
     def __init__(
         self,
         members_can_post_image_and_video,
@@ -251,7 +256,7 @@ class Group:
         mobile_verified_only,
         verified_age_only,
         owner_id,
-        owner_username,
+        owner_screen_name,
         num_pendings,
         pending_deputize_ids,
         pending_transfer_id,
@@ -299,7 +304,7 @@ class Group:
         self.mobile_verified_only = mobile_verified_only
         self.verified_age_only = verified_age_only
         self.owner_id = owner_id
-        self.owner_username = owner_username
+        self.owner_screen_name = owner_screen_name
         self.num_pendings = num_pendings
         self.pending_deputize_ids = pending_deputize_ids
         self.pending_transfer_id = pending_transfer_id
@@ -320,10 +325,11 @@ class Group:
         self.walkthrough_requested = walkthrough_requested
 
     def __repr__(self):
-        return f"Group(category={self.category}, description='{self.description}', owner_username='{self.owner_username}')"
+        return str(self)
 
 
 class ChatRoom:
+
     def __init__(
             self,
             background_image,
@@ -335,7 +341,7 @@ class ChatRoom:
             is_request,
             last_message,
             member_ids,
-            member_usernames,
+            member_screen_names,
             chat_title,
             num_unread,
             updated_at
@@ -349,16 +355,17 @@ class ChatRoom:
         self.is_request = is_request
         self.last_message = last_message
         self.member_ids = member_ids
-        self.member_usernames = member_usernames
+        self.member_screen_names = member_screen_names
         self.chat_title = chat_title
         self.num_unread = num_unread
         self.updated_at = updated_at
 
     def __repr__(self):
-        return f"ChatRoom(id={self.id}, member_ids='{self.member_ids}', unread_count='{self.unread_count}', is_group='{self.is_group}')"
+        return str(self)
 
 
 class Message:
+
     def __init__(
             self,
             attachment,
@@ -396,10 +403,11 @@ class Message:
         self.video_url = video_url
 
     def __repr__(self):
-        return f"Message(author_id={self.author_id}, type='{self.type}', text='{self.text}', attachment='{self.attachment}')"
+        return str(self)
 
 
 class Activity:
+
     def __init__(
             self,
             created_at,
@@ -409,7 +417,7 @@ class Activity:
             metadata,
             type,
             from_user_id,
-            from_user_username,
+            from_user_screen_name,
             from_user_profile_thumbnail
     ):
         self.created_at = created_at
@@ -419,18 +427,8 @@ class Activity:
         self.metadata = metadata
         self.type = type
         self.from_user_id = from_user_id
-        self.from_user_username = from_user_username
+        self.from_user_screen_name = from_user_screen_name
         self.from_user_profile_thumbnail = from_user_profile_thumbnail
 
     def __repr__(self):
-        return f"Activity(type={self.type}, from_post_id='{self.from_post_id}', from_group_id='{self.from_group_id}', from_user_id='{self.from_user_id}')"
-
-
-class Like:
-    def __init__(self, like_id, user, post):
-        self.like_id = like_id
-        self.user = user
-        self.post = post
-
-    def __repr__(self):
-        return f"Like(like_id={self.like_id}, user={self.user}, post={self.post})"
+        return str(self)

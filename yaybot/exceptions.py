@@ -6,6 +6,10 @@ class AuthenticationError(YayError):
     pass
 
 
+class ForbiddenError(YayError):
+    pass
+
+
 class RateLimitError(YayError):
     pass
 

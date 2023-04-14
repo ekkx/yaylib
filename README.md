@@ -21,7 +21,7 @@ https://yay.space/
 ### 使い方
 
 ```python
-from api import Yay
+from yaybot import Yay
 
 
 yay = Yay()
@@ -30,12 +30,12 @@ yay.login(email='メールアドレス', password='パスワード') # ログイ
 
 
 user = yay.get_user('123')  # IDが'123'のユーザーのプロフィールを取得
-print(user.username)  # 取得したユーザーの名前を表示
+print(user.screen_name)  # 取得したユーザーの名前を表示
 print(user.bio)  # 取得したユーザーの自己紹介を表示
 
 
 post = yay.get_post('456')  # IDが'456'の投稿を取得
-print(post.author_username)  # 投稿者の名前を表示
+print(post.author_screen_name)  # 投稿者の名前を表示
 print(post.text)  # 投稿本文を表示
 yay.like_post('456')  # 投稿をいいねする
 

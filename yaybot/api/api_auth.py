@@ -4,7 +4,16 @@ import re
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
 
-from endpoints import Endpoints as ep
+from ..config import Endpoints as ep
+from ..exceptions import (
+    YayError,
+    AuthenticationError,
+    ForbiddenError,
+    RateLimitError,
+    ExceedCallQuotaError,
+    UnknownError
+)
+from ..support import console_print
 
 
 class YayAuth(object):
@@ -12,7 +21,12 @@ class YayAuth(object):
     def __init__(self, proxy=None, timeout=10):
         self.timeout = timeout
         self.user_agent = UserAgent().chrome
-        self.proxy = f'http://{proxy}' if proxy else None
+        self.proxies = None
+        if proxy:
+            self.proxies = {
+                'http': f'http://{proxy}',
+                'https': f'https://{proxy}'
+            }
         self.headers = {
             'User-Agent': self.user_agent,
             'Accept': 'application/json, text/plain, */*',
@@ -27,7 +41,7 @@ class YayAuth(object):
         self.logged_in_as = None
 
     def login(self, email, password):
-        response = requests.get(
+        resp = requests.get(
             'https://yay.space/?modalMode=login',
             headers=self.headers,
             proxies={'http': self.proxy, 'https': self.proxy},
@@ -50,19 +64,21 @@ class YayAuth(object):
             proxies={'http': self.proxy, 'https': self.proxy},
             timeout=self.timeout
         )
-        resp.raise_for_status()
 
-        if response.status_code == 429:
-            print('Rate limit exceeded')
-        elif response.status_code == 403:
-            print('Invalid password or email')
-        else:
-            self.access_token = response.json()['access_token']
-            self.logged_in_as = response.json()['user_id']
+        try:
+            self._handle_response(resp)
+            self.access_token = resp.json()['access_token']
+            self.logged_in_as = resp.json()['user_id']
             self.headers.setdefault(
                 'Authorization', f'Bearer {self.access_token}'
             )
-            print('Login Successful.')
+            console_print(
+                f'Successfully logged in as {self.logged_in_as}.', 'green')
+            return True
+        except ForbiddenError:
+            console_print(
+                'Login Failed...\n(Invalid email or password.)', 'red')
+            return False
 
     def logout(self):
         if self.access_token:
@@ -70,4 +86,18 @@ class YayAuth(object):
             self.access_token = None
             self.logged_in_as = None
         else:
-            print("User is not logged in.")
+            console_print('User is not logged in.', 'red')
+
+    def _handle_response(self, resp):
+        if resp.status_code == 401:
+            raise AuthenticationError('Failed to authenticate')
+        if resp.status_code == 403:
+            raise ForbiddenError('Forbidden')
+        if resp.status_code == 429:
+            raise RateLimitError('Rate limit exceeded')
+
+        resp_json = resp.json()
+
+        if 'error_code' in resp_json:
+            if resp_json['error_code'] == '-343':
+                raise ExceedCallQuotaError('Exceed call quota')
