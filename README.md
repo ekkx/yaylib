@@ -1,5 +1,7 @@
 # YayBot
 
+![yay.space](https://yay.space/images/home-keywords-hero-3.jpg)
+
 SNS「Yay!」の非公式 API です。🚀  
 使用言語は Python です。
 
@@ -37,7 +39,7 @@ print(user.bio)  # 取得したユーザーの自己紹介を表示
 post = yay.get_post('456')  # IDが'456'の投稿を取得
 print(post.author_screen_name)  # 投稿者の名前を表示
 print(post.text)  # 投稿本文を表示
-yay.like_post('456')  # 投稿をいいねする
+yay.like_post(post.id)  # 投稿をいいねする
 
 
 followers = yay.get_user_followers('123')  # IDが'123'のユーザーのフォロワーを取得する
