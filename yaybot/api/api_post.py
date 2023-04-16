@@ -2,14 +2,20 @@ from ..config import Endpoints as ep
 
 
 # post_type -> text, questionaire, image, video, call, video call
-def create_post(self, text, color=0, font_size=0):
+def create_post(self, text, color=0, font_size=0, choices=None, type=None):
     data = {
         'text': text,
         'color': color,
         'font_size': font_size
     }
+    if type == 'survey':
+        data['post_type'] = type
+        data['choices'] = choices
+        resp = self._post('https://yay.space/api/posts', data)
+        return resp
+
     resp = self._post(
-        f'{ep.BASE_URL}/v1/web/posts/new', data)
+        f'{ep.API_URL}/v1/web/posts/new', data)
     return resp
 
 
@@ -48,7 +54,7 @@ def create_reply(self, text, post_id, color=0, font_size=0):
         'in_reply_to': post_id
     }
     resp = self._post(
-        f'{ep.BASE_URL}/v1/web/posts/new', data)
+        f'{ep.API_URL}/v1/web/posts/new', data)
     return resp
 
 

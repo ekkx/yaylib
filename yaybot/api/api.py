@@ -12,6 +12,7 @@ from ..exceptions import (
     ForbiddenError,
     RateLimitError,
     ExceedCallQuotaError,
+    InvalidSignedInfo,
     UnknownError
 )
 from ..support import console_print
@@ -97,7 +98,7 @@ from .api_user import (
     unblock_user,
 )
 
-version = '0.2.5'
+version = '0.2.5'  # also change .. __init__
 current_path = os.path.abspath(os.getcwd())
 
 
@@ -118,7 +119,7 @@ class Yay(object):
 
         YayBot
         ---
-            Unofficial API for Yay! - developed by @ニコラですが
+            Unofficial API for Yay! (yay.space) - developed by qualia-5w4
 
         """
         self.base_path = base_path
@@ -174,6 +175,8 @@ class Yay(object):
             self.access_token = token
             self.auth.access_token = token
             self.auth.headers.setdefault('Authorization', f'Bearer {token}')
+
+        self.logger.info('YayBot version: ' + version + ' Started!')
 
     def login(self, email, password):
         self.auth.login(email, password)
@@ -234,8 +237,10 @@ class Yay(object):
         resp_json = resp.json()
 
         if 'error_code' in resp_json:
-            if resp_json['error_code'] == '-343':
+            if resp_json['error_code'] == -343:
                 raise ExceedCallQuotaError('Exceed call quota')
+            if resp_json['error_code'] == -380:
+                raise InvalidSignedInfo('Invalid signed info')
 
     # ====== GETTERS ======
 
@@ -371,7 +376,7 @@ class Yay(object):
 
     # ====== POST ======
 
-    def create_post(self, text: str, color=0, font_size=0):
+    def create_post(self, text, color=0, font_size=0, choices: list = None, type: str = None):
         """
         Color:
         -----
@@ -382,7 +387,7 @@ class Yay(object):
         -----
             size: 0 - 4 (The larger the number, the larger the font size.)
         """
-        return create_post(self, text, color, font_size)
+        return create_post(self, text, color, font_size, choices, type)
 
     def create_post_in_group(self, group_id: str, text: str, color=0, font_size=0):
         return create_post_in_group(self, group_id, text, color, font_size)

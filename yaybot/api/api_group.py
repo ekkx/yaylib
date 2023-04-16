@@ -42,7 +42,6 @@ def create_group(
         'gender': gender,
         'generation_groups_limit': generation_groups_limit
     }
-    # {ep.BASE_URL}/v1/groups/new   method=post
     resp = self._post(
         f'{ep.GROUP_v1}/new', data)
     return resp

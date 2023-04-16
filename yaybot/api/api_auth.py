@@ -21,6 +21,7 @@ class YayAuth(object):
     def __init__(self, proxy=None, timeout=10):
         self.timeout = timeout
         self.user_agent = UserAgent().chrome
+        self.proxy = proxy
         self.proxies = None
         if proxy:
             self.proxies = {
@@ -61,7 +62,7 @@ class YayAuth(object):
                 'uuid': ''
             },
             headers=self.headers,
-            proxies={'http': self.proxy, 'https': self.proxy},
+            proxies=self.proxies,
             timeout=self.timeout
         )
 
