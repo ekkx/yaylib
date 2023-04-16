@@ -1,11 +1,11 @@
 # YayBot
 
-![yay.space](https://yay.space/images/home-keywords-hero-3.jpg)
+### YayBot とは？
 
-SNS「Yay!」の非公式 API です。🚀  
+SNS「Yay!」の非公式ライブラリです。🚀  
 使用言語は Python です。
 
-https://yay.space/
+🔗: https://yay.space/
 
 ### 重要
 
@@ -18,15 +18,19 @@ https://yay.space/
 
 ---
 
+![yay.space](https://yay.space/images/home-group-categories-background-3.jpg)
+
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)
 
-### インストール
+## インストール
 
-```python
-pip install git+https://github.com/qualia-5w4/Yay-Bot
+ターミナル上で以下のコマンドを実行してください。
+
+```console
+$ pip install git+https://github.com/qualia-5w4/Yay-Bot
 ```
 
-### 使い方
+## 使い方
 
 ```python
 from yaybot import Yay
@@ -54,11 +58,11 @@ for follower in followers:
 
 ```
 
-### 使用条件
+## 使用条件
 
 - この API をマーケティング目的（スパム、ボット、嫌がらせ、大量の一斉送信など）に使用しないこと。
 
-### 注意
+## 注意
 
 このコードは、「Yay!」、株式会社ナナメウエ、またはその関連会社といかなる関係も持っていません。これは独立した非公式 API です。自己責任で使用してください。
 
