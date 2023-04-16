@@ -127,13 +127,15 @@ class Yay(object):
         # Setup logging
         self.logger = logging.getLogger('YayBot version: ' + version)
 
-        if not os.path.exists(base_path):
-            os.makedirs(base_path)  # create base_path if not exists
-
-        if not os.path.exists(base_path + '/log/'):
-            os.makedirs(base_path + '/log/')  # create log folder if not exists
-
         if save_logfile is True:
+            if not os.path.exists(base_path):
+                # create base_path if not exists
+                os.makedirs(base_path)
+
+            if not os.path.exists(base_path + '/log/'):
+                # create log folder if not exists
+                os.makedirs(base_path + '/log/')
+
             if log_filename is None:
                 log_filename = os.path.join(
                     base_path, 'log/yaybot_{}.log'.format(id(self))
