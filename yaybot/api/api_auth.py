@@ -13,7 +13,7 @@ from ..exceptions import (
     ExceedCallQuotaError,
     UnknownError
 )
-from ..support import console_print
+from ..utils import handle_response, console_print
 
 
 class YayAuth(object):
@@ -67,7 +67,7 @@ class YayAuth(object):
         )
 
         try:
-            self._handle_response(resp)
+            handle_response(resp)
             self.access_token = resp.json()['access_token']
             self.logged_in_as = resp.json()['user_id']
             self.headers.setdefault(
@@ -88,17 +88,3 @@ class YayAuth(object):
             self.logged_in_as = None
         else:
             console_print('User is not logged in.', 'red')
-
-    def _handle_response(self, resp):
-        if resp.status_code == 401:
-            raise AuthenticationError('Failed to authenticate')
-        if resp.status_code == 403:
-            raise ForbiddenError('Forbidden')
-        if resp.status_code == 429:
-            raise RateLimitError('Rate limit exceeded')
-
-        resp_json = resp.json()
-
-        if 'error_code' in resp_json:
-            if resp_json['error_code'] == '-343':
-                raise ExceedCallQuotaError('Exceed call quota')

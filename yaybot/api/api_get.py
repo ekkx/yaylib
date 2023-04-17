@@ -1,7 +1,7 @@
 from tqdm import tqdm
 
 from ..config import Endpoints as ep
-from ..utils import ObjectGenerator as gen
+from ..utils import console_print, ObjectGenerator as gen
 
 
 # ====== USER ======

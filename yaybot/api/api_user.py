@@ -1,4 +1,5 @@
 from ..config import Endpoints as ep
+from ..utils import console_print
 
 
 def follow_user(self, user_id):

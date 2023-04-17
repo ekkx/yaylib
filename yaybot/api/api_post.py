@@ -1,4 +1,5 @@
 from ..config import Endpoints as ep
+from ..utils import console_print
 
 
 # post_type -> text, questionaire, image, video, call, video call

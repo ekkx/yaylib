@@ -1,3 +1,15 @@
+import huepy
+
+from .exceptions import (
+    YayError,
+    AuthenticationError,
+    ForbiddenError,
+    RateLimitError,
+    ExceedCallQuotaError,
+    InvalidSignedInfo,
+    UnknownError
+)
+
 from .models import (
     User,
     GroupUser,
@@ -8,6 +20,30 @@ from .models import (
     Message,
     Activity
 )
+
+
+def handle_response(self, resp):
+    if resp.status_code == 401:
+        raise AuthenticationError('Failed to authenticate')
+    if resp.status_code == 403:
+        raise ForbiddenError('Forbidden')
+    if resp.status_code == 429:
+        raise RateLimitError('Rate limit exceeded')
+
+    resp_json = resp.json()
+
+    if 'error_code' in resp_json:
+        if resp_json['error_code'] == -343:
+            raise ExceedCallQuotaError('Exceed call quota')
+        if resp_json['error_code'] == -380:
+            raise InvalidSignedInfo('Invalid signed info')
+
+
+def console_print(text, color=None):
+    text = '\n' + text
+    if color is not None:
+        text = getattr(huepy, color)(text)
+    print(text)
 
 
 class ObjectGenerator(object):
@@ -105,7 +141,7 @@ class ObjectGenerator(object):
 
         post = Post(
             id=get_val('id'),
-            author_id=post_data['user'].get('id'),
+            author_id=post_data['user'].get('id', None),
             author_screen_name=post_data['user'].get('nickname', None),
             text=get_val('text'),
             group_id=get_val('group_id'),
@@ -119,7 +155,7 @@ class ObjectGenerator(object):
             updated_at=get_val('updated_at'),
             edited_at=get_val('edited_at'),
             num_reported=get_val('reported_count'),
-            reply_to_id=get_val('in_reply_to_post'),
+            reply_to_id=get_val('in_reply_to'),
             num_reply_to=get_val(
                 'in_reply_to_post_count'),
             repostable=get_val('repostable'),

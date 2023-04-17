@@ -15,7 +15,7 @@ from ..exceptions import (
     InvalidSignedInfo,
     UnknownError
 )
-from ..support import console_print
+from ..utils import handle_response, console_print
 from .api_auth import YayAuth
 from .api_chat import (
     send_message,
@@ -97,6 +97,8 @@ from .api_user import (
     block_user,
     unblock_user,
 )
+from .api_photo import upload_photo
+from .api_video import upload_video
 
 version = '0.2.5'  # also change .. __init__
 current_path = os.path.abspath(os.getcwd())
@@ -181,10 +183,20 @@ class Yay(object):
         self.logger.info('YayBot version: ' + version + ' Started!')
 
     def login(self, email, password):
+        """
+        ログインします。
+        ---
+        足跡が残ります。
+        """
         self.auth.login(email, password)
         self.set_login_status()
 
     def logout(self):
+        """
+        ログアウトします。
+        ---
+        足跡は残りません。
+        """
         self.auth.logout()
         self.pop_login_status()
 
@@ -201,7 +213,7 @@ class Yay(object):
     def _get(self, url: str):
         resp = requests.get(url, headers=self.auth.headers,
                             proxies=self.auth.proxies, timeout=self.auth.timeout)
-        self._handle_response(resp)
+        handle_response(self, resp)
         return resp.json()
 
     def _post(self, url: str, data: dict = None):
@@ -209,7 +221,7 @@ class Yay(object):
                              headers=self.auth.headers,
                              proxies=self.auth.proxies,
                              timeout=self.auth.timeout)
-        self._handle_response(resp)
+        handle_response(self, resp)
         return resp.json()
 
     def _put(self, url: str, data: dict = None):
@@ -217,7 +229,7 @@ class Yay(object):
                             headers=self.auth.headers,
                             proxies=self.auth.proxies,
                             timeout=self.auth.timeout)
-        self._handle_response(resp)
+        handle_response(self, resp)
         return resp.json()
 
     def _delete(self, url: str, data: dict = None):
@@ -225,29 +237,19 @@ class Yay(object):
                                headers=self.auth.headers,
                                proxies=self.auth.proxies,
                                timeout=self.auth.timeout)
-        self._handle_response(resp)
+        handle_response(self, resp)
         return resp.json()
-
-    def _handle_response(self, resp):
-        if resp.status_code == 401:
-            raise AuthenticationError('Failed to authenticate')
-        if resp.status_code == 403:
-            raise ForbiddenError('Forbidden')
-        if resp.status_code == 429:
-            raise RateLimitError('Rate limit exceeded')
-
-        resp_json = resp.json()
-
-        if 'error_code' in resp_json:
-            if resp_json['error_code'] == -343:
-                raise ExceedCallQuotaError('Exceed call quota')
-            if resp_json['error_code'] == -380:
-                raise InvalidSignedInfo('Invalid signed info')
 
     # ====== GETTERS ======
 
     # user
     def get_user(self, user_id: str):
+        """
+        ユーザーの情報を取得します。
+        ---
+        Example:
+            get_user('123').screen_name -> IDが123のユーザー名を取得する
+        """
         return get_user(self, user_id)
 
     def get_users_from_dict(self, resp: dict):
@@ -562,6 +564,14 @@ class Yay(object):
 
     def delete_chat_room(self, chat_room_id: str):
         return delete_chat_room(self, chat_room_id)
+
+    # ====== PHOTO ======
+    def upload_photo(self, path: str):
+        return upload_photo(self, path)
+
+    # ====== VIDEO ======
+    def upload_video(self, path: str):
+        return upload_video(self, path)
 
     # ====== SUPPORT ======
 
