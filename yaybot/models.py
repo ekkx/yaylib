@@ -30,8 +30,8 @@ class User:
         review_restricted_by,
         recently_banned,
         dangerous_user,
-        new_user,
-        selected_interests
+        new_user=None,
+        selected_interests=None
     ):
         self.id = id
         self.screen_name = screen_name

@@ -100,7 +100,7 @@ from .api_user import (
 from .api_photo import upload_photo
 from .api_video import upload_video
 
-version = '0.2.5'  # also change .. __init__
+version = '0.3.0'  # also change .. __init__
 current_path = os.path.abspath(os.getcwd())
 
 
@@ -186,7 +186,7 @@ class Yay(object):
         """
         ログインします。
         ---
-        足跡が残ります。
+            今後足跡が残ります。
         """
         self.auth.login(email, password)
         self.set_login_status()
@@ -195,25 +195,29 @@ class Yay(object):
         """
         ログアウトします。
         ---
-        足跡は残りません。
+            今後足跡は残りません。
         """
         self.auth.logout()
         self.pop_login_status()
 
     def set_login_status(self):
         self.access_token = self.auth.access_token
+        self.refresh_token = self.auth.refresh_token
+        self.expires_in = self.auth.expires_in
         self.api_key = self.auth.api_key
         self.logged_in_as = self.auth.logged_in_as
 
     def pop_login_status(self):
         self.access_token = None
+        self.refresh_token = None
+        self.expires_in = None
         self.api_key = None
         self.logged_in_as = None
 
     def _get(self, url: str):
         resp = requests.get(url, headers=self.auth.headers,
                             proxies=self.auth.proxies, timeout=self.auth.timeout)
-        handle_response(self, resp)
+        handle_response(resp)
         return resp.json()
 
     def _post(self, url: str, data: dict = None):
@@ -221,7 +225,7 @@ class Yay(object):
                              headers=self.auth.headers,
                              proxies=self.auth.proxies,
                              timeout=self.auth.timeout)
-        handle_response(self, resp)
+        handle_response(resp)
         return resp.json()
 
     def _put(self, url: str, data: dict = None):
@@ -229,7 +233,7 @@ class Yay(object):
                             headers=self.auth.headers,
                             proxies=self.auth.proxies,
                             timeout=self.auth.timeout)
-        handle_response(self, resp)
+        handle_response(resp)
         return resp.json()
 
     def _delete(self, url: str, data: dict = None):
@@ -237,7 +241,7 @@ class Yay(object):
                                headers=self.auth.headers,
                                proxies=self.auth.proxies,
                                timeout=self.auth.timeout)
-        handle_response(self, resp)
+        handle_response(resp)
         return resp.json()
 
     # ====== GETTERS ======
@@ -245,10 +249,19 @@ class Yay(object):
     # user
     def get_user(self, user_id: str):
         """
+
         ユーザーの情報を取得します。
-        ---
-        Example:
-            get_user('123').screen_name -> IDが123のユーザー名を取得する
+
+        Parameters:
+            user_id (str): ユーザーのID
+
+        Returns:
+            User: ユーザーのオブジェクト
+
+        Examples:
+            ID '123'のユーザー名を取得する場合
+        >>> get_user('123').screen_name
+
         """
         return get_user(self, user_id)
 
@@ -258,51 +271,228 @@ class Yay(object):
     def get_letters_from_dict(self, resp: dict):
         return get_letters_from_dict(self, resp)
 
-    def get_letters(self, user_id: str):
-        return get_letters(self, user_id)
+    def get_letters(self, user_id: str, amount: int = None):
+        """
+
+        ユーザーが受け取ったレターを取得します。
+
+        Parameters:
+            user_id (str): ユーザーのID
+            amount (int): 取得するレターの数
+
+        Returns:
+            Letter (list): レターオブジェクトのリスト
+
+        """
+        return get_letters(self, user_id, amount)
 
     def get_joined_groups(self, user_id: str, amount=100):
+        """
+
+        ユーザーが参加しているグループを取得します。
+
+        Parameters:
+            user_id (str): ユーザーのID
+            amount (int): 取得するグループの数
+
+        Returns:
+            Group (list): グループオブジェクトのリスト
+
+        """
         return get_joined_groups(self, user_id, amount)
 
     def get_user_followers(self, user_id: str, amount: int = None):
+        """
+
+        ユーザーのフォロワーを取得します。
+
+        Parameters:
+            user_id (str): ユーザーのID
+            amount (int): 取得するユーザーの数
+
+        Returns:
+            User (list): ユーザーオブジェクトのリスト
+
+        """
         return get_user_followers(self, user_id, amount)
 
     def get_user_followings(self, user_id, amount=None):
+        """
+
+        ユーザーのフォロー中を取得します。
+
+        Parameters:
+            user_id (str): ユーザーのID
+            amount (int): 取得するユーザーの数
+
+        Returns:
+            User (list): ユーザーオブジェクトのリスト
+
+        """
         return get_user_followings(self, user_id, amount)
 
     def get_follow_requests(self, amount=100):
+        """
+
+        フォローリクエストのユーザーを取得します。
+
+        Parameters:
+            amount (int): 取得するユーザーの数
+
+        Returns:
+            User (list): ユーザーオブジェクトのリスト
+
+        """
         return get_follow_requests(self, amount)
 
     def get_user_active_call(self, user_id: str):
+        """
+
+        ユーザーが参加している通話の情報を取得します。
+
+        Parameters:
+            user_id (str): ユーザーのID
+
+        Returns:
+            Post : 投稿オブジェクト
+
+        Examples:
+            ID '123'のユーザーが参加している通話の枠主の名前を取得する場合
+        >>> get_user_active_call('123').author_screen_name
+
+        """
         return get_user_active_call(self, user_id)
 
     def get_blocked_users(self, amount=100):
+        """
+
+        ブロックしているユーザーを取得します。
+
+        Parameters:
+            amount (int): 取得するユーザーの数
+
+        Returns:
+            User (list): ユーザーオブジェクトのリスト
+
+        """
         return get_blocked_users(self, amount)
 
     # post
     def get_post(self, post_id: str):
+        """
+
+        投稿の情報を取得します。
+
+        Parameters:
+            post_id (str): 投稿のID
+
+        Returns:
+            Post : 投稿オブジェクト
+
+        Examples:
+            ID '123'の投稿本文を取得する場合
+        >>> get_post('123').text
+
+        """
         return get_post(self, post_id)
 
     def get_posts_from_dict(self, resp: dict):
         return get_posts_from_dict(self, resp)
 
     def get_timeline(self, user_id: str = None, keyword: str = None, hashtag: str = None, amount=100):
+        """
+
+        タイムラインの投稿を取得します。
+
+        Parameters:
+            user_id (str): ユーザーID (特定のユーザーのタイムラインを取得する場合)
+            keyword (str): キーワード (特定の単語が含まれている投稿を取得する場合)
+            hashtag (str): ハッシュタグ (特定のタグが含まれている投稿を取得する場合)
+            amount (int): 取得する投稿の数
+
+        Returns:
+            Post (list): 投稿オブジェクトのリスト
+
+        """
         return get_timeline(self, user_id, keyword, hashtag, amount)
 
     def get_following_timeline(self, amount=50):
+        """
+
+        フォロー中のタイムラインの投稿を取得します。
+
+        Parameters:
+            amount (int): 取得する投稿の数
+
+        Returns:
+            Post (list): 投稿オブジェクトのリスト
+
+        """
         return get_following_timeline(self, amount)
 
     def get_conversation(self, conversation_id: str = None, post_id: str = None, amount=100):
+        """
+
+        会話の投稿を取得します。
+
+        Parameters:
+            conversation_id (str): 会話のID (post_idを指定する場合は任意)
+            post_id (str): 投稿のID (conversation_idを指定する場合は任意)
+            amount (int): 取得する投稿の数
+
+        Returns:
+            Post (list): 投稿オブジェクトのリスト
+
+        """
         return get_conversation(self, conversation_id, post_id, amount)
 
     def get_reposts(self, post_id, amount=100):
+        """
+
+        投稿の(´∀｀∩)↑age↑を取得します。
+
+        Parameters:
+            post_id (str): 投稿のID
+            amount (int): 取得する投稿の数
+
+        Returns:
+            Post (list): 投稿オブジェクトのリスト
+
+        """
         return get_reposts(self, post_id, amount)
 
-    def get_post_likers(self, post_id, amount=50):
+    def get_post_likers(self, post_id, amount: int = None):
+        """
+
+        投稿にいいねしたユーザーを取得します。
+
+        Parameters:
+            post_id (str): 投稿のID
+            amount (int): 取得する投稿の数 (任意)
+
+        Returns:
+            User (list): ユーザーオブジェクトのリスト
+
+        """
         return get_post_likers(self, post_id, amount)
 
     # group
     def get_group(self, group_id: str):
+        """
+
+        IDで指定したサークルの情報を取得します。
+
+        Parameters:
+            group_id (str): サークルのID
+
+        Returns:
+            Group: グループオブジェクト
+
+        Examples:
+            ID '123'のサークルの説明欄を取得する場合
+        >>> get_group('123').description
+
+        """
         return get_group(self, group_id)
 
     def get_groups_from_dict(self, resp: dict):
@@ -312,22 +502,104 @@ class Yay(object):
         return get_group_users_from_dict(self, resp)
 
     def get_group_timeline(self, group_id: str, amount=100):
+        """
+
+        IDで指定したサークルの投稿を取得します。
+
+        Parameters:
+            group_id (str): サークルのID
+            amount (int): 投稿の数
+
+        Returns:
+            Post (list): 投稿オブジェクトのリスト
+
+        """
         return get_group_timeline(self, group_id, amount)
 
     def get_group_call(self, group_id: str):
+        """
+
+        IDで指定したサークルの通話中の投稿を取得します。
+
+        Parameters:
+            group_id (str): サークルのID
+
+        Returns:
+            Post (list): 投稿オブジェクトのリスト
+
+        """
         return get_group_call(self, group_id)
 
     def get_group_members(self, group_id: str, amount=100):
+        """
+
+        IDで指定したサークルのメンバーを取得します。
+
+        Parameters:
+            group_id (str): サークルのID
+            amount (int): メンバー数 (省略可)
+
+        Returns:
+            GroupUser (list): グループメンバーオブジェクトのリスト
+
+        Examples:
+            ID '123'のサークルのメンバー50人を取得する場合
+        >>> get_group_members('123', 50)
+
+        """
         return get_group_members(self, group_id, amount)
 
     def get_pending_users_in_group(self, group_id: str, amount=100):
+        """
+
+        IDで指定したサークルの参加リクエスト保留中のユーザーを取得します。
+
+        Parameters:
+            group_id (str): サークルのID
+            amount (int): ユーザー数 (省略可)
+
+        Returns:
+            GroupUser (list): グループメンバーオブジェクトのリスト
+
+        Examples:
+            ID '123'のサークルの参加リクエスト保留中のユーザーを取得する場合
+        >>> get_pending_users_in_group('123')
+
+        """
         return get_pending_users_in_group(self, group_id, amount)
 
     def get_banned_user_from_group(self, group_id: str, amount=100):
+        """
+
+        IDで指定したサークルから追放されたユーザーを取得します。
+
+        Parameters:
+            group_id (str): サークルのID
+            amount (int): ユーザー数 (省略可)
+
+        Returns:
+            GroupUser (list): グループメンバーオブジェクトのリスト
+
+        """
         return get_banned_user_from_group(self, group_id, amount)
 
     # chat
     def get_chat_room(self, chatroom_id: str):
+        """
+
+        IDで指定したチャットルームの情報を取得します。
+
+        Parameters:
+            chatroom_id (str): チャットルームのID
+
+        Returns:
+            ChatRoom: チャットルームオブジェクト
+
+        Examples:
+            ID '123'のチャットルームのメンバーのIDを取得する場合
+        >>> get_chat_room('123').member_ids
+
+        """
         return get_chat_room(self, chatroom_id)
 
     def get_chat_rooms_from_dict(self, resp: dict):
@@ -337,15 +609,69 @@ class Yay(object):
         return get_chat_messages_from_dict(self, resp)
 
     def get_chat_room_id_from_user(self, user_id: str):
+        """
+
+        ユーザーIDからチャットを開始するためのIDを取得します。
+
+        Parameters:
+            user_id (str): ユーザーのID
+
+        Returns:
+            room_id (str): チャットルームのID
+
+        Examples:
+            ID '123'のユーザーとのチャットルームIDを取得する場合
+        >>> get_chat_room_id_from_user('123')
+
+        """
         return get_chat_room_id_from_user(self, user_id)
 
     def get_chat_messages(self, chatroom_id: str = None, user_id: str = None, amount: int = None):
+        """
+
+        IDで指定したチャットルーム、\n
+        もしくはユーザーIDからチャットメッセージを取得します。
+
+        Parameters:
+            chatroom_id (str): チャットルームのID (user_idを指定する場合は任意)
+            user_id (str): ユーザーID (chatroom_idを指定する場合は任意)
+
+        Returns:
+            Message (list): メッセージオブジェクトのリスト
+
+        Examples:
+            ID '123'のユーザーとのチャットを取得する場合
+        >>> get_chat_messages(user_id='123')
+
+        """
         return get_chat_messages(self, chatroom_id, user_id, amount)
 
     def get_chat_rooms(self, amount: int = None):
+        """
+
+        チャットルームを取得します。
+
+        Parameters:
+            amount (int): チャットルームの数
+
+        Returns:
+            ChatRoom (list): チャットルームオブジェクトのリスト
+
+        """
         return get_chat_rooms(self, amount)
 
     def get_chat_requests(self, amount: int = None):
+        """
+
+        あなた宛の保留中のチャットリクエストを取得します。
+
+        Parameters:
+            amount (int): チャットルームの数
+
+        Returns:
+            ChatRoom (list): チャットルームオブジェクトのリスト
+
+        """
         return get_chat_requests(self, amount)
 
     # notification
@@ -353,68 +679,350 @@ class Yay(object):
         return get_activities_from_dict(self, resp)
 
     def get_notification(self, important=True):
+        """
+
+        通知を取得します。
+
+        Parameters:
+            important (bool): Trueにすると重要な通知を取得します。
+
+        Returns:
+            Activity (list): 通知オブジェクトのリスト
+
+        """
         return get_notification(self, important)
 
     # ====== USER ======
 
-    def follow_user(self, user_id: str):
+    def follow_user(self, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーをフォローします。
+
+        Parameters:
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'のユーザーをフォローする場合
+        >>> follow_user(user_id='123')
+
+        """
         return follow_user(self, user_id)
 
-    def unfollow_user(self, user_id: str):
+    def unfollow_user(self, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーのフォローを解除します。
+
+        Parameters:
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+        >>> unfollow_user(user_id='123')
+
+        """
         return unfollow_user(self, user_id)
 
-    def accept_follow_request(self, user_id: str):
+    def accept_follow_request(self, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーからのフォローリクエストを承認します。
+
+        Parameters:
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+        >>> accept_follow_request(user_id='123')
+
+        """
         return accept_follow_request(self, user_id)
 
-    def reject_follow_request(self, user_id: str):
+    def reject_follow_request(self, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーからのフォローリクエスト拒否します。
+
+        Parameters:
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+        >>> reject_follow_request(user_id='123')
+
+        """
         return reject_follow_request(self, user_id)
 
-    def send_letter(self, user_id: str, message: str):
+    def send_letter(self, user_id: str, message: str) -> dict:
+        """
+
+        IDで指定したユーザーにレターを送信します。
+
+        Parameters:
+            user_id (str): ユーザーID
+            message (str): レター本文
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+        >>> send_letter(user_id='123', message='こんにちは')
+
+        """
         return send_letter(self, user_id, message)
 
-    def block_user(self, user_id: str):
+    def block_user(self, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーをブロックします。
+
+        Parameters:
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+        >>> block_user(user_id='123')
+
+        """
         return block_user(self, user_id)
 
-    def unblock_user(self, user_id: str):
+    def unblock_user(self, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーのブロックを解除します。
+
+        Parameters:
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+        >>> unblock_user(user_id='123')
+
+        """
         return unblock_user(self, user_id)
 
     # ====== POST ======
 
-    def create_post(self, text, color=0, font_size=0, choices: list = None, type: str = None):
+    def create_post(self, text, color=0, font_size=0, choices: list = None, type: str = None) -> dict:
         """
-        Color:
-        -----
-            normal colors: 0 - 7
-            special colors: 1001 - 1007
 
-        Font_size:
-        -----
-            size: 0 - 4 (The larger the number, the larger the font size.)
+        投稿します。
+
+        Parameters:
+            text (str): 投稿本文
+            color (int): 文字色
+            font_size (int): 文字の大きさ
+            choices (list): アンケートの選択肢
+            type (str): 投稿の種類
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+        >>> create_post(text='こんにちは' color=2)
+
+        文字色の種類:
+
+            普通の色: 0 から 7
+            特殊な色: 1001 から 1007
+
+        文字の大きさ:
+
+            0 から 4 (文字の大きさは数値の大きさに比例します)
+
         """
         return create_post(self, text, color, font_size, choices, type)
 
-    def create_post_in_group(self, group_id: str, text: str, color=0, font_size=0):
-        return create_post_in_group(self, group_id, text, color, font_size)
+    def create_post_in_group(self, group_id: str, text: str, color=0, font_size=0, choices: list = None, type: str = None) -> dict:
+        """
 
-    def create_repost(self, text: str, post_id: str, color=0, font_size=0):
+        IDで指定したグループで投稿します。
+
+        Parameters:
+            text (str): 投稿本文
+            color (int): 文字色
+            font_size (int): 文字の大きさ
+            choices (list): アンケートの選択肢
+            type (str): 投稿の種類
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+        >>> create_post(text='こんにちは' color=2)
+
+        文字色の種類:
+
+            普通の色: 0 から 7
+            特殊な色: 1001 から 1007
+
+        文字の大きさ:
+
+            0 から 4 (文字の大きさは数値の大きさに比例します)
+
+        """
+        return create_post_in_group(self, group_id, text, color, font_size, choices, type)
+
+    def create_repost(self, text: str, post_id: str, color=0, font_size=0) -> dict:
+        """
+
+        IDで指定した投稿を(´∀｀∩)↑age↑します。
+
+        Parameters:
+            text (str): 投稿本文
+            user_id (str): ユーザーID
+            font_size (int): 文字の大きさ
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'の投稿を(´∀｀∩)↑age↑する場合
+        >>> create_repost(text='すごい', post_id='123')
+
+        文字色の種類:
+
+            普通の色: 0 から 7
+            特殊な色: 1001 から 1007
+
+        文字の大きさ:
+
+            0 から 4 (文字の大きさは数値の大きさに比例します)
+
+        """
         return create_repost(self, text, post_id, color, font_size)
 
-    def create_reply(self, text: str, post_id: str, color=0, font_size=0):
+    def create_reply(self, text: str, post_id: str, color=0, font_size=0) -> dict:
+        """
+
+        IDで指定した投稿に返信します。
+
+        Parameters:
+            text (str): 投稿本文
+            user_id (str): ユーザーID
+            font_size (int): 文字の大きさ
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'の投稿に返信する場合
+        >>> create_reply(text='すごい', post_id='123')
+
+        文字色の種類:
+
+            普通の色: 0 から 7
+            特殊な色: 1001 から 1007
+
+        文字の大きさ:
+
+            0 から 4 (文字の大きさは数値の大きさに比例します)
+
+        """
         return create_reply(self, text, post_id, color, font_size)
 
-    def delete_post(self, post_id: str):
+    def delete_post(self, post_id: str) -> dict:
+        """
+
+        IDで指定した投稿を削除します。
+
+        Parameters:
+            post_id (str): 投稿のID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'の投稿を削除する場合
+        >>> delete_post(post_id='123')
+
+        """
         return delete_post(self, post_id)
 
-    def pin_post(self, post_id: str):
+    def pin_post(self, post_id: str) -> dict:
+        """
+
+        IDで指定した投稿をプロフィールにピンします。
+
+        Parameters:
+            post_id (str): 投稿のID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'の投稿をピンする場合
+        >>> pin_post(post_id='123')
+
+        """
         return pin_post(self, post_id)
 
-    def unpin_post(self, post_id: str):
+    def unpin_post(self, post_id: str) -> dict:
+        """
+
+        IDで指定したピン投稿のピンを解除します。
+
+        Parameters:
+            post_id (str): 投稿のID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'の投稿のピンを解除する場合
+        >>> unpin_post(post_id='123')
+
+        """
         return unpin_post(self, post_id)
 
-    def like_post(self, post_id: str):
+    def like_post(self, post_id: str) -> dict:
+        """
+
+        IDで指定した投稿をいいねします。
+
+        Parameters:
+            post_id (str): 投稿のID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'の投稿をいいねする場合
+        >>> like_post(post_id='123')
+
+        """
         return like_post(self, post_id)
 
-    def unlike_post(self, post_id: str):
+    def unlike_post(self, post_id: str) -> dict:
+        """
+
+        IDで指定した投稿のいいねを取り消します。
+
+        Parameters:
+            post_id (str): 投稿のID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'の投稿のいいねを取り消す場合
+        >>> unlike_post(post_id='123')
+
+        """
         return unlike_post(self, post_id)
 
     # ====== GROUP ======
@@ -426,7 +1034,7 @@ class Yay(object):
         guidelines: str = None,
         group_category_id=21,
         sub_category_id: int = None,
-        is_private=False,
+        is_private=None,
         call_timeline_display=True,
         hide_reported_posts=False,
         allow_ownership_transfer=True,
@@ -439,7 +1047,53 @@ class Yay(object):
         only_mobile_verified=False,
         gender=-1,
         generation_groups_limit=0
-    ):
+    ) -> dict:
+        """
+
+        サークルを作成します。
+
+        Parameters:
+
+            group_name (str): サークル名
+
+            description (str): 説明欄
+
+            guidelines (str): 規約欄
+
+            group_category_id (int): ジャンル
+
+            sub_category_id (int): サブジャンル
+
+            is_private (bool): 承認制
+
+            call_timeline_display (bool): 通話をトップに表示
+
+            hide_reported_posts (bool): 不適切な投稿を非表示
+
+            allow_ownership_transfer (bool): 管理人権限の引き継ぎを許可
+
+            allow_thread_creation_by (str): スレッドを作成可能なメンバー 例) 'member'
+
+            allow_members_to_post_image_and_video (bool): 誰でも画像と動画を投稿可能
+
+            allow_members_to_post_url (bool): 誰でもURLを投稿可能
+
+            hide_conference_call (bool): サークルカテゴリーの一覧に非表示
+
+            secret (bool): 検索結果に非表示
+
+            only_verified_age (bool): 年齢確認必須
+
+            only_mobile_verified (bool): 電話番号認証必須
+
+            gender (int): 参加できる性別を限定
+
+            generation_groups_limit (int): 18歳以上のみに限定
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return create_group(
             self,
             group_name,
@@ -462,18 +1116,33 @@ class Yay(object):
             generation_groups_limit
         )
 
-    def delete_group(self, group_id: str):
+    def delete_group(self, group_id: str) -> dict:
+        """
+
+        IDで指定したサークルを削除します。(管理人限定)
+
+        Parameters:
+            group_id (str): グループID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'のグループを削除する場合
+        >>> delete_group(group_id='123')
+
+        """
         return delete_group(self, group_id)
 
     def change_group_settings(
         self,
         group_id,
-        group_name: str,
+        group_name: str = None,
         description: str = None,
         guidelines: str = None,
         group_category_id=21,
         sub_category_id: int = None,
-        is_private=False,
+        is_private=None,
         call_timeline_display=True,
         hide_reported_posts=False,
         allow_ownership_transfer=True,
@@ -487,7 +1156,53 @@ class Yay(object):
         only_mobile_verified=False,
         gender=-1,
         generation_groups_limit=0
-    ):
+    ) -> dict:
+        """
+
+        サークルの設定を変更します。
+
+        Parameters:
+
+            group_name (str): サークル名
+
+            description (str): 説明欄
+
+            guidelines (str): 規約欄
+
+            group_category_id (int): ジャンル
+
+            sub_category_id (int): サブジャンル
+
+            is_private (bool): 承認制
+
+            call_timeline_display (bool): 通話をトップに表示
+
+            hide_reported_posts (bool): 不適切な投稿を非表示
+
+            allow_ownership_transfer (bool): 管理人権限の引き継ぎを許可
+
+            allow_thread_creation_by (str): スレッドを作成可能なメンバー 例) 'member'
+
+            allow_members_to_post_image_and_video (bool): 誰でも画像と動画を投稿可能
+
+            allow_members_to_post_url (bool): 誰でもURLを投稿可能
+
+            hide_conference_call (bool): サークルカテゴリーの一覧に非表示
+
+            secret (bool): 検索結果に非表示
+
+            only_verified_age (bool): 年齢確認必須
+
+            only_mobile_verified (bool): 電話番号認証必須
+
+            gender (int): 参加できる性別を限定
+
+            generation_groups_limit (int): 18歳以上のみに限定
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return change_group_settings(
             self,
             group_id,
@@ -512,68 +1227,292 @@ class Yay(object):
             generation_groups_limit
         )
 
-    def transfer_group_ownership(self, group_id: str, user_id: str):
+    def transfer_group_ownership(self, group_id: str, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーに管理人権限の引き継ぎをオファーします。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return transfer_group_ownership(self, group_id, user_id)
 
-    def offer_group_sub_owner(self, group_id: str, user_id: str):
+    def offer_group_sub_owner(self, group_id: str, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーに副管理人の権限をオファーします。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return offer_group_sub_owner(self, group_id, user_id)
 
-    def undo_group_ownership_transfer(self, group_id: str, user_id: str):
+    def undo_group_ownership_transfer(self, group_id: str, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーの管理人権限の引き継ぎオファーを取り消します。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return undo_group_ownership_transfer(self, group_id, user_id)
 
-    def undo_group_sub_owner_offer(self, group_id: str, user_id: str):
+    def undo_group_sub_owner_offer(self, group_id: str, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーの副管理人の権限オファーを取り消します。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return undo_group_sub_owner_offer(self, group_id, user_id)
 
-    def fire_group_sub_owner(self, group_id: str, user_id: str):
+    def fire_group_sub_owner(self, group_id: str, user_id: str) -> dict:
+        """
+
+        IDで指定した副管理人をクビにします。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return fire_group_sub_owner(self, group_id, user_id)
 
-    def accept_group_join_request(self, group_id: str, user_id: str):
+    def accept_group_join_request(self, group_id: str, user_id: str) -> dict:
+        """
+
+        サークルへの参加リクエストを許可します。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return accept_group_join_request(self, group_id, user_id)
 
-    def decline_group_join_request(self, group_id: str, user_id: str):
+    def decline_group_join_request(self, group_id: str, user_id: str) -> dict:
+        """
+
+        サークルへの参加リクエストを拒否します。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return decline_group_join_request(self, group_id, user_id)
 
-    def invite_user_to_group(self, group_id: str, user_id: str):
+    def invite_user_to_group(self, group_id: str, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーサークルに招待します。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'のユーザーをID '456'のサークルに招待する場合
+        >>> invite_user_to_group(user_id='123', group_id='456')
+
+        """
         return invite_user_to_group(self, group_id, user_id)
 
-    def pin_group_post(self, group_id: str, post_id: str):
+    def pin_group_post(self, group_id: str, post_id: str) -> dict:
+        """
+
+        IDで指定したグループの投稿をピンします。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return pin_group_post(self, group_id, post_id)
 
-    def unpin_group_post(self, group_id: str):
+    def unpin_group_post(self, group_id: str) -> dict:
+        """
+
+        IDで指定したグループのピン投稿を解除します。
+
+        Parameters:
+            group_id (str): グループID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return unpin_group_post(self, group_id)
 
-    def ban_user_from_group(self, group_id: str, user_id: str):
+    def ban_user_from_group(self, group_id: str, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーをサークルから追放します。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '123'のユーザーを ID '456'のサークルから追放する場合
+        >>> ban_user_from_group(user_id='123', group_id='456')
+
+        """
         return ban_user_from_group(self, group_id, user_id)
 
-    def unban_user_from_group(self, group_id: str, user_id: str):
+    def unban_user_from_group(self, group_id: str, user_id: str) -> dict:
+        """
+
+        IDで指定したユーザーの追放を解除します。
+
+        Parameters:
+            group_id (str): グループID
+            user_id (str): ユーザーID
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+            ID '456'のサークルから追放された ID '123'の追放されたユーザーを解除する場合
+        >>> ban_user_from_group(user_id='123', group_id='456')
+
+        """
         return unban_user_from_group(self, group_id, user_id)
 
-    def join_group(self, group_id: str):
+    def join_group(self, group_id: str) -> dict:
+        """
+
+        IDで指定したサークルに参加します。
+
+        Parameters:
+            group_id (str): グループID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return join_group(self, group_id)
 
-    def leave_group(self, group_id: str):
+    def leave_group(self, group_id: str) -> dict:
+        """
+
+        IDで指定したサークルから脱退します。
+
+        Parameters:
+            group_id (str): グループID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return leave_group(self, group_id)
 
     # ====== CHAT ======
 
-    def send_message(self, message: str, user_id: str = None, chat_room_id: str = None):
+    def send_message(self, message: str, user_id: str = None, chat_room_id: str = None) -> dict:
+        """
+
+        IDで指定したユーザー、\n
+        もしくはチャットルームにメッセージを送信します。
+
+
+        Parameters:
+            message (str): メッセージ本文
+            user_id (str): ユーザーのID (chat_room_idを指定する場合は任意)
+            chat_room_id (str): チャットルームのID (user_idを指定する場合は任意)
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return send_message(self, message, user_id, chat_room_id)
 
-    def accept_chat_request(self, chat_room_id: str):
+    def accept_chat_request(self, chat_room_id: str) -> dict:
+        """
+
+        IDで指定したチャットリクエストを承認します。
+
+        Parameters:
+            chat_room_id (str): チャットルームのID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return accept_chat_request(self, chat_room_id)
 
-    def delete_chat_room(self, chat_room_id: str):
+    def delete_chat_room(self, chat_room_id: str) -> dict:
+        """
+
+        IDで指定したチャットルームを削除します。
+
+        Parameters:
+            chat_room_id (str): チャットルームのID
+
+        Returns:
+            Result (dict): 実行結果
+
+        """
         return delete_chat_room(self, chat_room_id)
 
     # ====== PHOTO ======
-    def upload_photo(self, path: str):
+    def upload_photo(self, path: str) -> None:
+        """
+
+        実装中...
+
+        """
         return upload_photo(self, path)
 
     # ====== VIDEO ======
-    def upload_video(self, path: str):
+    def upload_video(self, path: str) -> None:
+        """
+
+        実装中...
+
+        """
         return upload_video(self, path)
 
     # ====== SUPPORT ======
 
-    def console_print(self, text: str, color: str = None):
+    def console_print(self, text: str, color: str = None) -> None:
         return console_print(text, color)

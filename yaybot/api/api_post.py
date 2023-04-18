@@ -20,7 +20,7 @@ def create_post(self, text, color=0, font_size=0, choices=None, type=None):
     return resp
 
 
-def create_post_in_group(self, group_id, text, color=0, font_size=0):
+def create_post_in_group(self, group_id, text, color=0, font_size=0, choices=None, type=None):
     data = {
         'color': color,
         'font_size': font_size,

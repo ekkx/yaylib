@@ -1,5 +1,5 @@
 from ..config import Endpoints as ep
-from ..utils import handle_response, console_print
+from ..utils import handle_response, console_print, ObjectGenerator as gen
 
 
 def create_group(
@@ -58,12 +58,12 @@ def delete_group(self, group_id):
 def change_group_settings(
     self,
     group_id,
-    group_name: str,
+    group_name: str = None,
     description: str = None,
     guidelines: str = None,
     group_category_id=21,
     sub_category_id: int = None,
-    is_private=False,
+    is_private=None,
     call_timeline_display=True,
     hide_reported_posts=False,
     allow_ownership_transfer=True,
@@ -102,7 +102,7 @@ def change_group_settings(
     }
     resp = self._put(
         f'https://yay.space/api/groups/{group_id}', data)
-    return self.group_object(resp.get('group'))
+    return gen.group_object(self, resp.get('group'))
 
 
 def transfer_group_ownership(self, group_id, user_id):

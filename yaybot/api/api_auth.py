@@ -39,6 +39,8 @@ class YayAuth(object):
             'Origin': 'https://yay.space'
         }
         self.access_token = None
+        self.refresh_token = None
+        self.expires_in = None
         self.logged_in_as = None
 
     def login(self, email, password):
@@ -68,14 +70,20 @@ class YayAuth(object):
 
         try:
             handle_response(resp)
+
             self.access_token = resp.json()['access_token']
+            self.refresh_token = resp.json()['refresh_token']
+            self.expires_in = resp.json()['expires_in']
             self.logged_in_as = resp.json()['user_id']
+
             self.headers.setdefault(
                 'Authorization', f'Bearer {self.access_token}'
             )
+
             console_print(
                 f'Successfully logged in as {self.logged_in_as}.', 'green')
             return True
+
         except ForbiddenError:
             console_print(
                 'Login Failed...\n(Invalid email or password.)', 'red')
@@ -85,6 +93,8 @@ class YayAuth(object):
         if self.access_token:
             self.headers.pop('Authorization', None)
             self.access_token = None
+            self.refresh_token = None
+            self.expires_in = None
             self.logged_in_as = None
         else:
             console_print('User is not logged in.', 'red')

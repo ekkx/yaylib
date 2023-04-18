@@ -22,7 +22,7 @@ from .models import (
 )
 
 
-def handle_response(self, resp):
+def handle_response(resp):
     if resp.status_code == 401:
         raise AuthenticationError('Failed to authenticate')
     if resp.status_code == 403:
@@ -90,7 +90,7 @@ class ObjectGenerator(object):
         )
         return user
 
-    def group_user_object(self, user_data: dict) -> User:
+    def group_user_object(self, user_data: dict) -> GroupUser:
         def get_val(key):
             return user_data['user'].get(key, None)
 
@@ -170,7 +170,7 @@ class ObjectGenerator(object):
         )
         return post
 
-    def review_object(self, review_data: dict) -> Post:
+    def review_object(self, review_data: dict) -> Review:
         def get_val(key):
             return review_data.get(key, None)
 
@@ -243,7 +243,7 @@ class ObjectGenerator(object):
 
         return group
 
-    def chat_room_object(self, chat_room_data: dict) -> Post:
+    def chat_room_object(self, chat_room_data: dict) -> ChatRoom:
         def get_val(key):
             return chat_room_data.get(key, None)
 
@@ -267,7 +267,7 @@ class ObjectGenerator(object):
 
         return chat_room
 
-    def message_object(self, message_data: dict) -> Post:
+    def message_object(self, message_data: dict) -> Message:
         def get_val(key):
             return message_data.get(key, None)
 
@@ -292,7 +292,7 @@ class ObjectGenerator(object):
 
         return message
 
-    def activity_object(self, activity_data: dict) -> Post:
+    def activity_object(self, activity_data: dict) -> Activity:
         def get_val(key):
             return activity_data.get(key, None)
 

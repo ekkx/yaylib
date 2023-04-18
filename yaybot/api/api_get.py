@@ -209,11 +209,34 @@ def get_reposts(self, post_id, amount=100):
     return self.get_posts_from_dict(resp)
 
 
-def get_post_likers(self, post_id, amount=50):
-    # has last_id
+def get_post_likers(self, post_id, amount=None):
+    likes_count = self.get_post(post_id).num_likes
+    amount = likes_count if amount is None else amount
+    number = min(amount, 50)
+
     resp = self._get(
-        f'{ep.POST_v1}/{post_id}/likers')
-    return self.get_users_from_dict(resp)
+        f'{ep.POST_v1}/{post_id}/likers?number={number}')
+
+    users = self.get_users_from_dict(resp)
+
+    next_id = resp.get('last_id')
+    amount -= 50
+
+    # fix this. continues updating even after collecting all the likers
+    with tqdm(total=likes_count, desc='Extracting Likers') as pbar:
+        while next_id and amount > 0:
+            number = min(amount, 50)
+
+            resp = self._get(
+                f'{ep.POST_v1}/{post_id}/likers?from_last_id={next_id}&number={number}')
+            users.extend(self.get_users_from_dict(resp))
+
+            next_id = resp.get('last_id')
+            amount -= 50
+
+            pbar.update(number)
+
+    return users
 
 
 # ====== GROUP ======
@@ -266,13 +289,16 @@ def get_group_members(self, group_id, amount=100):
 
 def get_pending_users_in_group(self, group_id, amount=100):
     resp = self._get(
-        f'{ep.GROUP_v2}/{group_id}/{group_id}/members?mode=pending&number=100')
-    return self.get_users_from_dict(resp)
+        f'{ep.GROUP_v2}/{group_id}/members?mode=pending&number=100')
+    return self.get_group_users_from_dict(resp)
 
 
 def get_banned_user_from_group(self, group_id, amount=100):
+    amount = 100 if amount > 100 else amount
+    number = min(amount, 100)
+
     resp = self._get(
-        f'{ep.GROUP_v1}/{group_id}/{group_id}/ban_list?number=100')
+        f'{ep.GROUP_v1}/{group_id}/ban_list?number={number}')
     return self.get_users_from_dict(resp)
 
 
@@ -282,7 +308,7 @@ def get_banned_user_from_group(self, group_id, amount=100):
 def get_chat_room(self, chatroom_id):
     resp = self._get(f'{ep.CHATROOM_v2}/{chatroom_id}')
     chat_room_data = resp.get('chat')
-    return gen.chat_room_object(chat_room_data)
+    return gen.chat_room_object(self, chat_room_data)
 
 
 def get_chat_rooms_from_dict(self, resp):
@@ -290,7 +316,7 @@ def get_chat_rooms_from_dict(self, resp):
     chat_rooms_data = resp.get('chat_rooms')
     chats = []
     for chat_room_data in chat_rooms_data:
-        chat = gen.chat_room_object(chat_room_data)
+        chat = gen.chat_room_object(self, chat_room_data)
         chats.append(chat)
     return chats
 
@@ -300,12 +326,12 @@ def get_chat_messages_from_dict(self, resp):
     messages_data = resp.get('messages')
     messages = []
     for message_data in messages_data:
-        message = gen.message_object(message_data)
+        message = gen.message_object(self, message_data)
         messages.append(message)
     return messages
 
 
-def get_chat_room_id_from_user(self, user_id):
+def get_chat_room_id_from_user(self, user_id) -> str:
     data = {'with_user_id': user_id}
     resp = self._post(
         f'{ep.CHATROOM_v1}/new', data)
@@ -313,8 +339,13 @@ def get_chat_room_id_from_user(self, user_id):
 
 
 def get_chat_messages(self, chatroom_id=None, user_id=None, amount=None):
-    resp = self._get(
-        f'{ep.CHATROOM_v2}/{chatroom_id}/messages?number=100')
+    if chatroom_id:
+        resp = self._get(
+            f'{ep.CHATROOM_v2}/{chatroom_id}/messages?number=100')
+    if user_id:
+        chatroom_id = get_chat_room_id_from_user(self, user_id)
+        resp = self._get(
+            f'{ep.CHATROOM_v2}/{chatroom_id}/messages?number=100')
     return self.get_chat_messages_from_dict(resp)
 
 
