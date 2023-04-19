@@ -27,7 +27,7 @@ SNS「Yay!」の非公式ライブラリです。🚀
 ターミナル上で以下のコマンドを実行してください。
 
 ```console
-$ pip install git+https://github.com/qualia-5w4/Yay-Bot
+pip install git+https://github.com/qualia-5w4/Yay-Bot
 ```
 
 ## 使い方
