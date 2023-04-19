@@ -163,6 +163,10 @@ class ObjectGenerator(object):
             hidden=get_val('hidden'),
             thread_id=get_val('thread_id'),
             message_tags=get_val('message_tags'),
+            tag_type=post_data['message_tags'][0].get(
+                'type') if post_data.get('message_tags') else None,
+            mentioned_user_id=post_data['message_tags'][0].get(
+                'user_id') if post_data.get('message_tags') else None,
             conversation_id=get_val('conversation_id'),
             attachment=get_val('attachment'),
             attachment_thumbnail=get_val('attachment_thumbnail'),

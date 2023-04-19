@@ -97,8 +97,6 @@ from .api_user import (
     block_user,
     unblock_user,
 )
-from .api_photo import upload_photo
-from .api_video import upload_video
 
 version = '0.3.0'  # also change .. __init__
 current_path = os.path.abspath(os.getcwd())
@@ -817,7 +815,7 @@ class Yay(object):
 
     # ====== POST ======
 
-    def create_post(self, text, color=0, font_size=0, choices: list = None, type: str = None) -> dict:
+    def create_post(self, text: str, color=0, font_size=0, choices: list = None) -> dict:
         """
 
         投稿します。
@@ -827,7 +825,6 @@ class Yay(object):
             color (int): 文字色
             font_size (int): 文字の大きさ
             choices (list): アンケートの選択肢
-            type (str): 投稿の種類
 
         Returns:
             Result (dict): 実行結果
@@ -844,8 +841,12 @@ class Yay(object):
 
             0 から 4 (文字の大きさは数値の大きさに比例します)
 
+        アンケート:
+
+            choices引数に選択肢として文字列リストを渡してください。
+
         """
-        return create_post(self, text, color, font_size, choices, type)
+        return create_post(self, text, color, font_size, choices)
 
     def create_post_in_group(self, group_id: str, text: str, color=0, font_size=0, choices: list = None, type: str = None) -> dict:
         """
@@ -1493,24 +1494,6 @@ class Yay(object):
 
         """
         return delete_chat_room(self, chat_room_id)
-
-    # ====== PHOTO ======
-    def upload_photo(self, path: str) -> None:
-        """
-
-        実装中...
-
-        """
-        return upload_photo(self, path)
-
-    # ====== VIDEO ======
-    def upload_video(self, path: str) -> None:
-        """
-
-        実装中...
-
-        """
-        return upload_video(self, path)
 
     # ====== SUPPORT ======
 

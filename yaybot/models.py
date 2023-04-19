@@ -172,6 +172,8 @@ class Post:
         hidden,
         thread_id,
         message_tags,
+        tag_type,
+        mentioned_user_id,
         conversation_id,
         attachment,
         attachment_thumbnail,
@@ -199,6 +201,8 @@ class Post:
         self.hidden = hidden
         self.thread_id = thread_id
         self.message_tags = message_tags
+        self.tag_type = tag_type
+        self.mentioned_user_id = mentioned_user_id
         self.conversation_id = conversation_id
         self.attachment = attachment
         self.attachment_thumbnail = attachment_thumbnail

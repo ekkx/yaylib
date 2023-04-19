@@ -3,20 +3,20 @@ from ..utils import console_print
 
 
 # post_type -> text, questionaire, image, video, call, video call
-def create_post(self, text, color=0, font_size=0, choices=None, type=None):
+def create_post(self, text, color=0, font_size=0, choices=None):
     data = {
         'text': text,
         'color': color,
-        'font_size': font_size
+        'font_size': font_size,
+        'post_type': 'text',
+        'choices[]': choices,
+        'uuid': ''
     }
-    if type == 'survey':
-        data['post_type'] = type
-        data['choices'] = choices
+    if choices:
+        data['post_type'] = 'survey'
         resp = self._post('https://yay.space/api/posts', data)
-        return resp
-
-    resp = self._post(
-        f'{ep.API_URL}/v1/web/posts/new', data)
+    else:
+        resp = self._post(f'{ep.API_URL}/v1/web/posts/new', data)
     return resp
 
 
@@ -40,7 +40,8 @@ def create_repost(self, text, post_id, color=0, font_size=0):
         'font_size': font_size,
         'post_id': post_id,
         'message_tags': '[]',
-        'post_type': 'text'
+        'post_type': 'text',
+        'uuid': ''
     }
     resp = self._post(
         f'{ep.POST_v3}/repost', data)

@@ -171,19 +171,47 @@ def get_posts_from_dict(self, resp):
 
 
 def get_timeline(self, user_id=None, keyword=None, hashtag=None, amount=100):
-    if user_id:
-        resp = self._get(
-            f'{ep.GET_USER_TIMELINE}?number={amount}&user_id={user_id}')
-    elif keyword:
-        resp = self._get(
-            f'{ep.GET_TIMELINE_BY_KEYWORD}?keyword={keyword}&number={amount}')
-    elif hashtag:
-        resp = self._get(
-            f'{ep.GET_TIMELINE_BY_HASHTAG}/{hashtag}?number={amount}')
+    if user_id or keyword or hashtag:
+        if user_id:
+            # https://api.yay.space/v2/posts/user_timeline?from_post_id=123&number=100&user_id={user_id}
+            resp = self._get(
+                f'{ep.GET_USER_TIMELINE}?number={amount}&user_id={user_id}')
+            return self.get_posts_from_dict(resp)
+        elif keyword:
+            # https://api.yay.space/v2/posts/search?from_post_id=123&keyword={keyword}&number=100
+            resp = self._get(
+                f'{ep.GET_TIMELINE_BY_KEYWORD}?keyword={keyword}&number={amount}')
+            return self.get_posts_from_dict(resp)
+        elif hashtag:
+            # https://api.yay.space/v2/posts/tags/{hashtag}?from_post_id=361102925&number=100
+            resp = self._get(
+                f'{ep.GET_TIMELINE_BY_HASHTAG}/{hashtag}?number={amount}')
+            return self.get_posts_from_dict(resp)
     else:
+        number = min(amount, 100)
+
         resp = self._get(
-            f'{ep.GET_TIMELINE}?number={amount}')
-    return self.get_posts_from_dict(resp)
+            f'{ep.GET_TIMELINE}?number={number}')
+        posts = self.get_posts_from_dict(resp)
+
+        posts_count = amount
+        next_id = resp.get('next_page_value')
+        amount -= 100
+
+        with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
+            while next_id and amount > 0:
+                number = min(amount, 100)
+
+                resp = self._get(
+                    f'{ep.GET_TIMELINE}?from_post_id={next_id}&number={number}')
+                posts.extend(self.get_posts_from_dict(resp))
+
+                next_id = resp.get('next_page_value')
+                amount -= 100
+
+                pbar.update(number)
+
+        return posts
 
 
 def get_following_timeline(self, amount=50):
@@ -377,8 +405,8 @@ def get_activities_from_dict(self, resp):
 def get_notification(self, important=True):
     if important:
         resp = self._get(
-            f'{ep.CAS_BASE_URL}/api/user_activities?important=true&number=100')
+            f'{ep.CAS_URL}/api/user_activities?important=true&number=100')
     else:
         resp = self._get(
-            f'{ep.CAS_BASE_URL}/api/user_activities?important=false&number=100')
+            f'{ep.CAS_URL}/api/user_activities?important=false&number=100')
     return self.get_activities_from_dict(resp)
