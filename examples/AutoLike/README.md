@@ -13,8 +13,8 @@ python auto_like.py
 ### 設定
 
 - メールアドレス、パスワードは _.env_ ファイルに設定してください。
-- 「いいね」の回数を指定する場合は、start()関数の引数に整数を入力してください。
-  -- 指定しない場合は、永久的に実行し続けます。
+- 「いいね」の回数を指定する場合は、start()関数の引数に整数を入力してください。  
+  ※ 指定しない場合は、永久的に実行し続けます。
 
 ```python
 bot.start(30) # 30回「いいね」する場合
@@ -28,4 +28,4 @@ if post.liked == False and post.reply_to_id == None and post.type != 'call':
 
 ---
 
-_by @qualia5w4_
+_by @qualia-5w4_
