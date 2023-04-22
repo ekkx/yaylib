@@ -98,7 +98,7 @@ from .api_user import (
     unblock_user,
 )
 
-version = '0.3.0'  # also change .. __init__
+version = '0.3.1'  # also change .. __init__
 current_path = os.path.abspath(os.getcwd())
 
 

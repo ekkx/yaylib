@@ -24,10 +24,12 @@ setup(
         'Programming Language :: Python :: 3.11'
 
     ],
-    keywords='yay api',
+    keywords='yay api, unofficial, library, modules',
     packages=find_packages(),
     install_requires=[
         'requests',
+        'beautifulsoup4',
+        'tqdm',
         'huepy',
     ]
 )

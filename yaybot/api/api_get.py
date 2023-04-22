@@ -194,6 +194,9 @@ def get_timeline(self, user_id=None, keyword=None, hashtag=None, amount=100):
             f'{ep.GET_TIMELINE}?number={number}')
         posts = self.get_posts_from_dict(resp)
 
+        if amount <= 100:
+            return posts
+
         posts_count = amount
         next_id = resp.get('next_page_value')
         amount -= 100

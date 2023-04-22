@@ -24,9 +24,9 @@ SNS「Yay!」の非公式ライブラリです。🚀
 
 ## インストール
 
-ターミナル上で以下のコマンドを実行してください。
+Requests, BeautifulSoup, tqdm, huepy をインストールした上で以下のコマンドをターミナル上で実行してください。
 
-```console
+```bash
 pip install git+https://github.com/qualia-5w4/Yay-Bot
 ```
 
