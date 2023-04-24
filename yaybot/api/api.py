@@ -98,7 +98,7 @@ from .api_user import (
     unblock_user,
 )
 
-version = '0.3.1'  # also change .. __init__
+version = '0.3.2'  # also change .. __init__
 current_path = os.path.abspath(os.getcwd())
 
 
@@ -676,7 +676,7 @@ class Yay(object):
     def get_activities_from_dict(self, resp: dict):
         return get_activities_from_dict(self, resp)
 
-    def get_notification(self, important=True):
+    def get_notification(self, important=True, amount=100):
         """
 
         通知を取得します。

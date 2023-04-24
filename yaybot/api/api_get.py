@@ -34,7 +34,6 @@ def get_letters_from_dict(self, resp):
 
 
 def get_letters(self, user_id, amount=None):
-    # need a fix at next_item = resp.get('reviews')[-1]
     amount = float('inf') if amount is None else amount
     number = min(amount, 100)
 
@@ -44,7 +43,7 @@ def get_letters(self, user_id, amount=None):
 
     next_item = resp.get('reviews')[-1]
     next_id = next_item['id']
-    reviews_count = self.get_user(user_id).reviews_count if amount == float(
+    reviews_count = self.get_user(user_id).num_reviews if amount == float(
         'inf') else amount
     amount -= 100
 
@@ -314,13 +313,13 @@ def get_group_call(self, group_id):
 
 def get_group_members(self, group_id, amount=100):
     resp = self._get(
-        f'{ep.GROUP_v2}/{group_id}/members?number=100')
+        f'{ep.GROUP_v2}/{group_id}/members?number={amount}')
     return self.get_group_users_from_dict(resp)
 
 
 def get_pending_users_in_group(self, group_id, amount=100):
     resp = self._get(
-        f'{ep.GROUP_v2}/{group_id}/members?mode=pending&number=100')
+        f'{ep.GROUP_v2}/{group_id}/members?mode=pending&number={amount}')
     return self.get_group_users_from_dict(resp)
 
 
@@ -372,23 +371,23 @@ def get_chat_room_id_from_user(self, user_id) -> str:
 def get_chat_messages(self, chatroom_id=None, user_id=None, amount=None):
     if chatroom_id:
         resp = self._get(
-            f'{ep.CHATROOM_v2}/{chatroom_id}/messages?number=100')
+            f'{ep.CHATROOM_v2}/{chatroom_id}/messages?number={amount}')
     if user_id:
         chatroom_id = get_chat_room_id_from_user(self, user_id)
         resp = self._get(
-            f'{ep.CHATROOM_v2}/{chatroom_id}/messages?number=100')
+            f'{ep.CHATROOM_v2}/{chatroom_id}/messages?number={amount}')
     return self.get_chat_messages_from_dict(resp)
 
 
 def get_chat_rooms(self, amount=None):
     resp = self._get(
-        f'{ep.CHATROOM_v1}/main_list?number=100')
+        f'{ep.CHATROOM_v1}/main_list?number={amount}')
     return self.get_chat_rooms_from_dict(resp)
 
 
 def get_chat_requests(self, amount=None):
     resp = self._get(
-        f'{ep.CHATROOM_v1}/request_list?number=100')
+        f'{ep.CHATROOM_v1}/request_list?number={amount}')
     return self.get_chat_rooms_from_dict(resp)
 
 
@@ -405,11 +404,11 @@ def get_activities_from_dict(self, resp):
     return activities
 
 
-def get_notification(self, important=True):
+def get_notification(self, important=True, amount=100):
     if important:
         resp = self._get(
-            f'{ep.CAS_URL}/api/user_activities?important=true&number=100')
+            f'{ep.CAS_URL}/api/user_activities?important=true&number={amount}')
     else:
         resp = self._get(
-            f'{ep.CAS_URL}/api/user_activities?important=false&number=100')
+            f'{ep.CAS_URL}/api/user_activities?important=false&number={amount}')
     return self.get_activities_from_dict(resp)
