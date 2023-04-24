@@ -119,4 +119,4 @@ for follower in followers:
 
 This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Nanameue inc. or any of its affiliates or subsidiaries. This is an independent and unofficial API. **USE IT AT YOUR OWN RISK.**
 
-Licensed under the [MIT License](LICENCE)
+Licensed under the [MIT License](LICENSE)
