@@ -1,36 +1,80 @@
-# YayBot
+<!-- <p align="center">
+<img src=https://img.shields.io/github/stars/qualia-5w4/yaybot?style=for-the-badge&logo=appveyor&color=blue />
+<img src=https://img.shields.io/github/forks/qualia-5w4/yaybot?style=for-the-badge&logo=appveyor&color=blue />
+<img src=https://img.shields.io/github/issues/qualia-5w4/yaybot?style=for-the-badge&logo=appveyor&color=informational />
+<img src=https://img.shields.io/github/issues-pr/qualia-5w4/yaybot?style=for-the-badge&logo=appveyor&color=informational />
+</p>
+<br /> -->
+<p align="center">
+  <a href="https://yay.space">
+    <img src="https://yay.space/images/home-group-categories-background-3.jpg" alt="Logo">
+    <!-- <img src="https://yay.space/images/announcement-banner-background.svg" alt="Logo"> -->
+    <!-- <img src="https://yay.space/images/app-logo-3.svg" alt="Logo" width="150px" height="150px"> -->
+  </a>
+  
+  <p align="center">
+    <img src="https://img.shields.io/github/release/qualia-5w4/yaybot">
+    <img src="https://img.shields.io/badge/python-3.11-blue.svg">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg">
+  </p>
 
-### YayBot とは？
+  <h3 align="center">Yay! - 非公式ライブラリ</h3>
 
-SNS「Yay!」の非公式ライブラリです。🚀  
-使用言語は Python です。
+  <p align="center">
+    汎用的な機能を備えた、SNS「Yay!」の非公式APIです。<br />
+    とてもシンプルな記述で実装できます。
+    <br />
+    <a href="https://github.com/qualia-5w4/yaybot"><strong>詳細はドキュメントにて »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/qualia-5w4/yaybot/issues">バグを報告する</a>
+    ·
+    <a href="https://yay.space/user/3851771">Yay!アカウント</a>
+      ·
+    <a href="mailto:nikola.desuga@gmail.com">メールアドレス</a>
+  </p>
+</p>
 
-🔗: https://yay.space/
+<details>
+  <summary>- - - 目次 - - -</summary>
+  <ol>
+    <li>
+      <a href="#-使用方法">使用方法</a>
+      <ul>
+        <li><a href="#-ダウンロード">ダウンロード</a></li>
+        <li><a href="#%EF%B8%8F-始め方">始め方</a></li>
+      </ul>
+    </li>
+    <li><a href="#trophy-機能--特徴">機能 & 特徴</a></li>
+    <li><a href="#scroll-ライセンス--免責事項">ライセンス & 免責事項</a></li>
+  </ol>
+</details>
 
-### 重要
+## ☕ 使用方法
 
-まだ開発途中であり、今後も機能の追加を予定中です。  
-機能の修正や追加要望等あれば、以下から連絡してください。
+### 💻 ダウンロード
 
----
-
-### [Yay!アカウント](https://yay.space/user/3851771) | [メールアドレス](mailto:nikola.desuga@gmail.com?subject=[GitHub]%20Source%20Han%20Sans)
-
----
-
-![yay.space](https://yay.space/images/home-group-categories-background-3.jpg)
-
-![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)
-
-## インストール
-
-Requests, BeautifulSoup, tqdm, python-dotenv, huepy をインストールした上で、以下のコマンドをターミナル上で実行してください。
+次のコマンドをターミナル上で実行してください:
 
 ```bash
-pip install git+https://github.com/qualia-5w4/Yay-Bot
+pip install git+https://github.com/qualia-5w4/yaybot
 ```
 
-## 使い方
+もしインストールが正常に終了しない場合は、次のコマンドを実行してください:
+
+```bash
+git clone https://github.com/qualia-5w4/yaybot
+
+cd yaybot
+
+pip install -r requirements.txt
+```
+
+### 🖥️ 始め方
+
+1. `from yaybot import Yay` でインポートします。
+2. ログインは任意です。※短時間に何度もログインすると制限される場合があります。
+3. アクセストークンを使用する場合は、`yay = Yay(token='トークン')` と記述してください。
 
 ```python
 from yaybot import Yay
@@ -40,6 +84,7 @@ yay = Yay()
 
 yay.login(email='メールアドレス', password='パスワード') # ログイン
 
+# print(yay.access_token) ※アクセストークンを取得する場合
 
 user = yay.get_user('123')  # IDが'123'のユーザーのプロフィールを取得
 print(user.screen_name)  # 取得したユーザーの名前を表示
@@ -58,12 +103,20 @@ for follower in followers:
 
 ```
 
-## 使用条件
+---
 
-- この API をマーケティング目的（スパム、ボット、嫌がらせ、大量の一斉送信など）に使用しないこと。
+## :trophy: 機能 & 特徴
 
-## 注意
+- シンプルな記述で実装可能
+- 汎用的な機能
+- プロキシをサポート: http/s
 
-このコードは、「Yay!」、株式会社ナナメウエ、またはその関連会社といかなる関係も持っていません。これは独立した非公式 API です。自己責任で使用してください。
+---
 
-This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Yay!, Nanameue inc. or any of its affiliates or subsidiaries. This is an independent and unofficial API. Use it at your own risk.
+## :scroll: ライセンス & 免責事項
+
+このコードは株式会社ナナメウエ、またはその関連会社といかなる関係も持っていません。これは独立した非公式 API です。**自己責任で使用してください。**
+
+This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Nanameue inc. or any of its affiliates or subsidiaries. This is an independent and unofficial API. **USE IT AT YOUR OWN RISK.**
+
+Licensed under the [MIT License](LICENSE)
