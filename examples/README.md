@@ -1,4 +1,4 @@
-# Examples
+# 使用例
 
 ![yay.space](https://yay.space/images/home-group-categories-background-3.jpg)
 

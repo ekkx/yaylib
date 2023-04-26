@@ -8,9 +8,44 @@ from ..utils import console_print, ObjectGenerator as gen
 
 
 def get_user(self, user_id):
-    resp = self._get(f'{ep.USER_v2}/{user_id}')
-    user_data = resp['user']
-    return gen.user_object(self, user_data)
+    resp1 = self._get(f'{ep.USER_v2}/{user_id}')['user']
+    resp2 = self._get(f'{ep.USER_v2}/info/{user_id}')['user']
+    resp1.update(resp2)
+    return gen.user_object(self, resp1)
+
+
+def get_hima_users(self, amount=None):
+    amount = float('inf') if amount is None else amount
+    number = min(amount, 100)
+
+    resp = self._get(
+        f'{ep.API_URL}/v1/web/users/hima_users?number={number}')
+    users = self.get_hima_users_from_dict(resp)
+
+    hima_users = resp.get('hima_users', [])
+    if not hima_users:
+        return users
+
+    next_item = hima_users[-1]
+    next_id = next_item['id']
+    amount -= 100
+
+    while next_id and amount > 0:
+        number = min(amount, 100)
+
+        resp = self._get(
+            f'{ep.API_URL}/v1/web/users/hima_users?from_hima_id={next_id}&number={number}')
+        users.extend(self.get_hima_users_from_dict(resp))
+
+        hima_users = resp.get('hima_users', [])
+        if not hima_users:
+            break
+
+        next_item = hima_users[-1]
+        next_id = next_item['id']
+        amount -= 100
+
+    return users
 
 
 def get_users_from_dict(self, resp):
@@ -18,6 +53,17 @@ def get_users_from_dict(self, resp):
     users_data = resp['users']
     users = []
     for user_data in users_data:
+        user = gen.user_object(self, user_data)
+        users.append(user)
+    return users
+
+
+def get_hima_users_from_dict(self, resp):
+    assert 'hima_users' in resp, "'hima_users' key not found"
+    users_data = resp['hima_users']
+    users = []
+    for user_data in users_data:
+        user_data = user_data['user']
         user = gen.user_object(self, user_data)
         users.append(user)
     return users

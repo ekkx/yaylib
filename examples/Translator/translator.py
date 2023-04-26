@@ -24,7 +24,7 @@ class TranslatorBot(object):
         ret = []
         for notice in notices:
             # 通知の種類がメンションで5分以内のものを取得
-            if notice.type == 'tagged' and (now - notice.created_at) < 60 * 5:
+            if notice.type is 'tagged' and (now - notice.created_at) < 60 * 5:
                 ret.append(notice)
         return ret
 

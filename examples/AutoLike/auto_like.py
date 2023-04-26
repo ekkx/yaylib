@@ -29,7 +29,7 @@ class LikeBot(object):
                 while len(ids) < min_collect:
                     posts = self.yay.get_timeline()
                     for post in posts:
-                        if post.liked == False:
+                        if post.liked is False:
                             ids.add(post.id)
 
                     print(f'Collected {len(ids)} posts.')

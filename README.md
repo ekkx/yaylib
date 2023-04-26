@@ -24,7 +24,7 @@
     汎用的な機能を備えた、SNS「Yay!」の非公式APIです。<br />
     とてもシンプルな記述で実装できます。
     <br />
-    <a href="https://github.com/qualia-5w4/yaybot"><strong>詳細はドキュメントにて »</strong></a>
+    <a href="https://github.com/qualia-5w4/yaybot/tree/master/examples"><strong>詳細はドキュメントにて »</strong></a>
     <br />
     <br />
     <a href="https://github.com/qualia-5w4/yaybot/issues">バグを報告する</a>
@@ -68,6 +68,8 @@ git clone https://github.com/qualia-5w4/yaybot
 cd yaybot
 
 pip install -r requirements.txt
+
+pip install .
 ```
 
 ### 🖥️ 始め方

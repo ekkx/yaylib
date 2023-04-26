@@ -17,6 +17,10 @@ class User:
         is_vip,
         hide_vip,
         online_status,
+        prefecture,
+        gender,
+        generation,
+        created_at,
         profile_image,
         profile_thumbnail,
         cover_image,
@@ -48,6 +52,10 @@ class User:
         self.is_vip = is_vip
         self.hide_vip = hide_vip
         self.online_status = online_status
+        self.prefecture = prefecture
+        self.gender = gender
+        self.generation = generation
+        self.created_at = created_at
         self.profile_image = profile_image
         self.profile_thumbnail = profile_thumbnail
         self.cover_image = cover_image

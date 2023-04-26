@@ -23,7 +23,7 @@ bot.start(30) # 30回「いいね」する場合
 - 返信や通話の投稿に対して「いいね」しない場合は 32 行目を以下のように書き直してください。
 
 ```python
-if post.liked == False and post.reply_to_id == None and post.type != 'call':
+if post.liked is False and post.reply_to_id is None and post.type != 'call':
 ```
 
 ---

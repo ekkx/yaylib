@@ -25,6 +25,8 @@ from .api_chat import (
 from .api_get import (
     get_user,
     get_users_from_dict,
+    get_hima_users,
+    get_hima_users_from_dict,
     get_letters_from_dict,
     get_letters,
     get_joined_groups,
@@ -98,7 +100,7 @@ from .api_user import (
     unblock_user,
 )
 
-version = '0.3.2'  # also change .. __init__
+version = '0.3.3'  # also change .. __init__
 current_path = os.path.abspath(os.getcwd())
 
 
@@ -263,8 +265,29 @@ class Yay(object):
         """
         return get_user(self, user_id)
 
+    def get_hima_users(self, amount: int = None):
+        """
+
+        暇なユーザーを取得します。
+
+        Parameters:
+            amount (int): 取得するユーザーの数 (任意、最大で約200～500人くらい)
+
+        Returns:
+            User: ユーザーのオブジェクト
+
+        Examples:
+            ID '123'のユーザー名を取得する場合
+        >>> get_user('123').screen_name
+
+        """
+        return get_hima_users(self, amount)
+
     def get_users_from_dict(self, resp: dict):
         return get_users_from_dict(self, resp)
+
+    def get_hima_users_from_dict(self, resp: dict):
+        return get_hima_users_from_dict(self, resp)
 
     def get_letters_from_dict(self, resp: dict):
         return get_letters_from_dict(self, resp)
