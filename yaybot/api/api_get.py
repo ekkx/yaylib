@@ -262,13 +262,34 @@ def get_timeline(self, user_id=None, keyword=None, hashtag=None, amount=100):
         return posts
 
 
-def get_following_timeline(self, amount=50):
-    if amount > 50:
-        pass
-    # has next_page_value
+def get_following_timeline(self, amount=100):
+    number = min(amount, 100)
+
     resp = self._get(
-        f'{ep.GET_FOLLOWING_TIMELINE}?number=50')
-    return self.get_posts_from_dict(resp)
+        f'{ep.GET_FOLLOWING_TIMELINE}?number={number}')
+    posts = self.get_posts_from_dict(resp)
+
+    if amount <= 100:
+        return posts
+
+    posts_count = amount
+    next_id = resp.get('next_page_value')
+    amount -= 100
+
+    with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
+        while next_id and amount > 0:
+            number = min(amount, 100)
+
+            resp = self._get(
+                f'{ep.GET_FOLLOWING_TIMELINE}?from_post_id={next_id}&number={number}')
+            posts.extend(self.get_posts_from_dict(resp))
+
+            next_id = resp.get('next_page_value')
+            amount -= 100
+
+            pbar.update(number)
+
+    return posts
 
 
 def get_conversation(self, conversation_id=None, post_id=None, amount=100):
@@ -280,8 +301,9 @@ def get_conversation(self, conversation_id=None, post_id=None, amount=100):
 
 
 def get_reposts(self, post_id, amount=100):
+    number = min(amount, 100)
     resp = self._get(
-        f'{ep.POST_v2}/{post_id}/reposts?number=100')
+        f'{ep.POST_v2}/{post_id}/reposts?number={number}')
     return self.get_posts_from_dict(resp)
 
 
@@ -345,10 +367,38 @@ def get_group_users_from_dict(self, resp):
 
 
 def get_group_timeline(self, group_id, amount=100):
-    # {ep.POST_v2}/group_timeline?from_post_id=111&group_id={group_id}&number=100
+    number = min(amount, 100)
+
     resp = self._get(
-        f'{ep.POST_v2}/group_timeline?group_id={group_id}&number=100')
-    return self.get_posts_from_dict(resp)
+        f'{ep.POST_v2}/group_timeline?group_id={group_id}&number={number}')
+    posts = self.get_posts_from_dict(resp)
+
+    if amount <= 100:
+        return posts
+
+    posts_count = amount
+    next_item = resp['posts'][-1]
+    next_id = next_item['id']
+    amount -= 100
+
+    with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
+        while next_id and amount > 0:
+            number = min(amount, 100)
+
+            resp = self._get(
+                f'{ep.POST_v2}/group_timeline?from_post_id={next_id}&group_id={group_id}&number={number}')
+            posts.extend(self.get_posts_from_dict(resp))
+
+            if len(resp['posts']) == 0:
+                break
+            next_item = resp['posts'][-1]
+            next_id = next_item['id']
+
+            amount -= 100
+
+            pbar.update(number)
+
+    return posts
 
 
 def get_group_call(self, group_id):
@@ -370,7 +420,6 @@ def get_pending_users_in_group(self, group_id, amount=100):
 
 
 def get_banned_user_from_group(self, group_id, amount=100):
-    amount = 100 if amount > 100 else amount
     number = min(amount, 100)
 
     resp = self._get(

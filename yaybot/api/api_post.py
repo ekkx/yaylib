@@ -2,7 +2,7 @@ from ..config import Endpoints as ep
 from ..utils import console_print
 
 
-# post_type -> text, questionaire, image, video, call, video call
+# post_type -> text, survey, image, video, call, video call
 def create_post(self, text, color=0, font_size=0, choices=None):
     data = {
         'text': text,

@@ -274,11 +274,12 @@ class Yay(object):
             amount (int): 取得するユーザーの数 (任意、最大で約200～500人くらい)
 
         Returns:
-            User: ユーザーのオブジェクト
+            User (list): ユーザーのオブジェクトのリスト
 
         Examples:
-            ID '123'のユーザー名を取得する場合
-        >>> get_user('123').screen_name
+        >>> hima_users = yay.get_hima_users(10)
+        >>> for user in hima_users:
+        >>>    print(user.screen_name)
 
         """
         return get_hima_users(self, amount)
