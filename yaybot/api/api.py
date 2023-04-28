@@ -87,7 +87,7 @@ from .api_post import (
     delete_post,
     pin_post,
     unpin_post,
-    like_post,
+    like_posts,
     unlike_post,
 )
 from .api_user import (
@@ -1014,23 +1014,24 @@ class Yay(object):
         """
         return unpin_post(self, post_id)
 
-    def like_post(self, post_id: str) -> dict:
+    def like_posts(self, post_ids: list) -> dict:
         """
 
         IDで指定した投稿をいいねします。
 
         Parameters:
-            post_id (str): 投稿のID
+            post_ids (list): 投稿のID (最大25個まで)
 
         Returns:
             Result (dict): 実行結果
 
         Examples:
-            ID '123'の投稿をいいねする場合
-        >>> like_post(post_id='123')
+            ID '123', '234', 345'の投稿をいいねする場合
+        >>> ids = [123, 234, 345]
+        >>> like_post(post_ids=ids)
 
         """
-        return like_post(self, post_id)
+        return like_posts(self, post_ids)
 
     def unlike_post(self, post_id: str) -> dict:
         """

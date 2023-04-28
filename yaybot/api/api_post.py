@@ -80,8 +80,8 @@ def unpin_post(self, post_id):
     return resp
 
 
-def like_post(self, post_id):
-    data = {'post_ids': post_id}
+def like_posts(self, post_ids: list):
+    data = {'post_ids[]': post_ids}
     resp = self._post(
         f'{ep.POST_v2}/like', data)
     return resp

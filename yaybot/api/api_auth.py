@@ -34,8 +34,8 @@ class YayAuth(object):
             'Accept-Language': 'ja',
             'Referer': 'https://yay.space/',
             'Content-Type': 'application/json;charset=utf-8',
-            'Agent': 'YayWeb 3.12.1',
-            'X-Device-Info': f'Yay 3.12.1 Web ({self.user_agent})',
+            'Agent': 'YayWeb',
+            'X-Device-Info': f'Yay {self.user_agent}',
             'Origin': 'https://yay.space'
         }
         self.access_token = None

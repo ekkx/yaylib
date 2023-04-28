@@ -18,31 +18,29 @@ class LikeBot(object):
 
     def start(self, amount=None):
         amount = float('inf') if amount is None else amount
-        min_collect = 30
+        min_collect = 50
         liked = 0
 
         while liked < amount:
 
-            ids = set()
+            ids = []
 
             try:
                 while len(ids) < min_collect:
                     posts = self.yay.get_timeline()
-                    for post in posts:
-                        if post.liked is False:
-                            ids.add(post.id)
+                    ids = [post.id for post in posts if not post.liked]
 
                     print(f'Collected {len(ids)} posts.')
 
                     if len(ids) < min_collect:
-                        time.sleep(15)
+                        time.sleep(30)
 
-                for post_id in ids:
-                    if liked >= amount:
-                        break
+                while len(ids) > 0:
+                    sliced_ids = ids[:25]
+                    del ids[:25]
 
-                    print(self.yay.like_post(post_id))
-                    liked += 1
+                    liked += len(sliced_ids)
+                    print(f'{liked}: {self.yay.like_posts(sliced_ids)}')
 
                 ids.clear
 
