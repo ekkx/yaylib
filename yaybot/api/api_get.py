@@ -196,6 +196,13 @@ def get_blocked_users(self, amount):
     return self.get_users_from_dict(resp)
 
 
+def get_blocked_by(self, amount):
+    resp = self._get(
+        f'{ep.USER_v1}/block_ids')
+    if amount:
+        return resp['block_ids'][:amount]
+    return resp['block_ids']
+
 # ====== POST ======
 
 

@@ -2,21 +2,46 @@ from ..config import Endpoints as ep
 from ..utils import console_print
 
 
-# post_type -> text, survey, image, video, call, video call
-def create_post(self, text, color=0, font_size=0, choices=None):
+def create_text_post(self, text, color=0, font_size=0):
     data = {
         'text': text,
         'color': color,
         'font_size': font_size,
         'post_type': 'text',
+        'uuid': ''
+    }
+    resp = self._post(f'{ep.API_URL}/v1/web/posts/new', data)
+    return resp
+
+
+def create_survey_post(self, text, choices, color=0, font_size=0):
+    data = {
+        'text': text,
+        'color': color,
+        'font_size': font_size,
+        'post_type': 'survey',
         'choices[]': choices,
         'uuid': ''
     }
-    if choices:
-        data['post_type'] = 'survey'
-        resp = self._post('https://yay.space/api/posts', data)
-    else:
-        resp = self._post(f'{ep.API_URL}/v1/web/posts/new', data)
+    resp = self._post('https://yay.space/api/posts', data)
+    return resp
+
+
+def create_image_post(self, image, text, color=0, font_size=0):
+    data = self.upload_photo(image)
+    data = {
+        "post_type": "image",
+        "text": text,
+        "color": color,
+        "font_size": font_size,
+        "message_tags": "[]",
+        "attachment_sizes": {
+            "attachment": [data['width'], data['height']]
+        },
+        "attachment_filename": data['filename'],
+        "uuid": ""
+    }
+    resp = self._post('https://yay.space/api/posts', data)
     return resp
 
 

@@ -35,6 +35,7 @@ from .api_get import (
     get_follow_requests,
     get_user_active_call,
     get_blocked_users,
+    get_blocked_by,
     get_post,
     get_posts_from_dict,
     get_timeline,
@@ -79,8 +80,13 @@ from .api_group import (
     join_group,
     leave_group,
 )
+from .api_media import (
+    upload_photo,
+)
 from .api_post import (
-    create_post,
+    create_text_post,
+    create_survey_post,
+    create_image_post,
     create_post_in_group,
     create_repost,
     create_reply,
@@ -398,6 +404,20 @@ class Yay(object):
 
         """
         return get_blocked_users(self, amount)
+
+    def get_blocked_by(self, amount: int = None) -> list:
+        """
+
+        あなたをブロックしているユーザーのIDを取得します。
+
+        Parameters:
+            amount (int): 取得するユーザーの数
+
+        Returns:
+            ids (list): ユーザーIDのリスト
+
+        """
+        return get_blocked_by(self, amount)
 
     # post
     def get_post(self, post_id: str):
@@ -839,16 +859,15 @@ class Yay(object):
 
     # ====== POST ======
 
-    def create_post(self, text: str, color=0, font_size=0, choices: list = None) -> dict:
+    def create_text_post(self, text: str, color=0, font_size=0) -> dict:
         """
 
-        投稿します。
+        文章を投稿します。
 
         Parameters:
             text (str): 投稿本文
             color (int): 文字色
             font_size (int): 文字の大きさ
-            choices (list): アンケートの選択肢
 
         Returns:
             Result (dict): 実行結果
@@ -865,12 +884,64 @@ class Yay(object):
 
             0 から 4 (文字の大きさは数値の大きさに比例します)
 
-        アンケート:
+        """
+        return create_text_post(self, text, color, font_size)
 
-            choices引数に選択肢として文字列リストを渡してください。
+    def create_survey_post(self, text, choices, color=0, font_size=0):
+        """
+
+        アンケートを投稿します。
+
+        Parameters:
+            text (str): 投稿本文
+            color (int): 文字色
+            font_size (int): 文字の大きさ
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+        >>> create_post(text='こんにちは' color=2)
+
+        文字色の種類:
+
+            普通の色: 0 から 7
+            特殊な色: 1001 から 1007
+
+        文字の大きさ:
+
+            0 から 4 (文字の大きさは数値の大きさに比例します)
 
         """
-        return create_post(self, text, color, font_size, choices)
+        return create_survey_post(self, text, choices, color, font_size)
+
+    def create_image_post(self, image, text=None, color=0, font_size=0):
+        """
+
+        画像を投稿します。
+
+        Parameters:
+            text (str): 投稿本文
+            color (int): 文字色
+            font_size (int): 文字の大きさ
+
+        Returns:
+            Result (dict): 実行結果
+
+        Examples:
+        >>> create_post(text='こんにちは' color=2)
+
+        文字色の種類:
+
+            普通の色: 0 から 7
+            特殊な色: 1001 から 1007
+
+        文字の大きさ:
+
+            0 から 4 (文字の大きさは数値の大きさに比例します)
+
+        """
+        return create_image_post(self, image, text, color, font_size)
 
     def create_post_in_group(self, group_id: str, text: str, color=0, font_size=0, choices: list = None, type: str = None) -> dict:
         """
@@ -1519,6 +1590,22 @@ class Yay(object):
 
         """
         return delete_chat_room(self, chat_room_id)
+
+    # ====== MEDIA ======
+
+    def upload_photo(self, photo: str) -> dict:
+        """
+
+        画像をアップロードします。
+
+        Parameters:
+            photo (str): 画像のパス
+
+        Returns:
+            MediaInfo (dict): メディアの情報
+
+        """
+        return upload_photo(self, photo)
 
     # ====== SUPPORT ======
 
