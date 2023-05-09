@@ -30,3 +30,5 @@ class Endpoints:
     GET_FOLLOWING_TIMELINE = POST_v2 + '/following_timeline'
     GET_TIMELINE_BY_KEYWORD = POST_v2 + '/search'
     GET_TIMELINE_BY_HASHTAG = POST_v2 + '/tags'
+
+    GET_EMAIL_GRANT_TOKEN = f'https://idcardcheck.com/apis/v1/apps/yay/email_grant_tokens'

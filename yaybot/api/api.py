@@ -104,6 +104,7 @@ from .api_user import (
     send_letter,
     block_user,
     unblock_user,
+    create_account,
 )
 
 version = '0.3.3'  # also change .. __init__
@@ -180,6 +181,7 @@ class Yay(object):
         self.logger.setLevel(logging.DEBUG)
 
         self.auth = YayAuth(proxy=proxy, timeout=timeout)
+        self.api_key = self.auth.api_key
 
         if token:
             self.access_token = token
@@ -210,7 +212,6 @@ class Yay(object):
         self.access_token = self.auth.access_token
         self.refresh_token = self.auth.refresh_token
         self.expires_in = self.auth.expires_in
-        self.api_key = self.auth.api_key
         self.logged_in_as = self.auth.logged_in_as
 
     def pop_login_status(self):
@@ -794,12 +795,15 @@ class Yay(object):
         IDで指定したユーザーからのフォローリクエスト拒否します。
 
         Parameters:
+
             user_id (str): ユーザーID
 
         Returns:
+
             Result (dict): 実行結果
 
         Examples:
+
         >>> reject_follow_request(user_id='123')
 
         """
@@ -811,13 +815,17 @@ class Yay(object):
         IDで指定したユーザーにレターを送信します。
 
         Parameters:
+
             user_id (str): ユーザーID
+
             message (str): レター本文
 
         Returns:
+
             Result (dict): 実行結果
 
         Examples:
+
         >>> send_letter(user_id='123', message='こんにちは')
 
         """
@@ -829,16 +837,83 @@ class Yay(object):
         IDで指定したユーザーをブロックします。
 
         Parameters:
+
             user_id (str): ユーザーID
 
         Returns:
+
             Result (dict): 実行結果
 
         Examples:
+
         >>> block_user(user_id='123')
 
         """
         return block_user(self, user_id)
+
+    def create_account(
+            self,
+            username: str,
+            email: str,
+            password: str,
+            birth_date='2000-01-01',
+            biography='',
+            prefecture='',
+            gender=-1,
+            country_code='JP',
+            profile_picture: str = None,
+            base_path=current_path + '/config/',
+            save_login_info=True,
+    ) -> dict:
+        """
+
+        新しくアカウントを作成します。
+
+        ( ※ Banされる可能性が高いため、プロキシの設定をおすすめします。)
+
+        Parameters:
+
+            username (str): ユーザー名 (必須)
+
+            email (str): メールアドレス (必須)
+
+            password (str): パスワード (必須)
+
+            birth_date (str): 生年月日
+
+            biography (str): 自己紹介文
+
+            prefecture (str): 都道府県
+
+            gender (int): 性別 (0: 男性, 1: 女性, -1: 未設定)
+
+            country_code (str): 住んでいる国のコード
+
+            profile_picture (str): プロフィール画像
+
+        Returns:
+
+            Result (dict): 実行結果
+
+        Examples:
+
+        >>> create_account('太郎', 'example@gmail.com', 'password123')
+
+        """
+        return create_account(
+            self,
+            username,
+            email,
+            password,
+            birth_date,
+            biography,
+            prefecture,
+            gender,
+            country_code,
+            profile_picture,
+            base_path,
+            save_login_info,
+        )
 
     def unblock_user(self, user_id: str) -> dict:
         """
@@ -866,7 +941,9 @@ class Yay(object):
 
         Parameters:
             text (str): 投稿本文
+
             color (int): 文字色
+
             font_size (int): 文字の大きさ
 
         Returns:
@@ -894,7 +971,9 @@ class Yay(object):
 
         Parameters:
             text (str): 投稿本文
+
             color (int): 文字色
+
             font_size (int): 文字の大きさ
 
         Returns:

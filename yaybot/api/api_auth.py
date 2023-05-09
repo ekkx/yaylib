@@ -26,8 +26,11 @@ class YayAuth(object):
         if proxy:
             self.proxies = {
                 'http': f'http://{proxy}',
-                'https': f'https://{proxy}'
+                'https': f'http://{proxy}',
             }
+        else:
+            self.proxies = None
+
         self.headers = {
             'User-Agent': self.user_agent,
             'Accept': 'application/json, text/plain, */*',
@@ -42,19 +45,9 @@ class YayAuth(object):
         self.refresh_token = None
         self.expires_in = None
         self.logged_in_as = None
+        self.api_key = self.get_api_key()
 
     def login(self, email, password):
-        resp = requests.get(
-            'https://yay.space/?modalMode=login',
-            headers=self.headers,
-            proxies={'http': self.proxy, 'https': self.proxy},
-            timeout=self.timeout
-        )
-
-        soup = BeautifulSoup(resp.content, 'html.parser')
-        script = soup.find_all('script')[2].string
-        self.api_key = re.search(r'gon\.API_KEY="(.+?)"', script).group(1)
-
         resp = requests.post(
             f'{ep.USER_v2}/login_with_email',
             params={
@@ -88,6 +81,17 @@ class YayAuth(object):
             console_print(
                 'Login Failed...\n(Invalid email or password.)', 'red')
             return False
+
+    def get_api_key(self):
+        resp = requests.get(
+            'https://yay.space/?modalMode=login',
+            headers=self.headers,
+            proxies={'http': self.proxy, 'https': self.proxy},
+            timeout=self.timeout
+        )
+        soup = BeautifulSoup(resp.content, 'html.parser')
+        script = soup.find_all('script')[2].string
+        return re.search(r'gon\.API_KEY="(.+?)"', script).group(1)
 
     def logout(self):
         if self.access_token:
