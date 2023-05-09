@@ -75,35 +75,71 @@ pip install .
 ### 🖥️ 始め方
 
 1. `from yaybot import Yay` でインポートします。
-2. ログインは任意です。※短時間に何度もログインすると制限される場合があります。
-3. アクセストークンを使用する場合は、`yay = Yay(token='トークン')` と記述してください。
+2. ログインは任意ですが、一部の機能が制限されます。
 
 ```python
 from yaybot import Yay
 
-
 yay = Yay()
 
-yay.login(email='メールアドレス', password='パスワード') # ログイン
+yay.login(email='abcd@example.com', password='pw%?123')
 
-# print(yay.access_token) ※アクセストークンを取得する場合
+print('access_token: ' + yay.access_token)
+print('api_key: ' + yay.api_key)
+print('logged_in_as: ' +yay.logged_in_as)
 
-user = yay.get_user('123')  # IDが'123'のユーザーのプロフィールを取得
-print(user.screen_name)  # 取得したユーザーの名前を表示
-print(user.bio)  # 取得したユーザーの自己紹介を表示
-
-
-post = yay.get_post('456')  # IDが'456'の投稿を取得
-print(post.author_screen_name)  # 投稿者の名前を表示
-print(post.text)  # 投稿本文を表示
-yay.like_posts(post.id)  # 投稿をいいねする
-
-
-followers = yay.get_user_followers('123')  # IDが'123'のユーザーのフォロワーを取得する
-for follower in followers:
-    yay.follow_user(follower.id)  # 取得したユーザーをフォローする
-
+>>> access_token: 3270a4ad5djf8eb19...
+>>> api_key: 928164ea82e4eb19ad5...
+>>> logged_in_as: 3851771
 ```
+
+3. `yay = Yay(token='トークン')` でアクセストークンを使用します。
+
+```python
+from yaybot import Yay
+
+yay = Yay(token='アクセストークン')
+
+post_ids = ['73628', '73646', '73682']
+
+yay.like_posts(post_ids)
+
+>>> {"result": "success", "liked_ids": 73628, 73646, 73682}
+```
+
+4. 目的のデータを取得するには属性名を指定します。
+
+```python
+from yaybot import Yay
+
+yay = Yay()
+yay.login()
+
+user = yay.get_user('123')
+print('ユーザー名: ' + user.screen_name)
+print('自己紹介: ' + user.bio)
+
+>>> ユーザー名: たろう
+>>> 自己紹介: 今日も一日ねむい
+```
+
+5. フォロワーを取得し、全員フォローするコードの例を示します。
+
+```python
+from yaybot import Yay
+
+yay = Yay()
+yay.login()
+
+followers = yay.get_user_followers('123')
+
+for follower in followers:
+    yay.follow_user(follower.id)
+
+>>> {"result": "success"}, ...
+```
+
+他にもたくさん機能があるので<strong><a href="https://github.com/qualia-5w4/yaybot/tree/master/examples">詳細はこちら</a></strong>を参照してください。
 
 ---
 

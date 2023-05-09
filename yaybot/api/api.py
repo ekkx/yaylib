@@ -27,6 +27,7 @@ from .api_get import (
     get_users_from_dict,
     get_hima_users,
     get_hima_users_from_dict,
+    get_new_users,
     get_letters_from_dict,
     get_letters,
     get_joined_groups,
@@ -107,7 +108,7 @@ from .api_user import (
     create_account,
 )
 
-version = '0.3.3'  # also change .. __init__
+version = '0.3.5'  # also change .. __init__
 current_path = os.path.abspath(os.getcwd())
 
 
@@ -128,7 +129,15 @@ class Yay(object):
 
         YayBot
         ---
-            Unofficial API for Yay! (yay.space) - developed by qualia-5w4
+
+            Yay! - 非公式ライブラリ (developed by qualia-5w4)
+            
+            >>> from yaybot import Yay
+            >>> yay = Yay()
+            >>> yay.login(email='abcd@example.com', password='pw%?123')
+            >>> print('access_token: ' + yay.access_token)
+            >>> print('api_key: ' + yay.api_key)
+            >>> print('logged_in_as: ' +yay.logged_in_as)
 
         """
         self.base_path = base_path
@@ -290,6 +299,25 @@ class Yay(object):
 
         """
         return get_hima_users(self, amount)
+    
+    def get_new_users(self, amount: int = None):
+        """
+
+        新規ユーザーを取得します。
+
+        Parameters:
+            amount (int): 取得するユーザーの数
+
+        Returns:
+            User (list): ユーザーのオブジェクトのリスト
+
+        Examples:
+        >>> new_users = yay.get_new_users(10)
+        >>> for user in new_users:
+        >>>    print(user.screen_name)
+
+        """
+        return get_new_users(self, amount)
 
     def get_users_from_dict(self, resp: dict):
         return get_users_from_dict(self, resp)

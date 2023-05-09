@@ -48,6 +48,41 @@ def get_hima_users(self, amount=None):
     return users
 
 
+def get_new_users(self, amount):
+
+    amount = float('inf') if amount is None else amount
+    number = min(amount, 100)
+
+    resp = self._get(
+        f'{ep.API_URL}/v1/web/users/search?number={number}&recently_created=true')
+    users = self.get_users_from_dict(resp)
+
+    hima_users = resp.get('hima_users', [])
+    if not hima_users:
+        return users
+
+    next_item = hima_users[-1]
+    next_id = next_item['id']
+    amount -= 100
+
+    while next_id and amount > 0:
+        number = min(amount, 100)
+
+        resp = self._get(
+            f'{ep.API_URL}/v1/web/users/search?from_user_id={next_id}&number={number}&recently_created=true')
+        users.extend(self.get_users_from_dict(resp))
+
+        hima_users = resp.get('hima_users', [])
+        if not hima_users:
+            break
+
+        next_item = hima_users[-1]
+        next_id = next_item['id']
+        amount -= 100
+
+    return users
+
+
 def get_users_from_dict(self, resp):
     assert 'users' in resp, "'users' key not found"
     users_data = resp['users']

@@ -3,3 +3,4 @@ beautifulsoup4
 tqdm
 huepy
 python-dotenv
+Pillow
