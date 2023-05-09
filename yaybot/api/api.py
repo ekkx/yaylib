@@ -891,6 +891,10 @@ class Yay(object):
 
             profile_picture (str): プロフィール画像
 
+            base_path (str) : ログイン情報を保存するファイルのパス
+
+            save_login_info (bool): ログイン情報を保存するか否か
+
         Returns:
 
             Result (dict): 実行結果
