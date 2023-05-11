@@ -98,7 +98,7 @@ post_ids = ['73628', '73646', '73682']
 
 yay.like_posts(post_ids)
 
->>> '{"result": "success", "liked_ids": 73628, 73646, 73682}'
+>>> '{"result": "success", "liked_ids": [73628, 73646, 73682]}'
 ```
 
 4. 属性名を指定して目的のデータを取得します。
