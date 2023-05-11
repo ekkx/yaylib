@@ -3,7 +3,7 @@ class User:
     def __init__(
         self,
         id,
-        screen_name,
+        username,
         bio,
         badge,
         num_followers,
@@ -38,7 +38,7 @@ class User:
         selected_interests=None
     ):
         self.id = id
-        self.screen_name = screen_name
+        self.username = username
         self.bio = bio
         self.badge = badge
         self.num_followers = num_followers
@@ -73,7 +73,7 @@ class User:
         self.selected_interests = selected_interests
 
     def __repr__(self):
-        return f'User(screen_name={self.screen_name})'
+        return f'User(username={self.username})'
 
 
 class GroupUser(User):
@@ -86,7 +86,7 @@ class GroupUser(User):
         pending_deputize,
         badge,
         id,
-        screen_name,
+        username,
         bio,
         num_followers,
         is_private,
@@ -116,7 +116,7 @@ class GroupUser(User):
     ):
         super().__init__(
             id,
-            screen_name,
+            username,
             bio,
             num_followers,
             is_private,
@@ -160,7 +160,7 @@ class Post:
         self,
         id,
         author_id,
-        author_screen_name,
+        author_username,
         text,
         group_id,
         font_size,
@@ -189,7 +189,7 @@ class Post:
     ):
         self.id = id
         self.author_id = author_id
-        self.author_screen_name = author_screen_name
+        self.author_username = author_username
         self.text = text
         self.group_id = group_id
         self.font_size = font_size
@@ -223,17 +223,17 @@ class Post:
 class Review:
 
     def __init__(self, text, created_at, id, mutual_review_enabled,
-                 num_reported, author_id, author_screen_name):
+                 num_reported, author_id, author_username):
         self.text = text
         self.created_at = created_at
         self.id = id
         self.mutual_review_enabled = mutual_review_enabled
         self.num_reported = num_reported
         self.author_id = author_id
-        self.author_screen_name = author_screen_name
+        self.author_username = author_username
 
     def __repr__(self):
-        return f'Review(author_screen_name={self.author_screen_name}, text={self.text})'
+        return f'Review(author_username={self.author_username}, text={self.text})'
 
 
 class Group:
@@ -268,7 +268,7 @@ class Group:
         mobile_verified_only,
         verified_age_only,
         owner_id,
-        owner_screen_name,
+        owner_username,
         num_pendings,
         pending_deputize_ids,
         pending_transfer_id,
@@ -316,7 +316,7 @@ class Group:
         self.mobile_verified_only = mobile_verified_only
         self.verified_age_only = verified_age_only
         self.owner_id = owner_id
-        self.owner_screen_name = owner_screen_name
+        self.owner_username = owner_username
         self.num_pendings = num_pendings
         self.pending_deputize_ids = pending_deputize_ids
         self.pending_transfer_id = pending_transfer_id
@@ -353,7 +353,7 @@ class ChatRoom:
             is_request,
             last_message,
             member_ids,
-            member_screen_names,
+            member_usernames,
             chat_title,
             num_unread,
             updated_at
@@ -367,7 +367,7 @@ class ChatRoom:
         self.is_request = is_request
         self.last_message = last_message
         self.member_ids = member_ids
-        self.member_screen_names = member_screen_names
+        self.member_usernames = member_usernames
         self.chat_title = chat_title
         self.num_unread = num_unread
         self.updated_at = updated_at
@@ -429,7 +429,7 @@ class Activity:
             metadata,
             type,
             from_user_id,
-            from_user_screen_name,
+            from_username,
             from_user_profile_thumbnail
     ):
         self.created_at = created_at
@@ -439,7 +439,7 @@ class Activity:
         self.metadata = metadata
         self.type = type
         self.from_user_id = from_user_id
-        self.from_user_screen_name = from_user_screen_name
+        self.from_username = from_username
         self.from_user_profile_thumbnail = from_user_profile_thumbnail
 
     def __repr__(self):

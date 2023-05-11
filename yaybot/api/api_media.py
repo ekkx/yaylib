@@ -3,6 +3,7 @@ import requests
 import os
 
 from PIL import Image
+from ..config import Endpoints as ep
 
 
 def upload_photo(self, photo):
@@ -17,12 +18,9 @@ def upload_photo(self, photo):
     post_url = f'post/{date.year}/{date.month}/{date.day}/{filename}_{timestamp}_0_size_{width}x{height}{ext}'
     post_url_thumb = f'post/{date.year}/{date.month}/{date.day}/thumb_{filename}_{timestamp}_0_size_{width}x{height}{ext}'
 
-    resp = self._get(
-        f'https://api.yay.space/v1/buckets/presigned_urls?file_names[]={post_url}&file_names[]={post_url_thumb}'
+    data = self._get(
+        f'{ep.API_URL}/v1/buckets/presigned_urls?file_names[]={post_url}&file_names[]={post_url_thumb}'
     )
-
-    # hmm...
-    data = resp
 
     filename_original = data['presigned_urls'][0]['filename']
     filename_thumb = data['presigned_urls'][1]['filename']

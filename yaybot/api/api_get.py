@@ -57,11 +57,11 @@ def get_new_users(self, amount):
         f'{ep.API_URL}/v1/web/users/search?number={number}&recently_created=true')
     users = self.get_users_from_dict(resp)
 
-    hima_users = resp.get('hima_users', [])
-    if not hima_users:
+    new_users = resp.get('users', [])
+    if not new_users:
         return users
 
-    next_item = hima_users[-1]
+    next_item = new_users[-1]
     next_id = next_item['id']
     amount -= 100
 
@@ -72,11 +72,11 @@ def get_new_users(self, amount):
             f'{ep.API_URL}/v1/web/users/search?from_user_id={next_id}&number={number}&recently_created=true')
         users.extend(self.get_users_from_dict(resp))
 
-        hima_users = resp.get('hima_users', [])
-        if not hima_users:
+        new_users = resp.get('users', [])
+        if not new_users:
             break
 
-        next_item = hima_users[-1]
+        next_item = new_users[-1]
         next_id = next_item['id']
         amount -= 100
 
@@ -129,6 +129,7 @@ def get_letters(self, user_id, amount=None):
     amount -= 100
 
     with tqdm(total=reviews_count, desc='Extracting Letters') as pbar:
+        pbar.update(number)
         while next_id and amount > 0:
             number = min(amount, 100)
 
@@ -167,6 +168,7 @@ def get_user_followers(self, user_id, amount=None):
     amount -= 50
 
     with tqdm(total=followers_count, desc='Extracting Followers') as pbar:
+        pbar.update(number)
         while next_id and amount > 0:
             number = min(amount, 50)
 
@@ -196,6 +198,7 @@ def get_user_followings(self, user_id, amount=None):
     amount -= 50
 
     with tqdm(total=followings_count, desc='Extracting Followings') as pbar:
+        pbar.update(number)
         while next_id and amount > 0:
             number = min(amount, 50)
 
@@ -257,51 +260,139 @@ def get_posts_from_dict(self, resp):
     return posts
 
 
-def get_timeline(self, user_id=None, keyword=None, hashtag=None, amount=100):
-    if user_id or keyword or hashtag:
-        if user_id:
-            # https://api.yay.space/v2/posts/user_timeline?from_post_id=123&number=100&user_id={user_id}
-            resp = self._get(
-                f'{ep.GET_USER_TIMELINE}?number={amount}&user_id={user_id}')
-            return self.get_posts_from_dict(resp)
-        elif keyword:
-            # https://api.yay.space/v2/posts/search?from_post_id=123&keyword={keyword}&number=100
-            resp = self._get(
-                f'{ep.GET_TIMELINE_BY_KEYWORD}?keyword={keyword}&number={amount}')
-            return self.get_posts_from_dict(resp)
-        elif hashtag:
-            # https://api.yay.space/v2/posts/tags/{hashtag}?from_post_id=361102925&number=100
-            resp = self._get(
-                f'{ep.GET_TIMELINE_BY_HASHTAG}/{hashtag}?number={amount}')
-            return self.get_posts_from_dict(resp)
-    else:
-        number = min(amount, 100)
+def get_timeline(self, amount=100):
 
-        resp = self._get(
-            f'{ep.GET_TIMELINE}?number={number}')
-        posts = self.get_posts_from_dict(resp)
+    number = min(amount, 100)
 
-        if amount <= 100:
-            return posts
+    resp = self._get(
+        f'{ep.GET_TIMELINE}?number={number}')
+    posts = self.get_posts_from_dict(resp)
 
-        posts_count = amount
-        next_id = resp.get('next_page_value')
-        amount -= 100
-
-        with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
-            while next_id and amount > 0:
-                number = min(amount, 100)
-
-                resp = self._get(
-                    f'{ep.GET_TIMELINE}?from_post_id={next_id}&number={number}')
-                posts.extend(self.get_posts_from_dict(resp))
-
-                next_id = resp.get('next_page_value')
-                amount -= 100
-
-                pbar.update(number)
-
+    if amount <= 100:
         return posts
+
+    posts_count = amount
+    next_id = resp.get('next_page_value')
+    amount -= 100
+
+    with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
+        pbar.update(number)
+        while next_id and amount > 0:
+            number = min(amount, 100)
+
+            resp = self._get(
+                f'{ep.GET_TIMELINE}?from_post_id={next_id}&number={number}')
+            posts.extend(self.get_posts_from_dict(resp))
+
+            next_id = resp.get('next_page_value')
+            amount -= 100
+
+            pbar.update(number)
+
+    return posts
+
+
+def get_user_timeline(self, user_id, amount=None):
+    amount = float('inf') if amount is None else amount
+    number = min(amount, 100)
+
+    resp = self._get(
+        f'{ep.GET_USER_TIMELINE}?number={number}&user_id={user_id}')
+    posts = self.get_posts_from_dict(resp)
+
+    if amount <= 100:
+        return posts
+
+    next_item = resp['posts'][-1]
+    next_id = next_item['id']
+    posts_count = self.get_user(user_id).num_posts if amount == float(
+        'inf') else amount
+    amount -= 100
+
+    with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
+        pbar.update(number)
+        while next_id and amount > 0:
+            number = min(amount, 100)
+
+            resp = self._get(
+                f'{ep.GET_USER_TIMELINE}?from_post_id={next_id}&number={number}&user_id={user_id}')
+            posts.extend(self.get_posts_from_dict(resp))
+
+            if len(resp['posts']) == 0:
+                break
+            next_item = resp['posts'][-1]
+            next_id = next_item['id']
+            amount -= 100
+
+            pbar.update(number)
+
+    return posts
+
+
+def get_timeline_by_keyword(self, keyword, amount=100):
+    number = min(amount, 100)
+
+    resp = self._get(
+        f'{ep.GET_TIMELINE_BY_KEYWORD}?keyword={keyword}&number={number}')
+    posts = self.get_posts_from_dict(resp)
+
+    if amount <= 100:
+        return posts
+
+    posts_count = amount
+    next_item = resp['posts'][-1]
+    next_id = next_item['id']
+    amount -= 100
+
+    with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
+        pbar.update(number)
+        while next_id and amount > 0:
+            number = min(amount, 100)
+
+            resp = self._get(
+                f'{ep.GET_TIMELINE_BY_KEYWORD}?from_post_id={next_id}&keyword={keyword}&number={number}')
+            posts.extend(self.get_posts_from_dict(resp))
+
+            next_item = resp['posts'][-1]
+            next_id = next_item['id']
+            amount -= 100
+
+            pbar.update(number)
+
+    return posts
+
+
+def get_timeline_by_hashtag(self, hashtag, amount=100):
+    number = min(amount, 100)
+
+    resp = self._get(
+        f'{ep.GET_TIMELINE_BY_HASHTAG}/{hashtag}?number={number}')
+    posts = self.get_posts_from_dict(resp)
+
+    if amount <= 100:
+        return posts
+
+    posts_count = amount
+    next_item = resp['posts'][-1]
+    next_id = next_item['id']
+    amount -= 100
+
+    with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
+        pbar.update(number)
+        while next_id and amount > 0:
+            number = min(amount, 100)
+
+            resp = self._get(
+                f'{ep.GET_TIMELINE_BY_HASHTAG}/{hashtag}?from_post_id={next_id}&number={number}')
+            posts.extend(self.get_posts_from_dict(resp))
+
+            next_item = resp['posts'][-1]
+            next_id = next_item['id']
+            amount -= 100
+
+            pbar.update(number)
+
+    return posts
 
 
 def get_following_timeline(self, amount=100):
@@ -319,6 +410,7 @@ def get_following_timeline(self, amount=100):
     amount -= 100
 
     with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
+        pbar.update(number)
         while next_id and amount > 0:
             number = min(amount, 100)
 
@@ -350,8 +442,9 @@ def get_reposts(self, post_id, amount=100):
 
 
 def get_post_likers(self, post_id, amount=None):
-    likes_count = self.get_post(post_id).num_likes
-    amount = likes_count if amount is None else amount
+    likes_count = self.get_post(
+        post_id).num_likes if amount is None else amount
+    amount = likes_count
     number = min(amount, 50)
 
     resp = self._get(
@@ -364,6 +457,7 @@ def get_post_likers(self, post_id, amount=None):
 
     # fix this. continues updating even after collecting all the likers
     with tqdm(total=likes_count, desc='Extracting Likers') as pbar:
+        pbar.update(number)
         while next_id and amount > 0:
             number = min(amount, 50)
 
@@ -375,6 +469,9 @@ def get_post_likers(self, post_id, amount=None):
             amount -= 50
 
             pbar.update(number)
+
+            if amount <= 0:
+                break
 
     return users
 
@@ -424,6 +521,7 @@ def get_group_timeline(self, group_id, amount=100):
     amount -= 100
 
     with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
+        pbar.update(number)
         while next_id and amount > 0:
             number = min(amount, 100)
 

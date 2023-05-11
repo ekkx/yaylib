@@ -4,6 +4,9 @@ import os
 import random
 import requests
 import time
+import uuid
+
+from fake_useragent import UserAgent
 
 from ..config import Endpoints as ep
 from ..exceptions import (
@@ -12,11 +15,15 @@ from ..exceptions import (
     ForbiddenError,
     RateLimitError,
     ExceedCallQuotaError,
-    InvalidSignedInfo,
+    InvalidSignedInfoError,
     UnknownError
 )
 from ..utils import handle_response, console_print
-from .api_auth import YayAuth
+from .api_auth import (
+    get_api_key,
+    login,
+    logout,
+)
 from .api_chat import (
     send_message,
     accept_chat_request,
@@ -40,6 +47,9 @@ from .api_get import (
     get_post,
     get_posts_from_dict,
     get_timeline,
+    get_user_timeline,
+    get_timeline_by_keyword,
+    get_timeline_by_hashtag,
     get_following_timeline,
     get_conversation,
     get_reposts,
@@ -85,9 +95,7 @@ from .api_media import (
     upload_photo,
 )
 from .api_post import (
-    create_text_post,
-    create_survey_post,
-    create_image_post,
+    create_post,
     create_post_in_group,
     create_repost,
     create_reply,
@@ -118,6 +126,7 @@ class Yay(object):
             self,
             token: str = None,
             proxy: str = None,
+            port: int = None,
             timeout=10,
             base_path=current_path + '/config/',
             save_logfile=False,
@@ -131,27 +140,41 @@ class Yay(object):
         ---
 
             Yay! - 非公式ライブラリ (developed by qualia-5w4)
-            
+
             >>> from yaybot import Yay
             >>> yay = Yay()
             >>> yay.login(email='abcd@example.com', password='pw%?123')
-            >>> print('access_token: ' + yay.access_token)
-            >>> print('api_key: ' + yay.api_key)
-            >>> print('logged_in_as: ' +yay.logged_in_as)
 
         """
         self.base_path = base_path
+        self.timeout = timeout
+        self.proxy = proxy
+        self.proxies = None
+        self.user_agent = UserAgent().chrome
+        self.headers = {
+            'User-Agent': self.user_agent,
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'ja',
+            'Referer': 'https://yay.space/',
+            'Content-Type': 'application/json;charset=utf-8',
+            'Agent': 'YayWeb',
+            'X-Device-Info': f'Yay {self.user_agent}',
+            'Origin': 'https://yay.space'
+        }
+        self.UUID = str(uuid.uuid4())
+        self.api_key = get_api_key(self)
+        self.access_token = None
+        self.refresh_token = None
+        self.expires_in = None
+        self.logged_in_as = None
 
-        # Setup logging
         self.logger = logging.getLogger('YayBot version: ' + version)
 
         if save_logfile is True:
             if not os.path.exists(base_path):
-                # create base_path if not exists
                 os.makedirs(base_path)
 
             if not os.path.exists(base_path + '/log/'):
-                # create log folder if not exists
                 os.makedirs(base_path + '/log/')
 
             if log_filename is None:
@@ -189,80 +212,79 @@ class Yay(object):
             self.logger.addHandler(ch)
         self.logger.setLevel(logging.DEBUG)
 
-        self.auth = YayAuth(proxy=proxy, timeout=timeout)
-        self.api_key = self.auth.api_key
+        if proxy and port:
+            self.proxies = {
+                'http': f'http://{proxy}:{port}',
+                'https': f'http://{proxy}:{port}',
+            }
+        elif proxy:
+            self.logger.error('Port is not set')
+            raise Exception('Port is not set')
 
         if token:
             self.access_token = token
-            self.auth.access_token = token
-            self.auth.headers.setdefault('Authorization', f'Bearer {token}')
+            self.headers.setdefault('Authorization', f'Bearer {token}')
 
-        self.logger.info('YayBot version: ' + version + ' Started!')
+        self.logger.info('YayBot version: ' + version + ' Started')
 
-    def login(self, email, password):
+    def login(self, email: str, password: str):
         """
         ログインします。
         ---
-            今後足跡が残ります。
+
+        Examples:
+        >>> login(email='', password='')
         """
-        self.auth.login(email, password)
-        self.set_login_status()
+        self.logger.info('LOGIN FLOW! Logging in as [{}]'.format(email))
+        return login(self, email, password)
 
     def logout(self):
         """
         ログアウトします。
         ---
-            今後足跡は残りません。
+
+        Examples:
+        >>> logout()
         """
-        self.auth.logout()
-        self.pop_login_status()
+        return logout(self)
 
-    def set_login_status(self):
-        self.access_token = self.auth.access_token
-        self.refresh_token = self.auth.refresh_token
-        self.expires_in = self.auth.expires_in
-        self.logged_in_as = self.auth.logged_in_as
+    def get_api_key(self):
+        return get_api_key(self)
 
-    def pop_login_status(self):
-        self.access_token = None
-        self.refresh_token = None
-        self.expires_in = None
-        self.api_key = None
-        self.logged_in_as = None
-
-    def _get(self, url: str):
-        resp = requests.get(url, headers=self.auth.headers,
-                            proxies=self.auth.proxies, timeout=self.auth.timeout)
+    def _get(self, url: str, data=None):
+        resp = requests.get(url, params=data,
+                            headers=self.headers,
+                            proxies=self.proxies,
+                            timeout=self.timeout)
         handle_response(resp)
         return resp.json()
 
-    def _post(self, url: str, data: dict = None):
+    def _post(self, url: str, data=None):
         resp = requests.post(url, params=data,
-                             headers=self.auth.headers,
-                             proxies=self.auth.proxies,
-                             timeout=self.auth.timeout)
+                             headers=self.headers,
+                             proxies=self.proxies,
+                             timeout=self.timeout)
         handle_response(resp)
         return resp.json()
 
-    def _put(self, url: str, data: dict = None):
+    def _put(self, url: str, data=None):
         resp = requests.put(url, params=data,
-                            headers=self.auth.headers,
-                            proxies=self.auth.proxies,
-                            timeout=self.auth.timeout)
+                            headers=self.headers,
+                            proxies=self.proxies,
+                            timeout=self.timeout)
         handle_response(resp)
         return resp.json()
 
-    def _delete(self, url: str, data: dict = None):
+    def _delete(self, url: str, data=None):
         resp = requests.delete(url, params=data,
-                               headers=self.auth.headers,
-                               proxies=self.auth.proxies,
-                               timeout=self.auth.timeout)
+                               headers=self.headers,
+                               proxies=self.proxies,
+                               timeout=self.timeout)
         handle_response(resp)
         return resp.json()
 
     # ====== GETTERS ======
 
-    # user
     def get_user(self, user_id: str):
         """
 
@@ -276,7 +298,7 @@ class Yay(object):
 
         Examples:
             ID '123'のユーザー名を取得する場合
-        >>> get_user('123').screen_name
+        >>> get_user('123').username
 
         """
         return get_user(self, user_id)
@@ -295,11 +317,11 @@ class Yay(object):
         Examples:
         >>> hima_users = yay.get_hima_users(10)
         >>> for user in hima_users:
-        >>>    print(user.screen_name)
+        >>>    print(user.username)
 
         """
         return get_hima_users(self, amount)
-    
+
     def get_new_users(self, amount: int = None):
         """
 
@@ -314,7 +336,7 @@ class Yay(object):
         Examples:
         >>> new_users = yay.get_new_users(10)
         >>> for user in new_users:
-        >>>    print(user.screen_name)
+        >>>    print(user.username)
 
         """
         return get_new_users(self, amount)
@@ -415,7 +437,7 @@ class Yay(object):
 
         Examples:
             ID '123'のユーザーが参加している通話の枠主の名前を取得する場合
-        >>> get_user_active_call('123').author_screen_name
+        >>> get_user_active_call('123').author_username
 
         """
         return get_user_active_call(self, user_id)
@@ -449,6 +471,7 @@ class Yay(object):
         return get_blocked_by(self, amount)
 
     # post
+
     def get_post(self, post_id: str):
         """
 
@@ -470,7 +493,7 @@ class Yay(object):
     def get_posts_from_dict(self, resp: dict):
         return get_posts_from_dict(self, resp)
 
-    def get_timeline(self, user_id: str = None, keyword: str = None, hashtag: str = None, amount=100):
+    def get_timeline(self, amount=100):
         """
 
         タイムラインの投稿を取得します。
@@ -485,7 +508,16 @@ class Yay(object):
             Post (list): 投稿オブジェクトのリスト
 
         """
-        return get_timeline(self, user_id, keyword, hashtag, amount)
+        return get_timeline(self, amount)
+
+    def get_timeline_by_keyword(self, keyword, amount=100):
+        return get_timeline_by_keyword(self, keyword, amount)
+
+    def get_timeline_by_hashtag(self, hashtag, amount=100):
+        return get_timeline_by_hashtag(self, hashtag, amount)
+
+    def get_user_timeline(self, user_id, amount=None):
+        return get_user_timeline(self, user_id, amount)
 
     def get_following_timeline(self, amount=50):
         """
@@ -548,6 +580,7 @@ class Yay(object):
         return get_post_likers(self, post_id, amount)
 
     # group
+
     def get_group(self, group_id: str):
         """
 
@@ -655,6 +688,7 @@ class Yay(object):
         return get_banned_user_from_group(self, group_id, amount)
 
     # chat
+
     def get_chat_room(self, chatroom_id: str):
         """
 
@@ -745,7 +779,8 @@ class Yay(object):
         """
         return get_chat_requests(self, amount)
 
-    # notification
+    # notifications
+
     def get_activities_from_dict(self, resp: dict):
         return get_activities_from_dict(self, resp)
 
@@ -966,13 +1001,27 @@ class Yay(object):
 
     # ====== POST ======
 
-    def create_text_post(self, text: str, color=0, font_size=0) -> dict:
+    def create_post(
+            self,
+            post_type: str,
+            text: str,
+            image: str = None,
+            choices: list = None,
+            color=0,
+            font_size=0
+    ) -> dict:
         """
 
-        文章を投稿します。
+        投稿します。
 
         Parameters:
+            post_type (str): 投稿の種類 ('text', 'survey', 'image')
+
             text (str): 投稿本文
+
+            image (str): 画像のパス
+
+            choices (str): アンケートの選択肢
 
             color (int): 文字色
 
@@ -994,65 +1043,7 @@ class Yay(object):
             0 から 4 (文字の大きさは数値の大きさに比例します)
 
         """
-        return create_text_post(self, text, color, font_size)
-
-    def create_survey_post(self, text, choices, color=0, font_size=0):
-        """
-
-        アンケートを投稿します。
-
-        Parameters:
-            text (str): 投稿本文
-
-            color (int): 文字色
-
-            font_size (int): 文字の大きさ
-
-        Returns:
-            Result (dict): 実行結果
-
-        Examples:
-        >>> create_post(text='こんにちは' color=2)
-
-        文字色の種類:
-
-            普通の色: 0 から 7
-            特殊な色: 1001 から 1007
-
-        文字の大きさ:
-
-            0 から 4 (文字の大きさは数値の大きさに比例します)
-
-        """
-        return create_survey_post(self, text, choices, color, font_size)
-
-    def create_image_post(self, image, text=None, color=0, font_size=0):
-        """
-
-        画像を投稿します。
-
-        Parameters:
-            text (str): 投稿本文
-            color (int): 文字色
-            font_size (int): 文字の大きさ
-
-        Returns:
-            Result (dict): 実行結果
-
-        Examples:
-        >>> create_post(text='こんにちは' color=2)
-
-        文字色の種類:
-
-            普通の色: 0 から 7
-            特殊な色: 1001 から 1007
-
-        文字の大きさ:
-
-            0 から 4 (文字の大きさは数値の大きさに比例します)
-
-        """
-        return create_image_post(self, image, text, color, font_size)
+        return create_post(self, post_type, text, image, choices, color, font_size)
 
     def create_post_in_group(self, group_id: str, text: str, color=0, font_size=0, choices: list = None, type: str = None) -> dict:
         """

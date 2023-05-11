@@ -18,7 +18,7 @@ class ExceedCallQuotaError(YayError):
     pass
 
 
-class InvalidSignedInfo(YayError):
+class InvalidSignedInfoError(YayError):
     pass
 
 

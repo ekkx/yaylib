@@ -6,7 +6,7 @@ from .exceptions import (
     ForbiddenError,
     RateLimitError,
     ExceedCallQuotaError,
-    InvalidSignedInfo,
+    InvalidSignedInfoError,
     UnknownError
 )
 
@@ -36,7 +36,7 @@ def handle_response(resp):
         if resp_json['error_code'] == -343:
             raise ExceedCallQuotaError('Exceed call quota')
         if resp_json['error_code'] == -380:
-            raise InvalidSignedInfo('Invalid signed info')
+            raise InvalidSignedInfoError('Invalid signed info')
 
 
 def console_print(text, color=None):
@@ -54,7 +54,7 @@ class ObjectGenerator(object):
 
         user = User(
             id=get_val('id'),
-            screen_name=get_val('nickname'),
+            username=get_val('nickname'),
             bio=get_val('biography'),
             badge=user_data.get('title', None),
             num_followers=get_val('followers_count'),
@@ -105,7 +105,7 @@ class ObjectGenerator(object):
             pending_deputize=user_data.get('pending_deputize', None),
             badge=user_data.get('title', None),
             id=get_val('id'),
-            screen_name=get_val('nickname'),
+            username=get_val('nickname'),
             bio=get_val('biography'),
             num_followers=get_val('followers_count'),
             is_private=get_val('is_private'),
@@ -146,7 +146,7 @@ class ObjectGenerator(object):
         post = Post(
             id=get_val('id'),
             author_id=post_data['user'].get('id', None),
-            author_screen_name=post_data['user'].get('nickname', None),
+            author_username=post_data['user'].get('nickname', None),
             text=get_val('text'),
             group_id=get_val('group_id'),
             font_size=get_val('font_size'),
@@ -189,7 +189,7 @@ class ObjectGenerator(object):
             mutual_review_enabled=get_val('mutual_review'),
             num_reported=get_val('reported_count'),
             author_id=review_data['reviewer'].get('id', None),
-            author_screen_name=review_data['reviewer'].get('nickname', None),
+            author_username=review_data['reviewer'].get('nickname', None),
         )
 
         return review
@@ -228,7 +228,7 @@ class ObjectGenerator(object):
             mobile_verified_only=get_val('only_mobile_verified'),
             verified_age_only=get_val('only_verified_age'),
             owner_id=get_val('user_id'),
-            owner_screen_name=group_data['owner'].get('nickname', None),
+            owner_username=group_data['owner'].get('nickname', None),
             num_pendings=get_val('pending_count'),
             pending_deputize_ids=get_val('pending_deputize_ids'),
             pending_transfer_id=get_val('pending_transfer_id'),
@@ -266,7 +266,7 @@ class ObjectGenerator(object):
             last_message=chat_room_data['last_message'].get('text', None),
             member_ids=[member.get('id', None)
                         for member in chat_room_data['members']],
-            member_screen_names=[member.get(
+            member_usernames=[member.get(
                 'nickname', None) for member in chat_room_data['members']],
             chat_title=get_val('name'),
             num_unread=get_val('unread_count'),
@@ -315,7 +315,7 @@ class ObjectGenerator(object):
             metadata=get_val('metadata'),
             type=get_val('type'),
             from_user_id=get_val_2('user', 'id'),
-            from_user_screen_name=get_val_2('user', 'nickname'),
+            from_username=get_val_2('user', 'nickname'),
             from_user_profile_thumbnail=get_val_2(
                 'user', 'from_user_profile_icon_thumbnail')
         )

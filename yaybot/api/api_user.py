@@ -1,7 +1,6 @@
 import os
 import json
 import time
-import uuid
 import requests
 
 from ..config import Endpoints as ep
@@ -65,10 +64,9 @@ def create_account(
 ):
     console_print(
         '[!] アカウントの生成は、IPをBanされる可能性が高いです。プロキシを設定することをおすすめします。', 'yellow')
-    UUID = str(uuid.uuid4())
 
     data = {
-        'device_uuid': UUID,
+        'device_uuid': self.UUID,
         'locale': 'ja',
         'email': email
     }
@@ -112,7 +110,7 @@ def create_account(
         "country_code": country_code,
         "password": password,
         "birth_date": birth_date,
-        "uuid": UUID,
+        "uuid": self.UUID,
         "api_key": self.api_key,
         "biography": biography,
         "profile_icon_filename": photo,

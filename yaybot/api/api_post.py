@@ -2,46 +2,38 @@ from ..config import Endpoints as ep
 from ..utils import console_print
 
 
-def create_text_post(self, text, color=0, font_size=0):
+def create_post(self, post_type, text, image, choices, color=0, font_size=0):
+    valid_types = ['text', 'survey', 'image']
+    if post_type not in valid_types:
+        raise ValueError(f'Invalid post type. Must be one of {valid_types}')
+
     data = {
         'text': text,
         'color': color,
         'font_size': font_size,
-        'post_type': 'text',
-        'uuid': ''
+        'post_type': post_type,
+        'uuid': self.UUID,
+        'message_tags': '[]',
     }
-    resp = self._post(f'{ep.API_URL}/v1/web/posts/new', data)
-    return resp
 
+    if post_type == 'text':
+        url = '{}/v1/web/posts/new'.format(ep.API_URL)
+    elif post_type == 'survey':
+        if choices is None:
+            raise ValueError('Choices cannot be None for survey post type')
+        data['choices[]'] = choices
+        url = 'https://yay.space/api/posts'
+    elif post_type == 'image':
+        if image is None:
+            raise ValueError('Image cannot be None for image post type')
+        image_data = self.upload_photo(image)
+        data['attachment_sizes'] = {
+            'attachment': [image_data['width'], image_data['height']]
+        }
+        data['attachment_filename'] = image_data['filename']
+        url = 'https://yay.space/api/posts'
 
-def create_survey_post(self, text, choices, color=0, font_size=0):
-    data = {
-        'text': text,
-        'color': color,
-        'font_size': font_size,
-        'post_type': 'survey',
-        'choices[]': choices,
-        'uuid': ''
-    }
-    resp = self._post('https://yay.space/api/posts', data)
-    return resp
-
-
-def create_image_post(self, image, text, color=0, font_size=0):
-    data = self.upload_photo(image)
-    data = {
-        "post_type": "image",
-        "text": text,
-        "color": color,
-        "font_size": font_size,
-        "message_tags": "[]",
-        "attachment_sizes": {
-            "attachment": [data['width'], data['height']]
-        },
-        "attachment_filename": data['filename'],
-        "uuid": ""
-    }
-    resp = self._post('https://yay.space/api/posts', data)
+    resp = self._post(url, data)
     return resp
 
 
