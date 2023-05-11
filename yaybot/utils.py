@@ -154,7 +154,7 @@ class ObjectGenerator(object):
             num_likes=get_val('likes_count'),
             type=get_val('post_type'),
             color=get_val('color'),
-            num_reposted=get_val('reposts_count'),
+            num_reposts=get_val('reposts_count'),
             created_at=get_val('created_at'),
             updated_at=get_val('updated_at'),
             edited_at=get_val('edited_at'),

@@ -168,7 +168,7 @@ class Post:
         num_likes,
         type,
         color,
-        num_reposted,
+        num_reposts,
         created_at,
         updated_at,
         edited_at,
@@ -197,7 +197,7 @@ class Post:
         self.num_likes = num_likes
         self.type = type
         self.color = color
-        self.num_reposted = num_reposted
+        self.num_reposts = num_reposts
         self.created_at = created_at
         self.updated_at = updated_at
         self.edited_at = edited_at

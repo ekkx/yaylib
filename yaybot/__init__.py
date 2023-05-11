@@ -3,6 +3,7 @@ from . import exceptions
 from . import models
 from . import utils
 from .api import Yay
+from .version import version
 
-__version__ = '0.3.5'  # also change api / api.py
-__all__ = ['config', 'exceptions', 'models', 'support', 'utils', 'Yay']
+__version__ = version
+__all__ = ['config', 'exceptions', 'models', 'utils', 'Yay', 'version']

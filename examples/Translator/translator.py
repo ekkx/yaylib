@@ -15,9 +15,8 @@ class TranslatorBot(object):
         self.client = Client()
 
     def login(self, email, password):
-        if email is None or password is None:
-            return
-        self.yay.login(email, password)
+        if email and password:
+            self.yay.login(email, password)
 
     def get_tagged(self, now):
         notices = self.yay.get_notification(important=True)

@@ -12,9 +12,8 @@ class LikeBot(object):
         self.yay = Yay(token)
 
     def login(self, email, password):
-        if email is None or password is None:
-            return
-        self.yay.login(email, password)
+        if email and password:
+            self.yay.login(email, password)
 
     def start(self, amount=None):
         amount = float('inf') if amount is None else amount

@@ -293,7 +293,7 @@ def get_timeline(self, amount=100):
 
 
 def get_user_timeline(self, user_id, amount=None):
-    amount = float('inf') if amount is None else amount
+    amount = self.get_user(user_id).num_posts if amount is None else amount
     number = min(amount, 100)
 
     resp = self._get(
@@ -303,10 +303,9 @@ def get_user_timeline(self, user_id, amount=None):
     if amount <= 100:
         return posts
 
+    posts_count = amount
     next_item = resp['posts'][-1]
     next_id = next_item['id']
-    posts_count = self.get_user(user_id).num_posts if amount == float(
-        'inf') else amount
     amount -= 100
 
     with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
@@ -434,11 +433,40 @@ def get_conversation(self, conversation_id=None, post_id=None, amount=100):
     return self.get_posts_from_dict(resp)
 
 
-def get_reposts(self, post_id, amount=100):
+def get_reposts(self, post_id, amount=None):
+    amount = self.get_post(post_id).num_reposts if amount is None else amount
     number = min(amount, 100)
-    resp = self._get(
-        f'{ep.POST_v2}/{post_id}/reposts?number={number}')
-    return self.get_posts_from_dict(resp)
+
+    resp = self._get(f'{ep.POST_v2}/{post_id}/reposts?number={number}')
+    posts = self.get_posts_from_dict(resp)
+
+    if amount <= 100:
+        return posts
+
+    posts_count = amount
+    next_item = resp['posts'][-1]
+    next_id = next_item['id']
+    amount -= 100
+
+    with tqdm(total=posts_count, desc='Extracting Posts') as pbar:
+        pbar.update(number)
+        while next_id and amount > 0:
+            number = min(amount, 100)
+
+            resp = self._get(
+                f'{ep.POST_v2}/{post_id}/reposts?from_post_id={next_id}&number={number}'
+            )
+            posts.extend(self.get_posts_from_dict(resp))
+
+            if len(resp['posts']) == 0:
+                break
+            next_item = resp['posts'][-1]
+            next_id = next_item['id']
+            amount -= 100
+
+            pbar.update(number)
+
+    return posts
 
 
 def get_post_likers(self, post_id, amount=None):
