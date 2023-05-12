@@ -74,8 +74,34 @@ def download_image(self, media_url, filename=None, folder='images'):
 
     with open(fname, 'wb') as f:
         f.write(image_data)
-    return fname
+
+    self.logger.info('Image saved to [{}]'.format(os.path.abspath(fname)))
+    return os.path.abspath(fname)
 
 
-def download_video(self, path: str = None):
-    return
+def download_video(self, media_url, filename=None, folder='videos'):
+    resp = requests.get(media_url, stream=True)
+
+    if resp.status_code != 200:
+        raise HTTPError(f'The URL is invalid')
+
+    video_data = resp.iter_content(chunk_size=1024)
+
+    basename = os.path.basename(media_url)
+    filename = filename or os.path.splitext(basename)[0]
+    ext = os.path.splitext(basename)[1]
+    fname = os.path.join(folder, filename + ext)
+
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    if os.path.exists(fname):
+        self.logger.info('File already exists, skipping...')
+        return fname
+
+    with open(fname, 'wb') as f:
+        for chunk in video_data:
+            f.write(chunk)
+
+    self.logger.info('Video saved to [{}]'.format(os.path.abspath(fname)))
+    return os.path.abspath(fname)

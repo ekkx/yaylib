@@ -174,7 +174,10 @@ class ObjectGenerator(object):
             conversation_id=get_val('conversation_id'),
             attachment=get_val('attachment'),
             attachment_thumbnail=get_val('attachment_thumbnail'),
-            shared_url=post_data.get('shared_url', {}).get('url', None)
+            shared_url=post_data.get('shared_url', {}).get('url', None),
+            video_data=get_val('videos'),
+            video_urls=[data.get('video_url', None)
+                        for data in post_data.get('videos', [])],
         )
         return post
 
@@ -265,9 +268,9 @@ class ObjectGenerator(object):
             is_request=get_val('is_request'),
             last_message=chat_room_data['last_message'].get('text', None),
             member_ids=[member.get('id', None)
-                        for member in chat_room_data['members']],
+                        for member in chat_room_data.get('members', [])],
             member_usernames=[member.get(
-                'nickname', None) for member in chat_room_data['members']],
+                'nickname', None) for member in chat_room_data.get('members', [])],
             chat_title=get_val('name'),
             num_unread=get_val('unread_count'),
             updated_at=get_val('updated_at')

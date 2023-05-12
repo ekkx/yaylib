@@ -151,7 +151,7 @@ class GroupUser(User):
         self.badge = badge
 
     def __repr__(self):
-        return f''
+        return f'GroupUser(id={self.id})'
 
 
 class Post:
@@ -185,7 +185,9 @@ class Post:
         conversation_id,
         attachment,
         attachment_thumbnail,
-        shared_url
+        shared_url,
+        video_data,
+        video_urls,
     ):
         self.id = id
         self.author_id = author_id
@@ -215,9 +217,11 @@ class Post:
         self.attachment = attachment
         self.attachment_thumbnail = attachment_thumbnail
         self.shared_url = shared_url
+        self.video_data = video_data
+        self.video_urls = video_urls
 
     def __repr__(self):
-        return str(self)
+        return f'Post(id={self.id})'
 
 
 class Review:
@@ -337,7 +341,7 @@ class Group:
         self.walkthrough_requested = walkthrough_requested
 
     def __repr__(self):
-        return str(self)
+        return f'Group(id={self.id})'
 
 
 class ChatRoom:
@@ -373,7 +377,7 @@ class ChatRoom:
         self.updated_at = updated_at
 
     def __repr__(self):
-        return str(self)
+        return f'ChatRoom(id={self.id})'
 
 
 class Message:
@@ -415,7 +419,7 @@ class Message:
         self.video_url = video_url
 
     def __repr__(self):
-        return str(self)
+        return f'Message(text={self.text})'
 
 
 class Activity:
@@ -443,4 +447,4 @@ class Activity:
         self.from_user_profile_thumbnail = from_user_profile_thumbnail
 
     def __repr__(self):
-        return str(self)
+        return f'Activity(type={self.type})'

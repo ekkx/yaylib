@@ -1764,8 +1764,8 @@ class Yay(object):
     ):
         return download_image(self, media_url, filename, folder)
 
-    # def download_video(self, media_url: str, filename: str = None, folder='videos'):
-    #     return download_video(self, media_url, filename, folder)
+    def download_video(self, media_url: str, filename: str = None, folder='videos'):
+        return download_video(self, media_url, filename, folder)
 
     # ====== SUPPORT ======
 
