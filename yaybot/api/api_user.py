@@ -65,6 +65,7 @@ def create_account(
     console_print(
         '[!] アカウントの生成は、IPをBanされる可能性が高いです。プロキシを設定することをおすすめします。', 'yellow')
 
+    filename = 'login_info.json'
     data = {
         'device_uuid': self.UUID,
         'locale': 'ja',
@@ -98,7 +99,7 @@ def create_account(
     email_grant_token = resp.json()['email_grant_token']
 
     if photo:
-        data = self.upload_photo(self, photo)
+        data = self.upload_image('user_avatar', photo)
         photo = data['filename']
 
     data = {
@@ -127,16 +128,18 @@ def create_account(
             if not os.path.exists(base_path):
                 os.makedirs(base_path)
 
-            if os.path.exists(base_path + '/login_info.json'):
-                with open(base_path + '/login_info.json', 'r', encoding='utf-8') as f:
+            fname = os.path.join(base_path, filename)
+
+            if os.path.exists(fname):
+                with open(fname, 'r', encoding='utf-8') as f:
                     file_contents = f.read()
                     if file_contents.strip() == "":
-                        with open(base_path + '/login_info.json', 'w', encoding='utf-8') as f:
+                        with open(fname, 'w', encoding='utf-8') as f:
                             json.dump(info, f, ensure_ascii=False)
                     else:
                         info = json.loads(file_contents)
             else:
-                with open(base_path + '/login_info.json', 'w', encoding='utf-8') as f:
+                with open(fname, 'w', encoding='utf-8') as f:
                     json.dump(info, f, ensure_ascii=False)
 
             new_user = {
@@ -147,12 +150,48 @@ def create_account(
             }
             info['users'].append(new_user)
 
-            with open(base_path + 'login_info.json', 'w', encoding='utf-8') as f:
+            with open(fname, 'w', encoding='utf-8') as f:
                 json.dump(info, f, ensure_ascii=False)
-            print('(保存先: /config/login_info.json)\n')
+
+            print(f'(保存先: {fname})\n')
 
         print(f"ユーザーID: {resp.json()['id']}")
         print(f"ユーザー名: {username}")
         print(f"メールアドレス: {email}")
         print(f"パスワード: {password}")
     return resp.json()
+
+
+def edit_profile(
+        self,
+        data_dict,
+        profile_image=None,
+        cover_image=None,
+):
+    # TODO: invalidSignedInfo
+    if not data_dict:
+        raise ValueError("data_dict must not be empty")
+    data = {}
+    if 'username' in data_dict:
+        data['nickname'] = data_dict['username']
+    if 'bio' in data_dict:
+        data['biography'] = data_dict['bio']
+    if 'country_code' in data_dict:
+        data['country_code'] = data_dict['country_code']
+    if profile_image:
+        image_data = self.upload_image('user_avatar', profile_image)
+        if 'filename' in image_data:
+            data['profile_icon_filename'] = image_data['filename']
+        else:
+            raise ValueError("Failed to upload profile image")
+    if cover_image:
+        image_data = self.upload_image('user_avatar', cover_image)
+        if 'filename' in image_data:
+            data['cover_image_filename'] = image_data['filename']
+        else:
+            raise ValueError("Failed to upload cover image")
+    try:
+        resp = self._post(f'{ep.USER_v3}/edit', data)
+        return resp
+    except Exception as e:
+        raise ValueError(f"Failed to edit profile: {str(e)}")

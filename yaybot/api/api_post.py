@@ -23,15 +23,15 @@ def create_post(self, post_type, text, image, choices=None, color=0, font_size=0
     elif post_type == 'survey':
         if choices is None:
             raise ValueError('Choices cannot be None for survey post type')
-        
+
         data['choices[]'] = choices
         url = 'https://yay.space/api/posts'
 
     elif post_type == 'image':
         if image is None:
             raise ValueError('Image cannot be None for image post type')
-        
-        image_data = self.upload_photo(image)
+
+        image_data = self.upload_image('post', image)
         data['attachment_sizes'] = {
             'attachment': [image_data['width'], image_data['height']]
         }
@@ -39,12 +39,15 @@ def create_post(self, post_type, text, image, choices=None, color=0, font_size=0
         url = 'https://yay.space/api/posts'
 
     resp = self._post(url, data)
+    if resp['result'] == 'success':
+        self.logger.info(
+            'Post Created [https://yay.space/post/{}]'.format(resp['id']))
     return resp
 
 
 def create_post_in_group(self, group_id, post_type, text, image, choices=None, color=0, font_size=0):
     valid_types = ['text', 'survey', 'image']
-    
+
     if post_type not in valid_types:
         raise ValueError(f'Invalid post type. Must be one of {valid_types}')
 
@@ -67,8 +70,8 @@ def create_post_in_group(self, group_id, post_type, text, image, choices=None, c
     elif post_type == 'image':
         if image is None:
             raise ValueError('Image cannot be None for image post type')
-        
-        image_data = self.upload_photo(image)
+
+        image_data = self.upload_image(image)
         data['attachment_sizes'] = {
             'attachment': [image_data['width'], image_data['height']]
         }

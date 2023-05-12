@@ -94,7 +94,9 @@ from .api_group import (
     leave_group,
 )
 from .api_media import (
-    upload_photo,
+    upload_image,
+    download_image,
+    download_video,
 )
 from .api_post import (
     create_post,
@@ -116,9 +118,11 @@ from .api_user import (
     block_user,
     unblock_user,
     create_account,
+    edit_profile,
 )
 
 current_path = os.path.abspath(os.getcwd())
+
 
 class Yay(object):
 
@@ -174,7 +178,7 @@ class Yay(object):
         latest_version = resp['tag_name']
         VERSION = f'v{version}'
         msg = f'A new version of YayBot available:'
-        version_msg = (f'{red(VERSION)} -> {green(latest_version)}' )
+        version_msg = (f'{red(VERSION)} -> {green(latest_version)}')
         guite_msg = f"To update, visit: {green('https://github.com/qualia-5w4/yaybot')}"
 
         if latest_version != VERSION:
@@ -1012,6 +1016,14 @@ class Yay(object):
         """
         return unblock_user(self, user_id)
 
+    def edit_profile(
+            self,
+            data_dict,
+            profile_image=None,
+            cover_image=None,
+    ):
+        return edit_profile(self, data_dict, profile_image, cover_image)
+
     # ====== POST ======
 
     def create_post(
@@ -1064,7 +1076,7 @@ class Yay(object):
             post_type: str,
             text: str,
             image: str = None,
-            choices: list=None,
+            choices: list = None,
             color=0,
             font_size=0,
     ) -> dict:
@@ -1074,7 +1086,7 @@ class Yay(object):
 
         Parameters:
             group_id (int): グループのID
-        
+
             post_type (str): 投稿の種類 ('text', 'survey', 'image')
 
             text (str): 投稿本文
@@ -1729,19 +1741,31 @@ class Yay(object):
 
     # ====== MEDIA ======
 
-    def upload_photo(self, photo: str) -> dict:
+    def upload_image(self, image_type: str, image: str) -> dict:
         """
 
         画像をアップロードします。
 
         Parameters:
+            image_type (str): 画像のタイプ ('post', 'user_avator'のいずれか)
             photo (str): 画像のパス
 
         Returns:
             MediaInfo (dict): メディアの情報
 
         """
-        return upload_photo(self, photo)
+        return upload_image(self, image_type, image)
+
+    def download_image(
+            self,
+            media_url: str,
+            filename: str = None,
+            folder='images'
+    ):
+        return download_image(self, media_url, filename, folder)
+
+    # def download_video(self, media_url: str, filename: str = None, folder='videos'):
+    #     return download_video(self, media_url, filename, folder)
 
     # ====== SUPPORT ======
 
