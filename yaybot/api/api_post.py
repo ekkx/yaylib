@@ -1,3 +1,5 @@
+from huepy import red
+
 from ..config import Endpoints as ep
 from ..utils import console_print
 
@@ -9,13 +11,18 @@ def create_post(self, post_type, text, image, choices=None, color=0, font_size=0
         raise ValueError(f'Invalid post type. Must be one of {valid_types}')
 
     data = {
+        'post_type': post_type,
         'text': text,
         'color': color,
         'font_size': font_size,
-        'post_type': post_type,
-        'uuid': self.UUID,
         'message_tags': '[]',
+        'uuid': self.UUID,
     }
+
+    if '@:start:' in text and ':end:' in text:
+        mention_format_info = parse_mention_format(self, text)
+        data['text'] = mention_format_info['text']
+        data['message_tags'] = mention_format_info['message_tags']
 
     if post_type == 'text':
         url = '{}/v1/web/posts/new'.format(ep.API_URL)
@@ -38,10 +45,15 @@ def create_post(self, post_type, text, image, choices=None, color=0, font_size=0
         data['attachment_filename'] = image_data['filename']
         url = 'https://yay.space/api/posts'
 
+    print(data)
+
     resp = self._post(url, data)
     if resp['result'] == 'success':
         self.logger.info(
             'Post Created [https://yay.space/post/{}]'.format(resp['id']))
+    else:
+        self.logger.error(
+            red(f"Failed to create a post [{resp['message']}]"))
     return resp
 
 
@@ -139,3 +151,49 @@ def unlike_post(self, post_id):
     resp = self._post(
         f'{ep.POST_v1}/{post_id}/unlike')
     return resp
+
+
+def mention(self, user_id):
+    if not isinstance(user_id, int):
+        return user_id
+    return '@:start:' + str(user_id) + ':end:'
+
+
+def convert_text_format(self, text):
+    formatted_text = ''
+    user_ids = []
+    segments = text.split('@:start:')
+    
+    for i, segment in enumerate(segments):
+        if i == 0:
+            formatted_text += segment
+            continue
+        user_id, text = segment.split(':end:')
+        username = self.get_user(user_id).username
+        formatted_text += '@' + username + ' ' + text
+        user_ids.append(user_id)
+
+    return {'text': formatted_text, 'user_ids': user_ids}
+
+
+def parse_mention_format(self, text):
+    user_ids = {}
+    message_tags = []
+    offset = 0
+
+    data = convert_text_format(self, text)
+    text = data['text']
+    user_ids = data['user_ids']
+
+    for user_id in user_ids:
+        start = text.find("@", offset)
+        if start == -1:
+            break
+        end = text.find(" ", start)
+        if end == -1:
+            end = len(text)
+        username = text[start+1:end]
+        message_tags.append({"type": "user", "user_id": int(user_id), "offset": start, "length": len(username)+1})
+        offset = end
+
+    return {'text': text, 'message_tags': str(message_tags)}

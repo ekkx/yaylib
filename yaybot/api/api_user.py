@@ -5,6 +5,7 @@ import requests
 
 from ..config import Endpoints as ep
 from ..utils import console_print
+from ..exceptions import ForbiddenError
 
 
 def follow_user(self, user_id):
@@ -65,101 +66,110 @@ def create_account(
     console_print(
         '[!] アカウントの生成は、IPをBanされる可能性が高いです。プロキシを設定することをおすすめします。', 'yellow')
 
-    filename = 'login_info.json'
-    data = {
-        'device_uuid': self.UUID,
-        'locale': 'ja',
-        'email': email
-    }
-    resp = requests.post(
-        f'{ep.API_URL}/v1/email_verification_urls', data
-    )
+    try:
+        filename = 'login_info.json'
+        data = {
+            'device_uuid': self.UUID,
+            'locale': 'ja',
+            'email': email
+        }
+        resp = requests.post(
+            f'{ep.API_URL}/v1/email_verification_urls', data
+        )
 
-    if (resp.status_code != 201):
-        console_print(resp.json()['message'], 'red')
-        return {'result': 'error'}
+        if (resp.status_code != 201):
+            console_print(resp.json()['message'], 'red')
+            return {'result': 'error'}
 
-    data = {'locale': 'ja', 'email': email}
-    resp = requests.post(resp.json()['url'], data)
+        data = {'locale': 'ja', 'email': email}
+        resp = requests.post(resp.json()['url'], data)
 
-    if resp.status_code != 200:
-        console_print(resp.json()['message'], 'red')
-        return {'result': 'error'}
+        if resp.status_code != 200:
+            console_print(resp.json()['message'], 'red')
+            return {'result': 'error'}
 
-    console_print('メールアドレスにコードを送信しました。', 'green')
-    code = input('コードを入力してください >> ')
+        console_print('メールアドレスにコードを送信しました。', 'green')
+        code = input('コードを入力してください >> ')
 
-    data = {'code': code, 'email': email}
-    resp = requests.post(ep.GET_EMAIL_GRANT_TOKEN, data)
+        data = {'code': code, 'email': email}
+        resp = requests.post(ep.GET_EMAIL_GRANT_TOKEN, data)
 
-    if resp.status_code != 200:
-        console_print('予期しないエラーが発生しました。', 'red')
-        return {'result': 'error'}
+        if resp.status_code != 200:
+            console_print('予期しないエラーが発生しました。', 'red')
+            return {'result': 'error'}
 
-    email_grant_token = resp.json()['email_grant_token']
+        email_grant_token = resp.json()['email_grant_token']
 
-    if photo:
-        data = self.upload_image('user_avatar', photo)
-        photo = data['filename']
+        if photo and 'https://yay-cdn.com/file/yay-space/uploads/user_avatar/' not in photo:
+            data = self.upload_image('user_avatar', photo)
+            photo = data['filename']
+        else:
+            avatar_url_prefix = 'https://yay-cdn.com/file/yay-space/uploads/'
+            photo = photo.replace(avatar_url_prefix, '')
 
-    data = {
-        "gender": gender,
-        "timestamp": int(time.time()),
-        "nickname": username,
-        "prefecture": prefecture,
-        "email_grant_token": email_grant_token,
-        "country_code": country_code,
-        "password": password,
-        "birth_date": birth_date,
-        "uuid": self.UUID,
-        "api_key": self.api_key,
-        "biography": biography,
-        "profile_icon_filename": photo,
-        "email": email
-    }
+        data = {
+            "gender": gender,
+            "timestamp": int(time.time()),
+            "nickname": username,
+            "prefecture": prefecture,
+            "email_grant_token": email_grant_token,
+            "country_code": country_code,
+            "password": password,
+            "birth_date": birth_date,
+            "uuid": self.UUID,
+            "api_key": self.api_key,
+            "biography": biography,
+            "profile_icon_filename": photo,
+            "email": email
+        }
 
-    resp = requests.post(f'{ep.USER_v3}/register', data)
+        resp = requests.post(f'{ep.USER_v3}/register', data)
 
-    if resp.status_code == 201:
-        console_print('アカウントを生成しました。', 'green')
+        if resp.status_code == 201:
+            console_print('アカウントを生成しました。', 'green')
 
-        if save_login_info is True:
-            info = {'users': []}
-            if not os.path.exists(base_path):
-                os.makedirs(base_path)
+            if save_login_info is True:
+                info = {'users': []}
+                if not os.path.exists(base_path):
+                    os.makedirs(base_path)
 
-            fname = os.path.join(base_path, filename)
+                fname = os.path.join(base_path, filename)
 
-            if os.path.exists(fname):
-                with open(fname, 'r', encoding='utf-8') as f:
-                    file_contents = f.read()
-                    if file_contents.strip() == "":
-                        with open(fname, 'w', encoding='utf-8') as f:
-                            json.dump(info, f, ensure_ascii=False)
-                    else:
-                        info = json.loads(file_contents)
-            else:
+                if os.path.exists(fname):
+                    with open(fname, 'r', encoding='utf-8') as f:
+                        file_contents = f.read()
+                        if file_contents.strip() == "":
+                            with open(fname, 'w', encoding='utf-8') as f:
+                                json.dump(info, f, ensure_ascii=False)
+                        else:
+                            info = json.loads(file_contents)
+                else:
+                    with open(fname, 'w', encoding='utf-8') as f:
+                        json.dump(info, f, ensure_ascii=False)
+
+                new_user = {
+                    'id': resp.json()['id'],
+                    'email': email,
+                    'password': password
+                }
+                info['users'].append(new_user)
+
                 with open(fname, 'w', encoding='utf-8') as f:
                     json.dump(info, f, ensure_ascii=False)
 
-            new_user = {
-                'id': resp.json()['id'],
-                'username': username,
-                'email': email,
-                'password': password
-            }
-            info['users'].append(new_user)
+                print(f'(保存先: {fname})\n')
 
-            with open(fname, 'w', encoding='utf-8') as f:
-                json.dump(info, f, ensure_ascii=False)
+            print(f"ユーザーID: {resp.json()['id']}")
+            print(f"ユーザー名: {username}")
+            print(f"メールアドレス: {email}")
+            print(f"パスワード: {password}")
+            print(f"URL: https://yay.space/user/{resp.json()['id']}")
+    
+            return resp.json()
 
-            print(f'(保存先: {fname})\n')
-
-        print(f"ユーザーID: {resp.json()['id']}")
-        print(f"ユーザー名: {username}")
-        print(f"メールアドレス: {email}")
-        print(f"パスワード: {password}")
-    return resp.json()
+    except ForbiddenError:
+        console_print('IP Banned', 'red')
+        return {'result': 'error'}
 
 
 def edit_profile(

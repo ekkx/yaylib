@@ -108,6 +108,9 @@ from .api_post import (
     unpin_post,
     like_posts,
     unlike_post,
+    mention,
+    parse_mention_format,
+    convert_text_format,
 )
 from .api_user import (
     follow_user,
@@ -1267,6 +1270,27 @@ class Yay(object):
 
         """
         return unlike_post(self, post_id)
+    
+    def mention(self, user_id: int):
+        """
+
+        投稿する際にメンションをする場合、メンション用の文字列にフォーマットします。
+
+        Parameters:
+            user_id (int): ユーザーのID
+
+        Examples:
+        >>> yay = Yay()
+        >>> yay.create_post(post_type='text', text=f'hello {yay.mention(123)}!')
+
+        """
+        return mention(self, user_id)
+    
+    def parse_mention_format(self, text: str) -> dict:
+        return parse_mention_format(self, text)
+    
+    def convert_text_format(self, text: str) -> dict:
+        return convert_text_format(self, text)
 
     # ====== GROUP ======
 

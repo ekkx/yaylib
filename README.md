@@ -63,7 +63,7 @@ cd yaybot
 
 pip install -r requirements.txt
 
-pip install .
+pip install -e .
 ```
 
 ### 🖥️ 始め方
@@ -107,7 +107,6 @@ yay.like_posts(post_ids)
 from yaybot import Yay
 
 yay = Yay()
-yay.login()
 
 user = yay.get_user('123')
 print('ユーザー名: ' + user.username)
