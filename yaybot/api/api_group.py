@@ -106,21 +106,14 @@ def change_group_settings(
 
 
 def transfer_group_ownership(self, group_id, user_id):
-    # need a fix. json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-    # the resp: <Response [400]>, probably the uuid is invalid.
-    data = {
-        'uuid': '',
-        'user_id': user_id
-    }
+    data = {'uuid': self.UUID, 'user_id': user_id}
     resp = self._post(
         f'https://yay.space/api/groups/{group_id}/transfer', data)
     return resp
 
 
 def offer_group_sub_owner(self, group_id, user_id):
-    # need a fix. json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-    # the resp: <Response [400]>, probably the uuid is invalid.
-    data = {'uuid': '', 'user_ids[]': user_id}
+    data = {'uuid': self.UUID, 'user_ids[]': user_id}
     resp = self._post(
         f'https://yay.space/api/groups/{group_id}/deputize', data)
     return resp
@@ -171,20 +164,6 @@ def invite_user_to_group(self, group_id, user_id):
     data = {'user_ids[]': user_id}
     resp = self._post(
         f'{ep.GROUP_v1}/{group_id}/invite', data)
-    return resp
-
-
-def pin_group_post(self, group_id, post_id):
-    data = {'group_id': group_id, 'post_id': post_id}
-    resp = self._put(
-        f'{ep.POST_v2}/group_pinned_post', data)
-    return resp
-
-
-def unpin_group_post(self, group_id):
-    data = {'group_id': group_id}
-    resp = self._delete(
-        f'{ep.POST_v2}/group_pinned_post', data)
     return resp
 
 

@@ -16,6 +16,7 @@ class Endpoints:
     # api v2
     USER_v2 = API_URL + '/v2/users'
     POST_v2 = API_URL + '/v2/posts'
+    SURVEY_v2 = API_URL + '/v2/surveys'
     CONVERSATION_v2 = API_URL + '/v2/conversations'
     GROUP_v2 = API_URL + '/v2/groups'
     CHATROOM_v2 = API_URL + '/v2/chat_rooms'

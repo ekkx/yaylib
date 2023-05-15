@@ -143,6 +143,16 @@ class ObjectGenerator(object):
         def get_val(key):
             return post_data.get(key, None)
 
+        # survey_data = get_val('survey')
+        # has_survey = survey_data is not None
+        # choices = None
+        # voted = None
+        # votes_count = None
+        # if has_survey:
+        #     choices = survey_data.get('choices', None)
+        #     voted = survey_data.get('voted', None)
+        #     votes_count = survey_data.get('votes_count', None)
+
         post = Post(
             id=get_val('id'),
             author_id=post_data['user'].get('id', None),
@@ -155,6 +165,7 @@ class ObjectGenerator(object):
             type=get_val('post_type'),
             color=get_val('color'),
             num_reposts=get_val('reposts_count'),
+            # has_survey=has_survey,
             created_at=get_val('created_at'),
             updated_at=get_val('updated_at'),
             edited_at=get_val('edited_at'),
@@ -178,6 +189,9 @@ class ObjectGenerator(object):
             video_data=get_val('videos'),
             video_urls=[data.get('video_url', None)
                         for data in post_data.get('videos', [])],
+            # choices=choices,
+            # voted=voted,
+            # votes_count=votes_count,
         )
         return post
 

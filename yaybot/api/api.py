@@ -86,8 +86,6 @@ from .api_group import (
     accept_group_join_request,
     decline_group_join_request,
     invite_user_to_group,
-    pin_group_post,
-    unpin_group_post,
     ban_user_from_group,
     unban_user_from_group,
     join_group,
@@ -100,17 +98,18 @@ from .api_media import (
 )
 from .api_post import (
     create_post,
-    create_post_in_group,
     create_repost,
-    create_reply,
     delete_post,
     pin_post,
     unpin_post,
+    pin_group_post,
+    unpin_group_post,
     like_posts,
     unlike_post,
+    vote_post,
     mention,
     parse_mention_format,
-    convert_text_format,
+    convert_mention_text_format,
 )
 from .api_user import (
     follow_user,
@@ -1031,29 +1030,33 @@ class Yay(object):
 
     def create_post(
             self,
-            post_type: str,
             text: str,
             image: str = None,
             choices: list = None,
             color=0,
-            font_size=0
+            font_size=0,
+            reply_to: int = None,
+            group_id: int = None,
     ) -> dict:
         """
 
         投稿します。
 
         Parameters:
-            post_type (str): 投稿の種類 ('text', 'survey', 'image')
 
             text (str): 投稿本文
 
             image (str): 画像のパス
 
-            choices (str): アンケートの選択肢
+            choices (list): アンケートの選択肢
 
             color (int): 文字色
 
             font_size (int): 文字の大きさ
+
+            reply_to (int): 返信先の投稿ID
+
+            group_id (int): グループのID
 
         Returns:
             Result (dict): 実行結果
@@ -1071,56 +1074,17 @@ class Yay(object):
             0 から 4 (文字の大きさは数値の大きさに比例します)
 
         """
-        return create_post(self, post_type, text, image, choices, color, font_size)
+        return create_post(self, text, image, choices, color, font_size, reply_to, group_id)
 
-    def create_post_in_group(
+    def create_repost(
             self,
-            group_id: int,
-            post_type: str,
+            post_id: int,
             text: str,
             image: str = None,
             choices: list = None,
             color=0,
-            font_size=0,
+            font_size=0
     ) -> dict:
-        """
-
-        IDで指定したグループで投稿します。
-
-        Parameters:
-            group_id (int): グループのID
-
-            post_type (str): 投稿の種類 ('text', 'survey', 'image')
-
-            text (str): 投稿本文
-
-            image (str): 画像のパス
-
-            choices (str): アンケートの選択肢
-
-            color (int): 文字色
-
-            font_size (int): 文字の大きさ
-
-        Returns:
-            Result (dict): 実行結果
-
-        Examples:
-        >>> create_post(text='こんにちは' color=2)
-
-        文字色の種類:
-
-            普通の色: 0 から 7
-            特殊な色: 1001 から 1007
-
-        文字の大きさ:
-
-            0 から 4 (文字の大きさは数値の大きさに比例します)
-
-        """
-        return create_post_in_group(self, group_id, post_type, text, image, choices, color, font_size)
-
-    def create_repost(self, text: str, post_id: int, color=0, font_size=0) -> dict:
         """
 
         IDで指定した投稿を(´∀｀∩)↑age↑します。
@@ -1148,37 +1112,7 @@ class Yay(object):
             0 から 4 (文字の大きさは数値の大きさに比例します)
 
         """
-        return create_repost(self, text, post_id, color, font_size)
-
-    def create_reply(self, text: str, post_id: int, color=0, font_size=0) -> dict:
-        """
-
-        IDで指定した投稿に返信します。
-
-        Parameters:
-            text (str): 投稿本文
-            post_id (int): 投稿のID
-            color (int): 文字色
-            font_size (int): 文字の大きさ
-
-        Returns:
-            Result (dict): 実行結果
-
-        Examples:
-            ID '123'の投稿に返信する場合
-        >>> create_reply(text='すごい', post_id=123)
-
-        文字色の種類:
-
-            普通の色: 0 から 7
-            特殊な色: 1001 から 1007
-
-        文字の大きさ:
-
-            0 から 4 (文字の大きさは数値の大きさに比例します)
-
-        """
-        return create_reply(self, text, post_id, color, font_size)
+        return create_repost(self, post_id, text, image, choices, color, font_size)
 
     def delete_post(self, post_id: int) -> dict:
         """
@@ -1270,27 +1204,36 @@ class Yay(object):
 
         """
         return unlike_post(self, post_id)
-    
+
+    def vote_post(self, post_id: int, vote_to_word: str = None, choice_id: int = None):
+        return vote_post(self, post_id, vote_to_word, choice_id)
+
     def mention(self, user_id: int):
         """
 
-        投稿する際にメンションをする場合、メンション用の文字列にフォーマットします。
+        渡されたユーザーIDをメンション用の文字列にフォーマットして返します。
+
+        メンションできるユーザーは、どこでメンションするかに依存するので注意してください。
 
         Parameters:
             user_id (int): ユーザーのID
 
+        Returns:
+            str: メンション用の文字列。ユーザー名の末尾に自動的に半角スペースが挿入されます
+
         Examples:
         >>> yay = Yay()
-        >>> yay.create_post(post_type='text', text=f'hello {yay.mention(123)}!')
+        >>> yay.create_post(post_type='text', text=f'こんにちは {yay.mention(123)}さん。')
+        >>> {'id': 367023,..., 'text': 'こんにちは @太郎 さん。',...}
 
         """
         return mention(self, user_id)
-    
+
     def parse_mention_format(self, text: str) -> dict:
         return parse_mention_format(self, text)
-    
-    def convert_text_format(self, text: str) -> dict:
-        return convert_text_format(self, text)
+
+    def convert_mention_text_format(self, text: str) -> dict:
+        return convert_mention_text_format(self, text)
 
     # ====== GROUP ======
 
