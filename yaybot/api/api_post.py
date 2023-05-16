@@ -45,11 +45,10 @@ def create_post(self, text, image, choices=None, color=0, font_size=0, reply_to=
         url = 'https://yay.space/api/posts'
 
     resp = self._post(url, data)
-    self.logger.debug(resp)
 
     if resp['result'] == 'success':
         self.logger.info(
-            'post created (https://yay.space/post/{})'.format(resp['id']))
+            'post created - https://yay.space/post/{}'.format(resp['id']))
         return resp
     self.logger.error(
         red('failed to create a post ({})'.format(resp['message'])))
@@ -88,7 +87,6 @@ def create_repost(self, post_id, text, image, choices=None, color=0, font_size=0
         data['message_tags'] = json.dumps(mention_format_info['message_tags'])
 
     resp = self._post(url, data)
-    self.logger.debug(resp)
 
     if resp['result'] == 'success':
         self.logger.info(

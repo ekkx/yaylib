@@ -161,6 +161,7 @@ class Post:
         id,
         author_id,
         author_username,
+        conference_call_id,
         text,
         group_id,
         font_size,
@@ -175,13 +176,14 @@ class Post:
         num_reported,
         reply_to_id,
         num_reply_to,
+        reply_to_user_ids,
         repostable,
         highlighted,
         hidden,
         thread_id,
         message_tags,
-        tag_type,
-        mentioned_user_id,
+        tag_types,
+        mentioned_user_ids,
         conversation_id,
         attachment,
         attachment_thumbnail,
@@ -192,6 +194,7 @@ class Post:
         self.id = id
         self.author_id = author_id
         self.author_username = author_username
+        self.conference_call_id = conference_call_id
         self.text = text
         self.group_id = group_id
         self.font_size = font_size
@@ -206,13 +209,14 @@ class Post:
         self.num_reported = num_reported
         self.reply_to_id = reply_to_id
         self.num_reply_to = num_reply_to
+        self.reply_to_user_ids = reply_to_user_ids
         self.repostable = repostable
         self.highlighted = highlighted
         self.hidden = hidden
         self.thread_id = thread_id
         self.message_tags = message_tags
-        self.tag_type = tag_type
-        self.mentioned_user_id = mentioned_user_id
+        self.tag_types = tag_types
+        self.mentioned_user_ids = mentioned_user_ids
         self.conversation_id = conversation_id
         self.attachment = attachment
         self.attachment_thumbnail = attachment_thumbnail

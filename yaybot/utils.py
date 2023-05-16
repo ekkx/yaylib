@@ -1,4 +1,5 @@
 import huepy
+import logging
 
 from .exceptions import (
     YayError,
@@ -155,8 +156,10 @@ class ObjectGenerator(object):
 
         post = Post(
             id=get_val('id'),
-            author_id=post_data['user'].get('id', None),
-            author_username=post_data['user'].get('nickname', None),
+            author_id=post_data.get('user', {}).get('id', None),
+            author_username=post_data.get('user', {}).get('nickname', None),
+            conference_call_id=post_data.get(
+                'conference_call', {}).get('id', None),
             text=get_val('text'),
             group_id=get_val('group_id'),
             font_size=get_val('font_size'),
@@ -173,15 +176,17 @@ class ObjectGenerator(object):
             reply_to_id=get_val('in_reply_to'),
             num_reply_to=get_val(
                 'in_reply_to_post_count'),
+            reply_to_user_ids=[data.get('id', None)
+                               for data in post_data.get('mentions', [])],
             repostable=get_val('repostable'),
             highlighted=get_val('highlighted'),
             hidden=get_val('hidden'),
             thread_id=get_val('thread_id'),
             message_tags=get_val('message_tags'),
-            tag_type=post_data['message_tags'][0].get(
-                'type') if post_data.get('message_tags') else None,
-            mentioned_user_id=post_data['message_tags'][0].get(
-                'user_id') if post_data.get('message_tags') else None,
+            tag_types=[data.get('type', None)
+                       for data in post_data.get('message_tags', [])],
+            mentioned_user_ids=[data.get('user_id', None)
+                                for data in post_data.get('message_tags', [])],
             conversation_id=get_val('conversation_id'),
             attachment=get_val('attachment'),
             attachment_thumbnail=get_val('attachment_thumbnail'),

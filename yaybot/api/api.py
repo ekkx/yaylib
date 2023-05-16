@@ -175,7 +175,7 @@ class Yay(object):
         self.logged_in_as = None
 
         url = 'https://api.github.com/repos/qualia-5w4/yaybot/releases/latest'
-        resp = self._get(url)
+        resp = requests.get(url).json()
 
         latest_version = resp['tag_name']
         VERSION = f'v{version}'
@@ -275,6 +275,8 @@ class Yay(object):
                             headers=self.headers,
                             proxies=self.proxies,
                             timeout=self.timeout)
+        self.logger.debug(f"[{green('GET')}] - {url}")
+        self.logger.debug(resp.text)
         handle_response(resp)
         return resp.json()
 
@@ -283,6 +285,8 @@ class Yay(object):
                              headers=self.headers,
                              proxies=self.proxies,
                              timeout=self.timeout)
+        self.logger.debug(f"[{green('POST')}] - {url}")
+        self.logger.debug(resp.text)
         handle_response(resp)
         return resp.json()
 
@@ -291,6 +295,8 @@ class Yay(object):
                             headers=self.headers,
                             proxies=self.proxies,
                             timeout=self.timeout)
+        self.logger.debug(f"[{green('PUT')}] - {url}")
+        self.logger.debug(resp.text)
         handle_response(resp)
         return resp.json()
 
@@ -299,6 +305,8 @@ class Yay(object):
                                headers=self.headers,
                                proxies=self.proxies,
                                timeout=self.timeout)
+        self.logger.debug(f"[{green('DELETE')}] - {url}")
+        self.logger.debug(resp.text)
         handle_response(resp)
         return resp.json()
 
