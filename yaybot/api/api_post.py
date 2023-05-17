@@ -112,7 +112,7 @@ def pin_post(self, post_id):
 
 
 def unpin_post(self, post_id):
-    resp = self._post(
+    resp = self._delete(
         f'{ep.PIN_v1}/posts/{post_id}')
     return resp
 
