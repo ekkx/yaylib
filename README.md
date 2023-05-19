@@ -57,7 +57,7 @@
 次のコマンドをターミナル上で実行してください:
 
 ```bash
-git clone https://github.com/qualia-5w4/yaybot
+git clone https://github.com/qaov/yaybot
 
 cd yaybot
 
@@ -87,12 +87,12 @@ print('logged_in_as: ' + yay.logged_in_as)
 >>> 'logged_in_as: 3851771'
 ```
 
-3. `yay = Yay(token='トークン')` でアクセストークンを使用します。
+3. `yay = Yay(access_token='トークン')` でアクセストークンを使用します。
 
 ```python
 from yaybot import Yay
 
-yay = Yay(token='アクセストークン')
+yay = Yay(access_token='アクセストークン')
 
 post_ids = ['73628', '73646', '73682']
 

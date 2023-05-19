@@ -13,9 +13,21 @@ def follow_user(self, user_id):
     return resp
 
 
+def follow_users(self, user_ids):
+    # self.logger.info(f'Going to follow {len(user_ids)} users.')
+    return
+
+
 def unfollow_user(self, user_id):
     resp = self._post(f'{ep.USER_v2}/{user_id}/unfollow')
     return resp
+
+
+def unfollow_non_followers(self):
+    # TODO: get user's followings and followers to get non followers
+    # TODO: unfollow each users you got in the previous step
+    # self.logger.info(f'Going to unfollow {user_count} users.')
+    return
 
 
 def accept_follow_request(self, user_id):
@@ -164,7 +176,7 @@ def create_account(
             print(f"メールアドレス: {email}")
             print(f"パスワード: {password}")
             print(f"URL: https://yay.space/user/{resp.json()['id']}")
-    
+
             return resp.json()
 
     except ForbiddenError:

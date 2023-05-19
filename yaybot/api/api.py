@@ -130,7 +130,7 @@ class Yay(object):
 
     def __init__(
             self,
-            token: str = None,
+            access_token: str = None,
             proxy: str = None,
             port: int = None,
             timeout=10,
@@ -169,19 +169,19 @@ class Yay(object):
         }
         self.UUID = str(uuid.uuid4())
         self.api_key = get_api_key(self)
-        self.access_token = None
+        self.access_token = access_token
         self.refresh_token = None
         self.expires_in = None
         self.logged_in_as = None
 
-        url = 'https://api.github.com/repos/qualia-5w4/yaybot/releases/latest'
+        url = 'https://api.github.com/repos/qaov/yaybot/releases/latest'
         resp = requests.get(url).json()
 
         latest_version = resp['tag_name']
         VERSION = f'v{version}'
         msg = f'A new version of YayBot available:'
         version_msg = (f'{red(VERSION)} -> {green(latest_version)}')
-        guite_msg = f"To update, visit: {green('https://github.com/qualia-5w4/yaybot')}"
+        guite_msg = f"To update, visit: {green('https://github.com/qaov/yaybot')}"
 
         if latest_version != VERSION:
             print(f"[{blue('notice')}] {msg} {version_msg}")
@@ -240,9 +240,8 @@ class Yay(object):
             self.logger.error('Port is not set')
             raise Exception('Port is not set')
 
-        if token:
-            self.access_token = token
-            self.headers.setdefault('Authorization', f'Bearer {token}')
+        if access_token:
+            self.headers.setdefault('Authorization', f'Bearer {access_token}')
 
         self.logger.info('YayBot version: ' + version + ' Started')
 

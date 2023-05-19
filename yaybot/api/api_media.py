@@ -49,6 +49,7 @@ def upload_image(self, image_type, image):
         'height': height
     }
 
+    self.logger.info("Image '" + filename + ext + "' is uploaded.")
     return data
 
 

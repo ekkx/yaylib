@@ -51,7 +51,7 @@ def logout(self):
         self.refresh_token = None
         self.expires_in = None
         self.logged_in_as = None
-        self.logger.info('User has Logged out')
+        self.logger.info('User has Logged out.')
     else:
         console_print('User is not logged in', 'red')
 

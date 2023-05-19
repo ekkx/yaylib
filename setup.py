@@ -12,8 +12,8 @@ setup(
     description='This Python package provides an easy-to-use interface for accessing data from Yay!, a social networking platform. With this API, you can retrieve user profiles, posts, comments, and other content from Yay!, as well as perform common tasks like liking and commenting on posts. Compatible with Yay! version 3.0 and later. Please note that some API calls may be subject to rate limits or require authentication.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/qualia-5w4/Yay-Bot',
-    author='qualia-5w4',
+    url='https://github.com/qaov/Yay-Bot',
+    author='qaov',
     author_email='nikola.desuga@gmail.com',
     license='MIT',
     classifiers=[

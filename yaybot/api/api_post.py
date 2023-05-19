@@ -48,10 +48,10 @@ def create_post(self, text, image, choices=None, color=0, font_size=0, reply_to=
 
     if resp['result'] == 'success':
         self.logger.info(
-            'post created - https://yay.space/post/{}'.format(resp['id']))
+            'Post created. - https://yay.space/post/{}'.format(resp['id']))
         return resp
     self.logger.error(
-        red('failed to create a post ({})'.format(resp['message'])))
+        red('Failed to create a post. ({})'.format(resp['message'])))
     return resp
 
 
