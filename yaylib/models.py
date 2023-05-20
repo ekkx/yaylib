@@ -43,6 +43,5 @@ class User:
                  profileIcon: str,
                  profileIconThumbnail: str,
                  reviewsCount: int,
-
                  ):
         pass

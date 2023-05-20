@@ -1,6 +1,9 @@
-import aiohttp
+from http import HTTPStatus
+
+import httpx
 import os
 import logging
+from typing import (Optional, Dict, Any)
 from .config import *
 import uuid
 from .version import version
@@ -40,8 +43,8 @@ class Yay(object):
         hey, this is yaylib.
 
         """
-        self.yay_api_vision = YAY_API_VISION
-        self.yay_vision_name = YAY_VISION_NAME
+        self.yay_api_vision = Configs.YAY_API_VISION
+        self.yay_vision_name = Configs.YAY_VISION_NAME
         self.access_token = access_token
         self.proxy = proxy
         self.proxies = None
@@ -50,11 +53,10 @@ class Yay(object):
         self.domain = domain
         self.uuid = str(uuid.uuid4())
         self.headers = {
-            "Host": YAY_PRODUCTION_HOST,
-            "X-Timestamp": "",
+            "Host": Configs.YAY_PRODUCTION_HOST,
             "X-App-Version": self.yay_api_vision,
             "X-Device-Info": f"yay {self.yay_vision_name} android 11 (3.5x 1440x2960 Galaxy S9)",
-            "X-Device-Uuid": "",
+            "X-Device-Uuid": self.uuid,
             "X-Connection-Type": "wifi",
             "Accept-Language": "ja",
             "Content-Type": "application/json;charset=UTF-8"
