@@ -1,6 +1,6 @@
 from .api import Yay
-from . import models
-from . import utils
+from .models import *
+from .utils import *
 from .version import version
 
 __version__ = version

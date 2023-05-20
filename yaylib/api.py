@@ -1,14 +1,7 @@
 import os
-import asyncio
-import httpx
-import json
 import logging
-import tqdm
-import aiohttp
 from huepy import *
-
-from . import models
-from . import utils
+import uuid
 from .version import version
 
 
@@ -55,15 +48,16 @@ class Yay(object):
         self.base_path = base_path
         self.domain = domain
         self.user_agent = ""
+        self.uuid = str(uuid.uuid4())
         self.headers = {
-            'Host': self.domain,
-            'X-Timestamp': "",
-            'X-App-Version': self.yay_api_vision,
-            'X-Device-Info': f"yay {self.yay_vision_name} android 11 (3.5x 1440x2960 Galaxy S9)",
-            'X-Device-Uuid': "",
-            'X-Connection-Type': 'wifi',
-            'Accept-Language': 'ja',
-            'Content-Type': 'application/json;charset=UTF-8'
+            "Host": self.domain,
+            "X-Timestamp": "",
+            "X-App-Version": self.yay_api_vision,
+            "X-Device-Info": f"yay {self.yay_vision_name} android 11 (3.5x 1440x2960 Galaxy S9)",
+            "X-Device-Uuid": "",
+            "X-Connection-Type": "wifi",
+            "Accept-Language": "ja",
+            "Content-Type": "application/json;charset=UTF-8"
         }
 
         self.logger = logging.getLogger("yaylib version: " + version)
