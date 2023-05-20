@@ -1,9 +1,26 @@
-from ..api import (Yay, AuthenticationError)
-from ..config import (Endpoints, Configs)
 from typing import (Dict)
 
+from ..config import (Endpoints, Configs)
+from ..errors import (
+    YayError,
+    ForbiddenError,
+    RateLimitError,
+    AuthenticationError,
+)
+from .api import (
+    _get,
+    _post,
+    _put,
+    _delete,
+    _check_authorization,
+    _handle_response,
+)
 
-async def contact_friends(self: Yay, header: Dict[str, str | int]):
-    if header.get("Authorization") is None:
-        AuthenticationError("Authorization is not present in the header.")
-    response = await Yay.send_request(self=self, method="get", endpoint=f"https://{Endpoints.USER_V1}/contact_friends", headers=header)
+
+def contact_friends(self, headers: Dict[str, str | int] = None):
+    _check_authorization(self, headers)
+    return _get(
+        self=self,
+        endpoint=f"https://{Endpoints.USER_V1}/contact_friends",
+        headers=headers
+    )

@@ -1,34 +1,25 @@
-from http import HTTPStatus
-
 import httpx
 import os
 import logging
-from typing import (Optional, Dict, Any)
-from .config import *
 import uuid
+
+from http import HTTPStatus
+from typing import Optional, Dict, Any
+
+from .config import *
 from .version import version
-
-
-class YayError(Exception):
-    pass
-
-
-class AuthenticationError(YayError):
-    pass
-
-
-class ForbiddenError(YayError):
-    pass
-
-
-class RateLimitError(YayError):
-    pass
+from .api.post import (
+    get_my_posts,
+)
+from .api.users import (
+    contact_friends,
+)
 
 
 current_path = os.path.abspath(os.getcwd())
 
 
-class Yay(object):
+class Client(object):
 
     def __init__(
             self,
@@ -79,3 +70,11 @@ class Yay(object):
             self.headers.setdefault("Authorization", f"Bearer {access_token}")
 
         self.logger.info("yaylib version: " + version + " started")
+
+
+    def get_my_posts(self, from_post_id: int = None, number: int = 100, include_group_post: bool = False, headers: Dict[str, str | int] = None):
+        return get_my_posts(self, from_post_id, number, include_group_post, headers)
+
+
+    def contact_friends(self, headers: Dict[str, str | int] = None):
+        return contact_friends(self, headers)
