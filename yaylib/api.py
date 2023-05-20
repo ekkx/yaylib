@@ -4,8 +4,7 @@ import httpx
 import json
 import logging
 import tqdm
-
-from fake_useragent import UserAgent
+import aiohttp
 from huepy import *
 
 from . import models
@@ -47,16 +46,24 @@ class Yay(object):
         hey, this is yaylib.
 
         """
-
+        self.yay_api_vision = "3.16"
+        self.yay_vision_name = "3.16.1"
         self.access_token = access_token
         self.proxy = proxy
         self.proxies = None
         self.timeout = timeout
         self.base_path = base_path
         self.domain = domain
-        self.user_agent = UserAgent().chrome
+        self.user_agent = ""
         self.headers = {
-            
+            'Host': self.domain,
+            'X-Timestamp': "",
+            'X-App-Version': self.yay_api_vision,
+            'X-Device-Info': f"yay {self.yay_vision_name} android 11 (3.5x 1440x2960 Galaxy S9)",
+            'X-Device-Uuid': "",
+            'X-Connection-Type': 'wifi',
+            'Accept-Language': 'ja',
+            'Content-Type': 'application/json;charset=UTF-8'
         }
 
         self.logger = logging.getLogger("yaylib version: " + version)
