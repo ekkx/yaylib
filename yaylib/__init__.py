@@ -1,4 +1,4 @@
-from .api import *
+from .client import *
 from .models import *
 from .utils import *
 from .config import *

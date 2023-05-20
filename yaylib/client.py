@@ -1,8 +1,7 @@
-from http import HTTPStatus
-
 import httpx
 import os
 import logging
+import time
 from typing import (Optional, Dict, Any)
 from .config import *
 import uuid
@@ -52,11 +51,13 @@ class Yay(object):
         self.base_path = base_path
         self.domain = domain
         self.uuid = str(uuid.uuid4())
+        self.timestamp = str(int(time.time()))
         self.headers = {
-            "Host": Configs.YAY_PRODUCTION_HOST,
+            "Host": self.domain,
             "X-App-Version": self.yay_api_vision,
             "X-Device-Info": f"yay {self.yay_vision_name} android 11 (3.5x 1440x2960 Galaxy S9)",
             "X-Device-Uuid": self.uuid,
+            'X-Timestamp': self.timestamp,
             "X-Connection-Type": "wifi",
             "Accept-Language": "ja",
             "Content-Type": "application/json;charset=UTF-8"
