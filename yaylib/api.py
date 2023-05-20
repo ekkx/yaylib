@@ -1,6 +1,7 @@
+import aiohttp
 import os
 import logging
-from huepy import *
+from .config import *
 import uuid
 from .version import version
 
@@ -39,18 +40,17 @@ class Yay(object):
         hey, this is yaylib.
 
         """
-        self.yay_api_vision = "3.16"
-        self.yay_vision_name = "3.16.1"
+        self.yay_api_vision = YAY_API_VISION
+        self.yay_vision_name = YAY_VISION_NAME
         self.access_token = access_token
         self.proxy = proxy
         self.proxies = None
         self.timeout = timeout
         self.base_path = base_path
         self.domain = domain
-        self.user_agent = ""
         self.uuid = str(uuid.uuid4())
         self.headers = {
-            "Host": self.domain,
+            "Host": YAY_PRODUCTION_HOST,
             "X-Timestamp": "",
             "X-App-Version": self.yay_api_vision,
             "X-Device-Info": f"yay {self.yay_vision_name} android 11 (3.5x 1440x2960 Galaxy S9)",
@@ -59,7 +59,6 @@ class Yay(object):
             "Accept-Language": "ja",
             "Content-Type": "application/json;charset=UTF-8"
         }
-
         self.logger = logging.getLogger("yaylib version: " + version)
         ch = logging.StreamHandler()
         ch.setLevel(loglevel_stream)
