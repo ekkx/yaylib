@@ -174,14 +174,14 @@ class Yay(object):
         self.expires_in = None
         self.logged_in_as = None
 
-        url = 'https://api.github.com/repos/qaov/yaybot/releases/latest'
+        url = 'https://api.github.com/repos/qvco/yaybot/releases/latest'
         resp = requests.get(url).json()
 
         latest_version = resp['tag_name']
         VERSION = f'v{version}'
         msg = f'A new version of YayBot available:'
         version_msg = (f'{red(VERSION)} -> {green(latest_version)}')
-        guite_msg = f"To update, visit: {green('https://github.com/qaov/yaybot')}"
+        guite_msg = f"To update, visit: {green('https://github.com/qvco/yaybot')}"
 
         if latest_version != VERSION:
             print(f"[{blue('notice')}] {msg} {version_msg}")

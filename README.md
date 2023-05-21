@@ -57,7 +57,7 @@
 次のコマンドをターミナル上で実行してください:
 
 ```bash
-git clone https://github.com/qaov/yaybot
+git clone https://github.com/qvco/yaybot
 
 cd yaybot
 
