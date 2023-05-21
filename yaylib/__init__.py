@@ -1,8 +1,7 @@
 from .client import *
-from .models import *
-from .utils import *
 from .config import *
-from .version import *
+from .errors import *
+from .models import *
 
-__version__ = version
-__all__ = ["Client", "models", "utils", "version"]
+__version__ = Configs.YAYLIB_VERSION
+__all__ = ["Client", "config", "errors", "models"]

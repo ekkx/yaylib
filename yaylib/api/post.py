@@ -456,7 +456,7 @@ def get_post(self):
     pass
 
 
-def get_oost_likers(self):
+def get_post_likers(self):
     pass
 
 

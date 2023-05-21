@@ -6,7 +6,6 @@ import uuid
 from typing import Optional, Dict, Any
 
 from .config import *
-from .version import version
 from .api.login import *
 from .api.post import *
 from .api.users import *
@@ -30,6 +29,7 @@ class Client(object):
         hey, this is yaylib.
 
         """
+        self.yaylib_version = Configs.YAYLIB_VERSION
         self.yay_api_version = Configs.YAY_API_VERSION
         self.yay_version_name = Configs.YAY_VERSION_NAME
         self.yay_api_key = Configs.YAY_API_KEY
@@ -41,7 +41,7 @@ class Client(object):
         self.domain = domain
         self.uuid = str(uuid.uuid4())
         self.headers = {
-            "Host": Configs.YAY_PRODUCTION_HOST,
+            "Host": self.domain,
             "X-App-Version": self.yay_api_version,
             "X-Device-Info": f"yay {self.yay_version_name} android 11 (3.5x 1440x2960 Galaxy S9)",
             "X-Device-Uuid": self.uuid,
@@ -49,7 +49,7 @@ class Client(object):
             "Accept-Language": "ja",
             "Content-Type": "application/json;charset=UTF-8"
         }
-        self.logger = logging.getLogger("yaylib version: " + version)
+        self.logger = logging.getLogger("yaylib version: " + self.yaylib_version)
         ch = logging.StreamHandler()
         ch.setLevel(loglevel_stream)
         ch.setFormatter(logging.Formatter(
@@ -67,7 +67,7 @@ class Client(object):
         if access_token:
             self.headers.setdefault("Authorization", f"Bearer {access_token}")
 
-        self.logger.info("yaylib version: " + version + " started")
+        self.logger.info("yaylib version: " + self.yaylib_version + " started")
 
     # LOGIN
 

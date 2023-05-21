@@ -38,7 +38,6 @@ class Footprint:
         visited_at: int,
         id: int,
     ):
-
         self.user = user
         self.visited_at = visited_at
         self.id = id
