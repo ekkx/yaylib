@@ -423,7 +423,7 @@ def get_group_highlight_posts(self):
     pass
 
 
-def get_group_search_posts(self):
+def get_group_timeline_by_keyword(self):
     pass
 
 

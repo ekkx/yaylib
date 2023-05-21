@@ -52,17 +52,18 @@ def _delete(self, endpoint: str, params: dict = None, headers: dict = None):
 
 
 def _handle_response(resp):
-    if resp.status_code == 401:
-        raise AuthenticationError("Failed to authenticate")
-    if resp.status_code == 403:
-        raise ForbiddenError("Forbidden")
-    if resp.status_code == 429:
-        raise RateLimitError("Rate limit exceeded")
+    # if resp.status_code == 401:
+    #     raise AuthenticationError("Failed to authenticate")
+    # if resp.status_code == 403:
+    #     raise ForbiddenError("Forbidden")
+    # if resp.status_code == 429:
+    #     raise RateLimitError("Rate limit exceeded")
 
-    resp_json = resp.json()
+    # resp_json = resp.json()
 
-    if "error_code" in resp_json:
-        if resp_json["error_code"] == -343:
-            raise ExceedCallQuotaError("Exceed call quota")
-        if resp_json["error_code"] == -380:
-            raise InvalidSignedInfoError("Invalid signed info")
+    # if "error_code" in resp_json:
+    #     if resp_json["error_code"] == -343:
+    #         raise ExceedCallQuotaError("Exceed call quota")
+    #     if resp_json["error_code"] == -380:
+    #         raise InvalidSignedInfoError("Invalid signed info")
+    return resp
