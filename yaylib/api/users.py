@@ -1,4 +1,4 @@
-from typing import (Dict)
+from typing import Dict
 
 from ..config import (Endpoints, Configs)
 from ..errors import (
@@ -18,7 +18,7 @@ from .api import (
 
 
 def contact_friends(self, headers: Dict[str, str | int] = None):
-    _check_authorization(self, headers)
+    headers = _check_authorization(self, headers)
     return _get(
         self=self,
         endpoint=f"https://{Endpoints.USER_V1}/contact_friends",

@@ -28,14 +28,14 @@ class Client(object):
             timeout=10,
             base_path=current_path,
             loglevel_stream=logging.INFO,
-            domain="api.yay.space",
+            domain=Configs.YAY_PRODUCTION_HOST,
     ):
         """
         hey, this is yaylib.
 
         """
-        self.yay_api_vision = Configs.YAY_API_VISION
-        self.yay_vision_name = Configs.YAY_VISION_NAME
+        self.yay_api_version = Configs.YAY_API_VERSION
+        self.yay_version_name = Configs.YAY_VERSION_NAME
         self.access_token = access_token
         self.proxy = proxy
         self.proxies = None
@@ -45,8 +45,8 @@ class Client(object):
         self.uuid = str(uuid.uuid4())
         self.headers = {
             "Host": Configs.YAY_PRODUCTION_HOST,
-            "X-App-Version": self.yay_api_vision,
-            "X-Device-Info": f"yay {self.yay_vision_name} android 11 (3.5x 1440x2960 Galaxy S9)",
+            "X-App-Version": self.yay_api_version,
+            "X-Device-Info": f"yay {self.yay_version_name} android 11 (3.5x 1440x2960 Galaxy S9)",
             "X-Device-Uuid": self.uuid,
             "X-Connection-Type": "wifi",
             "Accept-Language": "ja",
@@ -55,7 +55,8 @@ class Client(object):
         self.logger = logging.getLogger("yaylib version: " + version)
         ch = logging.StreamHandler()
         ch.setLevel(loglevel_stream)
-        ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+        ch.setFormatter(logging.Formatter(
+            "%(asctime)s - %(levelname)s - %(message)s"))
 
         handler_existed = False
         for handler in self.logger.handlers:
@@ -71,10 +72,8 @@ class Client(object):
 
         self.logger.info("yaylib version: " + version + " started")
 
-
     def get_my_posts(self, from_post_id: int = None, number: int = 100, include_group_post: bool = False, headers: Dict[str, str | int] = None):
         return get_my_posts(self, from_post_id, number, include_group_post, headers)
-
 
     def contact_friends(self, headers: Dict[str, str | int] = None):
         return contact_friends(self, headers)

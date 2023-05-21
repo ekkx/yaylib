@@ -1,4 +1,4 @@
-from typing import (Dict)
+from typing import Dict
 
 from ..config import (Endpoints, Configs)
 from ..errors import (
@@ -18,7 +18,7 @@ from .api import (
 
 
 def add_bookmark(self, user_id: int, post_id: int, headers: Dict[str, str | int] = None):
-    _check_authorization(self, headers)
+    headers = _check_authorization(self, headers)
     return _put(
         self=self,
         endpoint=f"https://{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}",
@@ -27,7 +27,7 @@ def add_bookmark(self, user_id: int, post_id: int, headers: Dict[str, str | int]
 
 
 def add_group_highlight_post(self, group_id: int, post_id: int, headers: Dict[str, str | int] = None):
-    _check_authorization(self, headers)
+    headers = _check_authorization(self, headers)
     return _put(
         self=self,
         endpoint=f"https://{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
@@ -36,7 +36,7 @@ def add_group_highlight_post(self, group_id: int, post_id: int, headers: Dict[st
 
 
 def create_group_call_post(self, group_id: int, post_id: int, headers: Dict[str, str | int] = None):
-    _check_authorization(self, headers)
+    headers = _check_authorization(self, headers)
     return _put(
         self=self,
         endpoint=f"https://{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
@@ -46,7 +46,7 @@ def create_group_call_post(self, group_id: int, post_id: int, headers: Dict[str,
 
 def get_my_posts(self, from_post_id: int = None, number: int = 100, include_group_post: bool = False, headers: Dict[str, str | int] = None):
     # include_group_postはfalseだったらサークルの投稿は含まないはずなのにサークルの投稿しか出てこないしなんかおかしい
-    _check_authorization(self, headers)
+    headers = _check_authorization(self, headers)
     data = {
         "number": number,
         "include_group_post": include_group_post
