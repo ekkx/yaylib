@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from yaylib import __version__
 
-with open("README", "r", encoding="utf-8") as f:
+with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
@@ -11,13 +11,10 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="MIT",
-    url="https://github.com/qualia-5w4/yaylib",
-    keywords=["yay", "api", "bot", "library", "wrapper"],
+    url="https://github.com/qvco/yaylib",
+    keywords=["yay", "yaylib", "api", "bot", "library", "wrapper"],
     install_requires=[
-        "asyncio",
-        "fake_useragent",
         "logging",
-        "huepy",
         "httpx",
         "tqdm",
     ],

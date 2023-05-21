@@ -1,6 +1,3 @@
-asyncio
-fake_useragent
 logging
-huepy
 httpx
 tqdm

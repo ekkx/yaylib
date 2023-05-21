@@ -4,11 +4,11 @@ from typing import Dict, List
 from ..config import *
 from ..errors import *
 from .api import (
+    _check_authorization,
     _get,
     _post,
     _put,
     _delete,
-    _check_authorization,
     _handle_response,
 )
 
@@ -49,8 +49,8 @@ def create_call_post(
         attachment_5_filename: str = None,
         attachment_6_filename: str = None,
         attachment_7_filename: str = None,
-        attachment_8_filename: str = None,  
-        attachment_9_filename: str = None,  
+        attachment_8_filename: str = None,
+        attachment_9_filename: str = None,
         headers: Dict[str, str | int] = None):
     # TODO: @NotNull "uuid", "api_key", "timestamp", "signed_info"
     headers = _check_authorization(self, headers)
@@ -61,7 +61,7 @@ def create_call_post(
         "group_id": group_id,
         "call_type": call_type,
         "uuid": self.uuid,
-        "api_key": self.api_key,
+        "api_key": self.yay_api_key,
         "timestamp": time.time(),
         "signed_info": self.signed_info,
         "category_id": category_id,
@@ -127,7 +127,7 @@ def create_post(
         attachment_5_filename: str = None,
         attachment_6_filename: str = None,
         attachment_7_filename: str = None,
-        attachment_8_filename: str = None,  
+        attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
         headers: Dict[str, str | int] = None):
@@ -183,7 +183,7 @@ def create_repost(
         attachment_5_filename: str = None,
         attachment_6_filename: str = None,
         attachment_7_filename: str = None,
-        attachment_8_filename: str = None,  
+        attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
         headers: Dict[str, str | int] = None):
@@ -271,7 +271,7 @@ def create_thread_post(
         attachment_5_filename: str = None,
         attachment_6_filename: str = None,
         attachment_7_filename: str = None,
-        attachment_8_filename: str = None,  
+        attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
         headers: Dict[str, str | int] = None):
@@ -350,18 +350,18 @@ def get_bookmark(self, user_id: int, from_str: str = None, headers: Dict[str, st
 
 
 def get_timeline_calls(
-        self,
-        group_id: int = None,
-        from_timestamp: int = None,
-        number: int = None,
-        category_id: int = None,
-        call_type: str = "voice",
-        include_circle_call: bool = None,
-        cross_generation: bool = None,
-        exclude_recent_gomimushi: bool = None,
-        shared_interest_categories: bool = None,
-        headers: Dict[str, str | int] = None
-    ):
+    self,
+    group_id: int = None,
+    from_timestamp: int = None,
+    number: int = None,
+    category_id: int = None,
+    call_type: str = "voice",
+    include_circle_call: bool = None,
+    cross_generation: bool = None,
+    exclude_recent_gomimushi: bool = None,
+    shared_interest_categories: bool = None,
+    headers: Dict[str, str | int] = None
+):
     # TODO: not working {'next_page_value': None, 'result': 'success', 'posts': []}
     params = {
         "group_id": group_id,
@@ -383,15 +383,15 @@ def get_timeline_calls(
 
 
 def get_conversation(
-        self,
-        conversation_id: int,
-        group_id: int = None,
-        thread_id: int = None,
-        from_post_id: int = None,
-        number: int = 50,
-        reverse: bool = True,
-        headers: Dict[str, str | int] = None
-    ):
+    self,
+    conversation_id: int,
+    group_id: int = None,
+    thread_id: int = None,
+    from_post_id: int = None,
+    number: int = 50,
+    reverse: bool = True,
+    headers: Dict[str, str | int] = None
+):
     params = {
         "group_id": group_id,
         "thread_id": thread_id,
@@ -405,6 +405,34 @@ def get_conversation(
         params=params,
         headers=headers
     )
+
+
+def get_conversation_root_posts(self):
+    pass
+
+
+def get_following_call_timeline(self):
+    pass
+
+
+def get_following_timeline(self):
+    pass
+
+
+def get_group_highlight_posts(self):
+    pass
+
+
+def get_group_search_posts(self):
+    pass
+
+
+def get_group_timeline(self):
+    pass
+
+
+def get_timeline_by_hashtag(self):
+    pass
 
 
 def get_my_posts(self, from_post_id: int = None, number: int = 100, include_group_post: bool = False, headers: Dict[str, str | int] = None):
@@ -422,3 +450,87 @@ def get_my_posts(self, from_post_id: int = None, number: int = 100, include_grou
         params=params,
         headers=headers
     )
+
+
+def get_post(self):
+    pass
+
+
+def get_oost_likers(self):
+    pass
+
+
+def get_reposts(self):
+    pass
+
+
+def get_posts(self):
+    pass
+
+
+def get_recommended_post_tags(self):
+    pass
+
+
+def get_recommended_posts(self):
+    pass
+
+
+def get_timeline_by_keyword(self):
+    pass
+
+
+def get_timeline(self):
+    pass
+
+
+def get_url_metadata(self):
+    pass
+
+
+def get_user_timeline(self):
+    pass
+
+
+def like_posts(self):
+    pass
+
+
+def remove_bookmark(self):
+    pass
+
+
+def remove_group_highlight_post(self):
+    pass
+
+
+def remove_posts(self):
+    pass
+
+
+def report_post(self):
+    pass
+
+
+def unlike_post(self):
+    pass
+
+
+def update_post(self):
+    pass
+
+
+def update_recommendation_feedback(self):
+    pass
+
+
+def validate_post(self):
+    pass
+
+
+def view_video(self):
+    pass
+
+
+def vote_survey(self):
+    pass

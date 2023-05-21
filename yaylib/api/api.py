@@ -6,6 +6,15 @@ from ..config import *
 from ..errors import *
 
 
+def _check_authorization(self, headers) -> dict:
+    if headers is None:
+        headers = self.headers
+    if headers.get("Authorization") is None:
+        raise AuthenticationError(
+            "Authorization is not present in the header.")
+    return headers
+
+
 def _get(self, endpoint: str, params: dict = None, headers: dict = None):
     if headers is None:
         headers = self.headers
@@ -40,15 +49,6 @@ def _delete(self, endpoint: str, params: dict = None, headers: dict = None):
                         proxies=self.proxies, timeout=self.timeout)
     _handle_response(resp)
     return resp.json()
-
-
-def _check_authorization(self, headers) -> dict:
-    if headers is None:
-        headers = self.headers
-    if headers.get("Authorization") is None:
-        raise AuthenticationError(
-            "Authorization is not present in the header.")
-    return headers
 
 
 def _handle_response(resp):
