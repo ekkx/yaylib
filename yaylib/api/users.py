@@ -1,6 +1,6 @@
 from typing import Dict
 
-from ..config import (Endpoints, Configs)
+from ..config import *
 from ..errors import (
     YayError,
     ForbiddenError,

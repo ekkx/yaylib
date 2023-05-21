@@ -12,3 +12,11 @@ class ForbiddenError(YayError):
 
 class RateLimitError(YayError):
     pass
+
+
+class ExceedCallQuotaError(YayError):
+    pass
+
+
+class InvalidSignedInfoError(YayError):
+    pass
