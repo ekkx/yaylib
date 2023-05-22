@@ -8,8 +8,21 @@ from .api.user import *
 
 
 class Client(API):
+    """
+    Client( \
+        access_token=None, proxy=None, timeout=10, \
+        base_path=current_path, loglevel_stream=logging.INFO, \
+        host=Configs.YAY_PRODUCTION_HOST \
+    )
+
+    ---
+
+    Yay! API v3 Client
+
+    """
 
     # LOGIN
+
     def get_token(self, grant_type="refresh_token", refresh_token: str = None, email: str = None, password: str = None):
         return get_token(self, grant_type, refresh_token, email, password)
 
@@ -20,6 +33,7 @@ class Client(API):
         return logout(self)
 
     # POST
+
     def create_post(
             self,
             text: str = None,
@@ -78,6 +92,12 @@ class Client(API):
     ):
         return get_my_posts(self, from_post_id, number, include_group_post, headers)
 
+    def get_post(self, post_id: int) -> Post:
+        return get_post(self, post_id)
+
+    def get_posts(self, post_ids: List[int]) -> List[Post]:
+        return get_posts(self, post_ids)
+
     def get_timeline_calls(
         self,
         group_id: int = None,
@@ -127,6 +147,7 @@ class Client(API):
         )
 
     # USER
+
     def contact_friends(self):
         return contact_friends(self)
 

@@ -15,14 +15,14 @@ current_path = os.path.abspath(os.getcwd())
 class API:
 
     def __init__(
-        self, access_token: str = None, proxy: str = None,
-        timeout=10, base_path=current_path, loglevel_stream=logging.INFO,
-        host=Configs.YAY_PRODUCTION_HOST,
+        self,
+        access_token: str = None,
+        proxy: str = None,
+        timeout=10,
+        base_path=current_path,
+        loglevel_stream=logging.INFO,
+        host=Configs.YAY_PRODUCTION_HOST
     ):
-        """
-        hey, this is yaylib.
-
-        """
         self.yaylib_version = Configs.YAYLIB_VERSION
         self.yay_api_version = Configs.YAY_API_VERSION
         self.yay_version_name = Configs.YAY_VERSION_NAME
@@ -103,12 +103,14 @@ class API:
         return response
 
     def _construct_response(self, data, data_type):
-        # TODO: data_typeで指定されたオブジェクトに変換して返す
-        if "user" in data:
-            data = data["user"]
-        # keys = ["user", "users", "post", "posts"]
-        # if any(key in data for key in keys):
-        #     data = [data[key] for key in keys if key in data]
+        # TODO: 他のキーも追加する
+        keys = [
+            "user", "users", "post", "posts"
+        ]
+        for key in keys:
+            if key in data:
+                data = data[key]
+                break
 
         if isinstance(data, list):
             data = [data_type(result) for result in data]

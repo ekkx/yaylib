@@ -6,7 +6,7 @@ from ..models import User
 
 
 def contact_friends(self):
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"https://{Endpoints.USER_V1}/contact_friends",
     )

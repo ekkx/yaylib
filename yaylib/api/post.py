@@ -7,12 +7,12 @@ from ..models import Post
 
 
 def add_bookmark(self, user_id: int, post_id: int):
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request("PUT", endpoint=f"https://{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}")
 
 
 def add_group_highlight_post(self, group_id: int, post_id: int):
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "PUT", endpoint=f"https://{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
     )
@@ -40,7 +40,7 @@ def create_call_post(
         attachment_9_filename: str = None
 ):
     # TODO: @NotNull "uuid", "api_key", "timestamp", "signed_info"
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"https://{Endpoints.POSTS_V2}/new_conference_call",
         payload={
@@ -71,7 +71,7 @@ def create_call_post(
 
 
 def create_group_pin_post(self, post_id: int, group_id: int):
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "PUT", endpoint=f"https://{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
         payload={"post_id": post_id, "group_id": group_id}
@@ -79,7 +79,7 @@ def create_group_pin_post(self, post_id: int, group_id: int):
 
 
 def create_pin_post(self, post_id: int):
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"https://{Endpoints.PINNED_V1}/posts",
         payload={"id": post_id}
@@ -110,7 +110,7 @@ def create_post(
         video_file_name: str = None,
 ):
     # TODO: @Header("X-Jwt") @NotNull String str,
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"https://{Endpoints.POSTS_V3}/new",
         payload={
@@ -163,7 +163,7 @@ def create_repost(
         video_file_name: str = None,
 ):
     # TODO: @Header("X-Jwt") @NotNull String str,
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"https://{Endpoints.POSTS_V3}/repost",
         payload={
@@ -202,7 +202,7 @@ def create_share_post(
         group_id: int = None,
 ):
     # TODO: @NotNull "uuid", "api_key", "timestamp", "signed_info"
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"https://{Endpoints.POSTS_V2}/new_share_post",
         payload={
@@ -245,7 +245,7 @@ def create_thread_post(
         video_file_name: str = None,
 ):
     # TODO: @Header("X-Jwt") @NotNull String str,
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"https://{Endpoints.THREADS_V1}/posts",
         payload={
@@ -275,14 +275,14 @@ def create_thread_post(
 
 
 def delete_all_post(self):
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"https://{Endpoints.POSTS_V1}/delete_all_post",
     )
 
 
 def delete_group_pin_post(self, group_id: int):
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "DELETE", endpoint=f"https://{Endpoints.POSTS_V2}/group_pinned_post",
         payload={"group_id": group_id}
@@ -290,7 +290,7 @@ def delete_group_pin_post(self, group_id: int):
 
 
 def delete_pin_post(self, post_id: int):
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "DELETE", endpoint=f"https://{Endpoints.PINNED_V1}/posts/{post_id}"
     )
@@ -318,7 +318,7 @@ def get_timeline_calls(
     shared_interest_categories: bool = None,
 ):
     # TODO: not working {'next_page_value': None, 'result': 'success', 'posts': []}
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"https://{Endpoints.POSTS_V2}/call_timeline",
         payload={
@@ -344,7 +344,7 @@ def get_conversation(
     number: int = 50,
     reverse: bool = True,
 ):
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"https://{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
         payload={
@@ -387,7 +387,7 @@ def get_timeline_by_hashtag(self):
 
 def get_my_posts(self, from_post_id: int = None, number: int = 100, include_group_post: bool = False):
     # TODO: include_group_postはfalseだったらサークルの投稿は含まないはずなのにサークルの投稿しか出てこないしなんかおかしい
-    self._check_authorization(self)
+    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"https://{Endpoints.POSTS_V2}/mine",
         params={
@@ -397,8 +397,12 @@ def get_my_posts(self, from_post_id: int = None, number: int = 100, include_grou
     )
 
 
-def get_post(self):
-    pass
+def get_post(self, post_id: int):
+    # TODO: @Header("Cache-Control") @Nullable String str);
+    return self._make_request(
+        "GET", endpoint=f"https://{Endpoints.POSTS_V2}/{post_id}",
+        data_type=Post
+    )
 
 
 def get_post_likers(self):
@@ -409,8 +413,12 @@ def get_reposts(self):
     pass
 
 
-def get_posts(self):
-    pass
+def get_posts(self, post_ids: List[int]):
+    self._check_authorization()
+    return self._make_request(
+        "GET", endpoint=f"https://{Endpoints.POSTS_V2}/multiple",
+        params={"post_ids[]": post_ids}, data_type=Post
+    )
 
 
 def get_recommended_post_tags(self):
