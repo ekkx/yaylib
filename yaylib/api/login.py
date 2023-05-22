@@ -2,14 +2,6 @@ from typing import Dict, List
 
 from ..config import *
 from ..errors import *
-from .api import (
-    _check_authorization,
-    _get,
-    _post,
-    _put,
-    _delete,
-    _handle_response,
-)
 
 
 def change_email(self):
@@ -28,42 +20,36 @@ def disconnect_account_with_sns(self):
     pass
 
 
-def get_token(self, grant_type: str, email: str = None, password: str = None, refresh_token: str = None):
-    headers = _check_authorization(self, headers)
-    params = {
-        "grant_type": grant_type,
-        "email": email,
-        "password": password,
-        "refresh_token": refresh_token
-    }
-    return _post(
-        self=self,
-        endpoint=f"https://{self.domain}/api/v1/oauth/token",
-        params=params,
-        headers=headers
+def get_token(self, grant_type: str, refresh_token: str = None, email: str = None, password: str = None):
+    return self._make_request(
+        "POST", endpoint=f"https://{self.host}/api/v1/oauth/token",
+        payload={
+            "grant_type": grant_type,
+            "email": email,
+            "password": password,
+            "refresh_token": refresh_token
+        }
     )
 
 
-def login_with_email(self, email: str, password: str, headers: Dict[str, str | int] = None):
+def login_with_email(self, email: str, password: str):
     try:
-        resp = _post(
-            self=self,
-            endpoint=f"https://{Endpoints.USER_V3}/login_with_email",
-            params={
+        response = self._make_request(
+            "POST", endpoint=f"https://{Endpoints.USER_V3}/login_with_email",
+            payload={
                 "api_key": self.yay_api_key,
                 "email": email,
                 "password": password,
                 "uuid": self.uuid
-            },
-            headers=headers
+            }
         )
-        self.access_token = resp["access_token"]
-        self.refresh_token = resp["refresh_token"]
-        self.logged_in_as = resp["user_id"]
+        self.access_token = response["access_token"]
+        self.refresh_token = response["refresh_token"]
+        self.logged_in_as = response["user_id"]
         self.headers.setdefault('Authorization', f'Bearer {self.access_token}')
 
         self.logger.info(f'Successfully logged in as [{self.logged_in_as}]')
-        return resp
+        return response
 
     except:
         self.logger.error('Login failed.')
@@ -74,21 +60,19 @@ def login_with_sns(self):
     pass
 
 
-def logout(self, headers: Dict[str, str | int] = None):
+def logout(self):
     try:
-        headers = _check_authorization(self, headers)
-        resp = _post(
-            self=self,
-            endpoint=f"https://{Endpoints.USER_V1}/logout",
-            params={"uuid": self.uuid},
-            headers=headers
+        self._check_authorization()
+        response = self._make_request(
+            "POST", endpoint=f"https://{Endpoints.USER_V1}/logout",
+            payload={"uuid": self.uuid}
         )
         self.headers.pop('Authorization', None)
         self.access_token = None
         self.refresh_token = None
         self.logged_in_as = None
         self.logger.info('User has Logged out.')
-        return resp
+        return response
 
     except:
         self.logger.error(f'User is not logged in.')

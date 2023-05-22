@@ -1,81 +1,25 @@
-import httpx
-import os
-import logging
-import uuid
-
 from typing import Optional, Dict, Any
 
 from .config import *
+from .api.api import API
 from .api.login import *
 from .api.post import *
-from .api.users import *
+from .api.user import *
 
 
-current_path = os.path.abspath(os.getcwd())
-
-
-class Client(object):
-
-    def __init__(
-            self,
-            access_token: str = None,
-            proxy: str = None,
-            timeout=10,
-            base_path=current_path,
-            loglevel_stream=logging.INFO,
-            domain=Configs.YAY_PRODUCTION_HOST,
-    ):
-        """
-        hey, this is yaylib.
-
-        """
-        self.yaylib_version = Configs.YAYLIB_VERSION
-        self.yay_api_version = Configs.YAY_API_VERSION
-        self.yay_version_name = Configs.YAY_VERSION_NAME
-        self.yay_api_key = Configs.YAY_API_KEY
-        self.access_token = access_token
-        self.proxy = proxy
-        self.proxies = None
-        self.timeout = timeout
-        self.base_path = base_path
-        self.domain = domain
-        self.uuid = str(uuid.uuid4())
-        self.headers = {
-            "Host": self.domain,
-            "X-App-Version": self.yay_api_version,
-            "X-Device-Info": f"yay {self.yay_version_name} android 11 (3.5x 1440x2960 Galaxy S9)",
-            "X-Device-Uuid": self.uuid,
-            "X-Connection-Type": "wifi",
-            "Accept-Language": "ja",
-            "Content-Type": "application/json;charset=UTF-8"
-        }
-        self.logger = logging.getLogger("yaylib version: " + self.yaylib_version)
-        ch = logging.StreamHandler()
-        ch.setLevel(loglevel_stream)
-        ch.setFormatter(logging.Formatter(
-            "%(asctime)s - %(levelname)s - %(message)s"))
-
-        handler_existed = False
-        for handler in self.logger.handlers:
-            if isinstance(handler, logging.StreamHandler):
-                handler_existed = True
-                break
-        if not handler_existed:
-            self.logger.addHandler(ch)
-        self.logger.setLevel(logging.DEBUG)
-
-        if access_token:
-            self.headers.setdefault("Authorization", f"Bearer {access_token}")
-
-        self.logger.info("yaylib version: " + self.yaylib_version + " started")
+class Client(API):
 
     # LOGIN
+    def get_token(self, grant_type="refresh_token", refresh_token: str = None, email: str = None, password: str = None):
+        return get_token(self, grant_type, refresh_token, email, password)
 
-    def login_with_email(self, email: str, password: str, headers: Dict[str, str | int] = None):
-        return login_with_email(self, email, password, headers)
+    def login_with_email(self, email: str, password: str):
+        return login_with_email(self, email, password)
+
+    def logout(self):
+        return logout(self)
 
     # POST
-
     def create_post(
             self,
             text: str = None,
@@ -182,7 +126,9 @@ class Client(object):
             headers,
         )
 
-    # USERS
+    # USER
+    def contact_friends(self):
+        return contact_friends(self)
 
-    def contact_friends(self, headers: Dict[str, str | int] = None):
-        return contact_friends(self, headers)
+    def get_user(self, user_id: int) -> User:
+        return get_user(self, user_id)

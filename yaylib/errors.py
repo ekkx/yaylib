@@ -2,21 +2,37 @@ class YayError(Exception):
     pass
 
 
-class AuthenticationError(YayError):
+class HTTPException(YayError):
     pass
 
 
-class ForbiddenError(YayError):
+class BadRequestError(HTTPException):
     pass
 
 
-class RateLimitError(YayError):
+class AuthenticationError(HTTPException):
     pass
 
 
-class ExceedCallQuotaError(YayError):
+class ForbiddenError(HTTPException):
     pass
 
 
-class InvalidSignedInfoError(YayError):
+class NotFoundError(HTTPException):
+    pass
+
+
+class RateLimitError(HTTPException):
+    pass
+
+
+class YayServerError(HTTPException):
+    pass
+
+
+class ExceedCallQuotaError(HTTPException):
+    pass
+
+
+class InvalidSignedInfoError(HTTPException):
     pass

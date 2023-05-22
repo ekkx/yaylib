@@ -315,90 +315,58 @@ class Survey:
 
 class User:
 
-    def __init__(
-        self,
-        user_id: int,
-        biography: str,
-        birth_date: str,
-        cover_image: str,
-        gender: str,
-        cover_image_thumbnail: str,
-        followers_count: int,
-        followings_count: int,
-        groups_users_count: int,
-        is_age_verified: bool,
-        is_chat_request_on: bool,
-        is_dangerous: bool,
-        is_email_confirmed: bool,
-        is_facebook_connected: bool,
-        is_follow_pending: bool,
-        is_followed_by: bool,
-        is_following: bool,
-        is_from_different_generation_and_trusted: bool,
-        is_group_phone_on: bool,
-        is_hidden: bool,
-        is_hide_vip: bool,
-        is_interests_selected: bool,
-        is_line_connected: bool,
-        is_lobi_connected: bool,
-        is_new: bool,
-        is_phone_on: bool,
-        is_private: bool,
-        is_recently_penalized: bool,
-        is_registered: bool,
-        is_video_pn: bool,
-        is_vip: bool,
-        masked_email: str,
-        mobile_number: str,
-        nickname: str,
-        posts_count: int,
-        prefecture: str,
-        profile_icon: str,
-        profile_icon_thumbnail: str,
-        reviews_count: int,
-    ):
-        self.id = user_id
-        self.biography = biography
-        self.birth_date = birth_date
-        self.cover_image = cover_image
-        self.gender = gender
-        self.cover_image_thumbnail = cover_image_thumbnail
-        self.followers_count = followers_count
-        self.followings_count = followings_count
-        self.groups_users_count = groups_users_count
-        self.is_age_verified = is_age_verified
-        self.is_chat_request_on = is_chat_request_on
-        self.is_dangerous = is_dangerous
-        self.is_email_confirmed = is_email_confirmed
-        self.is_facebook_connected = is_facebook_connected
-        self.is_follow_pending = is_follow_pending
-        self.is_followed_by = is_followed_by
-        self.is_following = is_following
-        self.is_from_different_generation_and_trusted = is_from_different_generation_and_trusted
-        self.is_group_phone_on = is_group_phone_on
-        self.is_hidden = is_hidden
-        self.is_hide_vip = is_hide_vip
-        self.is_interests_selected = is_interests_selected
-        self.is_line_connected = is_line_connected
-        self.is_lobi_connected = is_lobi_connected
-        self.is_new = is_new
-        self.is_phone_on = is_phone_on
-        self.is_private = is_private
-        self.is_recently_penalized = is_recently_penalized
-        self.is_registered = is_registered
-        self.is_video_pn = is_video_pn
-        self.is_vip = is_vip
-        self.masked_email = masked_email
-        self.mobile_number = mobile_number
-        self.nickname = nickname
-        self.posts_count = posts_count
-        self.prefecture = prefecture
-        self.profile_icon = profile_icon
-        self.profile_icon_thumbnail = profile_icon_thumbnail
-        self.reviews_count = reviews_count
+    # TODO: レスポンスのキーとuserの属性名が違うので合わせましょう。
+
+    __slots__ = (
+        "data", "id", "biography", "birth_date", "cover_image", "gender", "cover_image_thumbnail", "followers_count", "followings_count", "groups_users_count", "is_age_verified", "is_chat_request_on", "is_dangerous", "is_email_confirmed", "is_facebook_connected", "is_follow_pending", "is_followed_by", "is_following", "is_from_different_generation_and_trusted",
+        "is_group_phone_on", "is_hidden", "is_hide_vip", "is_interests_selected", "is_line_connected", "is_lobi_connected", "is_new", "is_phone_on", "is_private", "is_recently_penalized", "is_registered", "is_video_pn", "is_vip", "masked_email", "mobile_number", "nickname", "posts_count", "prefecture", "profile_icon", "profile_icon_thumbnail", "reviews_count"
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.id = int(data.get("id"))
+        self.biography = data.get("biography")
+        self.birth_date = data.get("birth_date")
+        self.cover_image = data.get("cover_image")
+        self.gender = data.get("gender")
+        self.cover_image_thumbnail = data.get("cover_image_thumbnail")
+        self.followers_count = data.get("followers_count")
+        self.followings_count = data.get("followings_count")
+        self.groups_users_count = data.get("groups_users_count")
+        self.is_age_verified = data.get("is_age_verified")
+        self.is_chat_request_on = data.get("is_chat_request_on")
+        self.is_dangerous = data.get("is_dangerous")
+        self.is_email_confirmed = data.get("is_email_confirmed")
+        self.is_facebook_connected = data.get("is_facebook_connected")
+        self.is_follow_pending = data.get("is_follow_pending")
+        self.is_followed_by = data.get("is_followed_by")
+        self.is_following = data.get("is_following")
+        self.is_from_different_generation_and_trusted = data.get(
+            "is_from_different_generation_and_trusted")
+        self.is_group_phone_on = data.get("is_group_phone_on")
+        self.is_hidden = data.get("is_hidden")
+        self.is_hide_vip = data.get("is_hide_vip")
+        self.is_interests_selected = data.get("is_interests_selected")
+        self.is_line_connected = data.get("is_line_connected")
+        self.is_lobi_connected = data.get("is_lobi_connected")
+        self.is_new = data.get("is_new")
+        self.is_phone_on = data.get("is_phone_on")
+        self.is_private = data.get("is_private")
+        self.is_recently_penalized = data.get("is_recently_penalized")
+        self.is_registered = data.get("is_registered")
+        self.is_video_pn = data.get("is_video_pn")
+        self.is_vip = data.get("is_vip")
+        self.masked_email = data.get("masked_email")
+        self.mobile_number = data.get("mobile_number")
+        self.nickname = data.get("nickname")
+        self.posts_count = data.get("posts_count")
+        self.prefecture = data.get("prefecture")
+        self.profile_icon = data.get("profile_icon")
+        self.profile_icon_thumbnail = data.get("profile_icon_thumbnail")
+        self.reviews_count = data.get("reviews_count")
 
     def __repr__(self):
-        return f'User(username={self.nickname})'
+        return f'User(data={self.data}, id={self.id})'
 
 
 class Video:

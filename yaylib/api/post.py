@@ -3,31 +3,18 @@ from typing import Dict, List
 
 from ..config import *
 from ..errors import *
-from .api import (
-    _check_authorization,
-    _get,
-    _post,
-    _put,
-    _delete,
-    _handle_response,
-)
+from ..models import Post
 
 
-def add_bookmark(self, user_id: int, post_id: int, headers: Dict[str, str | int] = None):
-    headers = _check_authorization(self, headers)
-    return _put(
-        self=self,
-        endpoint=f"https://{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}",
-        headers=headers
-    )
+def add_bookmark(self, user_id: int, post_id: int):
+    self._check_authorization(self)
+    return self._make_request("PUT", endpoint=f"https://{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}")
 
 
-def add_group_highlight_post(self, group_id: int, post_id: int, headers: Dict[str, str | int] = None):
-    headers = _check_authorization(self, headers)
-    return _put(
-        self=self,
-        endpoint=f"https://{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
-        headers=headers
+def add_group_highlight_post(self, group_id: int, post_id: int):
+    self._check_authorization(self)
+    return self._make_request(
+        "PUT", endpoint=f"https://{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
     )
 
 
@@ -50,61 +37,52 @@ def create_call_post(
         attachment_6_filename: str = None,
         attachment_7_filename: str = None,
         attachment_8_filename: str = None,
-        attachment_9_filename: str = None,
-        headers: Dict[str, str | int] = None):
+        attachment_9_filename: str = None
+):
     # TODO: @NotNull "uuid", "api_key", "timestamp", "signed_info"
-    headers = _check_authorization(self, headers)
-    params = {
-        "text": text,
-        "font_size": font_size,
-        "color": color,
-        "group_id": group_id,
-        "call_type": call_type,
-        "uuid": self.uuid,
-        "api_key": self.yay_api_key,
-        "timestamp": time.time(),
-        "signed_info": self.signed_info,
-        "category_id": category_id,
-        "game_title": game_title,
-        "joinable_by": joinable_by,
-        "message_tags": message_tags,
-        "attachment_filename": attachment_filename,
-        "attachment_2_filename": attachment_2_filename,
-        "attachment_3_filename": attachment_3_filename,
-        "attachment_4_filename": attachment_4_filename,
-        "attachment_5_filename": attachment_5_filename,
-        "attachment_6_filename": attachment_6_filename,
-        "attachment_7_filename": attachment_7_filename,
-        "attachment_8_filename": attachment_8_filename,
-        "attachment_9_filename": attachment_9_filename,
-    }
-    return _post(
-        self=self,
-        endpoint=f"https://{Endpoints.POSTS_V2}/new_conference_call",
-        params=params,
-        headers=headers
+    self._check_authorization(self)
+    return self._make_request(
+        "POST", endpoint=f"https://{Endpoints.POSTS_V2}/new_conference_call",
+        payload={
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "group_id": group_id,
+            "call_type": call_type,
+            "uuid": self.uuid,
+            "api_key": self.yay_api_key,
+            "timestamp": time.time(),
+            "signed_info": self.signed_info,
+            "category_id": category_id,
+            "game_title": game_title,
+            "joinable_by": joinable_by,
+            "message_tags": message_tags,
+            "attachment_filename": attachment_filename,
+            "attachment_2_filename": attachment_2_filename,
+            "attachment_3_filename": attachment_3_filename,
+            "attachment_4_filename": attachment_4_filename,
+            "attachment_5_filename": attachment_5_filename,
+            "attachment_6_filename": attachment_6_filename,
+            "attachment_7_filename": attachment_7_filename,
+            "attachment_8_filename": attachment_8_filename,
+            "attachment_9_filename": attachment_9_filename,
+        },
     )
 
 
-def create_group_pin_post(self, post_id: int, group_id: int, headers: Dict[str, str | int] = None):
-    headers = _check_authorization(self, headers)
-    params = {"post_id": post_id, "group_id": group_id}
-    return _put(
-        self=self,
-        endpoint=f"https://{Endpoints.POSTS_V2}/group_pinned_post",
-        params=params,
-        headers=headers
+def create_group_pin_post(self, post_id: int, group_id: int):
+    self._check_authorization(self)
+    return self._make_request(
+        "PUT", endpoint=f"https://{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+        payload={"post_id": post_id, "group_id": group_id}
     )
 
 
-def create_pin_post(self, post_id: int, headers: Dict[str, str | int] = None):
-    headers = _check_authorization(self, headers)
-    params = {"id": post_id}
-    return _post(
-        self=self,
-        endpoint=f"https://{Endpoints.PINNED_V1}/posts",
-        params=params,
-        headers=headers
+def create_pin_post(self, post_id: int):
+    self._check_authorization(self)
+    return self._make_request(
+        "POST", endpoint=f"https://{Endpoints.PINNED_V1}/posts",
+        payload={"id": post_id}
     )
 
 
@@ -130,36 +108,33 @@ def create_post(
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
-        headers: Dict[str, str | int] = None):
+):
     # TODO: @Header("X-Jwt") @NotNull String str,
-    headers = _check_authorization(self, headers)
-    params = {
-        "text": text,
-        "font_size": font_size,
-        "color": color,
-        "in_reply_to": in_reply_to,
-        "group_id": group_id,
-        "post_type": post_type,
-        "mention_ids[]": mention_ids,
-        "choices[]": choices,
-        "shared_url": shared_url,
-        "message_tags": message_tags,
-        "attachment_filename": attachment_filename,
-        "attachment_2_filename": attachment_2_filename,
-        "attachment_3_filename": attachment_3_filename,
-        "attachment_4_filename": attachment_4_filename,
-        "attachment_5_filename": attachment_5_filename,
-        "attachment_6_filename": attachment_6_filename,
-        "attachment_7_filename": attachment_7_filename,
-        "attachment_8_filename": attachment_8_filename,
-        "attachment_9_filename": attachment_9_filename,
-        "video_file_name": video_file_name,
-    }
-    return _post(
-        self=self,
-        endpoint=f"https://{Endpoints.POSTS_V3}/new",
-        params=params,
-        headers=headers
+    self._check_authorization(self)
+    return self._make_request(
+        "POST", endpoint=f"https://{Endpoints.POSTS_V3}/new",
+        payload={
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "in_reply_to": in_reply_to,
+            "group_id": group_id,
+            "post_type": post_type,
+            "mention_ids[]": mention_ids,
+            "choices[]": choices,
+            "shared_url": shared_url,
+            "message_tags": message_tags,
+            "attachment_filename": attachment_filename,
+            "attachment_2_filename": attachment_2_filename,
+            "attachment_3_filename": attachment_3_filename,
+            "attachment_4_filename": attachment_4_filename,
+            "attachment_5_filename": attachment_5_filename,
+            "attachment_6_filename": attachment_6_filename,
+            "attachment_7_filename": attachment_7_filename,
+            "attachment_8_filename": attachment_8_filename,
+            "attachment_9_filename": attachment_9_filename,
+            "video_file_name": video_file_name,
+        }
     )
 
 
@@ -186,37 +161,34 @@ def create_repost(
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
-        headers: Dict[str, str | int] = None):
+):
     # TODO: @Header("X-Jwt") @NotNull String str,
-    headers = _check_authorization(self, headers)
-    params = {
-        "post_id": post_id,
-        "text": text,
-        "font_size": font_size,
-        "color": color,
-        "in_reply_to": in_reply_to,
-        "group_id": group_id,
-        "post_type": post_type,
-        "mention_ids[]": mention_ids,
-        "choices[]": choices,
-        "shared_url": shared_url,
-        "message_tags": message_tags,
-        "attachment_filename": attachment_filename,
-        "attachment_2_filename": attachment_2_filename,
-        "attachment_3_filename": attachment_3_filename,
-        "attachment_4_filename": attachment_4_filename,
-        "attachment_5_filename": attachment_5_filename,
-        "attachment_6_filename": attachment_6_filename,
-        "attachment_7_filename": attachment_7_filename,
-        "attachment_8_filename": attachment_8_filename,
-        "attachment_9_filename": attachment_9_filename,
-        "video_file_name": video_file_name,
-    }
-    return _post(
-        self=self,
-        endpoint=f"https://{Endpoints.POSTS_V3}/repost",
-        params=params,
-        headers=headers
+    self._check_authorization(self)
+    return self._make_request(
+        "POST", endpoint=f"https://{Endpoints.POSTS_V3}/repost",
+        payload={
+            "post_id": post_id,
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "in_reply_to": in_reply_to,
+            "group_id": group_id,
+            "post_type": post_type,
+            "mention_ids[]": mention_ids,
+            "choices[]": choices,
+            "shared_url": shared_url,
+            "message_tags": message_tags,
+            "attachment_filename": attachment_filename,
+            "attachment_2_filename": attachment_2_filename,
+            "attachment_3_filename": attachment_3_filename,
+            "attachment_4_filename": attachment_4_filename,
+            "attachment_5_filename": attachment_5_filename,
+            "attachment_6_filename": attachment_6_filename,
+            "attachment_7_filename": attachment_7_filename,
+            "attachment_8_filename": attachment_8_filename,
+            "attachment_9_filename": attachment_9_filename,
+            "video_file_name": video_file_name,
+        }
     )
 
 
@@ -228,26 +200,23 @@ def create_share_post(
         font_size: int = None,
         color: int = None,
         group_id: int = None,
-        headers: Dict[str, str | int] = None):
+):
     # TODO: @NotNull "uuid", "api_key", "timestamp", "signed_info"
-    headers = _check_authorization(self, headers)
-    params = {
-        "shareable_type": shareable_type,
-        "shareable_id": shareable_id,
-        "text": text,
-        "font_size": font_size,
-        "color": color,
-        "group_id": group_id,
-        "uuid": self.uuid,
-        "api_key": self.api_key,
-        "timestamp": time.time(),
-        "signed_info": self.signed_info,
-    }
-    return _post(
-        self=self,
-        endpoint=f"https://{Endpoints.POSTS_V2}/new_share_post",
-        params=params,
-        headers=headers
+    self._check_authorization(self)
+    return self._make_request(
+        "POST", endpoint=f"https://{Endpoints.POSTS_V2}/new_share_post",
+        payload={
+            "shareable_type": shareable_type,
+            "shareable_id": shareable_id,
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "group_id": group_id,
+            "uuid": self.uuid,
+            "api_key": self.api_key,
+            "timestamp": time.time(),
+            "signed_info": self.signed_info,
+        }
     )
 
 
@@ -274,78 +243,65 @@ def create_thread_post(
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
-        headers: Dict[str, str | int] = None):
+):
     # TODO: @Header("X-Jwt") @NotNull String str,
-    headers = _check_authorization(self, headers)
-    params = {
-        "id": post_id,
-        "text": text,
-        "font_size": font_size,
-        "color": color,
-        "in_reply_to": in_reply_to,
-        "group_id": group_id,
-        "post_type": post_type,
-        "mention_ids[]": mention_ids,
-        "choices[]": choices,
-        "shared_url": shared_url,
-        "message_tags": message_tags,
-        "attachment_filename": attachment_filename,
-        "attachment_2_filename": attachment_2_filename,
-        "attachment_3_filename": attachment_3_filename,
-        "attachment_4_filename": attachment_4_filename,
-        "attachment_5_filename": attachment_5_filename,
-        "attachment_6_filename": attachment_6_filename,
-        "attachment_7_filename": attachment_7_filename,
-        "attachment_8_filename": attachment_8_filename,
-        "attachment_9_filename": attachment_9_filename,
-        "video_file_name": video_file_name,
-    }
-    return _post(
-        self=self,
-        endpoint=f"https://{Endpoints.THREADS_V1}/posts",
-        params=params,
-        headers=headers
+    self._check_authorization(self)
+    return self._make_request(
+        "POST", endpoint=f"https://{Endpoints.THREADS_V1}/posts",
+        payload={
+            "id": post_id,
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "in_reply_to": in_reply_to,
+            "group_id": group_id,
+            "post_type": post_type,
+            "mention_ids[]": mention_ids,
+            "choices[]": choices,
+            "shared_url": shared_url,
+            "message_tags": message_tags,
+            "attachment_filename": attachment_filename,
+            "attachment_2_filename": attachment_2_filename,
+            "attachment_3_filename": attachment_3_filename,
+            "attachment_4_filename": attachment_4_filename,
+            "attachment_5_filename": attachment_5_filename,
+            "attachment_6_filename": attachment_6_filename,
+            "attachment_7_filename": attachment_7_filename,
+            "attachment_8_filename": attachment_8_filename,
+            "attachment_9_filename": attachment_9_filename,
+            "video_file_name": video_file_name,
+        }
     )
 
 
-def delete_all_post(self, headers: Dict[str, str | int] = None):
-    headers = _check_authorization(self, headers)
-    return _post(
-        self=self,
-        endpoint=f"https://{Endpoints.POSTS_V1}/delete_all_post",
-        headers=headers
+def delete_all_post(self):
+    self._check_authorization(self)
+    return self._make_request(
+        "POST", endpoint=f"https://{Endpoints.POSTS_V1}/delete_all_post",
     )
 
 
-def delete_group_pin_post(self, group_id: int, headers: Dict[str, str | int] = None):
-    headers = _check_authorization(self, headers)
-    params = {"group_id": group_id}
-    return _delete(
-        self=self,
-        endpoint=f"https://{Endpoints.POSTS_V2}/group_pinned_post",
-        params=params,
-        headers=headers
+def delete_group_pin_post(self, group_id: int):
+    self._check_authorization(self)
+    return self._make_request(
+        "DELETE", endpoint=f"https://{Endpoints.POSTS_V2}/group_pinned_post",
+        payload={"group_id": group_id}
     )
 
 
-def delete_pin_post(self, post_id: int, headers: Dict[str, str | int] = None):
-    headers = _check_authorization(self, headers)
-    return _delete(
-        self=self,
-        endpoint=f"https://{Endpoints.PINNED_V1}/posts/{post_id}",
-        headers=headers
+def delete_pin_post(self, post_id: int):
+    self._check_authorization(self)
+    return self._make_request(
+        "DELETE", endpoint=f"https://{Endpoints.PINNED_V1}/posts/{post_id}"
     )
 
 
-def get_bookmark(self, user_id: int, from_str: str = None, headers: Dict[str, str | int] = None):
+def get_bookmark(self, user_id: int, from_str: str = None):
     # TODO: @Nullable @Query("from") String str なんのfromか不明
-    headers = _check_authorization(self, headers)
-    params = {"from": from_str}
-    return _get(
-        self=self,
-        endpoint=f"https://{Endpoints.USER_V1}/{user_id}/bookmarks",
-        params=params,
-        headers=headers
+    self._check_authorization()
+    return self._make_request(
+        "GET", endpoint=f"https://{Endpoints.USER_V1}/{user_id}/bookmarks",
+        params={"from": from_str}
     )
 
 
@@ -360,25 +316,22 @@ def get_timeline_calls(
     cross_generation: bool = None,
     exclude_recent_gomimushi: bool = None,
     shared_interest_categories: bool = None,
-    headers: Dict[str, str | int] = None
 ):
     # TODO: not working {'next_page_value': None, 'result': 'success', 'posts': []}
-    params = {
-        "group_id": group_id,
-        "from_timestamp": from_timestamp,
-        "number": number,
-        "category_id": category_id,
-        "call_type": call_type,
-        "include_circle_call": include_circle_call,
-        "cross_generation": cross_generation,
-        "exclude_recent_gomimushi": exclude_recent_gomimushi,
-        "shared_interest_categories": shared_interest_categories,
-    }
-    return _get(
-        self=self,
-        endpoint=f"https://{Endpoints.POSTS_V2}/call_timeline",
-        params=params,
-        headers=headers
+    self._check_authorization(self)
+    return self._make_request(
+        "GET", endpoint=f"https://{Endpoints.POSTS_V2}/call_timeline",
+        payload={
+            "group_id": group_id,
+            "from_timestamp": from_timestamp,
+            "number": number,
+            "category_id": category_id,
+            "call_type": call_type,
+            "include_circle_call": include_circle_call,
+            "cross_generation": cross_generation,
+            "exclude_recent_gomimushi": exclude_recent_gomimushi,
+            "shared_interest_categories": shared_interest_categories,
+        }
     )
 
 
@@ -390,20 +343,17 @@ def get_conversation(
     from_post_id: int = None,
     number: int = 50,
     reverse: bool = True,
-    headers: Dict[str, str | int] = None
 ):
-    params = {
-        "group_id": group_id,
-        "thread_id": thread_id,
-        "from_post_id": from_post_id,
-        "number": number,
-        "reverse": reverse,
-    }
-    return _get(
-        self=self,
-        endpoint=f"https://{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
-        params=params,
-        headers=headers
+    self._check_authorization(self)
+    return self._make_request(
+        "GET", endpoint=f"https://{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
+        payload={
+            "group_id": group_id,
+            "thread_id": thread_id,
+            "from_post_id": from_post_id,
+            "number": number,
+            "reverse": reverse,
+        }
     )
 
 
@@ -435,20 +385,15 @@ def get_timeline_by_hashtag(self):
     pass
 
 
-def get_my_posts(self, from_post_id: int = None, number: int = 100, include_group_post: bool = False, headers: Dict[str, str | int] = None):
+def get_my_posts(self, from_post_id: int = None, number: int = 100, include_group_post: bool = False):
     # TODO: include_group_postはfalseだったらサークルの投稿は含まないはずなのにサークルの投稿しか出てこないしなんかおかしい
-    headers = _check_authorization(self, headers)
-    params = {
-        "number": number,
-        "include_group_post": include_group_post
-    }
-    if from_post_id:
-        params["from_post_id"] = from_post_id
-    return _get(
-        self=self,
-        endpoint=f"https://{Endpoints.POSTS_V2}/mine",
-        params=params,
-        headers=headers
+    self._check_authorization(self)
+    return self._make_request(
+        "GET", endpoint=f"https://{Endpoints.POSTS_V2}/mine",
+        params={
+            "number": number,
+            "include_group_post": include_group_post
+        }
     )
 
 
