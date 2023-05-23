@@ -1,13 +1,13 @@
 import httpx
 import os
 import logging
-import uuid
 
 from typing import Optional, Dict, Any
 
 from ..config import *
 from ..errors import *
 from ..utils import *
+
 
 current_path = os.path.abspath(os.getcwd())
 
@@ -30,7 +30,10 @@ class API:
         self.proxies = None
         self.timeout = timeout
         self.base_path = base_path
-        self.host = host
+        self.host = "https://" + host
+
+        if self.proxy:
+            self.proxies = {f"http://{self.proxy}", f"https://{self.proxy}"}
 
         self.generate_all_uuids()
         self.session = httpx.Client(proxies=self.proxies, timeout=self.timeout)
@@ -42,11 +45,13 @@ class API:
             )
 
         self.logger = logging.getLogger(
-            "yaylib version: " + self.yaylib_version)
+            "yaylib version: " + self.yaylib_version
+        )
         ch = logging.StreamHandler()
         ch.setLevel(loglevel_stream)
         ch.setFormatter(logging.Formatter(
-            "%(asctime)s - %(levelname)s - %(message)s"))
+            "%(asctime)s - %(levelname)s - %(message)s")
+        )
 
         handler_existed = False
         for handler in self.logger.handlers:
@@ -114,7 +119,7 @@ class API:
         return data
 
     def _check_authorization(self) -> None:
-        if self.headers.get("Authorization") is None:
+        if self.session.headers.get("Authorization") is None:
             raise AuthenticationError(
                 "Authorization is not present in the header.")
 

@@ -1,21 +1,21 @@
-import time
+from datetime import datetime
 from typing import Dict, List
 
 from ..config import *
 from ..errors import *
-from ..models import Post
+from ..models import *
 from ..utils import *
 
 
 def add_bookmark(self, user_id: int, post_id: int):
     self._check_authorization()
-    return self._make_request("PUT", endpoint=f"https://{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}")
+    return self._make_request("PUT", endpoint=f"{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}")
 
 
 def add_group_highlight_post(self, group_id: int, post_id: int):
     self._check_authorization()
     return self._make_request(
-        "PUT", endpoint=f"https://{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+        "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
     )
 
 
@@ -43,7 +43,7 @@ def create_call_post(
     # TODO: @NotNull "uuid", "api_key", "timestamp", "signed_info"
     self._check_authorization()
     return self._make_request(
-        "POST", endpoint=f"https://{Endpoints.POSTS_V2}/new_conference_call",
+        "POST", endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
         payload={
             "text": text,
             "font_size": font_size,
@@ -52,8 +52,8 @@ def create_call_post(
             "call_type": call_type,
             "uuid": self.uuid,
             "api_key": self.yay_api_key,
-            "timestamp": time.time(),
-            "signed_info": signed_info_calculating(self.yay_api_key, self.device_uuid, time.time()),
+            "timestamp": int(datetime.now().timestamp()),
+            "signed_info": signed_info_calculating(self.yay_api_key, self.device_uuid, int(datetime.now().timestamp())),
             "category_id": category_id,
             "game_title": game_title,
             "joinable_by": joinable_by,
@@ -74,7 +74,7 @@ def create_call_post(
 def create_group_pin_post(self, post_id: int, group_id: int):
     self._check_authorization()
     return self._make_request(
-        "PUT", endpoint=f"https://{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+        "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
         payload={"post_id": post_id, "group_id": group_id}
     )
 
@@ -82,7 +82,7 @@ def create_group_pin_post(self, post_id: int, group_id: int):
 def create_pin_post(self, post_id: int):
     self._check_authorization()
     return self._make_request(
-        "POST", endpoint=f"https://{Endpoints.PINNED_V1}/posts",
+        "POST", endpoint=f"{Endpoints.PINNED_V1}/posts",
         payload={"id": post_id}
     )
 
@@ -113,7 +113,7 @@ def create_post(
     # TODO: @Header("X-Jwt") @NotNull String str,
     self._check_authorization()
     return self._make_request(
-        "POST", endpoint=f"https://{Endpoints.POSTS_V3}/new",
+        "POST", endpoint=f"{Endpoints.POSTS_V3}/new",
         payload={
             "text": text,
             "font_size": font_size,
@@ -166,7 +166,7 @@ def create_repost(
     # TODO: @Header("X-Jwt") @NotNull String str,
     self._check_authorization()
     return self._make_request(
-        "POST", endpoint=f"https://{Endpoints.POSTS_V3}/repost",
+        "POST", endpoint=f"{Endpoints.POSTS_V3}/repost",
         payload={
             "post_id": post_id,
             "text": text,
@@ -205,7 +205,7 @@ def create_share_post(
     # TODO: @NotNull "uuid", "api_key", "timestamp", "signed_info"
     self._check_authorization()
     return self._make_request(
-        "POST", endpoint=f"https://{Endpoints.POSTS_V2}/new_share_post",
+        "POST", endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
         payload={
             "shareable_type": shareable_type,
             "shareable_id": shareable_id,
@@ -215,7 +215,7 @@ def create_share_post(
             "group_id": group_id,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": time.time(),
+            "timestamp": int(datetime.now().timestamp()),
             "signed_info": self.signed_info,
         }
     )
@@ -248,7 +248,7 @@ def create_thread_post(
     # TODO: @Header("X-Jwt") @NotNull String str,
     self._check_authorization()
     return self._make_request(
-        "POST", endpoint=f"https://{Endpoints.THREADS_V1}/posts",
+        "POST", endpoint=f"{Endpoints.THREADS_V1}/posts",
         payload={
             "id": post_id,
             "text": text,
@@ -278,14 +278,14 @@ def create_thread_post(
 def delete_all_post(self):
     self._check_authorization()
     return self._make_request(
-        "POST", endpoint=f"https://{Endpoints.POSTS_V1}/delete_all_post",
+        "POST", endpoint=f"{Endpoints.POSTS_V1}/delete_all_post",
     )
 
 
 def delete_group_pin_post(self, group_id: int):
     self._check_authorization()
     return self._make_request(
-        "DELETE", endpoint=f"https://{Endpoints.POSTS_V2}/group_pinned_post",
+        "DELETE", endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
         payload={"group_id": group_id}
     )
 
@@ -293,7 +293,7 @@ def delete_group_pin_post(self, group_id: int):
 def delete_pin_post(self, post_id: int):
     self._check_authorization()
     return self._make_request(
-        "DELETE", endpoint=f"https://{Endpoints.PINNED_V1}/posts/{post_id}"
+        "DELETE", endpoint=f"{Endpoints.PINNED_V1}/posts/{post_id}"
     )
 
 
@@ -301,7 +301,7 @@ def get_bookmark(self, user_id: int, from_str: str = None):
     # TODO: @Nullable @Query("from") String str なんのfromか不明
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"https://{Endpoints.USER_V1}/{user_id}/bookmarks",
+        "GET", endpoint=f"{Endpoints.USER_V1}/{user_id}/bookmarks",
         params={"from": from_str}
     )
 
@@ -321,7 +321,7 @@ def get_timeline_calls(
     # TODO: not working {'next_page_value': None, 'result': 'success', 'posts': []}
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"https://{Endpoints.POSTS_V2}/call_timeline",
+        "GET", endpoint=f"{Endpoints.POSTS_V2}/call_timeline",
         payload={
             "group_id": group_id,
             "from_timestamp": from_timestamp,
@@ -347,7 +347,7 @@ def get_conversation(
 ):
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"https://{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
+        "GET", endpoint=f"{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
         payload={
             "group_id": group_id,
             "thread_id": thread_id,
@@ -390,7 +390,7 @@ def get_my_posts(self, from_post_id: int = None, number: int = 100, include_grou
     # TODO: include_group_postはfalseだったらサークルの投稿は含まないはずなのにサークルの投稿しか出てこないしなんかおかしい
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"https://{Endpoints.POSTS_V2}/mine",
+        "GET", endpoint=f"{Endpoints.POSTS_V2}/mine",
         params={
             "number": number,
             "include_group_post": include_group_post
@@ -401,7 +401,7 @@ def get_my_posts(self, from_post_id: int = None, number: int = 100, include_grou
 def get_post(self, post_id: int):
     # TODO: @Header("Cache-Control") @Nullable String str);
     return self._make_request(
-        "GET", endpoint=f"https://{Endpoints.POSTS_V2}/{post_id}",
+        "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}",
         data_type=Post
     )
 
@@ -417,7 +417,7 @@ def get_reposts(self):
 def get_posts(self, post_ids: List[int]):
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"https://{Endpoints.POSTS_V2}/multiple",
+        "GET", endpoint=f"{Endpoints.POSTS_V2}/multiple",
         params={"post_ids[]": post_ids}, data_type=Post
     )
 

@@ -1,7 +1,10 @@
+from datetime import datetime
 from typing import Dict, List
 
 from ..config import *
 from ..errors import *
+from ..models import *
+from ..utils import *
 
 
 def change_email(self):
@@ -22,7 +25,7 @@ def disconnect_account_with_sns(self):
 
 def get_token(self, grant_type: str, refresh_token: str = None, email: str = None, password: str = None):
     return self._make_request(
-        "POST", endpoint=f"https://{self.host}/api/v1/oauth/token",
+        "POST", endpoint=f"{self.host}/api/v1/oauth/token",
         payload={
             "grant_type": grant_type,
             "email": email,
@@ -33,9 +36,8 @@ def get_token(self, grant_type: str, refresh_token: str = None, email: str = Non
 
 
 def login_with_email(self, email: str, password: str):
-    # try:
     response = self._make_request(
-        "POST", endpoint=f"https://{Endpoints.USER_V3}/login_with_email",
+        "POST", endpoint=f"{Endpoints.USER_V3}/login_with_email",
         payload={
             "api_key": self.api_key,
             "email": email,
@@ -43,6 +45,10 @@ def login_with_email(self, email: str, password: str):
             "uuid": self.uuid
         }
     )
+    message = "Invalid email or password."
+    if response["access_token"] is None:
+        raise ForbiddenError(message)
+
     self.access_token = response["access_token"]
     self.refresh_token = response["refresh_token"]
     self.logged_in_as = response["user_id"]
@@ -53,10 +59,6 @@ def login_with_email(self, email: str, password: str):
     self.logger.info(f'Successfully logged in as [{self.logged_in_as}]')
     return response
 
-    # except:
-    #     self.logger.error('Login failed.')
-    #     return None
-
 
 def login_with_sns(self):
     pass
@@ -66,10 +68,10 @@ def logout(self):
     try:
         self._check_authorization()
         response = self._make_request(
-            "POST", endpoint=f"https://{Endpoints.USER_V1}/logout",
+            "POST", endpoint=f"{Endpoints.USER_V1}/logout",
             payload={"uuid": self.uuid}
         )
-        self.headers.pop('Authorization', None)
+        self.session.headers.pop('Authorization', None)
         self.access_token = None
         self.refresh_token = None
         self.logged_in_as = None

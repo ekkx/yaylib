@@ -11,6 +11,8 @@ from .api.thread import *
 from .api.user import *
 
 from .config import *
+from .errors import *
+from .models import *
 from .utils import *
 
 
@@ -156,7 +158,7 @@ class Client(API):
             reverse,
             headers,
         )
-    
+
     # REVIEW
 
     # THREAD
