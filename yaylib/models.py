@@ -266,7 +266,7 @@ class GroupGiftHistory:
             self.user = User(self.user)
 
     def __repr__(self):
-        return f'CallGiftHistory(data={self.data}, gifts_count={self.gifts_count})'
+        return f'GroupGiftHistory(data={self.data}, gifts_count={self.gifts_count})'
 
 
 class GroupUser:
@@ -490,7 +490,7 @@ class RecentSearch:
         self.keyword = data.get("keyword")
 
     def __repr__(self):
-        return f'RecentSearch(data={self.data}, gifts_count={self.gifts_count})'
+        return f'RecentSearch(data={self.data}, id={self.id})'
 
 
 class Review:
@@ -592,7 +592,7 @@ class Survey:
         self.voted = data.get("voted")
 
     def __repr__(self):
-        return f'Survey(id={self.id})'
+        return f'Survey(data={self.data}, id={self.id})'
 
 
 class ThreadInfo:
@@ -741,7 +741,7 @@ class Walkthrough:
         self.url = data.get("url")
 
     def __repr__(self):
-        return f'Shareable(data={self.data}, title={self.title})'
+        return f'Walkthrough(data={self.data}, title={self.title})'
 
 
 class WalletTransaction:

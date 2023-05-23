@@ -103,19 +103,20 @@ class API:
         return response
 
     def _construct_response(self, data, data_type):
-        # TODO: 他のキーも追加する
-        keys = [
-            "user", "users", "post", "posts"
-        ]
-        for key in keys:
-            if key in data:
-                data = data[key]
-                break
+        if data_type is not None:
+            # TODO: 他のキーも追加する
+            keys = [
+                "user", "users", "post", "posts"
+            ]
+            for key in keys:
+                if key in data:
+                    data = data[key]
+                    break
 
-        if isinstance(data, list):
-            data = [data_type(result) for result in data]
-        elif data is not None:
-            data = data_type(data)
+            if isinstance(data, list):
+                data = [data_type(result) for result in data]
+            elif data is not None:
+                data = data_type(data)
         return data
 
     def _check_authorization(self) -> None:
@@ -137,5 +138,5 @@ class API:
         if response.status_code == 500:
             raise YayServerError(response.text)
         if response.status_code and not 200 <= response.status_code < 300:
-            raise HTTPException(response.text)
+            raise HTTPError(response.text)
         return response
