@@ -33,27 +33,29 @@ def get_token(self, grant_type: str, refresh_token: str = None, email: str = Non
 
 
 def login_with_email(self, email: str, password: str):
-    try:
-        response = self._make_request(
-            "POST", endpoint=f"https://{Endpoints.USER_V3}/login_with_email",
-            payload={
-                "api_key": self.yay_api_key,
-                "email": email,
-                "password": password,
-                "uuid": self.uuid
-            }
-        )
-        self.access_token = response["access_token"]
-        self.refresh_token = response["refresh_token"]
-        self.logged_in_as = response["user_id"]
-        self.headers.setdefault('Authorization', f'Bearer {self.access_token}')
+    # try:
+    response = self._make_request(
+        "POST", endpoint=f"https://{Endpoints.USER_V3}/login_with_email",
+        payload={
+            "api_key": self.api_key,
+            "email": email,
+            "password": password,
+            "uuid": self.uuid
+        }
+    )
+    self.access_token = response["access_token"]
+    self.refresh_token = response["refresh_token"]
+    self.logged_in_as = response["user_id"]
+    self.session.headers.setdefault(
+        "Authorization", f"Bearer {self.access_token}"
+    )
 
-        self.logger.info(f'Successfully logged in as [{self.logged_in_as}]')
-        return response
+    self.logger.info(f'Successfully logged in as [{self.logged_in_as}]')
+    return response
 
-    except:
-        self.logger.error('Login failed.')
-        return None
+    # except:
+    #     self.logger.error('Login failed.')
+    #     return None
 
 
 def login_with_sns(self):

@@ -4,6 +4,7 @@ from typing import Dict, List
 from ..config import *
 from ..errors import *
 from ..models import Post
+from ..utils import *
 
 
 def add_bookmark(self, user_id: int, post_id: int):
@@ -52,7 +53,7 @@ def create_call_post(
             "uuid": self.uuid,
             "api_key": self.yay_api_key,
             "timestamp": time.time(),
-            "signed_info": self.signed_info,
+            "signed_info": signed_info_calculating(self.yay_api_key, self.device_uuid, time.time()),
             "category_id": category_id,
             "game_title": game_title,
             "joinable_by": joinable_by,

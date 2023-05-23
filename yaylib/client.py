@@ -1,10 +1,17 @@
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, List, Any
 
-from .config import *
-from .api.api import API
+from .api import API
+from .api.call import *
+from .api.chat import *
+from .api.group import *
 from .api.login import *
 from .api.post import *
+from .api.review import *
+from .api.thread import *
 from .api.user import *
+
+from .config import *
+from .utils import *
 
 
 class Client(API):
@@ -20,6 +27,12 @@ class Client(API):
     Yay! API v3 Client
 
     """
+
+    # CALL
+
+    # CHAT
+
+    # GROUP
 
     # LOGIN
 
@@ -55,8 +68,7 @@ class Client(API):
             attachment_7_filename: str = None,
             attachment_8_filename: str = None,
             attachment_9_filename: str = None,
-            video_file_name: str = None,
-            headers: Dict[str, str | int] = None,
+            video_file_name: str = None
     ):
         return create_post(
             self,
@@ -80,7 +92,6 @@ class Client(API):
             attachment_8_filename,
             attachment_9_filename,
             video_file_name,
-            headers,
         )
 
     def get_my_posts(
@@ -145,6 +156,10 @@ class Client(API):
             reverse,
             headers,
         )
+    
+    # REVIEW
+
+    # THREAD
 
     # USER
 

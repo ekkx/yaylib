@@ -1,11 +1,26 @@
 import hmac
 import hashlib
 import base64
+import uuid
+
 from datetime import datetime
 
 
+def generate_UUID(uuid_type):
+    """
+    引数falseでハイフンなしUUID
+    """
+    generated_uuid = str(uuid.uuid4())
+    if uuid_type:
+        return generated_uuid
+    else:
+        return generated_uuid.replace("-", "")
+
+
 def parse_datetime(timestamp: int) -> str:
-    return str(datetime.fromtimestamp(timestamp))
+    if timestamp is not None:
+        return str(datetime.fromtimestamp(timestamp))
+    return timestamp
 
 
 def signed_info_calculating(api_key: str, device_uuid: str, timestamp: int) -> str:

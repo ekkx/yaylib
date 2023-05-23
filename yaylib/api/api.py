@@ -7,6 +7,7 @@ from typing import Optional, Dict, Any
 
 from ..config import *
 from ..errors import *
+from ..utils import *
 
 current_path = os.path.abspath(os.getcwd())
 
@@ -23,26 +24,23 @@ class API:
             host=Configs.YAY_PRODUCTION_HOST
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
-        self.yay_api_version = Configs.YAY_API_VERSION
-        self.yay_version_name = Configs.YAY_VERSION_NAME
-        self.yay_api_key = Configs.YAY_API_KEY
+        self.api_key = Configs.YAY_API_KEY
         self.access_token = access_token
         self.proxy = proxy
         self.proxies = None
         self.timeout = timeout
         self.base_path = base_path
         self.host = host
-        self.uuid = str(uuid.uuid4())
+
+        self.generate_all_uuids()
         self.session = httpx.Client(proxies=self.proxies, timeout=self.timeout)
-        self.headers = {
-            "Host": self.host,
-            "X-App-Version": self.yay_api_version,
-            "X-Device-Info": f"yay {self.yay_version_name} android 11 (3.5x 1440x2960 Galaxy S9)",
-            "X-Device-Uuid": self.uuid,
-            "X-Connection-Type": "wifi",
-            "Accept-Language": "ja",
-            "Content-Type": "application/json;charset=UTF-8"
-        }
+        self.session.headers.update(Configs.REQUEST_HEADERS)
+        self.session.headers.update({"X-Device-Uuid": self.device_uuid})
+        if access_token:
+            self.session.headers.setdefault(
+                "Authorization", f"Bearer {access_token}"
+            )
+
         self.logger = logging.getLogger(
             "yaylib version: " + self.yaylib_version)
         ch = logging.StreamHandler()
@@ -59,14 +57,11 @@ class API:
             self.logger.addHandler(ch)
         self.logger.setLevel(logging.DEBUG)
 
-        if access_token:
-            self.headers.setdefault("Authorization", f"Bearer {access_token}")
-
         self.logger.info("yaylib version: " + self.yaylib_version + " started")
 
     def request(self, method, endpoint, params=None, payload=None, user_auth=True, headers=None):
         if headers is None:
-            headers = self.headers
+            headers = self.session.headers
         if not user_auth:
             headers["Authorization"] = None
 
@@ -139,3 +134,7 @@ class API:
         if response.status_code and not 200 <= response.status_code < 300:
             raise HTTPError(response.text)
         return response
+
+    def generate_all_uuids(self):
+        self.device_uuid = generate_UUID(uuid_type=True)
+        self.uuid = generate_UUID(uuid_type=True)

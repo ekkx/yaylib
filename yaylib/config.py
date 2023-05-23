@@ -14,6 +14,15 @@ class Configs:
     YAY_PRODUCTION_HOST = "api.yay.space"
     ID_CARD_CHECK_HOST_PRODUCTION = "idcardcheck.com"
     ID_CARD_CHECK_HOST_STAGING = "stg.idcardcheck.com"
+    REQUEST_HEADERS = {
+        "Host": YAY_PRODUCTION_HOST,
+        "X-App-Version": YAY_API_VERSION,
+        "X-Device-Info": f"yay {YAY_VERSION_NAME} android 11 (3.5x 1440x2960 Galaxy S9)",
+        "X-Device-Uuid": "",
+        "X-Connection-Type": "wifi",
+        "Accept-Language": "ja",
+        "Content-Type": "application/json;charset=UTF-8"
+    }
 
 
 class Endpoints:

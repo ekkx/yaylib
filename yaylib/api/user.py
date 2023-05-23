@@ -21,3 +21,6 @@ def get_user(self, user_id: int):
 
 def follow(self, user_id: int):
     return self._make_request("GET", endpoint=f"https://{Endpoints.USER_V2}/{str(user_id)}/follow", data_type=User)
+
+
+# BlockApi, HiddenApi
