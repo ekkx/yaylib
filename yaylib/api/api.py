@@ -8,20 +8,19 @@ from typing import Optional, Dict, Any
 from ..config import *
 from ..errors import *
 
-
 current_path = os.path.abspath(os.getcwd())
 
 
 class API:
 
     def __init__(
-        self,
-        access_token: str = None,
-        proxy: str = None,
-        timeout=10,
-        base_path=current_path,
-        loglevel_stream=logging.INFO,
-        host=Configs.YAY_PRODUCTION_HOST
+            self,
+            access_token: str = None,
+            proxy: str = None,
+            timeout=10,
+            base_path=current_path,
+            loglevel_stream=logging.INFO,
+            host=Configs.YAY_PRODUCTION_HOST
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
         self.yay_api_version = Configs.YAY_API_VERSION
@@ -92,8 +91,8 @@ class API:
         return response.json()
 
     def _make_request(
-        self, method: str, endpoint: str, params: dict = None, payload: dict = None,
-        data_type=None, user_auth=True, headers=None
+            self, method: str, endpoint: str, params: dict = None, payload: dict = None,
+            data_type=None, user_auth=True, headers=None
     ):
         response = self.request(
             method, endpoint, params, payload, user_auth, headers
