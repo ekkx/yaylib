@@ -81,6 +81,7 @@ class API:
         response = self.session.request(
             method, endpoint, params=params, json=payload, headers=headers
         )
+
         self.logger.debug(
             "Received API response:\n"
             f"{response.status_code}\n"
@@ -103,15 +104,6 @@ class API:
 
     def _construct_response(self, data, data_type):
         if data_type is not None:
-            # # TODO: 他のキーも追加する (いらないかも)
-            # keys = [
-            #     "user", "users", "post", "posts"
-            # ]
-            # for key in keys:
-            #     if key in data:
-            #         data = data[key]
-            #         break
-
             if isinstance(data, list):
                 data = [data_type(result) for result in data]
             elif data is not None:

@@ -1371,55 +1371,52 @@ class RecentSearch:
         return f"RecentSearch(data={self.data})"
 
 
-# class RefreshCounterRequest:
+class RefreshCounterRequest:
 
-#     __slots__ = ("data", "counter", "status", "last_requested_at")
+    __slots__ = ("data", "counter", "status", "last_requested_at")
 
-#     def __init__(self, data):
-#         self.data = data
+    def __init__(self, data):
+        self.data = data
+        self.counter = data.get("counter")
+        self.status = data.get("status")
+        self.last_requested_at = data.get("last_requested_at")
 
-#         self.gift = data.get("gift")
-#         if self.gift is not None:
-#             self.gift = Gift(self.gift)
-
-#         self.received_count = data.get("received_count")
-
-#         self.senders = data.get("senders")
-#         if self.senders is not None:
-#             self.senders = [
-#                 User(sender) for sender in self.senders
-#             ]
-
-#         self.total_senders_count = data.get("total_senders_count")
-
-#     def __repr__(self):
-#         return f"RefreshCounterRequest(data={self.data})"
+    def __repr__(self):
+        return f"RefreshCounterRequest(data={self.data})"
 
 
-# class RefreshCounterRequestsResponse:
+class RefreshCounterRequestsResponse:
 
-#     __slots__ = ("data", "gift", "received_count",
-#                  "senders", "total_senders_count")
+    __slots__ = ("data", "reset_counter_requests")
 
-#     def __init__(self, data):
-#         self.data = data
+    def __init__(self, data):
+        self.data = data
 
-#         self.gift = data.get("gift")
-#         if self.gift is not None:
-#             self.gift = Gift(self.gift)
+        self.reset_counter_requests = data.get("reset_counter_requests")
+        if self.reset_counter_requests is not None:
+            self.reset_counter_requests = [
+                RefreshCounterRequest(reset_counter_request) for reset_counter_request in self.reset_counter_requests
+            ]
 
-#         self.received_count = data.get("received_count")
+    def __repr__(self):
+        return f"RefreshCounterRequestsResponse(data={self.data})"
 
-#         self.senders = data.get("senders")
-#         if self.senders is not None:
-#             self.senders = [
-#                 User(sender) for sender in self.senders
-#             ]
 
-#         self.total_senders_count = data.get("total_senders_count")
+class SocialShareUsersResponse:
 
-#     def __repr__(self):
-#         return f"RefreshCounterRequestsResponse(data={self.data})"
+    __slots__ = ("data", "social_shared_users")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.social_shared_users = data.get("social_shared_users")
+        if self.social_shared_users is not None:
+            self.social_shared_users = [
+                UserWrapper(social_shared_user) for social_shared_user in self.social_shared_users
+            ]
+
+    def __repr__(self):
+        return f"SocialShareUsersResponse(data={self.data})"
 
 
 class Review:
@@ -1891,6 +1888,39 @@ class UsersResponse:
         return f"UsersResponse(data={self.data})"
 
 
+class UserCustomDefinitionsResponse:
+
+    __slots__ = (
+        "age", "followers_count", "followings_count", "created_at",
+        "last_loggedin_at", "status", "reported_count"
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.age = data.get("age")
+        self.followers_count = data.get("followers_count")
+        self.followings_count = data.get("followings_count")
+        self.created_at = data.get("created_at")
+        self.last_loggedin_at = data.get("last_loggedin_at")
+        self.status = data.get("status")
+        self.reported_count = data.get("reported_count")
+
+    def __repr__(self):
+        return f"UserCustomDefinitionsResponse(data={self.data})"
+
+
+class UserEmailResponse:
+
+    __slots__ = ("email")
+
+    def __init__(self, data):
+        self.data = data
+        self.email = data.get("email")
+
+    def __repr__(self):
+        return f"UserEmailResponse(data={self.data})"
+
+
 class HimaUsersResponse:
 
     __slots__ = ("data", "hima_users")
@@ -1944,6 +1974,20 @@ class UsersByTimestampResponse:
 
     def __repr__(self):
         return f"UsersByTimestampResponse(data={self.data})"
+
+
+class UserTimestampResponse:
+
+    __slots__ = ("data", "time", "ip_address", "country")
+
+    def __init__(self, data):
+        self.data = data
+        self.id = data.get("time")
+        self.ip_address = data.get("ip_address")
+        self.country = data.get("country")
+
+    def __repr__(self):
+        return f"UserTimestampResponse(data={self.data})"
 
 
 class UserWrapper:
