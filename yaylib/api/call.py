@@ -8,19 +8,34 @@ from ..utils import *
 
 
 def bump_call(self, call_id: int, participant_limit: int = None):
-    pass
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bump",
+        params={"participant_limit": participant_limit}
+    )
 
 
 def get_active_call(self, user_id: int) -> Post:
-    pass
+    response = self._make_request(
+        "GET", endpoint=f"{Endpoints.POSTS_V1}/active_call",
+        params={"user_id": user_id}, data_type=PostResponse
+    )
+    return response.post
 
 
 def get_bgms(self) -> List[Bgm]:
-    pass
+    response = self._make_request(
+        "GET", endpoint=f"{Endpoints.CALLS_V1}/bgm",
+        data_type=BgmsResponse
+    )
+    return response.bgm
 
 
 def get_call(self, call_id: int) -> ConferenceCall:
-    pass
+    response = self._make_request(
+        "GET", endpoint=f"{Endpoints.CALLS_V1}/conferences/{call_id}",
+        data_type=ConferenceCallResponse
+    )
+    return response.conference_call
 
 
 def get_call_invitable_users(
@@ -127,7 +142,8 @@ def start_call(
         self,
         conference_id: int,
         call_sid: str
-):
+) -> ConferenceCall:
+    # ConferenceCallResponse
     pass
 
 
