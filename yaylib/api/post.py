@@ -7,9 +7,13 @@ from ..models import *
 from ..utils import *
 
 
-def add_bookmark(self, user_id: int, post_id: int):
+def add_bookmark(self, user_id: int, post_id: int) -> bool:
     self._check_authorization()
-    return self._make_request("PUT", endpoint=f"{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}")
+    response = self._make_request(
+        "PUT", endpoint=f"{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}",
+        data_type=BookmarkPostResponse
+    )
+    return response.is_bookmarked
 
 
 def add_group_highlight_post(self, group_id: int, post_id: int):
@@ -39,10 +43,10 @@ def create_call_post(
         attachment_7_filename: str = None,
         attachment_8_filename: str = None,
         attachment_9_filename: str = None
-):
+) -> ConferenceCall:
     # TODO: @NotNull "uuid", "api_key", "timestamp", "signed_info"
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
         payload={
             "text": text,
@@ -51,9 +55,9 @@ def create_call_post(
             "group_id": group_id,
             "call_type": call_type,
             "uuid": self.uuid,
-            "api_key": self.yay_api_key,
+            "api_key": self.api_key,
             "timestamp": int(datetime.now().timestamp()),
-            "signed_info": signed_info_calculating(self.yay_api_key, self.device_uuid, int(datetime.now().timestamp())),
+            "signed_info": signed_info_calculating(self.api_key, self.device_uuid, int(datetime.now().timestamp())),
             "category_id": category_id,
             "game_title": game_title,
             "joinable_by": joinable_by,
@@ -67,8 +71,9 @@ def create_call_post(
             "attachment_7_filename": attachment_7_filename,
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
-        },
+        }, data_type=CreatePostResponse
     )
+    return response.conference_call
 
 
 def create_group_pin_post(self, post_id: int, group_id: int):
@@ -109,7 +114,7 @@ def create_post(
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
-):
+) -> Post:
     # TODO: @Header("X-Jwt") @NotNull String str,
     self._check_authorization()
     return self._make_request(
@@ -135,7 +140,7 @@ def create_post(
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
             "video_file_name": video_file_name,
-        }
+        }, data_type=Post
     )
 
 
@@ -162,10 +167,10 @@ def create_repost(
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
-):
+) -> Post:
     # TODO: @Header("X-Jwt") @NotNull String str,
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/repost",
         payload={
             "post_id": post_id,
@@ -189,8 +194,9 @@ def create_repost(
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
             "video_file_name": video_file_name,
-        }
+        }, data_type=CreatePostResponse
     )
+    return response.post
 
 
 def create_share_post(
@@ -201,7 +207,7 @@ def create_share_post(
         font_size: int = None,
         color: int = None,
         group_id: int = None,
-):
+) -> Post:
     # TODO: @NotNull "uuid", "api_key", "timestamp", "signed_info"
     self._check_authorization()
     return self._make_request(
@@ -216,8 +222,8 @@ def create_share_post(
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": int(datetime.now().timestamp()),
-            "signed_info": self.signed_info,
-        }
+            "signed_info": signed_info_calculating(self.api_key, self.device_uuid, int(datetime.now().timestamp())),
+        }, data_type=Post
     )
 
 
@@ -244,7 +250,7 @@ def create_thread_post(
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
-):
+) -> Post:
     # TODO: @Header("X-Jwt") @NotNull String str,
     self._check_authorization()
     return self._make_request(
@@ -271,7 +277,7 @@ def create_thread_post(
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
             "video_file_name": video_file_name,
-        }
+        }, data_type=Post
     )
 
 
@@ -297,32 +303,32 @@ def delete_pin_post(self, post_id: int):
     )
 
 
-def get_bookmark(self, user_id: int, from_str: str = None):
+def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
     # TODO: @Nullable @Query("from") String str なんのfromか不明
     self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.USER_V1}/{user_id}/bookmarks",
-        params={"from": from_str}
+        params={"from": from_str}, data_type=PostsResponse
     )
 
 
 def get_timeline_calls(
-    self,
-    group_id: int = None,
-    from_timestamp: int = None,
-    number: int = None,
-    category_id: int = None,
-    call_type: str = "voice",
-    include_circle_call: bool = None,
-    cross_generation: bool = None,
-    exclude_recent_gomimushi: bool = None,
-    shared_interest_categories: bool = None,
-):
+        self,
+        group_id: int = None,
+        from_timestamp: int = None,
+        number: int = None,
+        category_id: int = None,
+        call_type: str = "voice",
+        include_circle_call: bool = None,
+        cross_generation: bool = None,
+        exclude_recent_gomimushi: bool = None,
+        shared_interest_categories: bool = None,
+) -> PostsResponse:
     # TODO: not working {'next_page_value': None, 'result': 'success', 'posts': []}
     self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/call_timeline",
-        payload={
+        params={
             "group_id": group_id,
             "from_timestamp": from_timestamp,
             "number": number,
@@ -332,159 +338,276 @@ def get_timeline_calls(
             "cross_generation": cross_generation,
             "exclude_recent_gomimushi": exclude_recent_gomimushi,
             "shared_interest_categories": shared_interest_categories,
-        }
+        }, data_type=PostsResponse
     )
 
 
 def get_conversation(
-    self,
-    conversation_id: int,
-    group_id: int = None,
-    thread_id: int = None,
-    from_post_id: int = None,
-    number: int = 50,
-    reverse: bool = True,
-):
+        self,
+        conversation_id: int,
+        group_id: int = None,
+        thread_id: int = None,
+        from_post_id: int = None,
+        number: int = 50,
+        reverse: bool = True,
+) -> PostsResponse:
     self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
-        payload={
+        params={
             "group_id": group_id,
             "thread_id": thread_id,
             "from_post_id": from_post_id,
             "number": number,
             "reverse": reverse,
-        }
+        }, data_type=PostsResponse
     )
 
 
-def get_conversation_root_posts(self):
+def get_conversation_root_posts(self, post_ids: List[int]) -> PostsResponse:
     pass
 
 
-def get_following_call_timeline(self):
+def get_following_call_timeline(
+        self,
+        from_timestamp: int = None,
+        number: int = None,
+        category_id: int = None,
+        call_type: str = None,
+        include_circle_call: bool = None,
+        exclude_recent_gomimushi: bool = None
+) -> PostsResponse:
     pass
 
 
-def get_following_timeline(self):
+def get_following_timeline(
+        self,
+        from_str: str = None,
+        only_root: bool = None,
+        order_by: str = None,
+        number: int = None,
+        mxn: int = None,
+        reduce_selfie: bool = None,
+        custom_generation_range: bool = None
+) -> PostsResponse:
     pass
 
 
-def get_group_highlight_posts(self):
+def get_group_highlight_posts(
+        self,
+        group_id: int,
+        from_post: int = None,
+        number: int = None
+) -> PostsResponse:
     pass
 
 
-def get_group_timeline_by_keyword(self):
+def get_group_timeline_by_keyword(
+        self,
+        group_id: int,
+        keyword: str,
+        from_post_id: int = None,
+        number: int = None,
+        only_thread_posts: bool = False
+) -> PostsResponse:
     pass
 
 
-def get_group_timeline(self):
+def get_group_timeline(
+        self,
+        group_id: int,
+        from_post_id: int = None,
+        reverse: bool = None,
+        post_type: str = None,
+        number: int = None,
+        only_root: bool = None
+) -> PostsResponse:
     pass
 
 
-def get_timeline_by_hashtag(self):
+def get_timeline_by_hashtag(
+        self,
+        hashtag: str,
+        from_post_id: int = None,
+        number: int = None
+) -> PostsResponse:
     pass
 
 
-def get_my_posts(self, from_post_id: int = None, number: int = 100, include_group_post: bool = False):
-    # TODO: include_group_postはfalseだったらサークルの投稿は含まないはずなのにサークルの投稿しか出てこないしなんかおかしい
+def get_my_posts(
+        self,
+        from_post_id: int = None,
+        number: int = 50,
+        include_group_post: bool = False
+) -> PostsResponse:
+    # TODO: なんかおかしい
     self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/mine",
         params={
+            "from_post_id": from_post_id,
             "number": number,
             "include_group_post": include_group_post
-        }
+        }, data_type=PostsResponse
     )
 
 
-def get_post(self, post_id: int):
+def get_post(self, post_id: int) -> Post:
     # TODO: @Header("Cache-Control") @Nullable String str);
-    return self._make_request(
+    response = self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}",
-        data_type=Post
+        data_type=PostResponse
     )
+    return response.post
 
 
-def get_post_likers(self):
+def get_post_likers(self, post_id: int, from_id: int = None) -> PostLikersResponse:
     pass
 
 
-def get_reposts(self):
+def get_post_reposts(self, post_id: int, from_post_id: int = None) -> PostsResponse:
     pass
 
 
-def get_posts(self, post_ids: List[int]):
+def get_posts(self, post_ids: List[int]) -> PostsResponse:
     self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/multiple",
-        params={"post_ids[]": post_ids}, data_type=Post
+        params={"post_ids[]": post_ids}, data_type=PostsResponse
     )
 
 
-def get_recommended_post_tags(self):
+def get_recommended_post_tags(
+        self,
+        tag: str = None,
+        save_recent_search: bool = False
+) -> PostTagsResponse:
     pass
 
 
-def get_recommended_posts(self):
+def get_recommended_posts(
+        self,
+        experiment_num: int,
+        variant_num: int,
+        number: int
+) -> PostsResponse:
     pass
 
 
-def get_timeline_by_keyword(self):
+def get_timeline_by_keyword(
+        self,
+        keyword: str = None,
+        from_post_id: int = None,
+        number: int = None
+) -> PostsResponse:
     pass
 
 
-def get_timeline(self):
+def get_timeline(
+        self,
+        noreply_mode: str,
+        order_by: str,
+        experiment_older_age_rules: bool = None,
+        shared_interest_categories: bool = None,
+        from_str: str = None,
+        from_post_id: int = None,
+        number: int = None,
+        mxn: int = None,
+        en: int = None,
+        vn: int = None,
+        reduce_selfie: bool = None,
+        custom_generation_range: bool = None
+) -> PostsResponse:
     pass
 
 
-def get_url_metadata(self):
+def get_url_metadata(self, url: str) -> SharedUrl:
     pass
 
 
-def get_user_timeline(self):
+def get_user_timeline(
+        self,
+        user_id: int,
+        from_post_id: int = None,
+        post_type: str = None,
+        number: int = None
+) -> PostsResponse:
     pass
 
 
-def like_posts(self):
+def like_posts(self, post_ids: List[int]) -> LikePostsResponse:
     pass
 
 
-def remove_bookmark(self):
+def remove_bookmark(self, user_id: int, post_id: int):
     pass
 
 
-def remove_group_highlight_post(self):
+def remove_group_highlight_post(self, group_id: int, post_id: int):
     pass
 
 
-def remove_posts(self):
+def remove_posts(self, post_ids: List[int]):
     pass
 
 
-def report_post(self):
+def report_post(
+        self,
+        post_id: int,
+        opponent_id: int,
+        category_id: int,
+        reason: str = None,
+        screenshot_filename: str = None,
+        screenshot_2_filename: str = None,
+        screenshot_3_filename: str = None,
+        screenshot_4_filename: str = None
+):
     pass
 
 
-def unlike_post(self):
+def unlike_post(self, post_id: int):
     pass
 
 
-def update_post(self):
+def update_post(
+        self,
+        post_id: int,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        message_tags: str = "[]",
+) -> Post:
+    # @NotNull @Part("uuid") String str2,
+    # @NotNull @Part("api_key") String str3,
+    # @Part("timestamp") long j3,
+    # @NotNull @Part("signed_info") String str4);
     pass
 
 
-def update_recommendation_feedback(self):
+def update_recommendation_feedback(
+        self,
+        post_id: int,
+        experiment_num: int,
+        variant_num: int,
+        feedback_result: str
+):
     pass
 
 
-def validate_post(self):
+def validate_post(
+        self,
+        text: str,
+        group_id: int = None,
+        thread_id: int = None
+) -> bool:
+    # ValidationPostResponse
     pass
 
 
-def view_video(self):
+def view_video(self, video_id: int):
     pass
 
 
-def vote_survey(self):
+def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
+    # VoteSurveyResponse
     pass

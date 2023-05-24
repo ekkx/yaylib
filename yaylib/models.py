@@ -78,6 +78,18 @@ class Bgm:
         return f'Bgm(data={self.data})'
 
 
+class BookmarkPostResponse:
+
+    __slots__ = ("data", "is_bookmarked")
+
+    def __init__(self, data):
+        self.data = data
+        self.is_bookmarked = data.get("is_bookmarked")
+
+    def __repr__(self):
+        return f'BookmarkPostResponse(data={self.data})'
+
+
 class CallGiftHistory:
 
     __slots__ = ("data", "gifts_count", "sent_at", "sent_at_parsed", "sender")
@@ -100,6 +112,20 @@ class CallGiftHistory:
 
     def __repr__(self):
         return f'CallGiftHistory(data={self.data})'
+
+
+class CallStatusResponse:
+
+    __slots__ = ("data", "phone_status", "video_status", "room_url")
+
+    def __init__(self, data):
+        self.data = data
+        self.phone_status = data.get("phone_status")
+        self.video_status = data.get("video_status")
+        self.room_url = data.get("room_url")
+
+    def __repr__(self):
+        return f'CallStatusResponse(data={self.data})'
 
 
 class ChatRoom:
@@ -156,6 +182,31 @@ class ChatRoomDraft:
 
     def __repr__(self):
         return f'ChatRoomDraft(data={self.data})'
+
+
+class ChatRoomsResponse:
+
+    __slots__ = ("data", "pinned_chat_rooms", "chat_rooms", "next_page_value")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.pinned_chat_rooms = data.get("pinned_chat_rooms")
+        if self.pinned_chat_rooms is not None:
+            self.pinned_chat_rooms = [
+                GiftCount(pinned_chat_room) for pinned_chat_room in self.pinned_chat_rooms
+            ]
+
+        self.chat_rooms = data.get("chat_rooms")
+        if self.chat_rooms is not None:
+            self.chat_rooms = [
+                GiftCount(chat_room) for chat_room in self.chat_rooms
+            ]
+
+        self.next_page_value = data.get("next_page_value")
+
+    def __repr__(self):
+        return f'ChatRoomsResponse(data={self.data})'
 
 
 class Choice:
@@ -303,6 +354,25 @@ class CreateGroupQuota:
         return f'CreateGroupQuota(data={self.data})'
 
 
+class CreatePostResponse:
+
+    __slots__ = ("data", "conference_call", "post")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.conference_call = data.get("conference_call")
+        if self.conference_call is not None:
+            self.conference_call = ConferenceCall(self.conference_call)
+
+        self.post = data.get("post")
+        if self.post is not None:
+            self.post = Post(self.post)
+
+    def __repr__(self):
+        return f'CreatePostResponse(data={self.data})'
+
+
 class Error:
 
     __slots__ = ("data", "throwable", "type", "action")
@@ -315,6 +385,24 @@ class Error:
 
     def __repr__(self):
         return f'Error(data={self.data})'
+
+
+class FollowUsersResponse:
+
+    __slots__ = ("data", "last_follow_id", "users")
+
+    def __init__(self, data):
+        self.data = data
+        self.last_follow_id = data.get("last_follow_id")
+
+        self.users = data.get("users")
+        if self.users is not None:
+            self.users = [
+                User(user) for user in self.users
+            ]
+
+    def __repr__(self):
+        return f'FollowUsersResponse(data={self.data})'
 
 
 class Footprint:
@@ -355,6 +443,25 @@ class Game:
         return f'Game(data={self.data})'
 
 
+class GamesResponse:
+
+    __slots__ = ("data", "games", "from_id")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.games = data.get("games")
+        if self.games is not None:
+            self.games = [
+                Game(game) for game in self.games
+            ]
+
+        self.from_id = data.get("from_id")
+
+    def __repr__(self):
+        return f'GamesResponse(data={self.data})'
+
+
 class Genre:
 
     __slots__ = ("data", "id", "type", "title", "icon_url")
@@ -368,6 +475,60 @@ class Genre:
 
     def __repr__(self):
         return f'Genre(data={self.data})'
+
+
+class GenresResponse:
+
+    __slots__ = ("data", "genres", "next_page_value")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.genres = data.get("genres")
+        if self.genres is not None:
+            self.genres = [
+                Genre(genre) for genre in self.genres
+            ]
+
+        self.next_page_value = data.get("next_page_value")
+
+    def __repr__(self):
+        return f'GenresResponse(data={self.data})'
+
+
+class GifImage:
+
+    __slots__ = ("data", "id", "url", "width", "height")
+
+    def __init__(self, data):
+        self.data = data
+        self.id = data.get("id")
+        self.url = data.get("url")
+        self.width = data.get("width")
+        self.height = data.get("height")
+
+    def __repr__(self):
+        return f'GifImage(data={self.data})'
+
+
+class GifImageCategory:
+
+    __slots__ = ("data", "id", "name", "language", "gifs")
+
+    def __init__(self, data):
+        self.data = data
+        self.id = data.get("id")
+        self.name = data.get("name")
+        self.language = data.get("language")
+
+        self.gifs = data.get("gifs")
+        if self.gifs is not None:
+            self.gifs = [
+                GifImage(gif) for gif in self.gifs
+            ]
+
+    def __repr__(self):
+        return f'GifImageCategory(data={self.data})'
 
 
 class Gift:
@@ -598,10 +759,29 @@ class Message:
         self.user_id = data.get("user_id")
         self.type = data.get("type")
         self.text = data.get("text")
+
         self.conference_call = data.get("conference_call")
+        if self.conference_call is not None:
+            self.conference_call = ConferenceCall(self.conference_call)
 
     def __repr__(self):
         return f'Message(data={self.data})'
+
+
+class MessageResponse:
+
+    __slots__ = ("data", "id", "conferenceCall")
+
+    def __init__(self, data):
+        self.data = data
+        self.id = data.get("id")
+
+        self.conference_call = data.get("conference_call")
+        if self.conference_call is not None:
+            self.conference_call = ConferenceCall(self.conference_call)
+
+    def __repr__(self):
+        return f'MessageResponse(data={self.data})'
 
 
 class MessageTag:
@@ -813,6 +993,65 @@ class PostGift:
         return f'PostGift(data={self.data})'
 
 
+class PostResponse:
+
+    __slots__ = ("data", "posts")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.posts = data.get("posts")
+        if self.posts is not None:
+            self.posts = [
+                Post(post) for post in self.posts
+            ]
+
+    def __repr__(self):
+        return f'PostResponse(data={self.data})'
+
+
+class PostsResponse:
+
+    __slots__ = ("data", "next_page_value", "posts", "pinned_posts")
+
+    def __init__(self, data):
+        self.data = data
+        self.next_page_value = data.get("next_page_value")
+
+        self.posts = data.get("posts")
+        if self.posts is not None:
+            self.posts = [
+                Post(post) for post in self.posts
+            ]
+
+        self.pinned_posts = data.get("pinned_posts")
+        if self.pinned_posts is not None:
+            self.pinned_posts = [
+                Post(pinned_post) for pinned_post in self.pinned_posts
+            ]
+
+    def __repr__(self):
+        return f'PostsResponse(data={self.data})'
+
+
+class PostLikersResponse:
+
+    __slots__ = ("data", "last_id", "users")
+
+    def __init__(self, data):
+        self.data = data
+        self.last_id = data.get("last_id")
+
+        self.users = data.get("users")
+        if self.users is not None:
+            self.users = [
+                User(user) for user in self.users
+            ]
+
+    def __repr__(self):
+        return f'PostLikersResponse(data={self.data})'
+
+
 class PostTag:
 
     __slots__ = ("data", "id", "tag", "post_hashtags_count")
@@ -825,6 +1064,47 @@ class PostTag:
 
     def __repr__(self):
         return f'PostTag(data={self.data})'
+
+
+class PostTagsResponse:
+
+    __slots__ = ("data", "tags")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.tags = data.get("tags")
+        if self.tags is not None:
+            self.tags = [
+                PostTag(tag) for tag in self.tags
+            ]
+
+    def __repr__(self):
+        return f'PostTagsResponse(data={self.data})'
+
+
+class LikePostsResponse:
+
+    __slots__ = ("data", "like_ids")
+
+    def __init__(self, data):
+        self.data = data
+        self.like_ids = data.get("like_ids")
+
+    def __repr__(self):
+        return f'LikePostsResponse(data={self.data})'
+
+
+class ValidationPostResponse:
+
+    __slots__ = ("data", "is_allow_to_post")
+
+    def __init__(self, data):
+        self.data = data
+        self.is_allow_to_post = data.get("is_allow_to_post")
+
+    def __repr__(self):
+        return f'ValidationPostResponse(data={self.data})'
 
 
 class Promotion:
@@ -934,6 +1214,123 @@ class SearchCriteria:
 
     def __repr__(self):
         return f'SearchCriteria(data={self.data})'
+
+
+class Settings:
+
+    __slots__ = (
+        "data", "notification_like", "notification_reply",
+        "notification_repost", "notification_follow", "notification_chat",
+        "notification_chat_delete", "notification_follow_request",
+        "notification_message_tag", "notification_follow_accept",
+        "notification_group_request", "notification_group_accept",
+        "notification_group_join", "notification_group_post",
+        "notification_group_invite", "notification_group_message_tag_all",
+        "notification_profile_screenshot", "notification_following_birthdate_on",
+        "notification_follower_create_group",
+        "notification_follower_conference_call",
+        "notification_group_conference_call", "notification_review",
+        "notification_call_invite", "notification_bulk_call_invite",
+        "notification_group_moderator", "notification_daily_summary",
+        "notification_footprint", "notification_latest_news",
+        "notification_popular_post", "notification_following_post_after_break",
+        "notification_hima_now", "notification_birthday_to_followers",
+        "notification_twitter_friend", "notification_contact_friend",
+        "notification_security_warning", "notification_followings_in_call",
+        "hide_active_call", "privacy_mode", "private_post", "private_user_timeline",
+        "vip_invisible_footprint_mode", "allow_reposts", "invisible_on_user_search",
+        "age_restricted_on_review", "hide_online_status",
+        "following_restricted_on_review", "visible_on_sns_friend_recommendation",
+        "following_only_call_invite", "following_only_group_invite",
+        "caution_user_chat", "hide_vip", "hide_on_invitable", "hide_hot_post",
+        "no_reply_public_timeline", "no_reply_following_timeline",
+        "no_reply_group_timeline"
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.notification_like = data.get("notification_like")
+        self.notification_reply = data.get("notification_reply")
+        self.notification_repost = data.get("notification_repost")
+        self.notification_follow = data.get("notification_follow")
+        self.notification_chat = data.get("notification_chat")
+        self.notification_chat_delete = data.get("notification_chat_delete")
+        self.notification_follow_request = data.get(
+            "notification_follow_request")
+        self.notification_message_tag = data.get("notification_message_tag")
+        self.notification_follow_accept = data.get(
+            "notification_follow_accept")
+        self.notification_group_request = data.get(
+            "notification_group_request")
+        self.notification_group_accept = data.get("notification_group_accept")
+        self.notification_group_join = data.get("notification_group_join")
+        self.notification_group_post = data.get("notification_group_post")
+        self.notification_group_invite = data.get("notification_group_invite")
+        self.notification_group_message_tag_all = data.get(
+            "notification_group_message_tag_all")
+        self.notification_profile_screenshot = data.get(
+            "notification_profile_screenshot")
+        self.notification_following_birthdate_on = data.get(
+            "notification_following_birthdate_on")
+        self.notification_follower_create_group = data.get(
+            "notification_follower_create_group")
+        self.notification_follower_conference_call = data.get(
+            "notification_follower_conference_call")
+        self.notification_group_conference_call = data.get(
+            "notification_group_conference_call")
+        self.notification_review = data.get("notification_review")
+        self.notification_call_invite = data.get("notification_call_invite")
+        self.notification_bulk_call_invite = data.get(
+            "notification_bulk_call_invite")
+        self.notification_group_moderator = data.get(
+            "notification_group_moderator")
+        self.notification_daily_summary = data.get(
+            "notification_daily_summary")
+        self.notification_footprint = data.get("notification_footprint")
+        self.notification_latest_news = data.get("notification_latest_news")
+        self.notification_popular_post = data.get("notification_popular_post")
+        self.notification_following_post_after_break = data.get(
+            "notification_following_post_after_break")
+        self.notification_hima_now = data.get("notification_hima_now")
+        self.notification_birthday_to_followers = data.get(
+            "notification_birthday_to_followers")
+        self.notification_twitter_friend = data.get(
+            "notification_twitter_friend")
+        self.notification_contact_friend = data.get(
+            "notification_contact_friend")
+        self.notification_security_warning = data.get(
+            "notification_security_warning")
+        self.notification_followings_in_call = data.get(
+            "notification_followings_in_call")
+        self.hide_active_call = data.get("hide_active_call")
+        self.privacy_mode = data.get("privacy_mode")
+        self.private_post = data.get("private_post")
+        self.private_user_timeline = data.get("private_user_timeline")
+        self.vip_invisible_footprint_mode = data.get(
+            "vip_invisible_footprint_mode")
+        self.allow_reposts = data.get("allow_reposts")
+        self.invisible_on_user_search = data.get("invisible_on_user_search")
+        self.age_restricted_on_review = data.get("age_restricted_on_review")
+        self.hide_online_status = data.get("hide_online_status")
+        self.following_restricted_on_review = data.get(
+            "following_restricted_on_review")
+        self.visible_on_sns_friend_recommendation = data.get(
+            "visible_on_sns_friend_recommendation")
+        self.following_only_call_invite = data.get(
+            "following_only_call_invite")
+        self.following_only_group_invite = data.get(
+            "following_only_group_invite")
+        self.caution_user_chat = data.get("caution_user_chat")
+        self.hide_vip = data.get("hide_vip")
+        self.hide_on_invitable = data.get("hide_on_invitable")
+        self.hide_hot_post = data.get("hide_hot_post")
+        self.no_reply_public_timeline = data.get("no_reply_public_timeline")
+        self.no_reply_following_timeline = data.get(
+            "no_reply_following_timeline")
+        self.no_reply_group_timeline = data.get("no_reply_group_timeline")
+
+    def __repr__(self):
+        return f'Settings(data={self.data})'
 
 
 class Shareable:
@@ -1056,6 +1453,21 @@ class Survey:
 
     def __repr__(self):
         return f'Survey(data={self.data})'
+
+
+class VoteSurveyResponse:
+
+    __slots__ = ("data", "survey")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.survey = data.get("survey")
+        if self.survey is not None:
+            self.survey = Survey(self.survey)
+
+    def __repr__(self):
+        return f'VoteSurveyResponse(data={self.data})'
 
 
 class ThreadInfo:
@@ -1210,6 +1622,24 @@ class UserAuth:
 
     def __repr__(self):
         return f'UserWrapper(data={self.data})'
+
+
+class UsersByTimestampResponse:
+
+    __slots__ = ("data", "last_timestamp", "users")
+
+    def __init__(self, data):
+        self.data = data
+        self.last_timestamp = data.get("last_timestamp")
+
+        self.users = data.get("users")
+        if self.users is not None:
+            self.users = [
+                User(user) for user in self.users
+            ]
+
+    def __repr__(self):
+        return f'UsersByTimestampResponse(data={self.data})'
 
 
 class UserWrapper:

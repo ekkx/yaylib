@@ -50,8 +50,8 @@ class API:
         ch = logging.StreamHandler()
         ch.setLevel(loglevel_stream)
         ch.setFormatter(logging.Formatter(
-            "%(asctime)s - %(levelname)s - %(message)s")
-        )
+            "%(asctime)s - %(levelname)s - %(message)s"
+        ))
 
         handler_existed = False
         for handler in self.logger.handlers:
@@ -103,14 +103,14 @@ class API:
 
     def _construct_response(self, data, data_type):
         if data_type is not None:
-            # TODO: 他のキーも追加する
-            keys = [
-                "user", "users", "post", "posts"
-            ]
-            for key in keys:
-                if key in data:
-                    data = data[key]
-                    break
+            # # TODO: 他のキーも追加する (いらないかも)
+            # keys = [
+            #     "user", "users", "post", "posts"
+            # ]
+            # for key in keys:
+            #     if key in data:
+            #         data = data[key]
+            #         break
 
             if isinstance(data, list):
                 data = [data_type(result) for result in data]
