@@ -92,8 +92,8 @@ class API:
         return response.json()
 
     def _make_request(
-            self, method: str, endpoint: str, params: dict = None, payload: dict = None,
-            data_type=None, user_auth=True, headers=None
+            self, method: str, endpoint: str, params: dict = None,
+            payload: dict = None, data_type=None, user_auth=True, headers=None
     ):
         response = self.request(
             method, endpoint, params, payload, user_auth, headers
@@ -133,5 +133,5 @@ class API:
         return response
 
     def generate_all_uuids(self):
-        self.device_uuid = generate_UUID(uuid_type=True)
-        self.uuid = generate_UUID(uuid_type=True)
+        self.device_uuid = generate_uuid(uuid_type=True)
+        self.uuid = generate_uuid(uuid_type=True)

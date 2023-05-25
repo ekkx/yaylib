@@ -19,6 +19,7 @@ class Configs:
     REQUEST_HEADERS = {
         "Host": YAY_PRODUCTION_HOST,
         "X-App-Version": YAY_API_VERSION,
+        "User-Agent": "android 11 (3.5x 1440x2960 Galaxy S9)",
         "X-Device-Info": f"yay {YAY_VERSION_NAME} android 11 (3.5x 1440x2960 Galaxy S9)",
         "X-Device-Uuid": "",
         "X-Connection-Type": "wifi",

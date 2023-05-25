@@ -160,11 +160,12 @@ def get_timestamp(self) -> UserTimestampResponse:
     pass
 
 
-def get_user(self, user_id: int) -> UserResponse:
-    return self._make_request(
+def get_user(self, user_id: int) -> User:
+    response = self._make_request(
         "GET", endpoint=f"{Endpoints.USER_V2}/{user_id}",
         data_type=UserResponse
     )
+    return response.user
 
 
 def get_user_custom_definitions(self) -> UserCustomDefinitionsResponse:

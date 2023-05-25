@@ -278,8 +278,8 @@ class Choice:
     def __init__(self, data):
         self.data = data
         self.id = data.get("id")
-        self.free = data.get("label")
-        self.total = data.get("votes_count")
+        self.label = data.get("label")
+        self.votes_count = data.get("votes_count")
 
     def __repr__(self):
         return f"Choice(data={self.data})"
@@ -488,6 +488,18 @@ class CreateUserResponse:
 
     def __repr__(self):
         return f"CreateUserResponse(data={self.data})"
+
+
+class EmailVerificationPresignedUrlResponse:
+
+    __slots__ = ("data", "url")
+
+    def __init__(self, data):
+        self.data = data
+        self.url = data.get("url")
+
+    def __repr__(self):
+        return f"EmailVerificationPresignedUrlResponse(data={self.data})"
 
 
 class TimelineSettings:
@@ -1046,7 +1058,7 @@ class Post:
     __slots__ = (
         "data", "id", "text", "post_type", "group_id", "font_size", "color",
         "likes_count", "created_at", "updated_at", "updated_at_parsed", "edited_at",
-        "edited_at_parsed", "liked", "likers", "tag", "reposts_count", "reposted",
+        "edited_at_parsed", "liked", "tag", "reposts_count", "reposted",
         "repostable", "reported_count", "conversation_id", "in_reply_to",
         "in_reply_to_post", "in_reply_to_post_count", "user", "mentions",
         "group", "conference_call", "attachment", "attachment_thumbnail",
@@ -1075,13 +1087,6 @@ class Post:
         self.edited_at = data.get("edited_at")
         self.edited_at_parsed = parse_datetime(data.get("edited_at"))
         self.liked = data.get("liked")
-
-        self.likers = data.get("likers")
-        if self.likers is not None:
-            self.likers = [
-                User(liker) for liker in self.likers
-            ]
-
         self.tag = data.get("tag")
         self.reposts_count = data.get("reposts_count")
         self.reposted = data.get("reposted")
@@ -2060,3 +2065,15 @@ class WalletTransaction:
 
     def __repr__(self):
         return f"WalletTransaction(data={self.data})"
+
+
+class WebSocketTokenResponse:
+
+    __slots__ = ("data", "token")
+
+    def __init__(self, data):
+        self.data = data
+        self.token = data.get("token")
+
+    def __repr__(self):
+        return f"WebSocketTokenResponse(data={self.data})"

@@ -115,8 +115,9 @@ def create_post(
         attachment_9_filename: str = None,
         video_file_name: str = None,
 ) -> Post:
-    # TODO: @Header("X-Jwt") @NotNull String str,
     self._check_authorization()
+    headers = self.session.headers
+    headers["X-Jwt"] = self.get_web_socket_token()
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/new",
         payload={
@@ -140,7 +141,7 @@ def create_post(
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
             "video_file_name": video_file_name,
-        }, data_type=Post
+        }, data_type=Post, headers=headers
     )
 
 
@@ -168,8 +169,9 @@ def create_repost(
         attachment_9_filename: str = None,
         video_file_name: str = None,
 ) -> Post:
-    # TODO: @Header("X-Jwt") @NotNull String str,
     self._check_authorization()
+    headers = self.session.headers
+    headers["X-Jwt"] = self.get_web_socket_token()
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/repost",
         payload={
@@ -194,7 +196,7 @@ def create_repost(
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
             "video_file_name": video_file_name,
-        }, data_type=CreatePostResponse
+        }, data_type=CreatePostResponse, headers=headers
     )
     return response.post
 
@@ -251,8 +253,9 @@ def create_thread_post(
         attachment_9_filename: str = None,
         video_file_name: str = None,
 ) -> Post:
-    # TODO: @Header("X-Jwt") @NotNull String str,
     self._check_authorization()
+    headers = self.session.headers
+    headers["X-Jwt"] = self.get_web_socket_token()
     return self._make_request(
         "POST", endpoint=f"{Endpoints.THREADS_V1}/posts",
         payload={
@@ -277,7 +280,7 @@ def create_thread_post(
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
             "video_file_name": video_file_name,
-        }, data_type=Post
+        }, data_type=Post, headers=headers
     )
 
 
@@ -461,12 +464,40 @@ def get_post(self, post_id: int) -> Post:
     return response.post
 
 
-def get_post_likers(self, post_id: int, from_id: int = None) -> PostLikersResponse:
-    pass
+def get_post_likers(
+        self,
+        post_id: int,
+        from_id: int = None,
+        number: int = None
+) -> PostLikersResponse:
+    params = {}
+    if from_id is not None:
+        params["from_id"] = from_id
+    if number is not None:
+        params["number"] = max(1, min(number, 100))
+
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.POSTS_V1}/{post_id}/likers",
+        params=params, data_type=PostLikersResponse
+    )
 
 
-def get_post_reposts(self, post_id: int, from_post_id: int = None) -> PostsResponse:
-    pass
+def get_post_reposts(
+        self,
+        post_id: int,
+        from_post_id: int = None,
+        number: int = None
+) -> PostsResponse:
+    params = {}
+    if from_post_id is not None:
+        params["from_post_id"] = from_post_id
+    if number is not None:
+        params["number"] = number
+
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}/reposts",
+        params=params, data_type=PostsResponse
+    )
 
 
 def get_posts(self, post_ids: List[int]) -> PostsResponse:
@@ -505,8 +536,8 @@ def get_timeline_by_keyword(
 
 def get_timeline(
         self,
-        noreply_mode: str,
-        order_by: str,
+        noreply_mode: str = None,
+        order_by: str = None,
         experiment_older_age_rules: bool = None,
         shared_interest_categories: bool = None,
         from_str: str = None,
@@ -518,7 +549,37 @@ def get_timeline(
         reduce_selfie: bool = None,
         custom_generation_range: bool = None
 ) -> PostsResponse:
-    pass
+    params = {}
+    # if noreply_mode:
+    #     params["noreply_mode"] = noreply_mode
+    if order_by:
+        params["order_by"] = order_by
+    if experiment_older_age_rules:
+        params["experiment_older_age_rules"] = experiment_older_age_rules
+    if shared_interest_categories:
+        params["shared_interest_categories"] = shared_interest_categories
+    if from_str:
+        params["from_str"] = from_str
+    if from_post_id:
+        params["from_post_id"] = from_post_id
+    if number:
+        params["number"] = number
+    if mxn:
+        params["mxn"] = mxn
+    if en:
+        params["en"] = en
+    if vn:
+        params["vn"] = vn
+    if reduce_selfie:
+        params["reduce_selfie"] = reduce_selfie
+    if custom_generation_range:
+        params["custom_generation_range"] = custom_generation_range
+
+    return self._make_request(
+        # @GET("v2/posts/{noreply_mode}timeline")
+        "GET", endpoint=f"{Endpoints.POSTS_V2}/timeline",
+        params=params, data_type=PostsResponse
+    )
 
 
 def get_url_metadata(self, url: str) -> SharedUrl:

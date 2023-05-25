@@ -6,7 +6,7 @@ import uuid
 from datetime import datetime
 
 
-def generate_UUID(uuid_type):
+def generate_uuid(uuid_type):
     """
     引数falseでハイフンなしUUID
     """
