@@ -256,13 +256,13 @@ class ChatRoomsResponse:
         self.pinned_chat_rooms = data.get("pinned_chat_rooms")
         if self.pinned_chat_rooms is not None:
             self.pinned_chat_rooms = [
-                GiftCount(pinned_chat_room) for pinned_chat_room in self.pinned_chat_rooms
+                ChatRoom(pinned_chat_room) for pinned_chat_room in self.pinned_chat_rooms
             ]
 
         self.chat_rooms = data.get("chat_rooms")
         if self.chat_rooms is not None:
             self.chat_rooms = [
-                GiftCount(chat_room) for chat_room in self.chat_rooms
+                ChatRoom(chat_room) for chat_room in self.chat_rooms
             ]
 
         self.next_page_value = data.get("next_page_value")

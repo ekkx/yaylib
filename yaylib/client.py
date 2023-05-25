@@ -102,14 +102,18 @@ class Client(API):
             video_file_name,
         )
 
-    def get_my_posts(
-            self,
-            from_post_id: int = None,
-            number: int = 100,
-            include_group_post: bool = False,
-            headers: Dict[str, str | int] = None
-    ):
-        return get_my_posts(self, from_post_id, number, include_group_post, headers)
+    def get_my_posts(self, **kwargs: int | bool) -> PostsResponse:
+        """
+
+        Parameters:
+        ---------------
+
+            - from_post_id: int - (optional)
+            - number: int - (optional)
+            - include_group_post: bool - (optional)
+
+        """
+        return get_my_posts(self, **kwargs)
 
     def get_post(self, post_id: int) -> Post:
         return get_post(self, post_id)
@@ -122,47 +126,43 @@ class Client(API):
     ) -> PostLikersResponse:
         return get_post_likers(self, post_id, from_id, number)
 
-    def get_post_reposts(
-        self,
-        post_id: int,
-        from_post_id: int = None,
-        number: int = None
-    ) -> PostsResponse:
-        return get_post_reposts(self, post_id, from_post_id, number)
+    def get_post_reposts(self, post_id: int, **kwargs: int) -> PostsResponse:
+        """
+
+        Parameters:
+        ---------------
+
+            - post_id: int - (required)
+            - from_post_id: int - (optional)
+            - number: int - (optional)
+
+        """
+        return get_post_reposts(self, post_id, **kwargs)
 
     def get_posts(self, post_ids: List[int]) -> List[Post]:
         return get_posts(self, post_ids)
 
-    def get_timeline(
-        self,
-        noreply_mode: str = None,
-        order_by: str = None,
-        experiment_older_age_rules: bool = None,
-        shared_interest_categories: bool = None,
-        from_str: str = None,
-        from_post_id: int = None,
-        number: int = None,
-        mxn: int = None,
-        en: int = None,
-        vn: int = None,
-        reduce_selfie: bool = None,
-        custom_generation_range: bool = None
-    ) -> PostsResponse:
-        return get_timeline(
-            self,
-            noreply_mode,
-            order_by,
-            experiment_older_age_rules,
-            shared_interest_categories,
-            from_str,
-            from_post_id,
-            number,
-            mxn,
-            en,
-            vn,
-            reduce_selfie,
-            custom_generation_range
-        )
+    def get_timeline(self, **kwargs: int | str | bool) -> PostsResponse:
+        # noreply_mode: str = None
+        """
+
+        Parameters:
+        ---------------
+
+            - from_post_id: int - (optional)
+            - number: int - (optional)
+            - order_by: str - (optional)
+            - experiment_older_age_rules: bool - (optional)
+            - shared_interest_categories: bool - (optional)
+            - from: str - (optional)
+            - mxn: int - (optional)
+            - en: int - (optional)
+            - vn: int - (optional)
+            - reduce_selfie: bool - (optional)
+            - custom_generation_range: bool - (optional)
+
+        """
+        return get_timeline(self, **kwargs)
 
     def get_timeline_calls(
         self,

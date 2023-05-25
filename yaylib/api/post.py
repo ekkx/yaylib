@@ -7,13 +7,12 @@ from ..models import *
 from ..utils import *
 
 
-def add_bookmark(self, user_id: int, post_id: int) -> bool:
+def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
     self._check_authorization()
-    response = self._make_request(
+    return self._make_request(
         "PUT", endpoint=f"{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}",
         data_type=BookmarkPostResponse
     )
-    return response.is_bookmarked
 
 
 def add_group_highlight_post(self, group_id: int, post_id: int):
@@ -437,21 +436,21 @@ def get_timeline_by_hashtag(
     pass
 
 
-def get_my_posts(
-        self,
-        from_post_id: int = None,
-        number: int = 50,
-        include_group_post: bool = False
-) -> PostsResponse:
-    # TODO: なんかおかしい
+def get_my_posts(self, **kwargs: int | bool) -> PostsResponse:
+    """
+
+    Parameters:
+    ---------------
+
+        - from_post_id: int - (optional)
+        - number: int - (optional)
+        - include_group_post: bool - (optional)
+
+    """
     self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/mine",
-        params={
-            "from_post_id": from_post_id,
-            "number": number,
-            "include_group_post": include_group_post
-        }, data_type=PostsResponse
+        params=kwargs, data_type=PostsResponse
     )
 
 
@@ -482,21 +481,20 @@ def get_post_likers(
     )
 
 
-def get_post_reposts(
-        self,
-        post_id: int,
-        from_post_id: int = None,
-        number: int = None
-) -> PostsResponse:
-    params = {}
-    if from_post_id is not None:
-        params["from_post_id"] = from_post_id
-    if number is not None:
-        params["number"] = number
+def get_post_reposts(self, post_id: int, **kwargs: int) -> PostsResponse:
+    """
 
+    Parameters:
+    ---------------
+
+        - post_id: int - (required)
+        - from_post_id: int - (optional)
+        - number: int - (optional)
+
+    """
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}/reposts",
-        params=params, data_type=PostsResponse
+        params=kwargs, data_type=PostsResponse
     )
 
 
@@ -534,51 +532,30 @@ def get_timeline_by_keyword(
     pass
 
 
-def get_timeline(
-        self,
-        noreply_mode: str = None,
-        order_by: str = None,
-        experiment_older_age_rules: bool = None,
-        shared_interest_categories: bool = None,
-        from_str: str = None,
-        from_post_id: int = None,
-        number: int = None,
-        mxn: int = None,
-        en: int = None,
-        vn: int = None,
-        reduce_selfie: bool = None,
-        custom_generation_range: bool = None
-) -> PostsResponse:
-    params = {}
-    # if noreply_mode:
-    #     params["noreply_mode"] = noreply_mode
-    if order_by:
-        params["order_by"] = order_by
-    if experiment_older_age_rules:
-        params["experiment_older_age_rules"] = experiment_older_age_rules
-    if shared_interest_categories:
-        params["shared_interest_categories"] = shared_interest_categories
-    if from_str:
-        params["from_str"] = from_str
-    if from_post_id:
-        params["from_post_id"] = from_post_id
-    if number:
-        params["number"] = number
-    if mxn:
-        params["mxn"] = mxn
-    if en:
-        params["en"] = en
-    if vn:
-        params["vn"] = vn
-    if reduce_selfie:
-        params["reduce_selfie"] = reduce_selfie
-    if custom_generation_range:
-        params["custom_generation_range"] = custom_generation_range
+def get_timeline(self, **kwargs: int | str | bool) -> PostsResponse:
+    # noreply_mode: str = None
+    # - from: str - (optional)
+    """
 
+    Parameters:
+    ---------------
+
+        - from_post_id: int - (optional)
+        - number: int - (optional)
+        - order_by: str - (optional)
+        - experiment_older_age_rules: bool - (optional)
+        - shared_interest_categories: bool - (optional)
+        - mxn: int - (optional)
+        - en: int - (optional)
+        - vn: int - (optional)
+        - reduce_selfie: bool - (optional)
+        - custom_generation_range: bool - (optional)
+
+    """
     return self._make_request(
         # @GET("v2/posts/{noreply_mode}timeline")
         "GET", endpoint=f"{Endpoints.POSTS_V2}/timeline",
-        params=params, data_type=PostsResponse
+        params=kwargs, data_type=PostsResponse
     )
 
 
