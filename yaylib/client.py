@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List, Any
+from typing import Union, Dict, List
 
 from .api import API
 from .api.call import *
@@ -65,7 +65,7 @@ class Client(API):
             post_type: str = None,
             mention_ids: List[int] = None,
             choices: List[str] = None,
-            shared_url: Dict[str, str | int] = None,
+            shared_url: Dict[str, Union[str, int]] = None,
             message_tags: str = "[]",
             attachment_filename: str = None,
             attachment_2_filename: str = None,
@@ -102,7 +102,7 @@ class Client(API):
             video_file_name,
         )
 
-    def get_my_posts(self, **kwargs: int | bool) -> PostsResponse:
+    def get_my_posts(self, **kwargs: Union[int, bool]) -> PostsResponse:
         """
 
         Parameters:
@@ -142,8 +142,9 @@ class Client(API):
     def get_posts(self, post_ids: List[int]) -> List[Post]:
         return get_posts(self, post_ids)
 
-    def get_timeline(self, **kwargs: int | str | bool) -> PostsResponse:
+    def get_timeline(self, **kwargs: Union[int, str, bool]) -> PostsResponse:
         # noreply_mode: str = None
+        # - from: str - (optional)
         """
 
         Parameters:
@@ -154,7 +155,6 @@ class Client(API):
             - order_by: str - (optional)
             - experiment_older_age_rules: bool - (optional)
             - shared_interest_categories: bool - (optional)
-            - from: str - (optional)
             - mxn: int - (optional)
             - en: int - (optional)
             - vn: int - (optional)
@@ -175,7 +175,7 @@ class Client(API):
         cross_generation: bool = None,
         exclude_recent_gomimushi: bool = None,
         shared_interest_categories: bool = None,
-        headers: Dict[str, str | int] = None,
+        headers: Dict[str, Union[str, int]] = None,
     ):
         return get_timeline_calls(
             self,
@@ -199,7 +199,7 @@ class Client(API):
         from_post_id: int = None,
         number=50,
         reverse: bool = True,
-        headers: Dict[str, str | int] = None,
+        headers: Dict[str, Union[str, int]] = None,
     ):
         return get_conversation(
             self,
@@ -217,9 +217,6 @@ class Client(API):
     # THREAD
 
     # USER
-
-    def contact_friends(self):
-        return contact_friends(self)
 
     def get_user(self, user_id: int) -> User:
         return get_user(self, user_id)

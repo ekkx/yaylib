@@ -1,7 +1,9 @@
 from .api import *
 
 __all__ = [
-    'API', 'Block', 'Call', 'Cassandra', 'Chat', 'Common', 'Config', 'Dev', 'FileUpload', 'Game',
-    'Gift', 'Group', 'Hidden', 'IdCardCheck', 'InternalIdCardCheck', 'Login', 'Misc', 'MuteKeyword',
-    'Payment', 'Post', 'Review', 'Search', 'Thread', 'Twitter', 'UserIdentity', 'User', 'Wallet',
+    "API", "block", "call", "cassandra", "chat", "common", "config",
+    "dev", "fileUpload", "game", "gift", "group", "hidden", "id_cardcheck",
+    "internal_id_cardcheck", "login", "misc", "mute_keyword", "payment",
+    "post", "review", "search", "thread", "twitter", "user_identity",
+    "user", "wallet",
 ]

@@ -63,6 +63,38 @@ class BgmsResponse:
         return f"BgmsResponse(data={self.data})"
 
 
+class BlockedUserIdsResponse:
+
+    __slots__ = ("data", "block_ids")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.block_ids = data.get("block_ids")
+
+    def __repr__(self):
+        return f"BlockedUserIdsResponse(data={self.data})"
+
+
+class BlockedUsersResponse:
+
+    __slots__ = ("data", "blocked_count", "last_id", "users")
+
+    def __init__(self, data):
+        self.data = data
+        self.blocked_count = data.get("blocked_count")
+        self.last_id = data.get("last_id")
+
+        self.users = data.get("users")
+        if self.users is not None:
+            self.users = [
+                User(user) for user in self.users
+            ]
+
+    def __repr__(self):
+        return f"BlockedUsersResponse(data={self.data})"
+
+
 class BookmarkPostResponse:
 
     __slots__ = ("data", "is_bookmarked")
@@ -139,6 +171,34 @@ class ContactStatusResponse:
 
     def __repr__(self):
         return f"ContactStatusResponse(data={self.data})"
+
+
+class CreateGroupResponse:
+
+    __slots__ = ("data", "group_id")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.group_id = data.get("group_id")
+
+    def __repr__(self):
+        return f"CreateGroupResponse(data={self.data})"
+
+
+class CreateQuotaResponse:
+
+    __slots__ = ("data", "create")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.create = data.get("create")
+        if self.create is not None:
+            self.create = CreateGroupQuota(self.create)
+
+    def __repr__(self):
+        return f"CreateQuotaResponse(data={self.data})"
 
 
 class CreatePostResponse:
@@ -307,9 +367,192 @@ class GenresResponse:
         return f"GenresResponse(data={self.data})"
 
 
+class GroupCategoriesResponse:
+
+    __slots__ = ("data", "group_categories")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.group_categories = data.get("group_categories")
+        if self.group_categories is not None:
+            self.group_categories = [
+                GroupCategory(group_categorie) for group_categorie in self.group_categories
+            ]
+
+    def __repr__(self):
+        return f"GroupCategoriesResponse(data={self.data})"
+
+
+class GroupGiftHistoryResponse:
+
+    __slots__ = ("data", "gift_history", "next_page_value")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.gift_history = data.get("gift_history")
+        if self.gift_history is not None:
+            self.gift_history = [
+                GroupGiftHistory(gift_history) for gift_history in self.gift_history
+            ]
+
+        self.next_page_value = data.get("next_page_value")
+
+    def __repr__(self):
+        return f"GroupGiftHistoryResponse(data={self.data})"
+
+
+class GroupNotificationSettingsResponse:
+
+    __slots__ = ("data", "setting")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.setting = data.get("setting")
+        if self.setting is not None:
+            self.setting = Setting(self.setting)
+
+    def __repr__(self):
+        return f"GroupNotificationSettingsResponse(data={self.data})"
+
+
+class GroupResponse:
+
+    __slots__ = ("data", "group")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.group = data.get("group")
+        if self.group is not None:
+            self.group = Setting(self.group)
+
+    def __repr__(self):
+        return f"GroupResponse(data={self.data})"
+
+
+class GroupsRelatedResponse:
+
+    __slots__ = ("data", "groups", "next_page_value")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.groups = data.get("groups")
+        if self.groups is not None:
+            self.groups = [
+                Group(group) for group in self.groups
+            ]
+
+        self.next_page_value = data.get("next_page_value")
+
+    def __repr__(self):
+        return f"GroupsRelatedResponse(data={self.data})"
+
+
+class GroupsResponse:
+
+    __slots__ = ("data", "pinned_groups", "groups")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.pinned_groups = data.get("pinned_groups")
+        if self.pinned_groups is not None:
+            self.pinned_groups = [
+                Group(pinned_group) for pinned_group in self.pinned_groups
+            ]
+
+        self.groups = data.get("groups")
+        if self.groups is not None:
+            self.groups = [
+                Group(group) for group in self.groups
+            ]
+
+    def __repr__(self):
+        return f"GroupsResponse(data={self.data})"
+
+
+class GroupThreadListResponse:
+
+    __slots__ = ("data", "threads", "next_page_value")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.threads = data.get("threads")
+        if self.threads is not None:
+            self.threads = [
+                ThreadInfo(thread) for thread in self.threads
+            ]
+
+        self.next_page_value = data.get("next_page_value")
+
+    def __repr__(self):
+        return f"GroupThreadListResponse(data={self.data})"
+
+
+class GroupUserResponse:
+
+    __slots__ = ("data", "group_user")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.group_user = data.get("group_user")
+        if self.group_user is not None:
+            self.group_user = GroupUser(self.group_user)
+
+    def __repr__(self):
+        return f"GroupUserResponse(data={self.data})"
+
+
+class GroupUsersResponse:
+
+    __slots__ = ("data", "group_users")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.group_users = data.get("group_users")
+        if self.group_users is not None:
+            self.group_users = [
+                GroupUser(group_user) for group_user in self.group_users
+            ]
+
+    def __repr__(self):
+        return f"GroupUsersResponse(data={self.data})"
+
+
+class HiddenResponse:
+
+    __slots__ = (
+        "data", "hidden_users", "next_page_value", "total_count",
+        "limit"
+    )
+
+    def __init__(self, data):
+        self.data = data
+
+        self.hidden_users = data.get("hidden_users")
+        if self.hidden_users is not None:
+            self.hidden_users = [
+                User(hidden_user) for hidden_user in self.hidden_users
+            ]
+
+        self.next_page_value = data.get("next_page_value")
+        self.total_count = data.get("total_count")
+        self.limit = data.get("limit")
+
+    def __repr__(self):
+        return f"HiddenResponse(data={self.data})"
+
+
 class MessageResponse:
 
-    __slots__ = ("data", "id", "conferenceCall")
+    __slots__ = ("data", "id", "conference_call")
 
     def __init__(self, data):
         self.data = data
@@ -438,6 +681,29 @@ class RefreshCounterRequestsResponse:
         return f"RefreshCounterRequestsResponse(data={self.data})"
 
 
+class ReviewsResponse:
+
+    __slots__ = ("data", "reviews", "pinned_reviews")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.reviews = data.get("reviews")
+        if self.reviews is not None:
+            self.reviews = [
+                Review(review) for review in self.reviews
+            ]
+
+        self.pinned_reviews = data.get("pinned_reviews")
+        if self.pinned_reviews is not None:
+            self.pinned_reviews = [
+                Review(pinned_review) for pinned_review in self.pinned_reviews
+            ]
+
+    def __repr__(self):
+        return f"ReviewsResponse(data={self.data})"
+
+
 class SocialShareUsersResponse:
 
     __slots__ = ("data", "social_shared_users")
@@ -468,6 +734,18 @@ class VoteSurveyResponse:
 
     def __repr__(self):
         return f"VoteSurveyResponse(data={self.data})"
+
+
+class UnreadStatusResponse:
+
+    __slots__ = ("data", "is_unread")
+
+    def __init__(self, data):
+        self.data = data
+        self.is_unread = data.get("is_unread")
+
+    def __repr__(self):
+        return f"UnreadStatusResponse(data={self.data})"
 
 
 class UserResponse:

@@ -582,6 +582,21 @@ class Group:
         return f"Group(data={self.data})"
 
 
+class GroupCategory:
+
+    __slots__ = ("data", "id", "name", "icon", "rank")
+
+    def __init__(self, data):
+        self.data = data
+        self.id = data.get("id")
+        self.name = data.get("name")
+        self.icon = data.get("icon")
+        self.rank = data.get("rank")
+
+    def __repr__(self):
+        return f"GroupCategory(data={self.data})"
+
+
 class GroupGiftHistory:
 
     __slots__ = ("data", "gifts_count", "received_date", "user")
@@ -1012,6 +1027,26 @@ class SearchCriteria:
 
     def __repr__(self):
         return f"SearchCriteria(data={self.data})"
+
+
+class Setting:
+
+    __slots__ = (
+        "data", "notification_group_request", "notification_group_join",
+        "notification_group_post", "notification_group_message_tag_all"
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.notification_group_request = data.get(
+            "notification_group_request")
+        self.notification_group_join = data.get("notification_group_join")
+        self.notification_group_post = data.get("notification_group_post")
+        self.notification_group_message_tag_all = data.get(
+            "notification_group_message_tag_all")
+
+    def __repr__(self):
+        return f"Setting(data={self.data})"
 
 
 class Settings:
@@ -1455,4 +1490,3 @@ class WalletTransaction:
 
     def __repr__(self):
         return f"WalletTransaction(data={self.data})"
-

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List
+from typing import Union, Dict, List
 
 from ..config import *
 from ..errors import *
@@ -323,15 +323,86 @@ def turn_on_hima(self):
     pass
 
 
-def contact_friends(self):
-    self._check_authorization()
-    return self._make_request(
-        "GET", endpoint=f"{Endpoints.USER_V1}/contact_friends",
-    )
+def unfollow_user(self, user_id: int):
+    pass
 
 
-def follow(self, user_id: int):
-    return self._make_request("GET", endpoint=f"{Endpoints.USER_V2}/{str(user_id)}/follow", data_type=User)
+def update_invite_contact_status(self, mobile_number: str):
+    pass
 
 
-# BlockApi, HiddenApi
+def update_language(self, language: str):
+    pass
+
+
+def update_user(
+        self,
+        nickname: str,
+        biography: str = None,
+        prefecture: str = None,
+        gender: int = None,
+        country_code: str = None,
+        profile_icon_filename: str = None,
+        cover_image_filename: str = None,
+        username: str = None,
+):
+    pass
+
+
+def update_user_interests(
+        self,
+        # @Body @NotNull CommonIdsRequest commonIdsRequest,
+        # @NotNull Continuation<? super Unit> continuation
+):
+    pass
+
+
+def upload_contacts_friends(
+        self,
+        # @Body @Nullable UploadContactsRequest uploadContactsRequest
+):
+    pass
+
+
+def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]):
+    pass
+
+
+# BlockApi
+
+
+def block_user(self, user_id: int):
+    pass
+
+
+def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
+    pass
+
+
+def get_blocked_users(
+        self,
+        from_id: int = None,
+        # @Body @NotNull SearchUsersRequest searchUsersRequest
+):
+    pass
+
+
+def unblock_user(self, user_id: int):
+    pass
+
+
+# HiddenApi
+
+
+def get_hidden_users_list(
+        self, **kwargs: Union[str, int]
+) -> HiddenResponse:
+    pass
+
+
+def hide_user(self, user_id: int):
+    pass
+
+
+def unhide_users(self, user_ids: List[int]):
+    pass
