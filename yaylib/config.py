@@ -41,6 +41,7 @@ class Endpoints:
     GROUPS_V1 = Configs.YAY_API_URL + "/v1/groups/"
     CHAT_ROOMS_V1 = Configs.YAY_API_URL + "/v1/chat_rooms/"
     CALLS_V1 = Configs.YAY_API_URL + "/v1/calls/"
+    SURVEYS_V1 = Configs.YAY_API_URL + "/v1/surveys/"
 
     # v2 endpoints
     USER_V2 = Configs.YAY_API_URL + "/v2/users/"
@@ -53,6 +54,7 @@ class Endpoints:
     GROUPS_V2 = Configs.YAY_API_URL + "/v2/groups/"
     CHAT_ROOMS_V2 = Configs.YAY_API_URL + "/v2/chat_rooms/"
     CALLS_V2 = Configs.YAY_API_URL + "/v2/calls/"
+    SURVEYS_V2 = Configs.YAY_API_URL + "/v2/surveys/"
 
     # v3 endpoints
     USER_V3 = Configs.YAY_API_URL + "/v3/users/"
@@ -65,3 +67,4 @@ class Endpoints:
     GROUPS_V3 = Configs.YAY_API_URL + "/v3/groups/"
     CHAT_ROOMS_V3 = Configs.YAY_API_URL + "/v3/chat_rooms/"
     CALLS_V3 = Configs.YAY_API_URL + "/v3/calls/"
+    SURVEYS_V3 = Configs.YAY_API_URL + "/v3/surveys/"

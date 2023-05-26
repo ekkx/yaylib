@@ -33,27 +33,14 @@ def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
 
 
 def create_group(
-        self,
-        topic: str,
-        description: str = None,
-        secret: bool = None,
-        hide_reported_posts: bool = None,
-        hide_conference_call: bool = None,
-        is_private: bool = None,
-        only_verified_age: bool = None,
-        only_mobile_verified: bool = None,
-        call_timeline_display: bool = None,
-        allow_ownership_transfer: bool = None,
-        allow_thread_creation_by: str = None,
-        gender: int = None,
-        generation_groups_limit: int = None,
-        group_category_id: int = None,
-        cover_image_filename: str = None,
-        sub_category_id: str = None,
-        hide_from_game_eight: bool = None,
-        allow_members_to_post_image_and_video: bool = None,
-        allow_members_to_post_url: bool = None,
-        guidelines: str = None,
+        self, topic: str, description: str = None, secret: bool = None,
+        hide_reported_posts: bool = None, hide_conference_call: bool = None, is_private: bool = None,
+        only_verified_age: bool = None, only_mobile_verified: bool = None,
+        call_timeline_display: bool = None, allow_ownership_transfer: bool = None,
+        allow_thread_creation_by: str = None, gender: int = None, generation_groups_limit: int = None,
+        group_category_id: int = None, cover_image_filename: str = None, sub_category_id: str = None,
+        hide_from_game_eight: bool = None, allow_members_to_post_image_and_video: bool = None,
+        allow_members_to_post_url: bool = None, guidelines: str = None,
 ) -> CreateGroupResponse:
     pass
 
@@ -86,7 +73,7 @@ def get_banned_group_members(
     pass
 
 
-def get_categories(self, **kwargs: int) -> GroupCategoriesResponse:
+def get_categories(self, **params) -> GroupCategoriesResponse:
     pass
 
 
@@ -103,15 +90,11 @@ def get_group_notification_settings(self, group_id: int) -> GroupNotificationSet
     pass
 
 
-def get_groups(self, **kwargs: Union[int, str]) -> GroupsResponse:
+def get_groups(self, **params) -> GroupsResponse:
     pass
 
 
-def get_invitable_users(
-        self,
-        group_id: int,
-        **kwargs: Union[int, str]
-) -> UsersByTimestampResponse:
+def get_invitable_users(self, group_id: int, **params) -> UsersByTimestampResponse:
     pass
 
 
@@ -119,11 +102,7 @@ def get_joined_statuses(self, ids: List[int]) -> dict:
     pass
 
 
-def get_group_members(
-        self,
-        group_id: int,
-        **kwargs: Union[str, int, bool]
-) -> GroupUsersResponse:
+def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
     pass
 
 
@@ -131,11 +110,11 @@ def get_my_groups(self, from_timestamp: None) -> GroupsResponse:
     pass
 
 
-def get_relatable_groups(self, group_id: int, **kwargs: str) -> GroupsRelatedResponse:
+def get_relatable_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
     pass
 
 
-def get_related_groups(self, group_id: int, **kwargs: str) -> GroupsRelatedResponse:
+def get_related_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
     pass
 
 
@@ -172,15 +151,9 @@ def remove_related_groups(self, group_id: int, related_group_ids: List[int]):
 
 
 def report_group(
-        self,
-        group_id: int,
-        category_id: int,
-        reason: str = None,
-        opponent_id: int = None,
-        screenshot_filename: str = None,
-        screenshot_2_filename: str = None,
-        screenshot_3_filename: str = None,
-        screenshot_4_filename: str = None,
+        self, group_id: int, category_id: int, reason: str = None, opponent_id: int = None,
+        screenshot_filename: str = None, screenshot_2_filename: str = None,
+        screenshot_3_filename: str = None, screenshot_4_filename: str = None,
 ):
     pass
 
@@ -194,11 +167,8 @@ def send_ownership_offer(self, group_id: int, user_id: int):
 
 
 def set_group_notification_settings(
-        self,
-        group_id: int,
-        notification_group_post: int = None,
-        notification_group_join: int = None,
-        notification_group_request: int = None,
+        self, group_id: int, notification_group_post: int = None,
+        notification_group_join: int = None, notification_group_request: int = None,
         notification_group_message_tag_all: int = None,
 ) -> AdditionalSettingsResponse:
     pass
@@ -217,27 +187,13 @@ def unban_group_member(self, group_id: int, user_id: int):
 
 
 def update_group(
-        self,
-        topic: str,
-        description: str = None,
-        secret: bool = None,
-        hide_reported_posts: bool = None,
-        hide_conference_call: bool = None,
-        is_private: bool = None,
-        only_verified_age: bool = None,
-        only_mobile_verified: bool = None,
-        call_timeline_display: bool = None,
-        allow_ownership_transfer: bool = None,
-        allow_thread_creation_by: str = None,
-        gender: int = None,
-        generation_groups_limit: int = None,
-        group_category_id: int = None,
-        cover_image_filename: str = None,
-        sub_category_id: str = None,
-        hide_from_game_eight: bool = None,
-        allow_members_to_post_image_and_video: bool = None,
-        allow_members_to_post_url: bool = None,
-        guidelines: str = None,
+        self, topic: str, description: str = None, secret: bool = None, hide_reported_posts: bool = None,
+        hide_conference_call: bool = None, is_private: bool = None, only_verified_age: bool = None,
+        only_mobile_verified: bool = None, call_timeline_display: bool = None, allow_ownership_transfer: bool = None,
+        allow_thread_creation_by: str = None, gender: int = None, generation_groups_limit: int = None,
+        group_category_id: int = None, cover_image_filename: str = None, sub_category_id: str = None,
+        hide_from_game_eight: bool = None, allow_members_to_post_image_and_video: bool = None,
+        allow_members_to_post_url: bool = None, guidelines: str = None,
 ) -> GroupResponse:
     pass
 

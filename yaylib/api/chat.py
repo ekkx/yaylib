@@ -18,21 +18,15 @@ def check_unread_status(self, from_time: int) -> bool:
 
 
 def create_group_chat(
-        self,
-        name: str,
-        with_user_ids: List[int],
-        icon_filename: str = None,
-        background_filename: str = None
+        self, name: str, with_user_ids: List[int],
+        icon_filename: str = None, background_filename: str = None
 ) -> int:
     # this.roomId = j2;
     pass
 
 
 def create_private_chat(
-        self,
-        with_user_id: int,
-        matching_id: int = None,
-        hima_chat: bool = False
+        self, with_user_id: int, matching_id: int = None, hima_chat: bool = False
 ) -> int:
     # this.roomId = j2;
     pass
@@ -47,10 +41,7 @@ def delete_message(self, room_id: int, message_id: int):
 
 
 def edit_chat_room(
-        self,
-        chat_room_id: int,
-        name: str,
-        icon_filename: str = None,
+        self, chat_room_id: int, name: str, icon_filename: str = None,
         background_filename: str = None
 ):
     pass

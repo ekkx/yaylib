@@ -15,12 +15,8 @@ current_path = os.path.abspath(os.getcwd())
 class API:
 
     def __init__(
-            self,
-            access_token: str = None,
-            proxy: str = None,
-            timeout=10,
-            base_path=current_path,
-            loglevel_stream=logging.INFO,
+            self, access_token: str = None, proxy: str = None, timeout=10,
+            base_path=current_path, loglevel_stream=logging.INFO,
             host=Configs.YAY_PRODUCTION_HOST
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
