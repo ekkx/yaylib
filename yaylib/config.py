@@ -31,7 +31,7 @@ class Configs:
 class Endpoints:
 
     # v1 endpoints
-    USER_V1 = Configs.YAY_API_URL + "/v1/users/"
+    USERS_V1 = Configs.YAY_API_URL + "/v1/users/"
     PAYMENTS_V1 = Configs.YAY_API_URL + "/v1/payments/"
     THREADS_V1 = Configs.YAY_API_URL + "/v1/threads/"
     PINNED_V1 = Configs.YAY_API_URL + "/v1/pinned/"
@@ -42,9 +42,10 @@ class Endpoints:
     CHAT_ROOMS_V1 = Configs.YAY_API_URL + "/v1/chat_rooms/"
     CALLS_V1 = Configs.YAY_API_URL + "/v1/calls/"
     SURVEYS_V1 = Configs.YAY_API_URL + "/v1/surveys/"
+    FRIENDS_V1 = Configs.YAY_API_URL + "/v1/friends/"
 
     # v2 endpoints
-    USER_V2 = Configs.YAY_API_URL + "/v2/users/"
+    USERS_V2 = Configs.YAY_API_URL + "/v2/users/"
     PAYMENTS_V2 = Configs.YAY_API_URL + "/v2/payments/"
     THREADS_V2 = Configs.YAY_API_URL + "/v2/threads/"
     PINNED_V2 = Configs.YAY_API_URL + "/v2/pinned/"
@@ -55,9 +56,10 @@ class Endpoints:
     CHAT_ROOMS_V2 = Configs.YAY_API_URL + "/v2/chat_rooms/"
     CALLS_V2 = Configs.YAY_API_URL + "/v2/calls/"
     SURVEYS_V2 = Configs.YAY_API_URL + "/v2/surveys/"
+    FRIENDS_V2 = Configs.YAY_API_URL + "/v2/friends/"
 
     # v3 endpoints
-    USER_V3 = Configs.YAY_API_URL + "/v3/users/"
+    USERS_V3 = Configs.YAY_API_URL + "/v3/users/"
     PAYMENTS_V3 = Configs.YAY_API_URL + "/v3/payments/"
     THREADS_V3 = Configs.YAY_API_URL + "/v3/threads/"
     PINNED_V3 = Configs.YAY_API_URL + "/v3/pinned/"
@@ -68,3 +70,4 @@ class Endpoints:
     CHAT_ROOMS_V3 = Configs.YAY_API_URL + "/v3/chat_rooms/"
     CALLS_V3 = Configs.YAY_API_URL + "/v3/calls/"
     SURVEYS_V3 = Configs.YAY_API_URL + "/v3/surveys/"
+    FRIENDS_V3 = Configs.YAY_API_URL + "/v3/friends/"

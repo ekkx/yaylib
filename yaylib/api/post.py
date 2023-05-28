@@ -11,7 +11,7 @@ from ..utils import *
 def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
     self._check_authorization()
     return self._make_request(
-        "PUT", endpoint=f"{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}",
+        "PUT", endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
         data_type=BookmarkPostResponse
     )
 
@@ -196,7 +196,7 @@ def get_bookmark(self, user_id: int, *, from_str: str = None) -> PostsResponse:
     if from_str:
         params = {"from": from_str}
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.USER_V1}/{user_id}/bookmarks",
+        "GET", endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks",
         params=params, data_type=PostsResponse
     )
 
@@ -492,14 +492,14 @@ def get_timeline_by_keyword(self, keyword: str = None, **params) -> PostsRespons
     )
 
 
-def get_timeline(self, **kwargs: int | str | bool) -> PostsResponse:
-    # noreply_mode: str = None
+def get_timeline(self, **params: int | str | bool) -> PostsResponse:
     # - from: str - (optional)
     """
 
     Parameters:
     ---------------
 
+        - noreply_mode: bool - (optional)
         - from_post_id: int - (optional)
         - number: int - (optional)
         - order_by: str - (optional)
@@ -512,10 +512,13 @@ def get_timeline(self, **kwargs: int | str | bool) -> PostsResponse:
         - custom_generation_range: bool - (optional)
 
     """
+    endpoint = f"{Endpoints.POSTS_V2}/timeline"
+    if params["noreply_mode"] is not None and params["noreply_mode"] is True:
+        self._check_authorization()
+        endpoint = f"{Endpoints.POSTS_V2}/noreply_timeline"
     return self._make_request(
-        # @GET("v2/posts/{noreply_mode}timeline")
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/timeline",
-        params=kwargs, data_type=PostsResponse
+        "GET", endpoint=endpoint,
+        params=params, data_type=PostsResponse
     )
 
 
@@ -555,7 +558,7 @@ def like_posts(self, post_ids: List[int]) -> LikePostsResponse:
 def remove_bookmark(self, user_id: int, post_id: int):
     self._check_authorization()
     return self._make_request(
-        "DELETE", endpoint=f"{Endpoints.USER_V1}/{user_id}/bookmarks/{post_id}",
+        "DELETE", endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
     )
 
 

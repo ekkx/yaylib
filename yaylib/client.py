@@ -31,13 +31,13 @@ class Client(API):
 
     """
 
-    # CALL
+    # -CALL
 
-    # CHAT
+    # -CHAT
 
-    # GROUP
+    # -GROUP
 
-    # LOGIN
+    # -LOGIN
 
     def get_token(self, grant_type="refresh_token", refresh_token: str = None, email: str = None, password: str = None):
         return get_token(self, grant_type, refresh_token, email, password)
@@ -48,12 +48,12 @@ class Client(API):
     def logout(self):
         return logout(self)
 
-    # MISC
+    # -MISC
 
     def get_web_socket_token(self) -> str:
         return get_web_socket_token(self)
 
-    # POST
+    # -POST
 
     def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
         return add_bookmark(self, user_id, post_id)
@@ -362,13 +362,13 @@ class Client(API):
         return get_timeline_by_keyword(self, keyword, **params)
 
     def get_timeline(self, **params: int | str | bool) -> PostsResponse:
-        # noreply_mode: str = None
         # - from: str - (optional)
         """
 
         Parameters:
         ---------------
 
+            - noreply_mode: bool - (optional)
             - from_post_id: int - (optional)
             - number: int - (optional)
             - order_by: str - (optional)
@@ -449,11 +449,326 @@ class Client(API):
     def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
         return vote_survey(self, survey_id, choice_id)
 
-    # REVIEW
+    # -REVIEW
 
-    # THREAD
+    # -THREAD
 
-    # USER
+    # -USER
+
+    # def create_user(
+    #     self,
+    #     nickname: str,
+    #     birth_date: str,
+    #     gender: int = -1,
+    #     country_code: str = "JP",
+    #     biography: str = None,
+    #     prefecture: str = None,
+    #     profile_icon_filename: str = None,
+    #     cover_image_filename: str = None,
+    #     # @Nullable @Part("sns_info") SignUpSnsInfoRequest signUpSnsInfoRequest,
+    #     email: str = None,
+    #     password: str = None,
+    #     email_grant_token: str = None,
+    #     en: int = None,
+    #     vn: int = None
+    # ) -> CreateUserResponse:
+    #     return create_user(self)
+
+    def delete_contact_friends(self):
+        return delete_contact_friends(self)
+
+    def delete_footprint(self, user_id: int, footprint_id: int):
+        return delete_footprint(self, user_id, footprint_id)
+
+    # def destroy_user(self):
+    #     return destroy_user(self)
+
+    def follow_user(self, user_id: int):
+        return follow_user(self, user_id)
+
+    def follow_users(self, user_ids: List[int]):
+        return follow_users(self, user_ids)
+
+    def get_active_followings(self, **params) -> ActiveFollowingsResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - only_online: bool
+            - from_loggedin_at: int = None
+
+        """
+        return get_active_followings(self, **params)
+
+    # def get_additional_settings(self) -> Settings:
+    #     return get_additional_settings(self)
+
+    # def get_app_review_status(self) -> AppReviewStatusResponse:
+    #     return get_app_review_status(self)
+
+    # def get_contact_status(self, mobile_numbers: List[str]) -> ContactStatusResponse:
+    #     return get_contact_status(self, mobile_numbers)
+
+    # def get_default_settings(self) -> TimelineSettings:
+    #     return get_default_settings(self)
+
+    def get_follow_recommendations(self, **params) -> FollowRecommendationsResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - from_timestamp: int = None,
+            - number: int = None,
+            - sources: List[str] = None
+
+        """
+        return get_follow_recommendations(self, **params)
+
+    def get_follow_request(self, from_timestamp: int = None) -> UsersByTimestampResponse:
+        return get_follow_request(self, from_timestamp)
+
+    def get_follow_request_count(self) -> int:
+        return get_follow_request_count(self)
+
+    def get_following_users_born(self, birthdate: int = None) -> UsersResponse:
+        return get_following_users_born(self, birthdate)
+
+    def get_footprints(self, **params) -> List[Footprint]:
+        """
+
+        Parameters:
+        ----------
+
+            - from_id: int = None
+            - number: int = None
+            - mode: str = None
+
+        """
+        return get_footprints(self, **params)
+
+    def get_fresh_user(self, user_id: int) -> UserResponse:
+        return get_fresh_user(self, user_id)
+
+    def get_hima_users(self, **params) -> List[UserWrapper]:
+        """
+
+        Parameters:
+        ----------
+
+            - from_hima_id: int = None
+            - number: int = None
+
+        """
+        return get_hima_users(self, **params)
+
+    # def get_initial_recommended_users_to_follow(
+    #     self,
+    #     en: int = None,
+    #     vn: int = None
+    # ) -> UsersResponse:
+    #     return get_initial_recommended_users_to_follow(self)
+
+    # def get_recommended_users_to_follow_for_profile(
+    #     self,
+    #     user_id: int,
+    #     number: int = None,
+    #     page: int = None
+    # ) -> UsersResponse:
+    #     return get_recommended_users_to_follow_for_profile(self)
+
+    # def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
+    #     return get_refresh_counter_requests(self)
+
+    # def get_social_shared_users(
+    #     self,
+    #     sns_name: str,
+    #     number: int = None,
+    #     from_id: int = None
+    # ) -> SocialShareUsersResponse:
+    #     return get_social_shared_users(self)
+
+    def get_timestamp(self) -> UserTimestampResponse:
+        return get_timestamp(self)
 
     def get_user(self, user_id: int) -> User:
         return get_user(self, user_id)
+
+    # def get_user_custom_definitions(self) -> UserCustomDefinitionsResponse:
+    #     return get_user_custom_definitions(self)
+
+    # def get_user_email(self, user_id: int) -> str:
+    #     return get_user_email(self, user_id)
+
+    def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - user_id: int
+            - from_follow_id: int = None
+            - followed_by_me: int = None
+
+        """
+        return get_user_followers(self, user_id, **params)
+
+    def get_user_followings(self, user_id: int, **params) -> FollowUsersResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - user_id: int
+            - from_follow_id: int = None
+            - from_timestamp: int = None
+            - order_by: str = None
+
+        """
+        return get_user_followings(self, user_id, **params)
+
+    # def get_user_from_qr(self, qr: str) -> UserResponse:
+    #     return get_user_from_qr(self, qr)
+
+    # def get_user_interests(self):
+    #     return get_user_interests(self)
+
+    def get_user_without_leaving_footprint(self, user_id: int) -> UserResponse:
+        return get_user_without_leaving_footprint(self, user_id)
+
+    def get_users(self, user_ids: List[int]) -> UsersResponse:
+        return get_users(self, user_ids)
+
+    # def get_users_from_uuid(self, uuid: str) -> UsersResponse:
+    #     return get_users_from_uuid(self, uuid)
+
+    # def post_social_shared(self, sns_name: str):
+    #     return post_social_shared(self)
+
+    # def record_app_review_status(self, uuid: str):
+    #     return record_app_review_status(self)
+
+    def reduce_kenta_penalty(self, user_id: int):
+        return reduce_kenta_penalty(self, user_id)
+
+    # def refresh_counter(self, counter: str):
+    #     return refresh_counter(self, counter)
+
+    # def remove_user_avatar(self):
+    #     return remove_user_avatar(self)
+
+    # def remove_user_cover(self):
+    #     return remove_user_cover(self)
+
+    # def report_user(
+    #     self, user_id: int, category_id: int, reason: str = None,
+    #     screenshot_filename: str = None, screenshot_2_filename: str = None,
+    #     screenshot_3_filename: str = None, screenshot_4_filename: str = None
+    # ):
+    #     return report_user(self)
+
+    # def reset_password(self, email: str, email_grant_token: str, password: str):
+    #     return reset_password(self)
+
+    # def search_lobi_users(
+    #     self, nickname: str = None, number: int = None, from_str: str = None
+    # ) -> UsersResponse:
+    #     return search_lobi_users(self)
+
+    def search_users(self, **params) -> UsersResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - gender: int = None
+            - nickname: str = None
+            - title: str = None
+            - biography: str = None
+            - from_timestamp: int = None
+            - similar_age: bool = None
+            - not_recent_gomimushi: bool = None
+            - recently_created: bool = None
+            - same_prefecture: bool = None
+            - save_recent_search: bool = None
+
+        """
+        return search_users(self, **params)
+
+    # def set_additional_setting_enabled(
+    #     self,
+    #     mode: str,
+    #     on: int
+    # ):
+    #     return set_additional_setting_enabled(self)
+
+    # def set_follow_permission_enabled(self):
+    #     return set_follow_permission_enabled(self)
+
+    # def set_setting_follow_recommendation_enabled(self, on: bool):
+    #     return set_setting_follow_recommendation_enabled(self)
+
+    # def take_action_follow_request(self, target_id: int, action: str):
+    #     return take_action_follow_request(self)
+
+    def turn_on_hima(self):
+        return turn_on_hima(self)
+
+    def unfollow_user(self, user_id: int):
+        return unfollow_user(self, user_id)
+
+    # def update_invite_contact_status(self, mobile_number: str):
+    #     return update_invite_contact_status(self)
+
+    # def update_language(self, language: str):
+    #     return update_language(self)
+
+    def update_user(
+        self, nickname: str, biography: str = None, prefecture: str = None,
+        gender: int = None, country_code: str = None, profile_icon_filename: str = None,
+        cover_image_filename: str = None, username: str = None,
+    ):
+        return update_user(
+            self, nickname, biography, prefecture, gender, country_code,
+            profile_icon_filename, cover_image_filename, username
+        )
+
+    # def update_user_interests(self):
+    #     return update_user_interests(self)
+
+    # def upload_contacts_friends(self):
+    #     return upload_contacts_friends(self)
+
+    # def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]):
+    #     return upload_twitter_friend_ids(self)
+
+    def block_user(self, user_id: int):
+        return block_user(self, user_id)
+
+    def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
+        return get_blocked_user_ids(self)
+
+    def get_blocked_users(self, from_id: int = None) -> BlockedUsersResponse:
+        return get_blocked_users(self, from_id)
+
+    def unblock_user(self, user_id: int):
+        return unblock_user(self, user_id)
+
+    def get_hidden_users_list(self, **params: Union[str, int]) -> HiddenResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - from: str = None
+            - number: int = None
+
+        """
+        return get_hidden_users_list(self, **params)
+
+    def hide_user(self, user_id: int):
+        return hide_user(self, user_id)
+
+    def unhide_users(self, user_ids: List[int]):
+        return unhide_users(self, user_ids)
