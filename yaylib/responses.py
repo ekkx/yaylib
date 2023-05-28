@@ -121,6 +121,21 @@ class CallStatusResponse:
         return f"CallStatusResponse(data={self.data})"
 
 
+class ChatRoomResponse:
+
+    __slots__ = ("data", "chat")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.chat = data.get("chat")
+        if self.chat is not None:
+            self.chat = ChatRoom(self.chat)
+
+    def __repr__(self):
+        return f"ChatRoomResponse(data={self.data})"
+
+
 class ChatRoomsResponse:
 
     __slots__ = ("data", "pinned_chat_rooms", "chat_rooms", "next_page_value")
@@ -144,6 +159,18 @@ class ChatRoomsResponse:
 
     def __repr__(self):
         return f"ChatRoomsResponse(data={self.data})"
+
+
+class TotalChatRequestResponse:
+
+    __slots__ = ("data", "total")
+
+    def __init__(self, data):
+        self.data = data
+        self.chat = data.get("total")
+
+    def __repr__(self):
+        return f"TotalChatRequestResponse(data={self.data})"
 
 
 class ConferenceCallResponse:
@@ -199,6 +226,18 @@ class CreateQuotaResponse:
 
     def __repr__(self):
         return f"CreateQuotaResponse(data={self.data})"
+
+
+class CreateChatRoomResponse:
+
+    __slots__ = ("data", "room_id")
+
+    def __init__(self, data):
+        self.data = data
+        self.room_id = data.get("room_id")
+
+    def __repr__(self):
+        return f"CreateChatRoomResponse(data={self.data})"
 
 
 class CreatePostResponse:
@@ -564,6 +603,23 @@ class MessageResponse:
 
     def __repr__(self):
         return f"MessageResponse(data={self.data})"
+
+
+class MessagesResponse:
+
+    __slots__ = ("data", "messages")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.messages = data.get("messages")
+        if self.messages is not None:
+            self.messages = [
+                Message(message) for message in self.messages
+            ]
+
+    def __repr__(self):
+        return f"MessagesResponse(data={self.data})"
 
 
 class PostResponse:

@@ -35,6 +35,171 @@ class Client(API):
 
     # -CHAT
 
+    def accept_request(self, chat_room_ids: List[int]):
+        return accept_request(self, chat_room_ids)
+
+    def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
+        return check_unread_status(self, from_time)
+
+    def create_group_chat(
+        self, name: str, with_user_ids: List[int],
+        icon_filename: str = None, background_filename: str = None
+    ) -> CreateChatRoomResponse:
+        return create_group_chat(
+            self, name, with_user_ids, icon_filename, background_filename
+        )
+
+    def create_private_chat(
+        self, with_user_id: int, matching_id: int = None, hima_chat: bool = False
+    ) -> CreateChatRoomResponse:
+        return create_private_chat(self, with_user_id, matching_id, hima_chat)
+
+    # def delete_background(self, chat_room_id: int):
+    #     return delete_background(self)
+
+    def delete_message(self, room_id: int, message_id: int):
+        return delete_message(self, room_id, message_id)
+
+    def edit_chat_room(
+        self, chat_room_id: int, name: str, icon_filename: str = None,
+        background_filename: str = None
+    ):
+        return (self, chat_room_id, name, icon_filename, background_filename)
+
+    def get_chatable_users(
+        self, from_follow_id: int = None, from_timestamp: int = None, order_by: str = None
+    ) -> FollowUsersResponse:
+        return get_chatable_users(from_follow_id, from_timestamp, order_by)
+
+    # def get_gifs_data(self) -> List[GifImageCategory]:
+    #     return get_gifs_data(self)
+
+    def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
+        """
+
+        Parameters:
+        ---------------
+
+            - from_timestamp: int - (optional)
+            - number: int - (optional)
+
+        """
+        return get_hidden_chat_rooms(self, **params)
+
+    def get_main_chat_rooms(self, from_timestamp: int = None) -> ChatRoomsResponse:
+        return get_main_chat_rooms(self, from_timestamp)
+
+    def get_messages(self, chat_room_id: int, **params) -> List[Message]:
+        """
+
+        Parameters:
+        ---------------
+            - from_message_id: int - (optional)
+            - to_message_id: int - (optional)
+
+        """
+        return get_messages(self, chat_room_id, **params)
+
+    # def get_notification_settings(self, chat_room_id: int) -> Settings:
+    #     return get_notification_settings(self, chat_room_id)
+
+    def get_request_chat_rooms(self, from_timestamp: int = None) -> ChatRoomsResponse:
+        return get_request_chat_rooms(self, from_timestamp)
+
+    def get_chat_room(self, chat_room_id: int) -> ChatRoom:
+        return get_chat_room(self, chat_room_id)
+
+    # def get_sticker_packs(self) -> List[StickerPack]:
+    #     return get_sticker_packs(self)
+
+    def get_total_chat_requests(self) -> int:
+        return get_total_chat_requests(self)
+
+    def hide_chat(self, chat_room_id: int):
+        return hide_chat(self, chat_room_id)
+
+    def invite_to_chat(self, chat_room_id: int, user_ids: List[int]):
+        return invite_to_chat(self, chat_room_id, user_ids)
+
+    def kick_users_from_chat(self, chat_room_id: int, user_ids: List[int]):
+        return kick_users_from_chat(self, chat_room_id, user_ids)
+
+    # def pin_chat(self, chat_room_id: int):
+    #     return pin_chat(self, chat_room_id)
+
+    # def read_attachment(
+    #     self,
+    #     chat_room_id: int,
+    #     attachment_msg_ids: List[int]
+    #     # ↑ @Body @NotNull ReadAttachmentRequest readAttachmentRequest
+    # ):
+    #     return read_attachment(self)
+
+    def read_message(self, chat_room_id: int, message_id: int):
+        return read_message(self, chat_room_id, message_id)
+
+    # def read_video_message(
+    #     self,
+    #     chat_room_id: int,
+    #     video_msg_ids: List[int]
+    # ):
+    #     return read_video_message(self)
+
+    def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
+        return refresh_chat_rooms(self, from_time)
+
+    def remove_chat_rooms(self, chat_room_ids: List[int]):
+        return remove_chat_rooms(self, chat_room_ids)
+
+    def report_chat_room(
+        self,
+        chat_room_id: int,
+        opponent_id: int,
+        category_id: int,
+        reason: str = None,
+        screenshot_filename: str = None,
+        screenshot_2_filename: str = None,
+        screenshot_3_filename: str = None,
+        screenshot_4_filename: str = None
+    ):
+        return report_chat_room(
+            self, chat_room_id, opponent_id, category_id, reason, screenshot_filename,
+            screenshot_2_filename, screenshot_3_filename, screenshot_4_filename
+        )
+
+    # def send_media_screenshot_notification(self, chat_room_id: int):
+    #     return send_media_screenshot_notification(self)
+
+    def send_message(
+        self,
+        chat_room_id: int,
+        message_type: str,
+        call_type: str = None,
+        text: str = None,
+        font_size: int = None,
+        gif_image_id: int = None,
+        attachment_file_name: str = None,
+        sticker_pack_id: int = None,
+        video_file_name: str = None
+    ) -> MessageResponse:
+        return send_message(
+            self, chat_room_id, message_type, call_type, text, font_size,
+            gif_image_id, attachment_file_name, sticker_pack_id, video_file_name
+        )
+
+    # def set_notification_settings(
+    #     self,
+    #     chat_room_id: int,
+    #     notification_chat: int
+    # ) -> Settings:
+    #     return set_notification_settings(self)
+
+    def unhide_chat(self, chat_room_ids: int):
+        return unhide_chat(self, chat_room_ids)
+
+    def unpin_chat(self, chat_room_id: int):
+        return unpin_chat(self, chat_room_id)
+
     # -GROUP
 
     # -LOGIN
