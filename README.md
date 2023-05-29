@@ -35,7 +35,7 @@
   </p>
 </p>
 
-<details>
+<details open>
   <summary>- - - 目次 - - -</summary>
   <ol>
     <li>
@@ -149,7 +149,8 @@ for follower in followers:
 
 こちらのレポジトリは個人で作成したライブラリです。  
 改良版のライブラリとして、現在「<strong><a href="https://github.com/qvco/yaylib">yaylib</a></strong>」の共同開発を行っています。  
-開発に参加する場合は、https://github.com/qvco/yaylib にプルリクエストを送信するか、nikola.desuga@gmail.com までご連絡ください。  
+開発に参加する場合は、https://github.com/qvco/yaylib にプルリクエストを送信するか、nikola.desuga@gmail.com までご連絡ください。
+  
 いつでも大歓迎です<33
 
 ---
