@@ -22,12 +22,12 @@
 
   <p align="center">
     汎用的な機能を備えた、SNS「Yay!」の非公式APIです。<br />
-    とてもシンプルな記述で実装できます。
+    とてもシンプルな記述で実装できます。<br />
     <br />
-    <a href="https://github.com/qualia-5w4/yaybot/tree/master/examples"><strong>詳細はドキュメントにて »</strong></a>
+    <a href="https://github.com/qvco/yaylib"><strong>※ 改良版のライブラリはこちらから (開発中) >></strong></a>
     <br />
     <br />
-    <a href="https://github.com/qualia-5w4/yaybot/issues">バグを報告する</a>
+    <a href="#handshake-共同開発について">開発に参加する</a>
     ·
     <a href="https://yay.space/user/3851771">Yay!アカウント</a>
       ·
@@ -46,6 +46,7 @@
       </ul>
     </li>
     <li><a href="#trophy-機能--特徴">機能 & 特徴</a></li>
+    <li><a href="#handshake-共同開発について">共同開発について</a></li>
     <li><a href="#scroll-ライセンス--免責事項">ライセンス & 免責事項</a></li>
   </ol>
 </details>
@@ -141,6 +142,15 @@ for follower in followers:
 - シンプルな記述で実装可能
 - 汎用的な機能
 - プロキシをサポート: http/s
+
+---
+
+## :handshake: 共同開発について
+
+こちらのレポジトリは個人で作成したライブラリです。  
+改良版のライブラリとして、現在「<strong><a href="https://github.com/qvco/yaylib">yaylib</a></strong>」の共同開発を行っています。  
+開発に参加する場合は、https://github.com/qvco/yaylib にプルリクエストを送信するか、nikola.desuga@gmail.com までご連絡ください。  
+いつでも大歓迎です<33
 
 ---
 
