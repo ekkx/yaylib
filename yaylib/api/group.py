@@ -9,27 +9,50 @@ from ..utils import *
 
 
 def accept_moderator_offer(self, group_id: int):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize"
+    )
 
 
 def accept_ownership_offer(self, group_id: int):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer"
+    )
 
 
 def accept_group_join_request(self, group_id: int, user_id: int):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/accept/{user_id}"
+    )
 
 
 def add_related_groups(self, group_id: int, related_group_id: List[int]):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
+        params={"related_group_id[]": related_group_id}
+    )
 
 
 def ban_group_user(self, group_id: int, user_id: int):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban/{user_id}"
+    )
 
 
 def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
-    pass
+    self._check_authorization()
+    params = {}
+    if from_time:
+        params["from_time"] = from_time
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/unread_status",
+        params=params, data_type=UnreadStatusResponse
+    )
 
 
 def create_group(
@@ -39,38 +62,78 @@ def create_group(
         call_timeline_display: bool = None, allow_ownership_transfer: bool = None,
         allow_thread_creation_by: str = None, gender: int = None, generation_groups_limit: int = None,
         group_category_id: int = None, cover_image_filename: str = None, sub_category_id: str = None,
-        hide_from_game_eight: bool = None, allow_members_to_post_image_and_video: bool = None,
+        hide_from_game_eight: bool = None, allow_members_to_post_media: bool = None,
         allow_members_to_post_url: bool = None, guidelines: str = None,
 ) -> CreateGroupResponse:
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.GROUPS_V3}/new",
+        payload={
+            "topic": topic, "description": description, "secret": secret,
+            "hide_reported_posts": hide_reported_posts,
+            "hide_conference_call": hide_conference_call, "is_private": is_private,
+            "only_verified_age": only_verified_age,
+            "only_mobile_verified": only_mobile_verified,
+            "call_timeline_display": call_timeline_display,
+            "allow_ownership_transfer": allow_ownership_transfer,
+            "allow_thread_creation_by": allow_thread_creation_by,
+            "gender": gender, "generation_groups_limit": generation_groups_limit,
+            "group_category_id": group_category_id,
+            "cover_image_filename": cover_image_filename,
+            "sub_category_id": sub_category_id,
+            "hide_from_game_eight": hide_from_game_eight,
+            "allow_members_to_post_image_and_video": allow_members_to_post_media,
+            "allow_members_to_post_url": allow_members_to_post_url,
+            "guidelines": guidelines,
+        }, data_type=CreateGroupResponse
+    )
 
 
 def create_pin_group(self, group_id: int):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.PINNED_V1}/groups",
+        payload={"id": group_id}
+    )
 
 
 def decline_moderator_offer(self, group_id: int):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize"
+    )
 
 
 def decline_ownership_offer(self, group_id: int):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer"
+    )
 
 
-def decline_user_request(self, group_id: int, user_id: int):
-    pass
+def decline_group_join_request(self, group_id: int, user_id: int):
+    self._check_authorization()
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/decline/{user_id}"
+    )
 
 
 def delete_pin_group(self, group_id: int):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "DELETE", endpoint=f"{Endpoints.PINNED_V1}/groups/{group_id}"
+    )
 
 
-def get_banned_group_members(
-        self,
-        group_id: int,
-        page: int = None
-) -> UsersResponse:
-    pass
+def get_banned_group_members(self, group_id: int, page: int = None) -> UsersResponse:
+    self._check_authorization()
+    params = {}
+    if page:
+        params["page"] = page
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban_list",
+        params=params
+    )
 
 
 def get_categories(self, **params) -> GroupCategoriesResponse:
@@ -78,12 +141,18 @@ def get_categories(self, **params) -> GroupCategoriesResponse:
 
 
 def get_create_group_quota(self) -> CreateGroupQuota:
-    # CreateGroupQuota.create
-    pass
+    response = self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/created_quota",
+        data_type=CreateGroupQuota
+    )
+    return response.create
 
 
 def get_group(self, group_id: int) -> GroupResponse:
-    pass
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}",
+        data_type=GroupResponse
+    )
 
 
 def get_group_notification_settings(self, group_id: int) -> GroupNotificationSettingsResponse:
@@ -91,35 +160,133 @@ def get_group_notification_settings(self, group_id: int) -> GroupNotificationSet
 
 
 def get_groups(self, **params) -> GroupsResponse:
-    pass
+    """
+
+    Parameters:
+    ----------
+
+        - group_category_id: int = None
+        - keyword: str = None
+        - from_timestamp: int = None
+        - sub_category_id: int = None
+
+    """
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V2}",
+        params=params, data_type=GroupsResponse
+    )
 
 
 def get_invitable_users(self, group_id: int, **params) -> UsersByTimestampResponse:
-    pass
+    """
+
+    Parameters:
+    ----------
+
+        - from_timestamp: int - (optional)
+        - user[nickname]: str - (optional)
+
+    """
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/users/invitable",
+        params=params, data_type=UsersByTimestampResponse
+    )
 
 
 def get_joined_statuses(self, ids: List[int]) -> dict:
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/joined_statuses",
+        params={"ids[]": ids}
+    )
+
+
+def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/members/{user_id}",
+    )
 
 
 def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
-    pass
+    """
+
+    Parameters:
+    ----------
+
+        - id: int - (required)
+        - mode: str - (optional)
+        - keyword: str - (optional)
+        - from_id: int - (optional)
+        - from_timestamp: int - (optional)
+        - order_by: str - (optional)
+        - followed_by_me: bool - (optional)
+
+    """
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/members",
+        params=params, data_type=GroupUsersResponse
+    )
 
 
 def get_my_groups(self, from_timestamp: None) -> GroupsResponse:
-    pass
+    self._check_authorization()
+    params = {}
+    if from_timestamp:
+        params["from_timestamp"] = from_timestamp
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V2}/mine",
+        params=params, data_type=GroupsResponse
+    )
 
 
 def get_relatable_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
-    pass
+    """
+
+    Parameters:
+    ----------
+
+        - group_id: int - (required)
+        - keyword: str - (optional)
+        - from: str - (optional)
+
+    """
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/relatable",
+        params=params, data_type=GroupsRelatedResponse
+    )
 
 
 def get_related_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
-    pass
+    """
+
+    Parameters:
+    ----------
+
+        - group_id: int - (required)
+        - keyword: str - (optional)
+        - from: str - (optional)
+
+    """
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
+        params=params, data_type=GroupsRelatedResponse
+    )
 
 
-def get_user_groups(self, user_id: int, page: int = None) -> GroupsResponse:
-    pass
+def get_user_groups(self, **params) -> GroupsResponse:
+    """
+
+    Parameters:
+    ----------
+
+        - user_id: int - (required)
+        - page: int - (optional)
+
+    """
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/user_group_list",
+        params=params, data_type=GroupsResponse
+    )
 
 
 def invite_users_to_group(self, group_id: int, user_ids: List[int]):
