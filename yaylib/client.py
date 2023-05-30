@@ -1148,6 +1148,86 @@ class Client(API):
 
     # -THREAD
 
+    def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
+        return add_post_to_thread(self, post_id, thread_id)
+
+    def convert_post_to_thread(
+            self,
+            post_id: int,
+            title: str = None,
+            thread_icon_filename: str = None
+    ) -> ThreadInfo:
+        return convert_post_to_thread(
+            self,
+            post_id,
+            title,
+            thread_icon_filename
+        )
+
+    def create_thread(
+            self,
+            group_id: int,
+            title: str,
+            thread_icon_filename: str
+    ) -> ThreadInfo:
+        return create_thread(
+            self,
+            group_id,
+            title,
+            thread_icon_filename
+        )
+
+    def get_group_thread_list(self, group_id: int, from_str: str = None, **params) -> GroupThreadListResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - group_id: int
+            - from_str: str = None
+            - join_status: str = None
+
+        """
+        return get_group_thread_list(self, group_id, from_str, **params)
+
+    def get_thread_joined_statuses(self, ids: List[int]) -> dict:
+        return get_thread_joined_statuses(self, ids)
+
+    def get_thread_posts(self, thread_id: int, from_str: str = None, **params) -> PostsResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - post_type: str
+            - number: int = None
+            - from_str: str = None
+
+        """
+        return get_thread_posts(self, thread_id, from_str, **params)
+
+    def join_thread(self, thread_id: int, user_id: int):
+        return join_thread(self, thread_id, user_id)
+
+    def leave_thread(self, thread_id: int, user_id: int):
+        return leave_thread(self, thread_id, user_id)
+
+    def remove_thread(self, thread_id: int):
+        return remove_thread(self, thread_id)
+
+    def update_thread(
+            self,
+            thread_id: int,
+            title: str,
+            thread_icon_filename: str
+    ):
+        return update_thread(
+            self,
+            thread_id,
+            title,
+            thread_icon_filename
+        )
+
     # -USER
 
     # def create_user(
