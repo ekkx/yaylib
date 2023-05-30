@@ -42,17 +42,32 @@ class Client(API):
         return check_unread_status(self, from_time)
 
     def create_group_chat(
-        self, name: str, with_user_ids: List[int],
-        icon_filename: str = None, background_filename: str = None
+            self,
+            name: str,
+            with_user_ids: List[int],
+            icon_filename: str = None,
+            background_filename: str = None
     ) -> CreateChatRoomResponse:
         return create_group_chat(
-            self, name, with_user_ids, icon_filename, background_filename
+            self,
+            name,
+            with_user_ids,
+            icon_filename,
+            background_filename
         )
 
     def create_private_chat(
-        self, with_user_id: int, matching_id: int = None, hima_chat: bool = False
+            self,
+            with_user_id: int,
+            matching_id: int = None,
+            hima_chat: bool = False
     ) -> CreateChatRoomResponse:
-        return create_private_chat(self, with_user_id, matching_id, hima_chat)
+        return create_private_chat(
+            self,
+            with_user_id,
+            matching_id,
+            hima_chat
+        )
 
     # def delete_background(self, chat_room_id: int):
     #     return delete_background(self)
@@ -61,13 +76,25 @@ class Client(API):
         return delete_message(self, room_id, message_id)
 
     def edit_chat_room(
-        self, chat_room_id: int, name: str, icon_filename: str = None,
-        background_filename: str = None
+            self,
+            chat_room_id: int,
+            name: str,
+            icon_filename: str = None,
+            background_filename: str = None
     ):
-        return (self, chat_room_id, name, icon_filename, background_filename)
+        return edit_chat_room(
+            self,
+            chat_room_id,
+            name,
+            icon_filename,
+            background_filename
+        )
 
     def get_chatable_users(
-        self, from_follow_id: int = None, from_timestamp: int = None, order_by: str = None
+            self,
+            from_follow_id: int = None,
+            from_timestamp: int = None,
+            order_by: str = None
     ) -> FollowUsersResponse:
         return get_chatable_users(from_follow_id, from_timestamp, order_by)
 
@@ -163,28 +190,43 @@ class Client(API):
         screenshot_4_filename: str = None
     ):
         return report_chat_room(
-            self, chat_room_id, opponent_id, category_id, reason, screenshot_filename,
-            screenshot_2_filename, screenshot_3_filename, screenshot_4_filename
+            self,
+            chat_room_id,
+            opponent_id,
+            category_id,
+            reason,
+            screenshot_filename,
+            screenshot_2_filename,
+            screenshot_3_filename,
+            screenshot_4_filename
         )
 
     # def send_media_screenshot_notification(self, chat_room_id: int):
     #     return send_media_screenshot_notification(self)
 
     def send_message(
-        self,
-        chat_room_id: int,
-        message_type: str,
-        call_type: str = None,
-        text: str = None,
-        font_size: int = None,
-        gif_image_id: int = None,
-        attachment_file_name: str = None,
-        sticker_pack_id: int = None,
-        video_file_name: str = None
+            self,
+            chat_room_id: int,
+            message_type: str,
+            call_type: str = None,
+            text: str = None,
+            font_size: int = None,
+            gif_image_id: int = None,
+            attachment_file_name: str = None,
+            sticker_pack_id: int = None,
+            video_file_name: str = None
     ) -> MessageResponse:
         return send_message(
-            self, chat_room_id, message_type, call_type, text, font_size,
-            gif_image_id, attachment_file_name, sticker_pack_id, video_file_name
+            self,
+            chat_room_id,
+            message_type,
+            call_type,
+            text,
+            font_size,
+            gif_image_id,
+            attachment_file_name,
+            sticker_pack_id,
+            video_file_name
         )
 
     # def set_notification_settings(
@@ -202,10 +244,196 @@ class Client(API):
 
     # -GROUP
 
+    def accept_moderator_offer(self, group_id: int):
+        return accept_moderator_offer(self, group_id)
+
+    def accept_ownership_offer(self, group_id: int):
+        return accept_ownership_offer(self, group_id)
+
+    def accept_group_join_request(self, group_id: int, user_id: int):
+        return accept_group_join_request(self, group_id, user_id)
+
+    def add_related_groups(self, group_id: int, related_group_id: List[int]):
+        return add_related_groups(self, group_id, related_group_id)
+
+    def ban_group_user(self, group_id: int, user_id: int):
+        return ban_group_user(self, group_id, user_id)
+
+    def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
+        return check_unread_status(self, from_time)
+
+    def create_group(
+            self,
+            topic: str,
+            description: str = None,
+            secret: bool = None,
+            hide_reported_posts: bool = None,
+            hide_conference_call: bool = None,
+            is_private: bool = None,
+            only_verified_age: bool = None,
+            only_mobile_verified: bool = None,
+            call_timeline_display: bool = None,
+            allow_ownership_transfer: bool = None,
+            allow_thread_creation_by: str = None,
+            gender: int = None,
+            generation_groups_limit: int = None,
+            group_category_id: int = None,
+            cover_image_filename: str = None,
+            sub_category_id: str = None,
+            hide_from_game_eight: bool = None,
+            allow_members_to_post_media: bool = None,
+            allow_members_to_post_url: bool = None,
+            guidelines: str = None,
+    ) -> CreateGroupResponse:
+        return create_group(
+            self,
+            topic,
+            description,
+            secret,
+            hide_reported_posts,
+            hide_conference_call,
+            is_private,
+            only_verified_age,
+            only_mobile_verified,
+            call_timeline_display,
+            allow_ownership_transfer,
+            allow_thread_creation_by,
+            gender, generation_groups_limit,
+            group_category_id,
+            cover_image_filename,
+            sub_category_id,
+            hide_from_game_eight,
+            allow_members_to_post_media,
+            allow_members_to_post_url,
+            guidelines
+        )
+
+    def create_pin_group(self, group_id: int):
+        return create_pin_group(self, group_id)
+
+    def decline_moderator_offer(self, group_id: int):
+        return decline_moderator_offer(self, group_id)
+
+    def decline_ownership_offer(self, group_id: int):
+        return decline_ownership_offer(self, group_id)
+
+    def decline_group_join_request(self, group_id: int, user_id: int):
+        return decline_ownership_offer(self, group_id, user_id)
+
+    def delete_pin_group(self, group_id: int):
+        return delete_pin_group(self, group_id)
+
+    def get_banned_group_members(self, group_id: int, page: int = None) -> UsersResponse:
+        return get_banned_group_members(self, group_id, page)
+
+    # def get_categories(self, **params) -> GroupCategoriesResponse:
+    #     return get_categories(self, **params)
+
+    def get_create_group_quota(self) -> CreateGroupQuota:
+        return get_create_group_quota(self)
+
+    def get_group(self, group_id: int) -> GroupResponse:
+        return get_group(self, group_id)
+
+    # def get_group_notification_settings(self, group_id: int) -> GroupNotificationSettingsResponse:
+    #     return get_group_notification_settings(self, group_id)
+
+    def get_groups(self, **params) -> GroupsResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - group_category_id: int = None
+            - keyword: str = None
+            - from_timestamp: int = None
+            - sub_category_id: int = None
+
+        """
+        return get_groups(self, **params)
+
+    def get_invitable_users(self, group_id: int, **params) -> UsersByTimestampResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - from_timestamp: int - (optional)
+            - user[nickname]: str - (optional)
+
+        """
+        return get_invitable_users(self, group_id, **params)
+
+    def get_joined_statuses(self, ids: List[int]) -> dict:
+        return get_joined_statuses(self, ids)
+
+    def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
+        return get_group_member(self, group_id, user_id)
+
+    def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - id: int - (required)
+            - mode: str - (optional)
+            - keyword: str - (optional)
+            - from_id: int - (optional)
+            - from_timestamp: int - (optional)
+            - order_by: str - (optional)
+            - followed_by_me: bool - (optional)
+
+        """
+        return get_group_members(self, group_id, **params)
+
+    def get_my_groups(self, from_timestamp: None) -> GroupsResponse:
+        return get_my_groups(self, from_timestamp)
+
+    def get_relatable_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - group_id: int - (required)
+            - keyword: str - (optional)
+            - from: str - (optional)
+
+        """
+        return get_relatable_groups(self, group_id, **params)
+
+    def get_related_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - group_id: int - (required)
+            - keyword: str - (optional)
+            - from: str - (optional)
+
+        """
+        return get_related_groups(self, group_id, **params)
+    
+    
+
     # -LOGIN
 
-    def get_token(self, grant_type="refresh_token", refresh_token: str = None, email: str = None, password: str = None):
-        return get_token(self, grant_type, refresh_token, email, password)
+    def get_token(
+            self,
+            grant_type: str,
+            refresh_token: str = None,
+            email: str = None,
+            password: str = None
+    ):
+        return get_token(
+            self,
+            grant_type,
+            refresh_token,
+            email,
+            password
+        )
 
     def login_with_email(self, email: str, password: str):
         return login_with_email(self, email, password)
@@ -227,20 +455,46 @@ class Client(API):
         return add_group_highlight_post(self, group_id, post_id)
 
     def create_call_post(
-            self, *, text: str = None, font_size: int = None, color: int = None, group_id: int = None,
-            call_type: str = None, category_id: int = None, game_title: str = None,
-            joinable_by: str = None, message_tags: str = "[]", attachment_filename: str = None,
-            attachment_2_filename: str = None, attachment_3_filename: str = None,
-            attachment_4_filename: str = None, attachment_5_filename: str = None,
-            attachment_6_filename: str = None, attachment_7_filename: str = None,
-            attachment_8_filename: str = None, attachment_9_filename: str = None,
+            self,
+            text: str = None,
+            font_size: int = None,
+            color: int = None,
+            group_id: int = None,
+            call_type: str = None,
+            category_id: int = None,
+            game_title: str = None,
+            joinable_by: str = None,
+            message_tags: str = "[]",
+            attachment_filename: str = None,
+            attachment_2_filename: str = None,
+            attachment_3_filename: str = None,
+            attachment_4_filename: str = None,
+            attachment_5_filename: str = None,
+            attachment_6_filename: str = None,
+            attachment_7_filename: str = None,
+            attachment_8_filename: str = None,
+            attachment_9_filename: str = None,
     ) -> ConferenceCall:
         return create_call_post(
-            self, text, font_size, color, group_id, call_type, category_id,
-            game_title, joinable_by, message_tags, attachment_filename,
-            attachment_2_filename, attachment_3_filename, attachment_4_filename,
-            attachment_5_filename, attachment_6_filename, attachment_7_filename,
-            attachment_8_filename, attachment_9_filename
+            self,
+            text,
+            font_size,
+            color,
+            group_id,
+            call_type,
+            category_id,
+            game_title,
+            joinable_by,
+            message_tags,
+            attachment_filename,
+            attachment_2_filename,
+            attachment_3_filename,
+            attachment_4_filename,
+            attachment_5_filename,
+            attachment_6_filename,
+            attachment_7_filename,
+            attachment_8_filename,
+            attachment_9_filename
         )
 
     def create_group_pin_post(self, post_id: int, group_id: int):
@@ -250,65 +504,167 @@ class Client(API):
         return create_pin_post(self, post_id)
 
     def create_post(
-            self, *, text: str = None, font_size: int = 0, color: int = 0, in_reply_to: int = None,
-            group_id: int = None, post_type: str = None, mention_ids: List[int] = None,
-            choices: List[str] = None, shared_url: Dict[str, str | int] = None, message_tags: str = "[]",
-            attachment_filename: str = None, attachment_2_filename: str = None,
-            attachment_3_filename: str = None, attachment_4_filename: str = None,
-            attachment_5_filename: str = None, attachment_6_filename: str = None,
-            attachment_7_filename: str = None, attachment_8_filename: str = None,
-            attachment_9_filename: str = None, video_file_name: str = None,
+            self,
+            text: str = None,
+            font_size: int = 0,
+            color: int = 0,
+            in_reply_to: int = None,
+            group_id: int = None,
+            post_type: str = None,
+            mention_ids: List[int] = None,
+            choices: List[str] = None,
+            shared_url: Dict[str, str | int] = None,
+            message_tags: str = "[]",
+            attachment_filename: str = None,
+            attachment_2_filename: str = None,
+            attachment_3_filename: str = None,
+            attachment_4_filename: str = None,
+            attachment_5_filename: str = None,
+            attachment_6_filename: str = None,
+            attachment_7_filename: str = None,
+            attachment_8_filename: str = None,
+            attachment_9_filename: str = None,
+            video_file_name: str = None,
     ) -> Post:
         return create_post(
-            self, text, font_size, color, in_reply_to, group_id, post_type,
-            mention_ids, choices, shared_url, message_tags, attachment_filename,
-            attachment_2_filename, attachment_3_filename, attachment_4_filename,
-            attachment_5_filename, attachment_6_filename, attachment_7_filename,
-            attachment_8_filename, attachment_9_filename, video_file_name
+            self,
+            text,
+            font_size,
+            color,
+            in_reply_to,
+            group_id,
+            post_type,
+            mention_ids,
+            choices,
+            shared_url,
+            message_tags,
+            attachment_filename,
+            attachment_2_filename,
+            attachment_3_filename,
+            attachment_4_filename,
+            attachment_5_filename,
+            attachment_6_filename,
+            attachment_7_filename,
+            attachment_8_filename,
+            attachment_9_filename,
+            video_file_name
         )
 
     def create_repost(
-            self, post_id: int, *, text: str = None, font_size: int = None, color: int = None,
-            in_reply_to: int = None, group_id: int = None, post_type: str = None, mention_ids: List[int] = None,
-            choices: List[str] = None, shared_url: Dict[str, Union[str, int]] = None, message_tags: str = "[]",
-            attachment_filename: str = None, attachment_2_filename: str = None,
-            attachment_3_filename: str = None, attachment_4_filename: str = None,
-            attachment_5_filename: str = None, attachment_6_filename: str = None,
-            attachment_7_filename: str = None, attachment_8_filename: str = None,
-            attachment_9_filename: str = None, video_file_name: str = None,
+            self,
+            post_id: int,
+            text: str = None,
+            font_size: int = None,
+            color: int = None,
+            in_reply_to: int = None,
+            group_id: int = None,
+            post_type: str = None,
+            mention_ids: List[int] = None,
+            choices: List[str] = None,
+            shared_url: Dict[str, Union[str, int]] = None,
+            message_tags: str = "[]",
+            attachment_filename: str = None,
+            attachment_2_filename: str = None,
+            attachment_3_filename: str = None,
+            attachment_4_filename: str = None,
+            attachment_5_filename: str = None,
+            attachment_6_filename: str = None,
+            attachment_7_filename: str = None,
+            attachment_8_filename: str = None,
+            attachment_9_filename: str = None,
+            video_file_name: str = None,
     ) -> Post:
         return create_repost(
-            self, post_id, text, font_size, color, in_reply_to, group_id, post_type,
-            mention_ids, choices, shared_url, message_tags, attachment_filename,
-            attachment_2_filename, attachment_3_filename, attachment_4_filename,
-            attachment_5_filename, attachment_6_filename, attachment_7_filename,
-            attachment_8_filename, attachment_9_filename, video_file_name,
+            self,
+            post_id,
+            text,
+            font_size,
+            color,
+            in_reply_to,
+            group_id,
+            post_type,
+            mention_ids,
+            choices,
+            shared_url,
+            message_tags,
+            attachment_filename,
+            attachment_2_filename,
+            attachment_3_filename,
+            attachment_4_filename,
+            attachment_5_filename,
+            attachment_6_filename,
+            attachment_7_filename,
+            attachment_8_filename,
+            attachment_9_filename,
+            video_file_name,
         )
 
     def create_share_post(
-            self, shareable_type: str, shareable_id: int, *, text: str = None,
-            font_size: int = None, color: int = None, group_id: int = None,
+            self,
+            shareable_type: str,
+            shareable_id: int,
+            text: str = None,
+            font_size: int = None,
+            color: int = None,
+            group_id: int = None,
     ) -> Post:
         return create_share_post(
-            self, shareable_type, text, font_size, color, group_id
+            self,
+            shareable_type,
+            shareable_id,
+            text,
+            font_size,
+            color,
+            group_id
         )
 
     def create_thread_post(
-        self, post_id: int, *, text: str = None, font_size: int = None, color: int = None,
-        in_reply_to: int = None, group_id: int = None, post_type: str = None, mention_ids: List[int] = None,
-        choices: List[str] = None, shared_url: Dict[str, Union[str, int]] = None, message_tags: str = "[]",
-        attachment_filename: str = None, attachment_2_filename: str = None,
-        attachment_3_filename: str = None, attachment_4_filename: str = None,
-        attachment_5_filename: str = None, attachment_6_filename: str = None,
-        attachment_7_filename: str = None, attachment_8_filename: str = None,
-        attachment_9_filename: str = None, video_file_name: str = None,
+            self,
+            post_id: int,
+            text: str = None,
+            font_size: int = None,
+            color: int = None,
+            in_reply_to: int = None,
+            group_id: int = None,
+            post_type: str = None,
+            mention_ids: List[int] = None,
+            choices: List[str] = None,
+            shared_url: Dict[str, Union[str, int]] = None,
+            message_tags: str = "[]",
+            attachment_filename: str = None,
+            attachment_2_filename: str = None,
+            attachment_3_filename: str = None,
+            attachment_4_filename: str = None,
+            attachment_5_filename: str = None,
+            attachment_6_filename: str = None,
+            attachment_7_filename: str = None,
+            attachment_8_filename: str = None,
+            attachment_9_filename: str = None,
+            video_file_name: str = None,
     ) -> Post:
         return create_thread_post(
-            self, post_id, text, font_size, color, in_reply_to, group_id, post_type,
-            mention_ids, choices, shared_url, message_tags, attachment_filename,
-            attachment_2_filename, attachment_3_filename, attachment_4_filename,
-            attachment_5_filename, attachment_6_filename, attachment_7_filename,
-            attachment_8_filename, attachment_9_filename, video_file_name,
+            self,
+            post_id,
+            text,
+            font_size,
+            color,
+            in_reply_to,
+            group_id,
+            post_type,
+            mention_ids,
+            choices,
+            shared_url,
+            message_tags,
+            attachment_filename,
+            attachment_2_filename,
+            attachment_3_filename,
+            attachment_4_filename,
+            attachment_5_filename,
+            attachment_6_filename,
+            attachment_7_filename,
+            attachment_8_filename,
+            attachment_9_filename,
+            video_file_name,
         )
 
     def delete_all_post(self):
@@ -577,21 +933,38 @@ class Client(API):
         return remove_posts(self, post_ids)
 
     def report_post(
-        self, post_id: int, opponent_id: int, category_id: int, *, reason: str = None,
-        screenshot_filename: str = None, screenshot_2_filename: str = None,
-        screenshot_3_filename: str = None, screenshot_4_filename: str = None
+            self,
+            post_id: int,
+            opponent_id: int,
+            category_id: int,
+            reason: str = None,
+            screenshot_filename: str = None,
+            screenshot_2_filename: str = None,
+            screenshot_3_filename: str = None,
+            screenshot_4_filename: str = None
     ):
         return report_post(
-            self, post_id, opponent_id, category_id, reason, screenshot_filename,
-            screenshot_2_filename, screenshot_3_filename, screenshot_4_filename
+            self,
+            post_id,
+            opponent_id,
+            category_id,
+            reason,
+            screenshot_filename,
+            screenshot_2_filename,
+            screenshot_3_filename,
+            screenshot_4_filename
         )
 
     def unlike_post(self, post_id: int):
         return unlike_post(self, post_id)
 
     def update_post(
-        self, post_id: int, text: str = None, font_size: int = None,
-        color: int = None, message_tags: str = "[]",
+            self,
+            post_id: int,
+            text: str = None,
+            font_size: int = None,
+            color: int = None,
+            message_tags: str = "[]",
     ) -> Post:
         return update_post(
             self, post_id, text, font_size, color, message_tags
@@ -827,9 +1200,14 @@ class Client(API):
     #     return remove_user_cover(self)
 
     # def report_user(
-    #     self, user_id: int, category_id: int, reason: str = None,
-    #     screenshot_filename: str = None, screenshot_2_filename: str = None,
-    #     screenshot_3_filename: str = None, screenshot_4_filename: str = None
+    #         self,
+    #         user_id: int,
+    #         category_id: int,
+    #         reason: str = None,
+    #         screenshot_filename: str = None,
+    #         screenshot_2_filename: str = None,
+    #         screenshot_3_filename: str = None,
+    #         screenshot_4_filename: str = None
     # ):
     #     return report_user(self)
 
@@ -837,7 +1215,10 @@ class Client(API):
     #     return reset_password(self)
 
     # def search_lobi_users(
-    #     self, nickname: str = None, number: int = None, from_str: str = None
+    #         self,
+    #         nickname: str = None,
+    #         number: int = None,
+    #         from_str: str = None
     # ) -> UsersResponse:
     #     return search_lobi_users(self)
 
@@ -890,9 +1271,15 @@ class Client(API):
     #     return update_language(self)
 
     def update_user(
-        self, nickname: str, biography: str = None, prefecture: str = None,
-        gender: int = None, country_code: str = None, profile_icon_filename: str = None,
-        cover_image_filename: str = None, username: str = None,
+            self,
+            nickname: str,
+            biography: str = None,
+            prefecture: str = None,
+            gender: int = None,
+            country_code: str = None,
+            profile_icon_filename: str = None,
+            cover_image_filename: str = None,
+            username: str = None,
     ):
         return update_user(
             self, nickname, biography, prefecture, gender, country_code,

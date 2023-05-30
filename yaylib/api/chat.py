@@ -26,14 +26,18 @@ def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
 
 
 def create_group_chat(
-        self, name: str, with_user_ids: List[int],
-        icon_filename: str = None, background_filename: str = None
+        self,
+        name: str,
+        with_user_ids: List[int],
+        icon_filename: str = None,
+        background_filename: str = None
 ) -> CreateChatRoomResponse:
     self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V3}/new",
         payload={
-            "name": name, "with_user_ids[]": with_user_ids,
+            "name": name,
+            "with_user_ids[]": with_user_ids,
             "icon_filename": icon_filename,
             "background_filename": background_filename,
         },
@@ -42,13 +46,17 @@ def create_group_chat(
 
 
 def create_private_chat(
-        self, with_user_id: int, matching_id: int = None, hima_chat: bool = False
+        self,
+        with_user_id: int,
+        matching_id: int = None,
+        hima_chat: bool = False
 ) -> CreateChatRoomResponse:
     self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/new",
         payload={
-            "with_user_id": with_user_id, "matching_id": matching_id,
+            "with_user_id": with_user_id,
+            "matching_id": matching_id,
             "hima_chat": hima_chat,
         },
         data_type=CreateChatRoomResponse
@@ -67,14 +75,19 @@ def delete_message(self, room_id: int, message_id: int):
 
 
 def edit_chat_room(
-        self, chat_room_id: int, name: str, icon_filename: str = None,
+        self,
+        chat_room_id: int,
+        name: str,
+        icon_filename: str = None,
         background_filename: str = None
 ):
     self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/edit",
         payload={
-            "name": name, "icon_filename": icon_filename, "background_filename": background_filename,
+            "name": name,
+            "icon_filename": icon_filename,
+            "background_filename": background_filename,
         }
     )
 
@@ -90,7 +103,8 @@ def get_chatable_users(
     return self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/followings/chatable",
         payload={
-            "from_follow_id": from_follow_id, "from_timestamp": from_timestamp,
+            "from_follow_id": from_follow_id,
+            "from_timestamp": from_timestamp,
             "order_by": order_by,
         }, data_type=FollowUsersResponse
     )
@@ -268,8 +282,10 @@ def report_chat_room(
     return self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/report",
         payload={
-            "chat_room_id": chat_room_id, "opponent_id": opponent_id,
-            "category_id": category_id, "reason": reason,
+            "chat_room_id": chat_room_id,
+            "opponent_id": opponent_id,
+            "category_id": category_id,
+            "reason": reason,
             "screenshot_filename": screenshot_filename,
             "screenshot_2_filename": screenshot_2_filename,
             "screenshot_3_filename": screenshot_3_filename,
@@ -298,10 +314,15 @@ def send_message(
     return self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/messages/new",
         payload={
-            "chat_room_id": chat_room_id, "message_type": message_type,
-            "call_type": call_type, "text": text, "font_size": font_size,
-            "gif_image_id": gif_image_id, "attachment_file_name": attachment_file_name,
-            "sticker_pack_id": sticker_pack_id, "video_file_name": video_file_name,
+            "chat_room_id": chat_room_id,
+            "message_type": message_type,
+            "call_type": call_type,
+            "text": text,
+            "font_size": font_size,
+            "gif_image_id": gif_image_id,
+            "attachment_file_name": attachment_file_name,
+            "sticker_pack_id": sticker_pack_id,
+            "video_file_name": video_file_name,
         }, data_type=MessageResponse
     )
 

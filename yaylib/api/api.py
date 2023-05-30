@@ -20,6 +20,7 @@ class API:
             host=Configs.YAY_PRODUCTION_HOST
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
+        self.api_version_key = Configs.YAY_API_VERSION_KEY
         self.api_key = Configs.YAY_API_KEY
         self.access_token = access_token
         self.proxy = proxy

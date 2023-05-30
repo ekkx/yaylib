@@ -24,7 +24,13 @@ def disconnect_account_with_sns(self):
     pass
 
 
-def get_token(self, grant_type: str, refresh_token: str = None, email: str = None, password: str = None):
+def get_token(
+        self,
+        grant_type: str,
+        refresh_token: str = None,
+        email: str = None,
+        password: str = None
+):
     return self._make_request(
         "POST", endpoint=f"{self.host}/api/v1/oauth/token",
         payload={

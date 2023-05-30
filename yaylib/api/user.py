@@ -333,19 +333,21 @@ def record_app_review_status(self, uuid: str):
 
 
 def reduce_kenta_penalty(self, user_id: int):
-    # @NotNull @Part("app_version") String str,
-    # @Part("timestamp") long j3,
-    # @NotNull @Part("api_key") String str2,
-    # @NotNull @Part("signed_version") String str3,
-    # @NotNull @Part("signed_info") String str4,
-    # @NotNull @Part("uuid") String str5
+    # TODO: yay_version_message とは
     self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"api/v3/users/{user_id}/reduce_penalty",
         payload={
-            "uuid": self.uuid, "api_key": self.api_key, "timestamp": int(datetime.now().timestamp()),
-            "signed_info": signed_info_calculating(self.api_key, self.device_uuid, int(datetime.now().timestamp()))
-            # "signed_version": signed_version_calculating()
+            "uuid": self.uuid,
+            "api_key": self.api_key,
+            "timestamp": int(datetime.now().timestamp()),
+            "signed_info": signed_info_calculating(
+                self.api_key, self.device_uuid,
+                int(datetime.now().timestamp())
+            ),
+            "signed_version": signed_version_calculating(
+                self.yay_version_message, self.api_version_key
+            )
         }, data_type=CreatePostResponse
     )
 
@@ -363,9 +365,14 @@ def remove_user_cover(self):
 
 
 def report_user(
-        self, user_id: int, category_id: int, reason: str = None,
-        screenshot_filename: str = None, screenshot_2_filename: str = None,
-        screenshot_3_filename: str = None, screenshot_4_filename: str = None
+        self,
+        user_id: int,
+        category_id: int,
+        reason: str = None,
+        screenshot_filename: str = None,
+        screenshot_2_filename: str = None,
+        screenshot_3_filename: str = None,
+        screenshot_4_filename: str = None
 ):
     pass
 
@@ -375,7 +382,10 @@ def reset_password(self, email: str, email_grant_token: str, password: str):
 
 
 def search_lobi_users(
-        self, nickname: str = None, number: int = None, from_str: str = None
+        self,
+        nickname: str = None,
+        number: int = None,
+        from_str: str = None
 ) -> UsersResponse:
     pass
 
@@ -453,20 +463,35 @@ def update_language(self, language: str):
 
 
 def update_user(
-        self, nickname: str, biography: str = None, prefecture: str = None,
-        gender: int = None, country_code: str = None, profile_icon_filename: str = None,
-        cover_image_filename: str = None, username: str = None,
+        self,
+        nickname: str,
+        biography: str = None,
+        prefecture: str = None,
+        gender: int = None,
+        country_code: str = None,
+        profile_icon_filename: str = None,
+        cover_image_filename: str = None,
+        username: str = None,
 ):
     self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/edit",
         payload={
-            "nickname": nickname, "biography": biography, "prefecture": prefecture,
-            "gender": gender, "country_code": country_code, "profile_icon_filename": profile_icon_filename,
-            "cover_image_filename": cover_image_filename, "username": username,
-            "uuid": self.uuid, "api_key": self.api_key,
+            "nickname": nickname,
+            "biography": biography,
+            "prefecture": prefecture,
+            "gender": gender,
+            "country_code": country_code,
+            "profile_icon_filename": profile_icon_filename,
+            "cover_image_filename": cover_image_filename,
+            "username": username,
+            "uuid": self.uuid,
+            "api_key": self.api_key,
             "timestamp": int(datetime.now().timestamp()),
-            "signed_info": signed_info_calculating(self.api_key, self.device_uuid, int(datetime.now().timestamp())),
+            "signed_info": signed_info_calculating(
+                self.api_key, self.device_uuid,
+                int(datetime.now().timestamp())
+            ),
         }
     )
 

@@ -24,27 +24,47 @@ def add_group_highlight_post(self, group_id: int, post_id: int):
 
 
 def create_call_post(
-        self, *, text: str = None, font_size: int = None, color: int = None, group_id: int = None,
-        call_type: str = None, category_id: int = None, game_title: str = None,
-        joinable_by: str = None, message_tags: str = "[]", attachment_filename: str = None,
-        attachment_2_filename: str = None, attachment_3_filename: str = None,
-        attachment_4_filename: str = None, attachment_5_filename: str = None,
-        attachment_6_filename: str = None, attachment_7_filename: str = None,
-        attachment_8_filename: str = None, attachment_9_filename: str = None,
+        self,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        group_id: int = None,
+        call_type: str = None,
+        category_id: int = None,
+        game_title: str = None,
+        joinable_by: str = None,
+        message_tags: str = "[]",
+        attachment_filename: str = None,
+        attachment_2_filename: str = None,
+        attachment_3_filename: str = None,
+        attachment_4_filename: str = None,
+        attachment_5_filename: str = None,
+        attachment_6_filename: str = None,
+        attachment_7_filename: str = None,
+        attachment_8_filename: str = None,
+        attachment_9_filename: str = None,
 ) -> ConferenceCall:
     self._check_authorization()
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
         payload={
-            "text": text, "font_size": font_size, "color": color, "group_id": group_id,
-            "call_type": call_type, "uuid": self.uuid, "api_key": self.api_key,
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "group_id": group_id,
+            "call_type": call_type,
+            "uuid": self.uuid,
+            "api_key": self.api_key,
             "timestamp": int(datetime.now().timestamp()),
             "signed_info": signed_info_calculating(
                 self.api_key, self.device_uuid,
                 int(datetime.now().timestamp())
             ),
-            "category_id": category_id, "game_title": game_title, "joinable_by": joinable_by,
-            "message_tags": message_tags, "attachment_filename": attachment_filename,
+            "category_id": category_id,
+            "game_title": game_title,
+            "joinable_by": joinable_by,
+            "message_tags": message_tags,
+            "attachment_filename": attachment_filename,
             "attachment_2_filename": attachment_2_filename, "attachment_3_filename": attachment_3_filename,
             "attachment_4_filename": attachment_4_filename, "attachment_5_filename": attachment_5_filename,
             "attachment_6_filename": attachment_6_filename, "attachment_7_filename": attachment_7_filename,
@@ -71,14 +91,27 @@ def create_pin_post(self, post_id: int):
 
 
 def create_post(
-        self, *, text: str = None, font_size: int = 0, color: int = 0, in_reply_to: int = None,
-        group_id: int = None, post_type: str = None, mention_ids: List[int] = None,
-        choices: List[str] = None, shared_url: Dict[str, str | int] = None, message_tags: str = "[]",
-        attachment_filename: str = None, attachment_2_filename: str = None,
-        attachment_3_filename: str = None, attachment_4_filename: str = None,
-        attachment_5_filename: str = None, attachment_6_filename: str = None,
-        attachment_7_filename: str = None, attachment_8_filename: str = None,
-        attachment_9_filename: str = None, video_file_name: str = None,
+        self,
+        text: str = None,
+        font_size: int = 0,
+        color: int = 0,
+        in_reply_to: int = None,
+        group_id: int = None,
+        post_type: str = None,
+        mention_ids: List[int] = None,
+        choices: List[str] = None,
+        shared_url: Dict[str, str | int] = None,
+        message_tags: str = "[]",
+        attachment_filename: str = None,
+        attachment_2_filename: str = None,
+        attachment_3_filename: str = None,
+        attachment_4_filename: str = None,
+        attachment_5_filename: str = None,
+        attachment_6_filename: str = None,
+        attachment_7_filename: str = None,
+        attachment_8_filename: str = None,
+        attachment_9_filename: str = None,
+        video_file_name: str = None,
 ) -> Post:
     self._check_authorization()
     headers = self.session.headers
@@ -86,9 +119,16 @@ def create_post(
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/new",
         payload={
-            "text": text, "font_size": font_size, "color": color, "in_reply_to": in_reply_to,
-            "group_id": group_id, "post_type": post_type, "mention_ids[]": mention_ids,
-            "choices[]": choices, "shared_url": shared_url, "message_tags": message_tags,
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "in_reply_to": in_reply_to,
+            "group_id": group_id,
+            "post_type": post_type,
+            "mention_ids[]": mention_ids,
+            "choices[]": choices,
+            "shared_url": shared_url,
+            "message_tags": message_tags,
             "attachment_filename": attachment_filename, "attachment_2_filename": attachment_2_filename,
             "attachment_3_filename": attachment_3_filename, "attachment_4_filename": attachment_4_filename,
             "attachment_5_filename": attachment_5_filename, "attachment_6_filename": attachment_6_filename,
@@ -99,14 +139,28 @@ def create_post(
 
 
 def create_repost(
-        self, post_id: int, *, text: str = None, font_size: int = None, color: int = None,
-        in_reply_to: int = None, group_id: int = None, post_type: str = None, mention_ids: List[int] = None,
-        choices: List[str] = None, shared_url: Dict[str, Union[str, int]] = None, message_tags: str = "[]",
-        attachment_filename: str = None, attachment_2_filename: str = None,
-        attachment_3_filename: str = None, attachment_4_filename: str = None,
-        attachment_5_filename: str = None, attachment_6_filename: str = None,
-        attachment_7_filename: str = None, attachment_8_filename: str = None,
-        attachment_9_filename: str = None, video_file_name: str = None,
+        self,
+        post_id: int,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        in_reply_to: int = None,
+        group_id: int = None,
+        post_type: str = None,
+        mention_ids: List[int] = None,
+        choices: List[str] = None,
+        shared_url: Dict[str, Union[str, int]] = None,
+        message_tags: str = "[]",
+        attachment_filename: str = None,
+        attachment_2_filename: str = None,
+        attachment_3_filename: str = None,
+        attachment_4_filename: str = None,
+        attachment_5_filename: str = None,
+        attachment_6_filename: str = None,
+        attachment_7_filename: str = None,
+        attachment_8_filename: str = None,
+        attachment_9_filename: str = None,
+        video_file_name: str = None,
 ) -> Post:
     self._check_authorization()
     headers = self.session.headers
@@ -114,9 +168,18 @@ def create_repost(
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/repost",
         payload={
-            "post_id": post_id, "text": text, "font_size": font_size, "color": color, "in_reply_to": in_reply_to,
-            "group_id": group_id, "post_type": post_type, "mention_ids[]": mention_ids, "choices[]": choices,
-            "shared_url": shared_url, "message_tags": message_tags, "attachment_filename": attachment_filename,
+            "post_id": post_id,
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "in_reply_to": in_reply_to,
+            "group_id": group_id,
+            "post_type": post_type,
+            "mention_ids[]": mention_ids,
+            "choices[]": choices,
+            "shared_url": shared_url,
+            "message_tags": message_tags,
+            "attachment_filename": attachment_filename,
             "attachment_2_filename": attachment_2_filename, "attachment_3_filename": attachment_3_filename,
             "attachment_4_filename": attachment_4_filename, "attachment_5_filename": attachment_5_filename,
             "attachment_6_filename": attachment_6_filename, "attachment_7_filename": attachment_7_filename,
@@ -128,16 +191,26 @@ def create_repost(
 
 
 def create_share_post(
-        self, shareable_type: str, shareable_id: int, *, text: str = None,
-        font_size: int = None, color: int = None, group_id: int = None,
+        self,
+        shareable_type: str,
+        shareable_id: int,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        group_id: int = None,
 ) -> Post:
     self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
         payload={
-            "shareable_type": shareable_type, "shareable_id": shareable_id,
-            "text": text, "font_size": font_size, "color": color,
-            "group_id": group_id, "uuid": self.uuid, "api_key": self.api_key,
+            "shareable_type": shareable_type,
+            "shareable_id": shareable_id,
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "group_id": group_id,
+            "uuid": self.uuid,
+            "api_key": self.api_key,
             "timestamp": int(datetime.now().timestamp()),
             "signed_info": signed_info_calculating(
                 self.api_key, self.device_uuid,
@@ -148,14 +221,28 @@ def create_share_post(
 
 
 def create_thread_post(
-        self, post_id: int, *, text: str = None, font_size: int = None, color: int = None,
-        in_reply_to: int = None, group_id: int = None, post_type: str = None, mention_ids: List[int] = None,
-        choices: List[str] = None, shared_url: Dict[str, Union[str, int]] = None, message_tags: str = "[]",
-        attachment_filename: str = None, attachment_2_filename: str = None,
-        attachment_3_filename: str = None, attachment_4_filename: str = None,
-        attachment_5_filename: str = None, attachment_6_filename: str = None,
-        attachment_7_filename: str = None, attachment_8_filename: str = None,
-        attachment_9_filename: str = None, video_file_name: str = None,
+        self,
+        post_id: int,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        in_reply_to: int = None,
+        group_id: int = None,
+        post_type: str = None,
+        mention_ids: List[int] = None,
+        choices: List[str] = None,
+        shared_url: Dict[str, Union[str, int]] = None,
+        message_tags: str = "[]",
+        attachment_filename: str = None,
+        attachment_2_filename: str = None,
+        attachment_3_filename: str = None,
+        attachment_4_filename: str = None,
+        attachment_5_filename: str = None,
+        attachment_6_filename: str = None,
+        attachment_7_filename: str = None,
+        attachment_8_filename: str = None,
+        attachment_9_filename: str = None,
+        video_file_name: str = None,
 ) -> Post:
     self._check_authorization()
     headers = self.session.headers
@@ -163,9 +250,17 @@ def create_thread_post(
     return self._make_request(
         "POST", endpoint=f"{Endpoints.THREADS_V1}/{post_id}/posts",
         payload={
-            "id": post_id, "text": text, "font_size": font_size, "color": color, "in_reply_to": in_reply_to,
-            "group_id": group_id, "post_type": post_type, "mention_ids[]": mention_ids, "choices[]": choices,
-            "shared_url": shared_url, "message_tags": message_tags,
+            "id": post_id,
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "in_reply_to": in_reply_to,
+            "group_id": group_id,
+            "post_type": post_type,
+            "mention_ids[]": mention_ids,
+            "choices[]": choices,
+            "shared_url": shared_url,
+            "message_tags": message_tags,
             "attachment_filename": attachment_filename, "attachment_2_filename": attachment_2_filename,
             "attachment_3_filename": attachment_3_filename, "attachment_4_filename": attachment_4_filename,
             "attachment_5_filename": attachment_5_filename, "attachment_6_filename": attachment_6_filename,
@@ -585,16 +680,24 @@ def remove_posts(self, post_ids: List[int]):
 
 
 def report_post(
-        self, post_id: int, opponent_id: int, category_id: int, *, reason: str = None,
-        screenshot_filename: str = None, screenshot_2_filename: str = None,
-        screenshot_3_filename: str = None, screenshot_4_filename: str = None
+        self,
+        post_id: int,
+        opponent_id: int,
+        category_id: int,
+        reason: str = None,
+        screenshot_filename: str = None,
+        screenshot_2_filename: str = None,
+        screenshot_3_filename: str = None,
+        screenshot_4_filename: str = None
 ):
     self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/{post_id}/report",
         payload={
-            "opponent_id": opponent_id, "category_id": category_id,
-            "reason": reason, "screenshot_filename": screenshot_filename,
+            "opponent_id": opponent_id,
+            "category_id": category_id,
+            "reason": reason,
+            "screenshot_filename": screenshot_filename,
             "screenshot_2_filename": screenshot_2_filename,
             "screenshot_3_filename": screenshot_3_filename,
             "screenshot_4_filename": screenshot_4_filename,
@@ -610,15 +713,23 @@ def unlike_post(self, post_id: int):
 
 
 def update_post(
-        self, post_id: int, text: str = None, font_size: int = None,
-        color: int = None, message_tags: str = "[]",
+        self,
+        post_id: int,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        message_tags: str = "[]",
 ) -> Post:
     self._check_authorization()
     return self._make_request(
         "PUT", endpoint=f"{Endpoints.POSTS_V3}/{post_id}",
         payload={
-            "text": text, "font_size": font_size, "color": color, "message_tags": str(message_tags),
-            "api_key": self.api_key, "timestamp": int(datetime.now().timestamp()),
+            "text": text,
+            "font_size": font_size,
+            "color": color,
+            "message_tags": str(message_tags),
+            "api_key": self.api_key,
+            "timestamp": int(datetime.now().timestamp()),
             "signed_info": signed_info_calculating(
                 self.api_key, self.device_uuid,
                 int(datetime.now().timestamp())
