@@ -44,7 +44,7 @@ def get_token(
 
 def login_with_email(self, email: str, password: str):
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USER_V3}/login_with_email",
+        "POST", endpoint=f"{Endpoints.USERS_V3}/login_with_email",
         payload={
             "api_key": self.api_key,
             "email": email,
@@ -75,7 +75,7 @@ def logout(self):
     try:
         self._check_authorization()
         response = self._make_request(
-            "POST", endpoint=f"{Endpoints.USER_V1}/logout",
+            "POST", endpoint=f"{Endpoints.USERS_V1}/logout",
             payload={"uuid": self.uuid}
         )
         self.session.headers.pop('Authorization', None)

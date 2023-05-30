@@ -615,7 +615,7 @@ def get_timeline(self, **params: int | str | bool) -> PostsResponse:
 
     """
     endpoint = f"{Endpoints.POSTS_V2}/timeline"
-    if params["noreply_mode"] is not None and params["noreply_mode"] is True:
+    if "noreply_mode" in params and params["noreply_mode"] is True:
         self._check_authorization()
         endpoint = f"{Endpoints.POSTS_V2}/noreply_timeline"
     return self._make_request(

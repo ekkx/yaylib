@@ -450,7 +450,7 @@ def turn_on_hima(self):
 def unfollow_user(self, user_id: int):
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow",
+        "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow",
     )
 
 

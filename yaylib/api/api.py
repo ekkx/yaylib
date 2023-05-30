@@ -68,11 +68,11 @@ class API:
             headers["Authorization"] = None
 
         self.logger.debug(
-            "Making API request:\n"
-            f"{method}: {endpoint}\n"
-            f"Parameters: {params}\n"
-            f"Headers: {headers}\n"
-            f"Body: {payload}"
+            "Making API request:\n\n"
+            f"{method}: {endpoint}\n\n"
+            f"Parameters: {params}\n\n"
+            f"Headers: {headers}\n\n"
+            f"Body: {payload}\n"
         )
 
         response = self.session.request(
@@ -80,10 +80,10 @@ class API:
         )
 
         self.logger.debug(
-            "Received API response:\n"
-            f"{response.status_code}\n"
-            f"Headers: {response.headers}\n"
-            f"Text: {response.text}\n"
+            "Received API response:\n\n"
+            f"Status Code: {response.status_code}\n\n"
+            f"Headers: {response.headers}\n\n"
+            f"Response: {response.text}\n"
         )
         self._handle_response(response)
         return response.json()
