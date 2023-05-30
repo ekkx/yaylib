@@ -39,7 +39,10 @@ def create_call_post(
             "text": text, "font_size": font_size, "color": color, "group_id": group_id,
             "call_type": call_type, "uuid": self.uuid, "api_key": self.api_key,
             "timestamp": int(datetime.now().timestamp()),
-            "signed_info": signed_info_calculating(self.api_key, self.device_uuid, int(datetime.now().timestamp())),
+            "signed_info": signed_info_calculating(
+                self.api_key, self.device_uuid,
+                int(datetime.now().timestamp())
+            ),
             "category_id": category_id, "game_title": game_title, "joinable_by": joinable_by,
             "message_tags": message_tags, "attachment_filename": attachment_filename,
             "attachment_2_filename": attachment_2_filename, "attachment_3_filename": attachment_3_filename,
@@ -132,10 +135,14 @@ def create_share_post(
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
         payload={
-            "shareable_type": shareable_type, "shareable_id": shareable_id, "text": text,
-            "font_size": font_size, "color": color, "group_id": group_id, "uuid": self.uuid,
-            "api_key": self.api_key, "timestamp": int(datetime.now().timestamp()),
-            "signed_info": signed_info_calculating(self.api_key, self.device_uuid, int(datetime.now().timestamp())),
+            "shareable_type": shareable_type, "shareable_id": shareable_id,
+            "text": text, "font_size": font_size, "color": color,
+            "group_id": group_id, "uuid": self.uuid, "api_key": self.api_key,
+            "timestamp": int(datetime.now().timestamp()),
+            "signed_info": signed_info_calculating(
+                self.api_key, self.device_uuid,
+                int(datetime.now().timestamp())
+            ),
         }, data_type=Post
     )
 
@@ -612,7 +619,10 @@ def update_post(
         payload={
             "text": text, "font_size": font_size, "color": color, "message_tags": str(message_tags),
             "api_key": self.api_key, "timestamp": int(datetime.now().timestamp()),
-            "signed_info": signed_info_calculating(self.api_key, self.device_uuid, int(datetime.now().timestamp())),
+            "signed_info": signed_info_calculating(
+                self.api_key, self.device_uuid,
+                int(datetime.now().timestamp())
+            ),
         }
     )
 

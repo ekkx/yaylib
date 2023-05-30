@@ -230,7 +230,9 @@ class ConferenceCall:
 
     __slots__ = (
         "data", "id", "post_id", "group_id", "is_active",
-        "anonymous_call_users_count", "agora_channel", "agora_token", "call_type", "joinable_by", "game", "genre", "duration_seconds", "max_participants", "conference_call_users", "bump_params", "conference_call_users_role"
+        "anonymous_call_users_count", "agora_channel", "agora_token", "call_type", 
+        "joinable_by", "game", "genre", "duration_seconds", "max_participants", 
+        "conference_call_users", "bump_params", "conference_call_users_role"
     )
 
     def __init__(self, data):
