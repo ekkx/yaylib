@@ -415,8 +415,144 @@ class Client(API):
 
         """
         return get_related_groups(self, group_id, **params)
-    
-    
+
+    def get_user_groups(self, **params) -> GroupsResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - user_id: int - (required)
+            - page: int - (optional)
+
+        """
+        return get_user_groups(self, **params)
+
+    def invite_users_to_group(self, group_id: int, user_ids: List[int]):
+        return invite_users_to_group(self, group_id, user_ids)
+
+    def join_group(self, group_id: int):
+        return join_group(self, group_id)
+
+    def leave_group(self, group_id: int):
+        return leave_group(self, group_id)
+
+    # def post_gruop_social_shared(self, group_id: int, sns_name: str):
+    #     return post_gruop_social_shared(self, group_id, sns_name)
+
+    def remove_group_cover(self, group_id: int):
+        return remove_group_cover(self, group_id)
+
+    def remove_moderator(self, group_id: int, user_id: int):
+        return remove_moderator(self, group_id, user_id)
+
+    def remove_related_groups(self, group_id: int, related_group_ids: List[int]):
+        return remove_related_groups(self, group_id, related_group_ids)
+
+    def report_group(
+            self,
+            group_id: int,
+            category_id: int,
+            reason: str = None,
+            opponent_id: int = None,
+            screenshot_filename: str = None,
+            screenshot_2_filename: str = None,
+            screenshot_3_filename: str = None,
+            screenshot_4_filename: str = None,
+    ):
+        return report_group(
+            self,
+            group_id,
+            category_id,
+            reason,
+            opponent_id,
+            screenshot_filename,
+            screenshot_2_filename,
+            screenshot_3_filename,
+            screenshot_4_filename
+        )
+
+    def send_moderator_offers(self, group_id: int, user_ids: List[int]):
+        return send_moderator_offers(self, group_id, user_ids)
+
+    def send_ownership_offer(self, group_id: int, user_id: int):
+        return send_ownership_offer(self, group_id, user_id)
+
+    # def set_group_notification_settings(
+    #         self,
+    #         group_id: int,
+    #         notification_group_post: int = None,
+    #         notification_group_join: int = None,
+    #         notification_group_request: int = None,
+    #         notification_group_message_tag_all: int = None,
+    # ) -> AdditionalSettingsResponse:
+    #     return set_group_notification_settings(self)
+
+    def set_group_title(self, group_id: int, title: str):
+        return set_group_title(self, group_id, title)
+
+    def take_over_group_ownership(self, group_id: int):
+        return take_over_group_ownership(self, group_id)
+
+    def unban_group_member(self, group_id: int, user_id: int):
+        return unban_group_member(self, group_id, user_id)
+
+    def update_group(
+            self,
+            group_id: int,
+            topic: str,
+            description: str = None,
+            secret: bool = None,
+            hide_reported_posts: bool = None,
+            hide_conference_call: bool = None,
+            is_private: bool = None,
+            only_verified_age: bool = None,
+            only_mobile_verified: bool = None,
+            call_timeline_display: bool = None,
+            allow_ownership_transfer: bool = None,
+            allow_thread_creation_by: str = None,
+            gender: int = None,
+            generation_groups_limit: int = None,
+            group_category_id: int = None,
+            cover_image_filename: str = None,
+            sub_category_id: str = None,
+            hide_from_game_eight: bool = None,
+            allow_members_to_post_media: bool = None,
+            allow_members_to_post_url: bool = None,
+            guidelines: str = None,
+    ) -> GroupResponse:
+        return update_group(
+            group_id,
+            topic,
+            description,
+            secret,
+            hide_reported_posts,
+            hide_conference_call,
+            is_private,
+            only_verified_age,
+            only_mobile_verified,
+            call_timeline_display,
+            allow_ownership_transfer,
+            allow_thread_creation_by,
+            gender,
+            generation_groups_limit,
+            group_category_id,
+            cover_image_filename,
+            sub_category_id,
+            hide_from_game_eight,
+            allow_members_to_post_media,
+            allow_members_to_post_url,
+            guidelines,
+        )
+
+    def visit_group(self, group_id: int):
+        return visit_group(self, group_id)
+
+    def withdraw_moderator_offer(self, group_id: int, user_id: int):
+        return withdraw_moderator_offer(self, group_id, user_id)
+
+    def withdraw_ownership_offer(self, group_id: int, user_id: int):
+        return withdraw_ownership_offer(self, group_id, user_id)
 
     # -LOGIN
 

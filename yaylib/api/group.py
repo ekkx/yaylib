@@ -362,10 +362,15 @@ def remove_related_groups(self, group_id: int, related_group_ids: List[int]):
 
 
 def report_group(
-        self, group_id: int, category_id: int,
-        reason: str = None, opponent_id: int = None,
-        screenshot_filename: str = None, screenshot_2_filename: str = None,
-        screenshot_3_filename: str = None, screenshot_4_filename: str = None,
+        self,
+        group_id: int,
+        category_id: int,
+        reason: str = None,
+        opponent_id: int = None,
+        screenshot_filename: str = None,
+        screenshot_2_filename: str = None,
+        screenshot_3_filename: str = None,
+        screenshot_4_filename: str = None,
 ):
     self._check_authorization()
     return self._make_request(
@@ -410,8 +415,11 @@ def send_ownership_offer(self, group_id: int, user_id: int):
 
 
 def set_group_notification_settings(
-        self, group_id: int, notification_group_post: int = None,
-        notification_group_join: int = None, notification_group_request: int = None,
+        self,
+        group_id: int,
+        notification_group_post: int = None,
+        notification_group_join: int = None,
+        notification_group_request: int = None,
         notification_group_message_tag_all: int = None,
 ) -> AdditionalSettingsResponse:
     pass
