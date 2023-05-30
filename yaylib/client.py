@@ -1125,6 +1125,27 @@ class Client(API):
 
     # -REVIEW
 
+    def create_review(self, user_id: int, comment: str):
+        return create_review(self, user_id, comment)
+
+    def create_reviews(self, user_ids: List[int], comment: str):
+        return create_reviews(self, user_ids, comment)
+
+    def delete_reviews(self, review_ids: List[int]):
+        return delete_reviews(self, review_ids)
+
+    def get_my_reviews(self, from_id: int = None) -> ReviewsResponse:
+        return get_my_reviews(self, from_id)
+
+    def get_reviews(self, user_id: int, from_id: int = None) -> ReviewsResponse:
+        return get_reviews(self, user_id, from_id)
+
+    def pin_review(self, review_id: int):
+        return pin_review(self, review_id)
+
+    def unpin_review(self, review_id: int):
+        return unpin_review(self, review_id)
+
     # -THREAD
 
     # -USER
