@@ -1,3 +1,4 @@
+<div><a id="readme-top"></a></div>
 <p align="center">
     <img src=https://img.shields.io/github/stars/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue />
     <img src=https://img.shields.io/github/forks/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue />
@@ -10,16 +11,15 @@
         <img src="https://github.com/qvco/yaylib/assets/77382767/ed3c51a3-1430-4371-b65d-61c161438ee1" alt="Logo" height="300">
     </a> -->
     <a href="https://github.com/othneildrew/Best-README-Template">
-        <img src="https://github.com/qvco/yaylib/assets/77382767/6e72ec90-b8e9-40bf-a7ad-34fb2ccea0f9" alt="Logo" height="300">
+        <img src="https://github.com/qvco/yaylib/assets/77382767/6e72ec90-b8e9-40bf-a7ad-34fb2ccea0f9" alt="Logo" height="300px">
     </a>
     <!-- <a href="https://github.com/othneildrew/Best-README-Template">
         <img src="https://github.com/qvco/yaylib/assets/77382767/2cdc26e5-7195-4df3-94c5-db840bdd57ff" alt="Logo" height="300">
     </a> -->
-    <div><a id="readme-top"></a></div>
     <h3 align="center">yaylib</h3>
     <p align="center">
         「<strong>yaylib</strong>」は同世代でつながるチャットアプリ、Yay!（イェイ）の API クライアントです。<br />
-        このライブラリを使用することで、あらゆる操作を自動化したり、ボットの開発が可能です。
+        このライブラリを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
         <br />
         <br />
         <a href="https://github.com/qvco/yaylib">
@@ -43,7 +43,7 @@
     <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
     <li><a href="#インストール">インストール</a></li>
     <li><a href="#使用例">使用例</a></li>
-    <li><a href="#yaylib-で誕生したボットの一覧">yaylib で誕生したボットの一覧</a></li>
+    <li><a href="#yaylib-で誕生したロボットたち">yaylib で誕生したロボットたち</a></li>
     <li><a href="#共同開発について">共同開発について</a></li>
     <li><a href="#免責事項">免責事項</a></li>
     <li><a href="#利用許諾">利用許諾</a></li>
@@ -142,17 +142,17 @@ api.create_post(text="Hi there.", color=2)
     <tbody>
         <tr>
             <td align="center">
-                <a href="https://yay.space/user/5855987"><img src="/assets/bot-icons/MindReaderAI.jpg" width="200"></a>
+                <a href="https://yay.space/user/5855987"><img src="/assets/bot-icons/MindReaderAI.jpg" width="200px"></a>
                 <br />
                 <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
             </td>
             <td align="center">
-                <a href="https://yay.space/user/0"><img src="/assets/bot-icons/Funktion.jpg" width="200"></a>
+                <a href="https://yay.space/user/0"><img src="/assets/bot-icons/Funktion.jpg" width="200px"></a>
                 <br />
                 <p>開発者: <a href="https://yay.space/user/0">ぺゅー</a></p>
             </td>
             <td align="center">
-                <a href="https://yay.space/user/0"><img src="/assets/bot-icons/香ばしいボット.jpg" width="200"></a>
+                <a href="https://yay.space/user/0"><img src="/assets/bot-icons/香ばしいボット.jpg" width="200px"></a>
                 <br />
                 <p>開発者: <a href="https://yay.space/user/0">めんぶれ天然水。</a></p>
             </td>
