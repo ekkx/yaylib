@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List
+from typing import Union, Dict, List
 
 from ..config import *
 from ..errors import *
@@ -63,8 +63,11 @@ def create_private_chat(
     )
 
 
-def delete_background(self, chat_room_id: int):
-    pass
+def delete_background(self, room_id: int):
+    self._check_authorization()
+    return self._make_request(
+        "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{room_id}/background",
+    )
 
 
 def delete_message(self, room_id: int, message_id: int):
@@ -111,7 +114,10 @@ def get_chatable_users(
 
 
 def get_gifs_data(self) -> List[GifImageCategory]:
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.HIDDEN_V1}/chats", data_type=GifsDataResponse
+    ).gif_categories
 
 
 def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
@@ -152,15 +158,18 @@ def get_messages(self, chat_room_id: int, **params) -> List[Message]:
 
     """
     self._check_authorization()
-    response = self._make_request(
+    return self._make_request(
         "GET", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages",
         params=params, data_type=MessagesResponse
-    )
-    return response.messages
+    ).messages
 
 
-def get_notification_settings(self, chat_room_id: int) -> Settings:
-    pass
+# def get_chat_room_notification_settings(self, room_id: int) -> Settings:
+#     self._check_authorization()
+#     return self._make_request(
+#         "GET", endpoint=f"{Endpoints.NOTIFICATION_SETTINGS_V2}/chat_rooms/{room_id}",
+#         data_type=AdditionalSettingsResponse
+#     ).settings
 
 
 def get_request_chat_rooms(self, from_timestamp: int = None) -> ChatRoomsResponse:
@@ -176,24 +185,25 @@ def get_request_chat_rooms(self, from_timestamp: int = None) -> ChatRoomsRespons
 
 def get_chat_room(self, chat_room_id: int) -> ChatRoom:
     self._check_authorization()
-    response = self._make_request(
+    return self._make_request(
         "GET", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}",
         data_type=ChatRoomResponse
-    )
-    return response.chat
+    ).chat
 
 
 def get_sticker_packs(self) -> List[StickerPack]:
-    pass
+    return self._make_request(
+        "GET", endpoint=Endpoints.STICKER_PACKS_V2,
+        data_type=StickerPacksResponse
+    ).sticker_packs
 
 
 def get_total_chat_requests(self) -> int:
     self._check_authorization()
-    response = self._make_request(
+    return self._make_request(
         "GET", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/total_chat_request",
         data_type=TotalChatRequestResponse
-    )
-    return response.total
+    ).total
 
 
 def hide_chat(self, chat_room_id: int):
@@ -220,8 +230,11 @@ def kick_users_from_chat(self, chat_room_id: int, user_ids: List[int]):
     )
 
 
-def pin_chat(self, chat_room_id: int):
-    pass
+def pin_chat(self, room_id: int):
+    self._check_authorization()
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/pinned"
+    )
 
 
 def read_attachment(
@@ -242,10 +255,14 @@ def read_message(self, chat_room_id: int, message_id: int):
 
 def read_video_message(
         self,
-        chat_room_id: int,
+        room_id: int,
         video_msg_ids: List[int]
 ):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/videos_read",
+        payload={"video_msg_ids": video_msg_ids},
+    )
 
 
 def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
@@ -294,8 +311,11 @@ def report_chat_room(
     )
 
 
-def send_media_screenshot_notification(self, chat_room_id: int):
-    pass
+def send_media_screenshot_notification(self, room_id: int):
+    self._check_authorization()
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/screen_captured"
+    )
 
 
 def send_message(

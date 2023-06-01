@@ -47,6 +47,8 @@ class Endpoints:
     GAMES_V1 = Configs.YAY_API_URL + "/v1/games"
     GENRES_V1 = Configs.YAY_API_URL + "/v1/genres"
     ANONYMOUS_CALLS_V1 = Configs.YAY_API_URL + "/v1/anonymous_calls"
+    NOTIFICATION_SETTINGS_V1 = Configs.YAY_API_URL + "/v1/notification_settings"
+    STICKER_PACKS_V1 = Configs.YAY_API_URL + "/v1/sticker_packs"
 
     # v2 endpoints
     USERS_V2 = Configs.YAY_API_URL + "/v2/users"
@@ -64,6 +66,8 @@ class Endpoints:
     GAMES_V2 = Configs.YAY_API_URL + "/v2/games"
     GENRES_V2 = Configs.YAY_API_URL + "/v2/genres"
     ANONYMOUS_CALLS_V2 = Configs.YAY_API_URL + "/v2/anonymous_calls"
+    NOTIFICATION_SETTINGS_V2 = Configs.YAY_API_URL + "/v2/notification_settings"
+    STICKER_PACKS_V2 = Configs.YAY_API_URL + "/v2/sticker_packs"
 
     # v3 endpoints
     USERS_V3 = Configs.YAY_API_URL + "/v3/users"
@@ -81,3 +85,5 @@ class Endpoints:
     GAMES_V3 = Configs.YAY_API_URL + "/v3/games"
     GENRES_V3 = Configs.YAY_API_URL + "/v3/genres"
     ANONYMOUS_CALLS_V3 = Configs.YAY_API_URL + "/v3/anonymous_calls"
+    NOTIFICATION_SETTINGS_V3 = Configs.YAY_API_URL + "/v3/notification_settings"
+    STICKER_PACKS_V3 = Configs.YAY_API_URL + "/v3/sticker_packs"

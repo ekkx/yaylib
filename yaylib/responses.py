@@ -586,6 +586,23 @@ class GroupUsersResponse:
         return f"GroupUsersResponse(data={self.data})"
 
 
+class GifsDataResponse:
+
+    __slots__ = ("data", "gif_categories")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.gif_categories = data.get("gif_categories")
+        if self.gif_categories is not None:
+            self.gif_categories = [
+                GifImageCategory(gif_category) for gif_category in self.gif_categories
+            ]
+
+    def __repr__(self):
+        return f"GifsDataResponse(data={self.data})"
+
+
 class HiddenResponse:
 
     __slots__ = (
@@ -821,6 +838,23 @@ class SocialShareUsersResponse:
 
     def __repr__(self):
         return f"SocialShareUsersResponse(data={self.data})"
+
+
+class StickerPacksResponse:
+
+    __slots__ = ("data", "sticker_packs")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.sticker_packs = data.get("sticker_packs")
+        if self.sticker_packs is not None:
+            self.sticker_packs = [
+                StickerPack(sticker_pack) for sticker_pack in self.sticker_packs
+            ]
+
+    def __repr__(self):
+        return f"StickerPacksResponse(data={self.data})"
 
 
 class TokenResponse:

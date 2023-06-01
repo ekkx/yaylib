@@ -225,8 +225,8 @@ class Client(API):
             hima_chat
         )
 
-    # def delete_background(self, chat_room_id: int):
-    #     return delete_background(self)
+    def delete_background(self, room_id: int):
+        return delete_background(self, room_id)
 
     def delete_message(self, room_id: int, message_id: int):
         return delete_message(self, room_id, message_id)
@@ -254,8 +254,8 @@ class Client(API):
     ) -> FollowUsersResponse:
         return get_chatable_users(from_follow_id, from_timestamp, order_by)
 
-    # def get_gifs_data(self) -> List[GifImageCategory]:
-    #     return get_gifs_data(self)
+    def get_gifs_data(self) -> List[GifImageCategory]:
+        return get_gifs_data(self)
 
     def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
         """
@@ -292,8 +292,8 @@ class Client(API):
     def get_chat_room(self, chat_room_id: int) -> ChatRoom:
         return get_chat_room(self, chat_room_id)
 
-    # def get_sticker_packs(self) -> List[StickerPack]:
-    #     return get_sticker_packs(self)
+    def get_sticker_packs(self) -> List[StickerPack]:
+        return get_sticker_packs(self)
 
     def get_total_chat_requests(self) -> int:
         return get_total_chat_requests(self)
@@ -307,8 +307,8 @@ class Client(API):
     def kick_users_from_chat(self, chat_room_id: int, user_ids: List[int]):
         return kick_users_from_chat(self, chat_room_id, user_ids)
 
-    # def pin_chat(self, chat_room_id: int):
-    #     return pin_chat(self, chat_room_id)
+    def pin_chat(self, room_id: int):
+        return pin_chat(self, room_id)
 
     # def read_attachment(
     #     self,
@@ -321,12 +321,12 @@ class Client(API):
     def read_message(self, chat_room_id: int, message_id: int):
         return read_message(self, chat_room_id, message_id)
 
-    # def read_video_message(
-    #     self,
-    #     chat_room_id: int,
-    #     video_msg_ids: List[int]
-    # ):
-    #     return read_video_message(self)
+    def read_video_message(
+            self,
+            room_id: int,
+            video_msg_ids: List[int]
+    ):
+        return read_video_message(self, room_id, video_msg_ids)
 
     def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
         return refresh_chat_rooms(self, from_time)
@@ -357,8 +357,8 @@ class Client(API):
             screenshot_4_filename
         )
 
-    # def send_media_screenshot_notification(self, chat_room_id: int):
-    #     return send_media_screenshot_notification(self)
+    def send_media_screenshot_notification(self, room_id: int):
+        return send_media_screenshot_notification(self, room_id)
 
     def send_message(
             self,
