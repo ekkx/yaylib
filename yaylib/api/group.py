@@ -160,16 +160,27 @@ def get_banned_group_members(self, group_id: int, page: int = None) -> UsersResp
     )
 
 
-def get_categories(self, **params) -> GroupCategoriesResponse:
-    pass
+def get_group_categories(self, **params) -> GroupCategoriesResponse:
+    """
+
+    Parameters:
+    ----------
+
+        - page: int - (optional)
+        - number: int - (optional)
+
+    """
+    return self._make_request(
+        "GET", endpoint=f"{Endpoints.GROUPS_V1}/categories",
+        params=params, data_type=GroupCategoriesResponse
+    )
 
 
 def get_create_group_quota(self) -> CreateGroupQuota:
-    response = self._make_request(
+    return self._make_request(
         "GET", endpoint=f"{Endpoints.GROUPS_V1}/created_quota",
         data_type=CreateGroupQuota
-    )
-    return response.create
+    ).create
 
 
 def get_group(self, group_id: int) -> GroupResponse:
@@ -336,7 +347,11 @@ def leave_group(self, group_id: int):
 
 
 def post_gruop_social_shared(self, group_id: int, sns_name: str):
-    pass
+    self._check_authorization()
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/social_shared",
+        params={"sns_name": sns_name}
+    )
 
 
 def remove_group_cover(self, group_id: int):

@@ -482,8 +482,17 @@ class Client(API):
     def get_banned_group_members(self, group_id: int, page: int = None) -> UsersResponse:
         return get_banned_group_members(self, group_id, page)
 
-    # def get_categories(self, **params) -> GroupCategoriesResponse:
-    #     return get_categories(self, **params)
+    def get_group_categories(self, **params) -> GroupCategoriesResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - page: int - (optional)
+            - number: int - (optional)
+
+        """
+        return get_group_categories(self, **params)
 
     def get_create_group_quota(self) -> CreateGroupQuota:
         return get_create_group_quota(self)
@@ -593,8 +602,8 @@ class Client(API):
     def leave_group(self, group_id: int):
         return leave_group(self, group_id)
 
-    # def post_gruop_social_shared(self, group_id: int, sns_name: str):
-    #     return post_gruop_social_shared(self, group_id, sns_name)
+    def post_gruop_social_shared(self, group_id: int, sns_name: str):
+        return post_gruop_social_shared(self, group_id, sns_name)
 
     def remove_group_cover(self, group_id: int):
         return remove_group_cover(self, group_id)
