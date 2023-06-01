@@ -610,6 +610,31 @@ class HiddenResponse:
         return f"HiddenResponse(data={self.data})"
 
 
+class LoginUserResponse:
+
+    __slots__ = (
+        "data", "user_id", "username", "is_new", "sns_info",
+        "access_token", "refresh_token", "expires_in"
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.user_id = data.get("user_id")
+        self.username = data.get("username")
+        self.is_new = data.get("is_new")
+
+        self.sns_info = data.get("sns_info")
+        if self.sns_info is not None:
+            self.sns_info = SnsInfo(self.sns_info)
+
+        self.access_token = data.get("access_token")
+        self.refresh_token = data.get("refresh_token")
+        self.expires_in = data.get("expires_in")
+
+    def __repr__(self):
+        return f"LoginUserResponse(data={self.data})"
+
+
 class MessageResponse:
 
     __slots__ = ("data", "id", "conference_call")
@@ -796,6 +821,24 @@ class SocialShareUsersResponse:
 
     def __repr__(self):
         return f"SocialShareUsersResponse(data={self.data})"
+
+
+class TokenResponse:
+
+    __slots__ = (
+        "data", "id", "created_at", "access_token", "refresh_token", "expires_in"
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.id = data.get("id")
+        self.created_at = data.get("created_at")
+        self.access_token = data.get("access_token")
+        self.refresh_token = data.get("refresh_token")
+        self.expires_in = data.get("expires_in")
+
+    def __repr__(self):
+        return f"TokenResponse(data={self.data})"
 
 
 class VoteSurveyResponse:

@@ -30,7 +30,7 @@ def get_token(
         refresh_token: str = None,
         email: str = None,
         password: str = None
-):
+) -> TokenResponse:
     return self._make_request(
         "POST", endpoint=f"{self.host}/api/v1/oauth/token",
         payload={
@@ -38,11 +38,11 @@ def get_token(
             "email": email,
             "password": password,
             "refresh_token": refresh_token
-        }
+        }, data_type=TokenResponse
     )
 
 
-def login_with_email(self, email: str, password: str):
+def login_with_email(self, email: str, password: str) -> LoginUserResponse:
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/login_with_email",
         payload={
@@ -50,20 +50,18 @@ def login_with_email(self, email: str, password: str):
             "email": email,
             "password": password,
             "uuid": self.uuid
-        }
+        }, data_type=LoginUserResponse
     )
     message = "Invalid email or password."
-    if response["access_token"] is None:
+    if response.access_token is None:
         raise ForbiddenError(message)
 
-    self.access_token = response["access_token"]
-    self.refresh_token = response["refresh_token"]
-    self.logged_in_as = response["user_id"]
+    self.login_data = response
     self.session.headers.setdefault(
-        "Authorization", f"Bearer {self.access_token}"
+        "Authorization", f"Bearer {self.login_data.access_token}"
     )
 
-    self.logger.info(f'Successfully logged in as [{self.logged_in_as}]')
+    self.logger.info(f'Successfully logged in as [{self.login_data.user_id}]')
     return response
 
 
@@ -79,9 +77,7 @@ def logout(self):
             payload={"uuid": self.uuid}
         )
         self.session.headers.pop('Authorization', None)
-        self.access_token = None
-        self.refresh_token = None
-        self.logged_in_as = None
+        self.login_data = None
         self.logger.info('User has Logged out.')
         return response
 

@@ -583,7 +583,7 @@ class Client(API):
             refresh_token: str = None,
             email: str = None,
             password: str = None
-    ):
+    ) -> TokenResponse:
         return get_token(
             self,
             grant_type,
@@ -592,7 +592,7 @@ class Client(API):
             password
         )
 
-    def login_with_email(self, email: str, password: str):
+    def login_with_email(self, email: str, password: str) -> LoginUserResponse:
         return login_with_email(self, email, password)
 
     def logout(self):
