@@ -652,6 +652,25 @@ class LoginUserResponse:
         return f"LoginUserResponse(data={self.data})"
 
 
+class LoginUpdateResponse:
+
+    __slots__ = (
+        "data", "user_id", "username",  "access_token",
+        "refresh_token", "expires_in"
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.user_id = data.get("user_id")
+        self.username = data.get("username")
+        self.access_token = data.get("access_token")
+        self.refresh_token = data.get("refresh_token")
+        self.expires_in = data.get("expires_in")
+
+    def __repr__(self):
+        return f"LoginUpdateResponse(data={self.data})"
+
+
 class MessageResponse:
 
     __slots__ = ("data", "id", "conference_call")

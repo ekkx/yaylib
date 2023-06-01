@@ -45,7 +45,7 @@ def create_call_post(
         attachment_9_filename: str = None,
 ) -> ConferenceCall:
     self._check_authorization()
-    response = self._make_request(
+    return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
         payload={
             "text": text,
@@ -70,8 +70,7 @@ def create_call_post(
             "attachment_6_filename": attachment_6_filename, "attachment_7_filename": attachment_7_filename,
             "attachment_8_filename": attachment_8_filename, "attachment_9_filename": attachment_9_filename,
         }, data_type=CreatePostResponse
-    )
-    return response.conference_call
+    ).conference_call
 
 
 def create_group_pin_post(self, post_id: int, group_id: int):
@@ -165,7 +164,7 @@ def create_repost(
     self._check_authorization()
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token()
-    response = self._make_request(
+    return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/repost",
         payload={
             "post_id": post_id,
@@ -186,8 +185,7 @@ def create_repost(
             "attachment_8_filename": attachment_8_filename, "attachment_9_filename": attachment_9_filename,
             "video_file_name": video_file_name,
         }, data_type=CreatePostResponse, headers=headers
-    )
-    return response.post
+    ).post
 
 
 def create_share_post(
@@ -497,12 +495,11 @@ def get_my_posts(self, **params) -> PostsResponse:
 
 
 def get_post(self, post_id: int) -> Post:
-    # TODO: @Header("Cache-Control") @Nullable String str);
-    response = self._make_request(
+    # @Header("Cache-Control") @Nullable String str);
+    return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}",
         data_type=PostResponse
-    )
-    return response.post
+    ).post
 
 
 def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
@@ -771,8 +768,7 @@ def view_video(self, video_id: int):
 
 def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
     self._check_authorization()
-    response = self._make_request(
+    return self._make_request(
         "POST", endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",
         payload={"choice_id": choice_id}, data_type=ValidationPostResponse
-    )
-    return response.survey
+    ).survey

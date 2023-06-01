@@ -8,12 +8,36 @@ from ..responses import *
 from ..utils import *
 
 
-def change_email(self):
-    pass
+def change_email(
+        self,
+        email: str,
+        password: str,
+        email_grant_token: str = None
+) -> LoginUpdateResponse:
+    return self._make_request(
+        "PUT", endpoint=f"{Endpoints.USERS_V1}/change_email",
+        payload={
+            "api_key": self.api_key,
+            "email": email,
+            "password": password,
+            "email_grant_token": email_grant_token
+        }, data_type=LoginUpdateResponse
+    )
 
 
-def change_password(self):
-    pass
+def change_password(
+        self,
+        current_password: str,
+        new_password: str
+) -> LoginUpdateResponse:
+    return self._make_request(
+        "PUT", endpoint=f"{Endpoints.USERS_V1}/change_email",
+        payload={
+            "api_key": self.api_key,
+            "current_password": current_password,
+            "password": new_password
+        }, data_type=LoginUpdateResponse
+    )
 
 
 def connect_account_with_sns(self):
@@ -95,16 +119,47 @@ def register_device_token(self):
 
 
 def resend_confirm_email(self):
-    pass
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.USERS_V2}/resend_confirm_email"
+    )
 
 
-def restore_user(self):
-    pass
+def restore_user(self, user_id: int) -> LoginUserResponse:
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.USERS_V2}/restore",
+        payload={
+            "user_id": user_id,
+            "api_key": self.api_key,
+            "uuid": self.uuid,
+            "timestamp": int(datetime.now().timestamp()),
+            "signed_info": signed_info_calculating(
+                self.api_key, self.device_uuid,
+                int(datetime.now().timestamp())
+            ),
+        }
+    )
 
 
 def revoke_tokens(self):
-    pass
+    return self._make_request(
+        "DELETE", endpoint=f"{Endpoints.USERS_V1}/device_tokens"
+    )
 
 
-def save_account_with_email(self):
-    pass
+def save_account_with_email(
+        self,
+        email: str,
+        password: str = None,
+        current_password: str = None,
+        email_grant_token: str = None
+) -> LoginUpdateResponse:
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.USERS_V3}/login_update",
+        payload={
+            "api_key": self.api_key,
+            "email": email,
+            "password": password,
+            "current_password": current_password,
+            "email_grant_token": email_grant_token
+        }, data_type=LoginUpdateResponse
+    )

@@ -721,6 +721,27 @@ class Client(API):
 
     # -LOGIN
 
+    def change_email(
+            self,
+            email: str,
+            password: str,
+            email_grant_token: str = None
+    ) -> LoginUpdateResponse:
+        return change_email(self, email, password, email_grant_token)
+
+    def change_password(
+            self,
+            current_password: str,
+            new_password: str
+    ) -> LoginUpdateResponse:
+        return change_password(self, current_password, new_password)
+
+    # def connect_account_with_sns(self):
+    #     return connect_account_with_sns(self)
+
+    # def disconnect_account_with_sns(self):
+    #     return disconnect_account_with_sns(self)
+
     def get_token(
             self,
             grant_type: str,
@@ -739,8 +760,41 @@ class Client(API):
     def login_with_email(self, email: str, password: str) -> LoginUserResponse:
         return login_with_email(self, email, password)
 
+    # def login_with_sns(self):
+    #     return login_with_sns(self)
+
     def logout(self):
         return logout(self)
+
+    # def migrate_token(self):
+    #     return migrate_token(self)
+
+    # def register_device_token(self):
+    #     return register_device_token(self)
+
+    def resend_confirm_email(self):
+        return resend_confirm_email(self)
+
+    def restore_user(self, user_id: int) -> LoginUserResponse:
+        return restore_user(self, user_id)
+
+    def revoke_tokens(self):
+        return revoke_tokens(self)
+
+    def save_account_with_email(
+            self,
+            email: str,
+            password: str = None,
+            current_password: str = None,
+            email_grant_token: str = None
+    ) -> LoginUpdateResponse:
+        return save_account_with_email(
+            self,
+            email,
+            password,
+            current_password,
+            email_grant_token,
+        )
 
     # -MISC
 

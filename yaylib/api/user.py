@@ -138,11 +138,10 @@ def get_follow_request(self, from_timestamp: int = None) -> UsersByTimestampResp
 
 def get_follow_request_count(self) -> int:
     self._check_authorization()
-    response = self._make_request(
+    return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V2}/follow_requests_count",
         data_type=FollowRequestCountResponse
-    )
-    return response.users_count
+    ).users_count
 
 
 def get_following_users_born(self, birthdate: int = None) -> UsersResponse:
@@ -168,11 +167,10 @@ def get_footprints(self, **params) -> List[Footprint]:
 
     """
     self._check_authorization()
-    response = self._make_request(
+    return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V2}/footprints",
         params=params, data_type=FootprintsResponse
-    )
-    return response.footprints
+    ).footprints
 
 
 def get_fresh_user(self, user_id: int) -> UserResponse:
@@ -194,11 +192,10 @@ def get_hima_users(self, **params) -> List[UserWrapper]:
 
     """
     self._check_authorization()
-    response = self._make_request(
+    return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V2}/hima_users",
         params=params, data_type=HimaUsersResponse
-    )
-    return response.hima_users
+    ).hima_users
 
 
 def get_initial_recommended_users_to_follow(
@@ -240,11 +237,10 @@ def get_timestamp(self) -> UserTimestampResponse:
 
 
 def get_user(self, user_id: int) -> User:
-    response = self._make_request(
+    return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V2}/{user_id}",
         data_type=UserResponse
-    )
-    return response.user
+    ).user
 
 
 def get_user_custom_definitions(self) -> UserCustomDefinitionsResponse:
