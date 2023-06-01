@@ -19,6 +19,27 @@ class ActiveFollowingsResponse:
         return f"ActiveFollowingsResponse(data={self.data})"
 
 
+class ActivitiesResponse:
+
+    __slots__ = ("data", "activities", "last_timestamp",
+                 "parsed_last_timestamp")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.activities = data.get("activities")
+        if self.activities is not None:
+            self.activities = [
+                Activity(activity) for activity in self.activities
+            ]
+
+        self.last_timestamp = data.get("last_timestamp")
+        self.parsed_last_timestamp = parse_datetime(data.get("last_timestamp"))
+
+    def __repr__(self):
+        return f"ActivitiesResponse(data={self.data})"
+
+
 class AdditionalSettingsResponse:
 
     __slots__ = ("data", "settings")

@@ -2,6 +2,7 @@ from typing import Union, Dict, List
 
 from .api import API
 from .api.call import *
+from .api.cassandra import *
 from .api.chat import *
 from .api.group import *
 from .api.login import *
@@ -32,6 +33,26 @@ class Client(API):
     """
 
     # -CALL
+
+    # -CASSANDRA
+
+    def get_user_activities(self, **params) -> ActivitiesResponse:
+        """
+
+        Parameters:
+        ---------------
+            - important: bool - (required)
+            - from_timestamp: int - (optional)
+            - number: int - (optional)
+
+        """
+        return get_user_activities(self, **params)
+
+    def get_user_merged_activities(self, from_timestamp: int = None) -> ActivitiesResponse:
+        return get_user_merged_activities(self, from_timestamp)
+
+    def received_notification(self, pid: str, type: str, opened_at: int = None):
+        return received_notification(self, pid, type, opened_at)
 
     # -CHAT
 
