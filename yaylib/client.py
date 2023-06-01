@@ -34,6 +34,141 @@ class Client(API):
 
     # -CALL
 
+    def bump_call(self, call_id: int, participant_limit: int = None):
+        return bump_call(self, call_id, participant_limit)
+
+    def get_user_active_call(self, user_id: int) -> Post:
+        return get_user_active_call(self, user_id)
+
+    def get_bgms(self) -> List[Bgm]:
+        return get_bgms(self)
+
+    def get_call(self, call_id: int) -> ConferenceCall:
+        return get_call(self, call_id)
+
+    def get_call_invitable_users(self, call_id: int, **params) -> UsersByTimestampResponse:
+        # @Nullable @Query("user[nickname]")
+        """
+
+        Parameters:
+        ---------------
+            - from_timestamp: int - (optional)
+
+        """
+        return UsersByTimestampResponse(self, call_id, **params)
+
+    def get_call_status(self, opponent_id: int) -> CallStatusResponse:
+        return get_call_status(self, opponent_id)
+
+    def get_games(self, **params) -> GamesResponse:
+        """
+
+        Parameters:
+        ---------------
+            - number: int - (optional)
+            - ids: List[int] - (optional)
+            - from_id: int - (optional)
+
+        """
+        return get_games(self, **params)
+
+    def get_genres(self, **params) -> GenresResponse:
+        """
+
+        Parameters:
+        ---------------
+            - number: int - (optional)
+            - from: int - (optional)
+
+        """
+        return get_genres(self, **params)
+
+    def get_group_calls(self, **params) -> PostsResponse:
+        return get_group_calls(self, **params)
+
+    def invite_to_call_bulk(self, call_id: int, group_id: int = None):
+        """
+
+        Parameters:
+        ---------------
+            - call_id: int - (required)
+            - group_id: int - (optional)
+
+        """
+        return invite_to_call_bulk(self, call_id, group_id)
+
+    def invite_users_to_call(self, call_id: int, user_ids: List[int]):
+        """
+
+        Parameters:
+        ---------------
+            - call_id: int - (required)
+            - user_ids: List[int] - (required)
+
+        """
+        return invite_users_to_call(self, call_id, user_ids)
+
+    def invite_users_to_chat_call(
+            self,
+            chat_room_id: int,
+            room_id: int,
+            room_url: str
+    ):
+        return invite_users_to_chat_call(self, chat_room_id, room_id, room_url)
+
+    def kick_and_ban_from_call(self, call_id: int, user_id: int):
+        return kick_and_ban_from_call(self, call_id, user_id)
+
+    def notify_anonymous_user_leave_agora_channel(
+            self,
+            conference_id: int,
+            agora_uid: str
+    ):
+        return notify_anonymous_user_leave_agora_channel(
+            self, conference_id, agora_uid
+        )
+
+    def notify_user_leave_agora_channel(self, conference_id: int, user_id: int):
+        return notify_user_leave_agora_channel(self, conference_id, user_id)
+
+    def send_call_screenshot(
+            self,
+            screenshot_filename: str,
+            conference_id: int
+    ):
+        return send_call_screenshot(self, screenshot_filename, conference_id)
+
+    def set_call(
+            self,
+            call_id: int,
+            joinable_by: str,
+            game_title: str = None,
+            category_id: str = None
+    ):
+        return set_call(self, call_id, joinable_by, game_title, category_id)
+
+    def set_user_role(
+            self,
+            call_id: int,
+            user_id: int,
+            role: str
+    ):
+        return set_user_role(self, call_id, user_id, role)
+
+    def start_call(
+            self,
+            conference_id: int,
+            call_sid: str
+    ) -> ConferenceCall:
+        return start_call(self, conference_id, call_sid)
+
+    def stop_call(
+            self,
+            conference_id: int,
+            call_sid: str
+    ):
+        return stop_call(self, conference_id, call_sid)
+
     # -CASSANDRA
 
     def get_user_activities(self, **params) -> ActivitiesResponse:

@@ -16,11 +16,12 @@ class Configs:
     YAY_API_URL = "https://" + YAY_PRODUCTION_HOST
     ID_CARD_CHECK_HOST_PRODUCTION = "idcardcheck.com"
     ID_CARD_CHECK_HOST_STAGING = "stg.idcardcheck.com"
+    USER_AGENT = "android 11 (3.5x 1440x2960 Galaxy S9)"
     REQUEST_HEADERS = {
         "Host": YAY_PRODUCTION_HOST,
         "X-App-Version": YAY_API_VERSION,
-        "User-Agent": "android 11 (3.5x 1440x2960 Galaxy S9)",
-        "X-Device-Info": f"yay {YAY_VERSION_NAME} android 11 (3.5x 1440x2960 Galaxy S9)",
+        "User-Agent": USER_AGENT,
+        "X-Device-Info": f"yay {YAY_VERSION_NAME} {USER_AGENT}",
         "X-Device-Uuid": "",
         "X-Connection-Type": "wifi",
         "Accept-Language": "ja",
@@ -43,6 +44,9 @@ class Endpoints:
     CALLS_V1 = Configs.YAY_API_URL + "/v1/calls"
     SURVEYS_V1 = Configs.YAY_API_URL + "/v1/surveys"
     FRIENDS_V1 = Configs.YAY_API_URL + "/v1/friends"
+    GAMES_V1 = Configs.YAY_API_URL + "/v1/games"
+    GENRES_V1 = Configs.YAY_API_URL + "/v1/genres"
+    ANONYMOUS_CALLS_V1 = Configs.YAY_API_URL + "/v1/anonymous_calls"
 
     # v2 endpoints
     USERS_V2 = Configs.YAY_API_URL + "/v2/users"
@@ -57,6 +61,9 @@ class Endpoints:
     CALLS_V2 = Configs.YAY_API_URL + "/v2/calls"
     SURVEYS_V2 = Configs.YAY_API_URL + "/v2/surveys"
     FRIENDS_V2 = Configs.YAY_API_URL + "/v2/friends"
+    GAMES_V2 = Configs.YAY_API_URL + "/v2/games"
+    GENRES_V2 = Configs.YAY_API_URL + "/v2/genres"
+    ANONYMOUS_CALLS_V2 = Configs.YAY_API_URL + "/v2/anonymous_calls"
 
     # v3 endpoints
     USERS_V3 = Configs.YAY_API_URL + "/v3/users"
@@ -71,3 +78,6 @@ class Endpoints:
     CALLS_V3 = Configs.YAY_API_URL + "/v3/calls"
     SURVEYS_V3 = Configs.YAY_API_URL + "/v3/surveys"
     FRIENDS_V3 = Configs.YAY_API_URL + "/v3/friends"
+    GAMES_V3 = Configs.YAY_API_URL + "/v3/games"
+    GENRES_V3 = Configs.YAY_API_URL + "/v3/genres"
+    ANONYMOUS_CALLS_V3 = Configs.YAY_API_URL + "/v3/anonymous_calls"
