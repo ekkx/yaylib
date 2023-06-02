@@ -239,11 +239,17 @@ def pin_chat(self, room_id: int):
 
 def read_attachment(
         self,
-        chat_room_id: int,
+        room_id: int,
         attachment_msg_ids: List[int]
-        # ↑ @Body @NotNull ReadAttachmentRequest readAttachmentRequest
 ):
-    pass
+    # TODO: check if this works
+    self._check_authorization()
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/attachments_read",
+        payload={
+            "attachment_msg_ids[]": attachment_msg_ids
+        }
+    )
 
 
 def read_message(self, chat_room_id: int, message_id: int):

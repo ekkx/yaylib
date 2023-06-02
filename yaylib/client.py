@@ -310,13 +310,13 @@ class Client(API):
     def pin_chat(self, room_id: int):
         return pin_chat(self, room_id)
 
-    # def read_attachment(
-    #     self,
-    #     chat_room_id: int,
-    #     attachment_msg_ids: List[int]
-    #     # ↑ @Body @NotNull ReadAttachmentRequest readAttachmentRequest
-    # ):
-    #     return read_attachment(self)
+    def read_attachment(
+            self,
+            room_id: int,
+            attachment_msg_ids: List[int]
+    ):
+        # TODO: check if this works
+        return read_attachment(self, room_id, attachment_msg_ids)
 
     def read_message(self, chat_room_id: int, message_id: int):
         return read_message(self, chat_room_id, message_id)
