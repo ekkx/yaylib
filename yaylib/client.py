@@ -798,8 +798,74 @@ class Client(API):
 
     # -MISC
 
+    def accept_policy_agreement(self, type: str):
+        return accept_policy_agreement(self, type)
+
+    def generate_sns_thumbnail(self, **params):
+        """
+
+        Parameters:
+        ----------
+
+            - resource_type: str - (Required)
+            - resource_id: int - (Required)
+
+        """
+        return generate_sns_thumbnail(self, **params)
+
+    def get_email_verification_presigned_url(self, email: str, locale: str, intent: str = None) -> str:
+        return get_email_verification_presigned_url(self, email, locale, intent)
+
+    def get_file_upload_presigned_urls(self, file_names: List[str]) -> List[PresignedUrl]:
+        return get_file_upload_presigned_urls(self, file_names)
+
+    # def get_id_checker_presigned_url(
+    #         self,
+    #         model: str,
+    #         action: str,
+    #         **params
+    # ) -> str:
+    #     return get_id_checker_presigned_url(self, model, action, **params)
+
+    def get_old_file_upload_presigned_url(self, video_file_name: str) -> str:
+        return get_old_file_upload_presigned_url(self, video_file_name)
+
+    def get_policy_agreements(self) -> PolicyAgreementsResponse:
+        return get_policy_agreements(self)
+
+    def get_promotions(self, **params) -> List[Promotion]:
+        """
+
+        Parameters:
+        ----------
+
+            - page: int - (Optional)
+            - number: int - (Optional)
+
+        """
+        return get_promotions(self, **params)
+
+    def get_vip_game_reward_url(self, device_type: str) -> str:
+        return get_vip_game_reward_url(self, device_type)
+
     def get_web_socket_token(self) -> str:
         return get_web_socket_token(self)
+
+    def verify_device(
+            self,
+            app_version: str,
+            device_uuid: str,
+            platform: str,
+            verification_string: str
+    ) -> VerifyDeviceResponse:
+        # TODO: check platform, verification_string
+        return verify_device(
+            self,
+            app_version,
+            device_uuid,
+            platform,
+            verification_string
+        )
 
     # -POST
 

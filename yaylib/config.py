@@ -31,7 +31,7 @@ class Configs:
 
 class Endpoints:
 
-    # v1 endpoints
+    # api v1 endpoints
     USERS_V1 = Configs.YAY_API_URL + "/v1/users"
     PAYMENTS_V1 = Configs.YAY_API_URL + "/v1/payments"
     THREADS_V1 = Configs.YAY_API_URL + "/v1/threads"
@@ -49,8 +49,15 @@ class Endpoints:
     ANONYMOUS_CALLS_V1 = Configs.YAY_API_URL + "/v1/anonymous_calls"
     NOTIFICATION_SETTINGS_V1 = Configs.YAY_API_URL + "/v1/notification_settings"
     STICKER_PACKS_V1 = Configs.YAY_API_URL + "/v1/sticker_packs"
+    SNS_THUMBNAIL_V1 = Configs.YAY_API_URL + "/v1/sns_thumbnail"
+    EMAIL_VERIFICATION_URL_V1 = Configs.YAY_API_URL + "/v1/email_verification_urls"
+    BUCKETS_V1 = Configs.YAY_API_URL + "/v1/buckets"
+    ID_CHECK_V1 = Configs.YAY_API_URL + "/v1/id_check"
+    PROMOTIONS_V1 = Configs.YAY_API_URL + "/v1/promotions"
+    SKYFALL_V1 = Configs.YAY_API_URL + "/v1/skyfall"
+    GENUINE_DEVICES_V1 = Configs.YAY_API_URL + "/v1/genuine_devices"
 
-    # v2 endpoints
+    # api v2 endpoints
     USERS_V2 = Configs.YAY_API_URL + "/v2/users"
     PAYMENTS_V2 = Configs.YAY_API_URL + "/v2/payments"
     THREADS_V2 = Configs.YAY_API_URL + "/v2/threads"
@@ -68,8 +75,15 @@ class Endpoints:
     ANONYMOUS_CALLS_V2 = Configs.YAY_API_URL + "/v2/anonymous_calls"
     NOTIFICATION_SETTINGS_V2 = Configs.YAY_API_URL + "/v2/notification_settings"
     STICKER_PACKS_V2 = Configs.YAY_API_URL + "/v2/sticker_packs"
+    SNS_THUMBNAIL_V2 = Configs.YAY_API_URL + "/v2/sns_thumbnail"
+    EMAIL_VERIFICATION_URL_V2 = Configs.YAY_API_URL + "/v2/email_verification_urls"
+    BUCKETS_V2 = Configs.YAY_API_URL + "/v2/buckets"
+    ID_CHECK_V2 = Configs.YAY_API_URL + "/v2/id_check"
+    PROMOTIONS_V2 = Configs.YAY_API_URL + "/v2/promotions"
+    SKYFALL_V2 = Configs.YAY_API_URL + "/v2/skyfall"
+    GENUINE_DEVICES_V2 = Configs.YAY_API_URL + "/v2/genuine_devices"
 
-    # v3 endpoints
+    # api v3 endpoints
     USERS_V3 = Configs.YAY_API_URL + "/v3/users"
     PAYMENTS_V3 = Configs.YAY_API_URL + "/v3/payments"
     THREADS_V3 = Configs.YAY_API_URL + "/v3/threads"
@@ -87,3 +101,10 @@ class Endpoints:
     ANONYMOUS_CALLS_V3 = Configs.YAY_API_URL + "/v3/anonymous_calls"
     NOTIFICATION_SETTINGS_V3 = Configs.YAY_API_URL + "/v3/notification_settings"
     STICKER_PACKS_V3 = Configs.YAY_API_URL + "/v3/sticker_packs"
+    SNS_THUMBNAIL_V3 = Configs.YAY_API_URL + "/v3/sns_thumbnail"
+    EMAIL_VERIFICATION_URL_V3 = Configs.YAY_API_URL + "/v3/email_verification_urls"
+    BUCKETS_V3 = Configs.YAY_API_URL + "/v3/buckets"
+    ID_CHECK_V3 = Configs.YAY_API_URL + "/v3/id_check"
+    PROMOTIONS_V3 = Configs.YAY_API_URL + "/v3/promotions"
+    SKYFALL_V3 = Configs.YAY_API_URL + "/v3/skyfall"
+    GENUINE_DEVICES_V3 = Configs.YAY_API_URL + "/v3/genuine_devices"

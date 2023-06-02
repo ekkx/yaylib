@@ -227,7 +227,6 @@ class CreateGroupResponse:
 
     def __init__(self, data):
         self.data = data
-
         self.group_id = data.get("group_id")
 
     def __repr__(self):
@@ -305,6 +304,47 @@ class EmailVerificationPresignedUrlResponse:
 
     def __repr__(self):
         return f"EmailVerificationPresignedUrlResponse(data={self.data})"
+
+
+class PresignedUrlResponse:
+
+    __slots__ = ("data", "presigned_url")
+
+    def __init__(self, data):
+        self.data = data
+        self.presigned_url = data.get("presigned_url")
+
+    def __repr__(self):
+        return f"PresignedUrlResponse(data={self.data})"
+
+
+class PresignedUrlsResponse:
+
+    __slots__ = ("data", "presigned_urls")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.presigned_urls = data.get("presigned_urls")
+        if self.presigned_urls is not None:
+            self.presigned_urls = [
+                PresignedUrl(presigned_url) for presigned_url in self.presigned_urls
+            ]
+
+    def __repr__(self):
+        return f"PresignedUrlsResponse(data={self.data})"
+
+
+class IdCheckerPresignedUrlResponse:
+
+    __slots__ = ("data", "presigned_url")
+
+    def __init__(self, data):
+        self.data = data
+        self.presigned_url = data.get("presigned_url")
+
+    def __repr__(self):
+        return f"IdCheckerPresignedUrlResponse(data={self.data})"
 
 
 class DefaultSettingsResponse:
@@ -704,6 +744,22 @@ class MessagesResponse:
         return f"MessagesResponse(data={self.data})"
 
 
+class PolicyAgreementsResponse:
+
+    __slots__ = ("data", "latest_privacy_policy_agreed",
+                 "latest_terms_of_use_agreed")
+
+    def __init__(self, data):
+        self.data = data
+        self.latest_privacy_policy_agreed = data.get(
+            "latest_privacy_policy_agreed")
+        self.latest_terms_of_use_agreed = data.get(
+            "latest_terms_of_use_agreed")
+
+    def __repr__(self):
+        return f"PolicyAgreementsResponse(data={self.data})"
+
+
 class PostResponse:
 
     __slots__ = ("data", "post")
@@ -776,6 +832,23 @@ class PostTagsResponse:
 
     def __repr__(self):
         return f"PostTagsResponse(data={self.data})"
+
+
+class PromotionsResponse:
+
+    __slots__ = ("data", "promotions")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.promotions = data.get("promotions")
+        if self.promotions is not None:
+            self.promotions = [
+                Promotion(promotion) for promotion in self.promotions
+            ]
+
+    def __repr__(self):
+        return f"PromotionsResponse(data={self.data})"
 
 
 class LikePostsResponse:
@@ -892,6 +965,31 @@ class TokenResponse:
 
     def __repr__(self):
         return f"TokenResponse(data={self.data})"
+
+
+class VerifyDeviceResponse:
+
+    __slots__ = ("data", "verified", "verified_at")
+
+    def __init__(self, data):
+        self.data = data
+        self.verified = data.get("verified")
+        self.verified_at = data.get("verified_at")
+
+    def __repr__(self):
+        return f"VerifyDeviceResponse(data={self.data})"
+
+
+class VipGameRewardUrlResponse:
+
+    __slots__ = ("data", "url")
+
+    def __init__(self, data):
+        self.data = data
+        self.url = data.get("url")
+
+    def __repr__(self):
+        return f"VipGameRewardUrlResponse(data={self.data})"
 
 
 class VoteSurveyResponse:

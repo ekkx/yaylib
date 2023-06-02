@@ -230,8 +230,8 @@ class ConferenceCall:
 
     __slots__ = (
         "data", "id", "post_id", "group_id", "is_active",
-        "anonymous_call_users_count", "agora_channel", "agora_token", "call_type", 
-        "joinable_by", "game", "genre", "duration_seconds", "max_participants", 
+        "anonymous_call_users_count", "agora_channel", "agora_token", "call_type",
+        "joinable_by", "game", "genre", "duration_seconds", "max_participants",
         "conference_call_users", "bump_params", "conference_call_users_role"
     )
 
@@ -906,6 +906,19 @@ class PostTag:
 
     def __repr__(self):
         return f"PostTag(data={self.data})"
+
+
+class PresignedUrl:
+
+    __slots__ = ("data", "filename", "url")
+
+    def __init__(self, data):
+        self.data = data
+        self.filename = data.get("filename")
+        self.url = data.get("url")
+
+    def __repr__(self):
+        return f"PresignedUrl(data={self.data})"
 
 
 class Promotion:
