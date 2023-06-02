@@ -1540,8 +1540,8 @@ class Client(API):
     def delete_footprint(self, user_id: int, footprint_id: int):
         return delete_footprint(self, user_id, footprint_id)
 
-    # def destroy_user(self):
-    #     return destroy_user(self)
+    def destroy_user(self):
+        return destroy_user(self)
 
     def follow_user(self, user_id: int):
         return follow_user(self, user_id)
@@ -1564,11 +1564,11 @@ class Client(API):
     # def get_additional_settings(self) -> Settings:
     #     return get_additional_settings(self)
 
-    # def get_app_review_status(self) -> AppReviewStatusResponse:
-    #     return get_app_review_status(self)
+    def get_app_review_status(self) -> AppReviewStatusResponse:
+        return get_app_review_status(self)
 
-    # def get_contact_status(self, mobile_numbers: List[str]) -> ContactStatusResponse:
-    #     return get_contact_status(self, mobile_numbers)
+    def get_contact_status(self, mobile_numbers: List[str]) -> ContactStatusResponse:
+        return get_contact_status(self, mobile_numbers)
 
     # def get_default_settings(self) -> TimelineSettings:
     #     return get_default_settings(self)
@@ -1623,31 +1623,41 @@ class Client(API):
         """
         return get_hima_users(self, **params)
 
-    # def get_initial_recommended_users_to_follow(
-    #     self,
-    #     en: int = None,
-    #     vn: int = None
-    # ) -> UsersResponse:
-    #     return get_initial_recommended_users_to_follow(self)
+    def get_initial_recommended_users_to_follow(self, **params) -> UsersResponse:
+        return get_initial_recommended_users_to_follow(self, **params)
 
-    # def get_recommended_users_to_follow_for_profile(
-    #     self,
-    #     user_id: int,
-    #     number: int = None,
-    #     page: int = None
-    # ) -> UsersResponse:
-    #     return get_recommended_users_to_follow_for_profile(self)
+    def get_recommended_users_to_follow_for_profile(
+            self, user_id: int, **params
+    ) -> UsersResponse:
+        """
 
-    # def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
-    #     return get_refresh_counter_requests(self)
+        Parameters:
+        ----------
 
-    # def get_social_shared_users(
-    #     self,
-    #     sns_name: str,
-    #     number: int = None,
-    #     from_id: int = None
-    # ) -> SocialShareUsersResponse:
-    #     return get_social_shared_users(self)
+            - user_id: int - (Required)
+            - number: int - (Optional)
+            - page: int - (Optional)
+
+        """
+        return get_recommended_users_to_follow_for_profile(
+            self, user_id, **params
+        )
+
+    def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
+        return get_refresh_counter_requests(self)
+
+    def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - sns_name: str - (Required)
+            - number: int - (Optional)
+            - from_id: int - (Optional)
+
+        """
+        return get_social_shared_users(self, **params)
 
     def get_timestamp(self) -> UserTimestampResponse:
         return get_timestamp(self)
@@ -1655,11 +1665,11 @@ class Client(API):
     def get_user(self, user_id: int) -> User:
         return get_user(self, user_id)
 
-    # def get_user_custom_definitions(self) -> UserCustomDefinitionsResponse:
-    #     return get_user_custom_definitions(self)
+    def get_user_custom_definitions(self) -> UserCustomDefinitionsResponse:
+        return get_user_custom_definitions(self)
 
-    # def get_user_email(self, user_id: int) -> str:
-    #     return get_user_email(self, user_id)
+    def get_user_email(self, user_id: int) -> str:
+        return get_user_email(self, user_id)
 
     def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
         """
@@ -1688,8 +1698,8 @@ class Client(API):
         """
         return get_user_followings(self, user_id, **params)
 
-    # def get_user_from_qr(self, qr: str) -> UserResponse:
-    #     return get_user_from_qr(self, qr)
+    def get_user_from_qr(self, qr: str) -> UserResponse:
+        return get_user_from_qr(self, qr)
 
     # def get_user_interests(self):
     #     return get_user_interests(self)
@@ -1700,49 +1710,63 @@ class Client(API):
     def get_users(self, user_ids: List[int]) -> UsersResponse:
         return get_users(self, user_ids)
 
-    # def get_users_from_uuid(self, uuid: str) -> UsersResponse:
-    #     return get_users_from_uuid(self, uuid)
+    def get_users_from_uuid(self, uuid: str) -> UsersResponse:
+        return get_users_from_uuid(self, uuid)
 
-    # def post_social_shared(self, sns_name: str):
-    #     return post_social_shared(self)
+    def post_social_shared(self, sns_name: str):
+        return post_social_shared(self, sns_name)
 
-    # def record_app_review_status(self, uuid: str):
-    #     return record_app_review_status(self)
+    def record_app_review_status(self):
+        return record_app_review_status(self)
 
     def reduce_kenta_penalty(self, user_id: int):
         return reduce_kenta_penalty(self, user_id)
 
-    # def refresh_counter(self, counter: str):
-    #     return refresh_counter(self, counter)
+    def refresh_counter(self, counter: str):
+        return refresh_counter(self, counter)
 
-    # def remove_user_avatar(self):
-    #     return remove_user_avatar(self)
+    def remove_user_avatar(self):
+        return remove_user_avatar(self)
 
-    # def remove_user_cover(self):
-    #     return remove_user_cover(self)
+    def remove_user_cover(self):
+        return remove_user_cover(self)
 
-    # def report_user(
-    #         self,
-    #         user_id: int,
-    #         category_id: int,
-    #         reason: str = None,
-    #         screenshot_filename: str = None,
-    #         screenshot_2_filename: str = None,
-    #         screenshot_3_filename: str = None,
-    #         screenshot_4_filename: str = None
-    # ):
-    #     return report_user(self)
+    def report_user(
+            self,
+            user_id: int,
+            category_id: int,
+            reason: str = None,
+            screenshot_filename: str = None,
+            screenshot_2_filename: str = None,
+            screenshot_3_filename: str = None,
+            screenshot_4_filename: str = None
+    ):
+        return report_user(
+            self,
+            user_id,
+            category_id,
+            reason,
+            screenshot_filename,
+            screenshot_2_filename,
+            screenshot_3_filename,
+            screenshot_4_filename
+        )
 
-    # def reset_password(self, email: str, email_grant_token: str, password: str):
-    #     return reset_password(self)
+    def reset_password(self, email: str, email_grant_token: str, password: str):
+        return reset_password(self, email, email_grant_token, password)
 
-    # def search_lobi_users(
-    #         self,
-    #         nickname: str = None,
-    #         number: int = None,
-    #         from_str: str = None
-    # ) -> UsersResponse:
-    #     return search_lobi_users(self)
+    def search_lobi_users(self, **params) -> UsersResponse:
+        """
+
+        Parameters:
+        ----------
+
+            - nickname: str = None
+            - number: int = None
+            - from_str: str = None
+
+        """
+        return search_lobi_users(self ** params)
 
     def search_users(self, **params) -> UsersResponse:
         """
@@ -1764,21 +1788,19 @@ class Client(API):
         """
         return search_users(self, **params)
 
-    # def set_additional_setting_enabled(
-    #     self,
-    #     mode: str,
-    #     on: int
-    # ):
-    #     return set_additional_setting_enabled(self)
+    def set_additional_setting_enabled(self, mode: str, on: int = None):
+        return set_additional_setting_enabled(self, mode, on)
 
-    # def set_follow_permission_enabled(self):
-    #     return set_follow_permission_enabled(self)
+    def set_follow_permission_enabled(
+            self, nickname: str, is_private: bool = None
+    ):
+        return set_follow_permission_enabled(self, nickname, is_private)
 
-    # def set_setting_follow_recommendation_enabled(self, on: bool):
-    #     return set_setting_follow_recommendation_enabled(self)
+    def set_setting_follow_recommendation_enabled(self, on: bool):
+        return set_setting_follow_recommendation_enabled(self, bool)
 
-    # def take_action_follow_request(self, target_id: int, action: str):
-    #     return take_action_follow_request(self)
+    def take_action_follow_request(self, target_id: int, action: str):
+        return take_action_follow_request(self, target_id, action)
 
     def turn_on_hima(self):
         return turn_on_hima(self)
@@ -1786,11 +1808,11 @@ class Client(API):
     def unfollow_user(self, user_id: int):
         return unfollow_user(self, user_id)
 
-    # def update_invite_contact_status(self, mobile_number: str):
-    #     return update_invite_contact_status(self)
+    def update_invite_contact_status(self, mobile_number: str):
+        return update_invite_contact_status(self, mobile_number)
 
-    # def update_language(self, language: str):
-    #     return update_language(self)
+    def update_language(self, language: str):
+        return update_language(self, language)
 
     def update_user(
             self,
@@ -1814,8 +1836,8 @@ class Client(API):
     # def upload_contacts_friends(self):
     #     return upload_contacts_friends(self)
 
-    # def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]):
-    #     return upload_twitter_friend_ids(self)
+    def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]):
+        return upload_twitter_friend_ids(self, twitter_friend_ids)
 
     def block_user(self, user_id: int):
         return block_user(self, user_id)

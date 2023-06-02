@@ -131,4 +131,4 @@ class API:
 
     def generate_all_uuids(self):
         self.device_uuid = generate_uuid(uuid_type=True)
-        self.uuid = generate_uuid(uuid_type=True)
+        self.uuid, self.url_uuid = generate_uuid()

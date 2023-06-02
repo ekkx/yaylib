@@ -56,6 +56,7 @@ class Endpoints:
     PROMOTIONS_V1 = Configs.YAY_API_URL + "/v1/promotions"
     SKYFALL_V1 = Configs.YAY_API_URL + "/v1/skyfall"
     GENUINE_DEVICES_V1 = Configs.YAY_API_URL + "/v1/genuine_devices"
+    LOBI_FRIENDS_V1 = Configs.YAY_API_URL + "/v1/lobi_friends"
 
     # api v2 endpoints
     USERS_V2 = Configs.YAY_API_URL + "/v2/users"
@@ -82,6 +83,7 @@ class Endpoints:
     PROMOTIONS_V2 = Configs.YAY_API_URL + "/v2/promotions"
     SKYFALL_V2 = Configs.YAY_API_URL + "/v2/skyfall"
     GENUINE_DEVICES_V2 = Configs.YAY_API_URL + "/v2/genuine_devices"
+    LOBI_FRIENDS_V2 = Configs.YAY_API_URL + "/v2/lobi_friends"
 
     # api v3 endpoints
     USERS_V3 = Configs.YAY_API_URL + "/v3/users"
@@ -108,3 +110,4 @@ class Endpoints:
     PROMOTIONS_V3 = Configs.YAY_API_URL + "/v3/promotions"
     SKYFALL_V3 = Configs.YAY_API_URL + "/v3/skyfall"
     GENUINE_DEVICES_V3 = Configs.YAY_API_URL + "/v3/genuine_devices"
+    LOBI_FRIENDS_V3 = Configs.YAY_API_URL + "/v3/lobi_friends"

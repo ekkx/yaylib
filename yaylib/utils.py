@@ -6,15 +6,10 @@ import uuid
 from datetime import datetime
 
 
-def generate_uuid(uuid_type):
-    """
-    引数falseでハイフンなしUUID
-    """
+def generate_uuid() -> tuple:
     generated_uuid = str(uuid.uuid4())
-    if uuid_type:
-        return generated_uuid
-    else:
-        return generated_uuid.replace("-", "")
+    url_uuid = generated_uuid.replace("-", "")
+    return generated_uuid, url_uuid
 
 
 def parse_datetime(timestamp: int) -> str:
