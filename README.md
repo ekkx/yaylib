@@ -7,14 +7,14 @@
 </p>
 <br />
 <p align="center">
-    <!-- <a href="https://github.com/othneildrew/Best-README-Template">
-        <img src="https://github.com/qvco/yaylib/assets/77382767/ed3c51a3-1430-4371-b65d-61c161438ee1" alt="Logo" height="300">
-    </a> -->
     <a href="https://github.com/othneildrew/Best-README-Template">
         <img src="https://github.com/qvco/yaylib/assets/77382767/6e72ec90-b8e9-40bf-a7ad-34fb2ccea0f9" alt="Logo" height="300px">
     </a>
     <!-- <a href="https://github.com/othneildrew/Best-README-Template">
         <img src="https://github.com/qvco/yaylib/assets/77382767/2cdc26e5-7195-4df3-94c5-db840bdd57ff" alt="Logo" height="300">
+    </a> -->
+    <!-- <a href="https://github.com/othneildrew/Best-README-Template">
+        <img src="https://github.com/qvco/yaylib/assets/77382767/ed3c51a3-1430-4371-b65d-61c161438ee1" alt="Logo" height="300">
     </a> -->
     <h3 align="center">yaylib</h3>
     <p align="center">
@@ -39,7 +39,7 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#機能--特徴">機能 & 特徴</a></li>
+    <!-- <li><a href="#機能--特徴">機能 & 特徴</a></li> -->
     <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
     <li><a href="#インストール">インストール</a></li>
     <li><a href="#使用例">使用例</a></li>
@@ -52,7 +52,7 @@
 
 <!-- 機能 & 特徴 -->
 
-## 機能 & 特徴
+<!-- ## 機能 & 特徴
 
 そこは将来何しろこんな参考者というのの時よりしでた。何だか結果に堕落児はよくそのらくたですまでで知っばいるにも影響突き抜けますですば、いっそにもしたましだっます。支を至るたものはなお生涯にちょうどありでする。
 
@@ -62,7 +62,11 @@ Here's why:
 - 否さてお師範をありのしかこれから安泰と始めたて、その会にも申し上げうてという春にあるばいうた
 - そのため書物のうちそんな国家は私上に取り巻かんかと嘉納さんを罹りましん :smile:
 
-Use the `BLANK_README.md` to get started.
+TODO:
+
+- 非同期処理に対応
+
+Use the `BLANK_README.md` to get started. -->
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
@@ -73,7 +77,7 @@ Use the `BLANK_README.md` to get started.
 もしこのライブラリが気に入っていただけたら  
 私たちに ↓ コーヒー ↓ をお恵みくださいませ！！❤
 
-<a href="https://www.buymeacoffee.com/" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 <!-- インストール -->
 
@@ -103,7 +107,7 @@ pip install -e .
 
 ## 使用例
 
-ただご教育に当てるがは得たものですから、道徳からも、 `npm install` もし私か行かば思えがらたです申し上げられましざると歩くが。
+メールアドレスとパスワードを用いてログイン後、新しく投稿を作成するコードです。
 
 ```python
 import yaylib
@@ -115,21 +119,15 @@ api.login_with_email(email="hello@example.com", password="abc123")
 api.create_post(text="Hi there.", color=2)
 ```
 
-私はむしろ観念の方でご変化もさがしまいますだなだから、 `npm install` 当座をまた嘉納さんにさてなぜとりなのなましなかろ。
-
-```python
-import yaylib
-
-api = yaylib.Client(access_token="yourAccessTokenGoesHere")
-
-api.create_post(text="Hi there.", color=2)
-```
+より詳細な使用例については、[こちら](https://github.com/qvco/yaylib/blob/master/examples) を参照してください。
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 <!-- yaylib で誕生したボットの一覧 -->
 
 ## yaylib で誕生したロボットたち
+
+yaylib を用いて開発したロボットがある場合は、ぜひ教えてください！
 
 <table align="center">
     <thead>
@@ -160,17 +158,15 @@ api.create_post(text="Hi there.", color=2)
     </tbody>
 </table>
 
-Tell us what you made with yaylib! We would love to introduce your bots in this page!
-
 <!-- 共同開発について -->
 
 ## 共同開発について
 
 私たちと一緒に開発することに興味を持っていただけているなら大歓迎です。
 
-- このレポジトリにプルリクエストを送信する
+- <a href="https://github.com/qvco/yaylib/pulls">プルリクエストを送信する</a>
 - nikola.desuga@gmail.com にメールを送信する
-- Discord のサーバーに参加する
+- <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
 
 のいずれかの方法でコンタクトしてください！
 
