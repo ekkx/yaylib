@@ -46,6 +46,10 @@ def create_call_post(
         attachment_9_filename: str = None,
 ) -> ConferenceCall:
     self._check_authorization()
+
+    if "@:start:" in text and ":end:" in text:
+        text, message_tags = parse_mention_format(self, text)
+
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
         payload={
@@ -226,6 +230,10 @@ def create_repost(
     self._check_authorization()
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token()
+
+    if "@:start:" in text and ":end:" in text:
+        text, message_tags = parse_mention_format(self, text)
+
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/repost",
         payload={
@@ -307,6 +315,10 @@ def create_thread_post(
     self._check_authorization()
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token()
+
+    if "@:start:" in text and ":end:" in text:
+        text, message_tags = parse_mention_format(self, text)
+
     return self._make_request(
         "POST", endpoint=f"{Endpoints.THREADS_V1}/{post_id}/posts",
         payload={
@@ -780,6 +792,10 @@ def update_post(
         message_tags: str = "[]",
 ) -> Post:
     self._check_authorization()
+
+    if "@:start:" in text and ":end:" in text:
+        text, message_tags = parse_mention_format(self, text)
+
     return self._make_request(
         "PUT", endpoint=f"{Endpoints.POSTS_V3}/{post_id}",
         payload={
