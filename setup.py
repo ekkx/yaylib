@@ -19,7 +19,7 @@ keywords = [
 ]
 
 install_requires = [
-    "httpx"
+    "httpx>=0.17.1"
 ]
 
 classifiers = [
@@ -37,7 +37,7 @@ setup(
     author_email=author_email,
     maintainer=author,
     maintainer_email=author_email,
-    version=__version__,
+    # version=__version__,
     description=description,
     long_description=long_description,
     long_description_content_type=long_description_content_type,

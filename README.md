@@ -140,17 +140,17 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
     <tbody>
         <tr>
             <td align="center">
-                <a href="https://yay.space/user/5855987"><img src="/assets/bot-icons/MindReaderAI.jpg" width="200px"></a>
+                <a href="https://yay.space/user/5855987"><img src="https://github.com/qvco/yaylib/blob/main/assets/bot-icons/MindReaderAI.jpg" width="200px"></a>
                 <br />
                 <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
             </td>
             <td align="center">
-                <a href="https://yay.space/user/0"><img src="/assets/bot-icons/Funktion.jpg" width="200px"></a>
+                <a href="https://yay.space/user/0"><img src="https://github.com/qvco/yaylib/blob/main/assets/bot-icons/Funktion.jpg" width="200px"></a>
                 <br />
                 <p>開発者: <a href="https://yay.space/user/0">ぺゅー</a></p>
             </td>
             <td align="center">
-                <a href="https://yay.space/user/0"><img src="/assets/bot-icons/香ばしいボット.jpg" width="200px"></a>
+                <a href="https://yay.space/user/0"><img src="https://github.com/qvco/yaylib/blob/main/assets/bot-icons/香ばしいボット.jpg" width="200px"></a>
                 <br />
                 <p>開発者: <a href="https://yay.space/user/0">めんぶれ天然水。</a></p>
             </td>
