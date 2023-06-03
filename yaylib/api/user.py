@@ -25,13 +25,36 @@ def create_user(
         en: int = None,
         vn: int = None
 ) -> CreateUserResponse:
-    # @NotNull @Part("app_version") String str,
-    # @Part("timestamp") long j2,
-    # @NotNull @Part("api_key") String str2,
-    # @NotNull @Part("signed_version") String str3,
-    # @NotNull @Part("signed_info") String str4,
-    # @NotNull @Part("uuid") String str5,
-    pass
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.USERS_V3}/edit",
+        payload={
+            "app_version": self.api_version,
+            "timestamp": int(datetime.now().timestamp()),
+            "api_key": self.api_key,
+            "signed_version": signed_version_calculating(
+                self.yay_version_message, self.api_version_key,
+                int(datetime.now().timestamp())
+            ),
+            "signed_info": signed_info_calculating(
+                self.api_key, self.device_uuid,
+                int(datetime.now().timestamp())
+            ),
+            "uuid": self.uuid,
+            "nickname": nickname,
+            "birth_date": birth_date,
+            "gender": gender,
+            "country_code": country_code,
+            "biography": biography,
+            "prefecture": prefecture,
+            "profile_icon_filename": profile_icon_filename,
+            "cover_image_filename": cover_image_filename,
+            "email": email,
+            "password": password,
+            "email_grant_token": email_grant_token,
+            "en": en,
+            "vn": vn,
+        }
+    )
 
 
 def delete_contact_friends(self):
@@ -395,7 +418,6 @@ def record_app_review_status(self):
 
 
 def reduce_kenta_penalty(self, user_id: int):
-    # TODO: yay_version_message とは
     self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"{self.host}api/v3/users/{user_id}/reduce_penalty",

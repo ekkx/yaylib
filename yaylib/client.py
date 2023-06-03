@@ -1515,24 +1515,42 @@ class Client(API):
 
     # -USER
 
-    # def create_user(
-    #     self,
-    #     nickname: str,
-    #     birth_date: str,
-    #     gender: int = -1,
-    #     country_code: str = "JP",
-    #     biography: str = None,
-    #     prefecture: str = None,
-    #     profile_icon_filename: str = None,
-    #     cover_image_filename: str = None,
-    #     # @Nullable @Part("sns_info") SignUpSnsInfoRequest signUpSnsInfoRequest,
-    #     email: str = None,
-    #     password: str = None,
-    #     email_grant_token: str = None,
-    #     en: int = None,
-    #     vn: int = None
-    # ) -> CreateUserResponse:
-    #     return create_user(self)
+    def create_user(
+            self,
+            nickname: str,
+            birth_date: str,
+            gender: int = -1,
+            country_code: str = "JP",
+            biography: str = None,
+            prefecture: str = None,
+            profile_icon_filename: str = None,
+            cover_image_filename: str = None,
+            # @Nullable @Part("sns_info") SignUpSnsInfoRequest signUpSnsInfoRequest,
+            email: str = None,
+            password: str = None,
+            email_grant_token: str = None,
+            en: int = None,
+            vn: int = None
+    ) -> CreateUserResponse:
+        """
+        birth_date: 2000-01-01の形式
+        """
+        return create_user(
+            self,
+            nickname,
+            birth_date,
+            gender,
+            country_code,
+            biography,
+            prefecture,
+            profile_icon_filename,
+            cover_image_filename,
+            email,
+            password,
+            email_grant_token,
+            en,
+            vn
+        )
 
     def delete_contact_friends(self):
         return delete_contact_friends(self)

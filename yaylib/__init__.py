@@ -6,4 +6,6 @@ from .responses import *
 from .utils import *
 
 __version__ = Configs.YAYLIB_VERSION
-__all__ = ["Client", "config", "errors", "models", "responses", "utils"]
+__all__ = [
+    "Client", "config", "errors", "models", "responses", "utils"
+]

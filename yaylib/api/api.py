@@ -1,8 +1,8 @@
-import httpx
 import os
 import logging
-
 from typing import Optional, Dict, Any
+
+import httpx
 
 from ..config import *
 from ..errors import *
@@ -15,25 +15,31 @@ current_path = os.path.abspath(os.getcwd())
 class API:
 
     def __init__(
-            self, access_token: str = None, proxy: str = None, timeout=10,
-            base_path=current_path, loglevel_stream=logging.INFO,
-            host=Configs.YAY_PRODUCTION_HOST
+            self,
+            access_token: str = None,
+            proxy: str = None,
+            timeout=60,
+            base_path=current_path,
+            loglevel_stream=logging.INFO,
+            host=Configs.YAY_PRODUCTION_HOST,
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
+        self.yay_version_message = Configs.YAY_VERSION_MESSAGE
+        self.api_version = Configs.YAY_API_VERSION
         self.api_version_key = Configs.YAY_API_VERSION_KEY
         self.api_key = Configs.YAY_API_KEY
-        self.login_data = None
-        self.proxy = proxy
-        self.proxies = None
+        self.access_token = access_token
+
+        self.proxy = {}
+        if proxy is not None:
+            self.proxy["https"] = proxy
+
         self.timeout = timeout
         self.base_path = base_path
         self.host = "https://" + host
 
-        if self.proxy:
-            self.proxies = {f"http://{self.proxy}", f"https://{self.proxy}"}
-
         self.generate_all_uuids()
-        self.session = httpx.Client(proxies=self.proxies, timeout=self.timeout)
+        self.session = httpx.Client(proxies=self.proxy, timeout=self.timeout)
         self.session.headers.update(Configs.REQUEST_HEADERS)
         self.session.headers.update({"X-Device-Uuid": self.device_uuid})
         if access_token:
@@ -62,6 +68,7 @@ class API:
         self.logger.info("yaylib version: " + self.yaylib_version + " started")
 
     def request(self, method, endpoint, params=None, payload=None, user_auth=True, headers=None):
+
         if headers is None:
             headers = self.session.headers
         if not user_auth:
@@ -130,5 +137,5 @@ class API:
         return response
 
     def generate_all_uuids(self):
-        self.device_uuid = generate_uuid(uuid_type=True)
+        self.device_uuid = generate_uuid()[0]
         self.uuid, self.url_uuid = generate_uuid()
