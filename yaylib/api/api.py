@@ -29,6 +29,7 @@ class API:
         self.api_version_key = Configs.YAY_API_VERSION_KEY
         self.api_key = Configs.YAY_API_KEY
         self.access_token = access_token
+        self.login_data = None
 
         self.proxy = {}
         if proxy is not None:

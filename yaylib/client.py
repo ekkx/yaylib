@@ -924,6 +924,9 @@ class Client(API):
     def create_pin_post(self, post_id: int):
         return create_pin_post(self, post_id)
 
+    def mention(self, user_id: int) -> str:
+        return mention(self, user_id)
+
     def create_post(
             self,
             text: str = None,

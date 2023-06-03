@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from typing import Union, Dict, List
 
@@ -89,6 +90,58 @@ def create_pin_post(self, post_id: int):
     )
 
 
+def mention(self, user_id: int) -> str:
+    if not (isinstance(user_id, int) or str(user_id).isdigit()):
+        raise ValueError(
+            "The value of 'user_id' must be an integer or a string containing only digits.")
+    return "@:start:" + str(user_id) + ":end:"
+
+
+def convert_mention_format(self, text) -> tuple:
+    # Do NOT write this function in client.py
+    formatted_text = ""
+    user_ids = []
+    segments = text.split("@:start:")
+
+    for i, segment in enumerate(segments):
+        if i == 0:
+            formatted_text += segment
+            continue
+        user_id, text = segment.split(":end:")
+        username = self.get_user(user_id).username
+        formatted_text += "@" + username + " " + text
+        user_ids.append(user_id)
+
+    return formatted_text, user_ids
+
+
+def parse_mention_format(self, text) -> tuple:
+    # Do NOT write this function in client.py
+    user_ids = {}
+    message_tags = []
+    offset = 0
+
+    text, user_ids = convert_mention_format(self, text)
+
+    for user_id in user_ids:
+        start = text.find("@", offset)
+        if start == -1:
+            break
+        end = text.find(" ", start)
+        if end == -1:
+            end = len(text)
+        username = text[start+1:end]
+        message_tags.append({
+            "type": "user",
+            "user_id": int(user_id),
+            "offset": start,
+            "length": len(username)+1
+        })
+        offset = end
+
+    return text, json.dumps(message_tags)
+
+
 def create_post(
         self,
         text: str = None,
@@ -115,6 +168,10 @@ def create_post(
     self._check_authorization()
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token()
+
+    if "@:start:" in text and ":end:" in text:
+        text, message_tags = parse_mention_format(self, text)
+
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/new",
         payload={
@@ -128,11 +185,16 @@ def create_post(
             "choices[]": choices,
             "shared_url": shared_url,
             "message_tags": message_tags,
-            "attachment_filename": attachment_filename, "attachment_2_filename": attachment_2_filename,
-            "attachment_3_filename": attachment_3_filename, "attachment_4_filename": attachment_4_filename,
-            "attachment_5_filename": attachment_5_filename, "attachment_6_filename": attachment_6_filename,
-            "attachment_7_filename": attachment_7_filename, "attachment_8_filename": attachment_8_filename,
-            "attachment_9_filename": attachment_9_filename, "video_file_name": video_file_name,
+            "attachment_filename": attachment_filename,
+            "attachment_2_filename": attachment_2_filename,
+            "attachment_3_filename": attachment_3_filename,
+            "attachment_4_filename": attachment_4_filename,
+            "attachment_5_filename": attachment_5_filename,
+            "attachment_6_filename": attachment_6_filename,
+            "attachment_7_filename": attachment_7_filename,
+            "attachment_8_filename": attachment_8_filename,
+            "attachment_9_filename": attachment_9_filename,
+            "video_file_name": video_file_name,
         }, data_type=Post, headers=headers
     )
 

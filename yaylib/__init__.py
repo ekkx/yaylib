@@ -7,5 +7,5 @@ from .utils import *
 
 __version__ = Configs.YAYLIB_VERSION
 __all__ = [
-    "Client", "config", "errors", "models", "responses", "utils"
+    "Client", "config", "errors", "models", "responses", "utils",
 ]
