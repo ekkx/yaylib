@@ -21,7 +21,7 @@ from .utils import *
 class Client(API):
     """
     Client( \
-        access_token=None, proxy=None, timeout=10, \
+        access_token=None, proxy=None, timeout=60, \
         base_path=current_path, loglevel_stream=logging.INFO, \
         host=Configs.YAY_PRODUCTION_HOST \
     )

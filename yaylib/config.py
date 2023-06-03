@@ -1,6 +1,6 @@
 class Configs:
 
-    YAYLIB_VERSION = "0.0.1"
+    YAYLIB_VERSION = "0.1.0"
     YAY_API_VERSION = "3.16"
     YAY_VERSION_NAME = "3.16.1"
     YAY_VERSION_MESSAGE = "yay_android/" + YAY_API_VERSION
