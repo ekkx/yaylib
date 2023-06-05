@@ -1992,21 +1992,34 @@ class Client(API):
         """
         return delete_reviews(self, review_ids)
 
-    def get_my_reviews(self, from_id: int = None) -> ReviewsResponse:
+    def get_my_reviews(self, **params) -> ReviewsResponse:
         """
 
         送信したレターを取得します
 
-        """
-        return get_my_reviews(self, from_id)
+        Parameters
+        ----------
 
-    def get_reviews(self, user_id: int, from_id: int = None) -> ReviewsResponse:
+            - from_id: int (optional)
+            - number: int = (optional)
+
+        """
+        return get_my_reviews(self, **params)
+
+    def get_reviews(self, user_id: int, **params) -> ReviewsResponse:
         """
 
         受け取ったレターを取得します
 
+        Parameters
+        ----------
+
+            - user_id: int (required)
+            - from_id: int = (optional)
+            - number: int = (optional)
+
         """
-        return get_reviews(self, user_id, from_id)
+        return get_reviews(self, user_id, **params)
 
     def pin_review(self, review_id: int):
         """

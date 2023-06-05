@@ -19,7 +19,7 @@ def create_review(self, user_id: int, comment: str):
             "api_key": self.api_key,
             "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.device_uuid, timestamp, shared_key=True
+                self.uuid, timestamp, shared_key=True
             ),
         },
     )
@@ -31,13 +31,13 @@ def create_reviews(self, user_ids: List[int], comment: str):
     return self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/reviews",
         payload={
-            "user_ids[]": user_ids,
+            "user_ids": user_ids,
             "comment": comment,
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.device_uuid, timestamp, shared_key=True
+                self.uuid, timestamp, shared_key=True
             ),
         },
     )
@@ -51,21 +51,34 @@ def delete_reviews(self, review_ids: List[int]):
     )
 
 
-def get_my_reviews(self, from_id: int = None) -> ReviewsResponse:
+def get_my_reviews(self, **params) -> ReviewsResponse:
+    """
+
+    Parameters
+    ----------
+
+        - from_id: int (optional)
+        - number: int = (optional)
+
+    """
     self._check_authorization()
-    params = {}
-    if from_id:
-        params["from_id"] = from_id
     return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V1}/reviews/mine",
         params=params, data_type=ReviewsResponse
     )
 
 
-def get_reviews(self, user_id: int, from_id: int = None) -> ReviewsResponse:
-    params = {}
-    if from_id:
-        params["from_id"] = from_id
+def get_reviews(self, user_id: int, **params) -> ReviewsResponse:
+    """
+
+    Parameters
+    ----------
+
+        - user_id: int (required)
+        - from_id: int = (optional)
+        - number: int = (optional)
+
+    """
     return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
         params=params, data_type=ReviewsResponse
