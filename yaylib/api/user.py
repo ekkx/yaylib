@@ -25,19 +25,16 @@ def create_user(
         en: int = None,
         vn: int = None
 ) -> CreateUserResponse:
+    timestamp = int(datetime.now().timestamp())
     return self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/edit",
         payload={
             "app_version": self.api_version,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "api_key": self.api_key,
-            "signed_version": signed_version_calculating(
-                self.yay_version_message, self.api_version_key,
-                int(datetime.now().timestamp())
-            ),
+            "signed_version": signed_version_calculating(),
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp
             ),
             "uuid": self.uuid,
             "nickname": nickname,
@@ -73,15 +70,18 @@ def delete_footprint(self, user_id: int, footprint_id: int):
 
 def destroy_user(self):
     self._check_authorization()
+    answer = input("Are you sure you want to delete your account? Y/N")
+    if answer.lower() != "y":
+        return
+    timestamp = int(datetime.now().timestamp())
     return self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/destroy",
         payload={
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp
             ),
         }
     )
@@ -419,19 +419,17 @@ def record_app_review_status(self):
 
 def reduce_kenta_penalty(self, user_id: int):
     self._check_authorization()
+    timestamp = int(datetime.now().timestamp())
     return self._make_request(
         "POST", endpoint=f"{self.host}api/v3/users/{user_id}/reduce_penalty",
         payload={
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp
             ),
-            "signed_version": signed_version_calculating(
-                self.yay_version_message, self.api_version_key
-            )
+            "signed_version": signed_version_calculating()
         }, data_type=CreatePostResponse
     )
 
@@ -539,6 +537,7 @@ def set_additional_setting_enabled(self, mode: str, on: int = None):
 
 
 def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
+    timestamp = int(datetime.now().timestamp())
     return self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/edit",
         payload={
@@ -546,14 +545,11 @@ def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
             "is_private": is_private,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp
             ),
-            "signed_version": signed_version_calculating(
-                self.yay_version_message, self.api_version_key
-            )
+            "signed_version": signed_version_calculating()
         }
     )
 
@@ -596,16 +592,15 @@ def update_invite_contact_status(self, mobile_number: str):
 
 
 def update_language(self, language: str):
+    timestamp = int(datetime.now().timestamp())
     return self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/language",
         payload={
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
-            ),
+                self.device_uuid, timestamp),
             "language": language,
         }
     )
@@ -623,6 +618,7 @@ def update_user(
         username: str = None,
 ):
     self._check_authorization()
+    timestamp = int(datetime.now().timestamp())
     return self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/edit",
         payload={
@@ -636,10 +632,9 @@ def update_user(
             "username": username,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp
             ),
         }
     )

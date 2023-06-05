@@ -4,7 +4,7 @@ from yaylib import __version__
 name = "yaylib"
 author = "qvco, Konn"
 author_email = "nikola.desuga@gmail.com"
-description = "This Python package provides an easy-to-use interface for accessing data from Yay!, a social networking platform. With this API Client, you can retrieve user profiles, posts, comments, and other content from Yay!, as well as perform common tasks like liking and commenting on posts. Compatible with Yay! version 3.16 and later. Please note that some API calls may be subject to rate limits or require authentication."
+description = "This Python package provides an easy-to-use interface for accessing data from Yay! (https://yay.space/). With this API Client, you can retrieve user profiles, posts, comments, and other content from Yay!, as well as perform common tasks like liking and commenting on posts."
 long_description_content_type = "text/markdown"
 license = "MIT"
 url = "https://github.com/qvco/yaylib"

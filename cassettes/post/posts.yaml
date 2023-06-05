@@ -1,0 +1,728 @@
+interactions:
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - a91e3d5b-b5ba-401d-b96b-d68e5b90c78b
+    method: GET
+    uri: https://api.yay.space/v1/users/ws_token
+  response:
+    content: '{"result": "success"}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 05 Jun 2023 07:38:52 GMT
+      ETag:
+      - W/"76e0bf1df4e53831d7e913a189c4743a"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Authorization, Origin
+      X-Request-Id:
+      - cab82cd1-5945-4d32-ad7c-5fef2ed946f3
+      X-Runtime:
+      - '0.030883'
+    http_version: HTTP/1.1
+    status_code: 200
+- request:
+    body: '{"text": "testing", "font_size": 2, "color": 3, "in_reply_to": null, "group_id":
+      null, "post_type": null, "mention_ids[]": null, "choices[]": null, "shared_url":
+      null, "message_tags": "[]", "attachment_filename": null, "attachment_2_filename":
+      null, "attachment_3_filename": null, "attachment_4_filename": null, "attachment_5_filename":
+      null, "attachment_6_filename": null, "attachment_7_filename": null, "attachment_8_filename":
+      null, "attachment_9_filename": null, "video_file_name": null}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-length:
+      - '491'
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - a91e3d5b-b5ba-401d-b96b-d68e5b90c78b
+    method: POST
+    uri: https://api.yay.space/v3/posts/new
+  response:
+    content: '{"id": 371794081, "text": "testing", "group_id": null, "font_size":
+      2, "likes_count": 0, "post_type": "text", "color": 3, "reposts_count": 0, "created_at":
+      1685950732, "result": "success", "thread_id": null, "message_tags": []}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 05 Jun 2023 07:38:53 GMT
+      ETag:
+      - W/"46469b1c633d201fdd87991385a1a33f"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Authorization, Origin
+      X-Request-Id:
+      - bd6d19e2-f589-4f03-91b5-99076f565772
+      X-Runtime:
+      - '0.431327'
+    http_version: HTTP/1.1
+    status_code: 201
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - a91e3d5b-b5ba-401d-b96b-d68e5b90c78b
+    method: GET
+    uri: https://api.yay.space/v2/posts/371794081
+  response:
+    content: '{"result": "success", "post": {"id": 371794081, "text": "testing", "group_id":
+      null, "font_size": 2, "likes_count": 0, "post_type": "text", "color": 3, "reposts_count":
+      0, "created_at": 1685950732, "updated_at": 1685950732, "edited_at": null, "reported_count":
+      0, "in_reply_to_post_count": 0, "repostable": true, "highlighted": false, "hidden":
+      false, "thread_id": null, "message_tags": [], "liked": false, "reposted": false,
+      "user": {"id": 7425553, "username": null, "nickname": "\u0081\u008d\u0081\u008d",
+      "prefecture": "", "biography": "\u304a\u3068\u3053\u3067\u3059", "followers_count":
+      0, "followings_count": 0, "gender": -1, "is_private": false, "title": null,
+      "posts_count": 30, "groups_users_count": 0, "reviews_count": 0, "profile_icon":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "cover_image": null, "cover_image_thumbnail": null, "profile_icon_thumbnail":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/thumb_w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "last_loggedin_at": 1685950645, "created_at": 1683989812, "login_streak_count":
+      2, "is_online": true, "online_status": "online", "country_code": "JP", "vip":
+      false, "hide_vip": false, "following": false, "followed_by": false, "follow_pending":
+      false, "hidden": false, "mobile_number": null, "mobile_verified": false, "age_verified":
+      false, "recently_kenta": false, "dangerous_user": false, "generation": 3, "new_user":
+      false}}, "group": null}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 05 Jun 2023 07:38:53 GMT
+      ETag:
+      - W/"e9ea1c8f1b8390aef2546a8f8727d8ba"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      X-Request-Id:
+      - 277200fd-1558-4394-96df-47512d358b38
+      X-Runtime:
+      - '0.059750'
+    http_version: HTTP/1.1
+    status_code: 200
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - a91e3d5b-b5ba-401d-b96b-d68e5b90c78b
+    method: GET
+    uri: https://api.yay.space/v1/users/ws_token
+  response:
+    content: '{"result": "success"}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 05 Jun 2023 07:38:53 GMT
+      ETag:
+      - W/"86e9d595b6f85c4f914500bf2bf79325"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Authorization, Origin
+      X-Request-Id:
+      - 4bd6aff8-0e64-4e0b-be2f-ac2d7de04be4
+      X-Runtime:
+      - '0.024206'
+    http_version: HTTP/1.1
+    status_code: 200
+- request:
+    body: '{"text": "testing", "font_size": 2, "color": 3, "in_reply_to": 371794081,
+      "group_id": null, "post_type": null, "mention_ids[]": null, "choices[]": null,
+      "shared_url": null, "message_tags": "[]", "attachment_filename": null, "attachment_2_filename":
+      null, "attachment_3_filename": null, "attachment_4_filename": null, "attachment_5_filename":
+      null, "attachment_6_filename": null, "attachment_7_filename": null, "attachment_8_filename":
+      null, "attachment_9_filename": null, "video_file_name": null}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-length:
+      - '496'
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - a91e3d5b-b5ba-401d-b96b-d68e5b90c78b
+    method: POST
+    uri: https://api.yay.space/v3/posts/new
+  response:
+    content: '{"id": 371794083, "text": "testing", "group_id": null, "font_size":
+      2, "likes_count": 0, "post_type": "text", "color": 3, "reposts_count": 0, "created_at":
+      1685950733, "result": "success", "thread_id": null, "message_tags": [], "in_reply_to":
+      371794081, "conversation_id": 25814303}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 05 Jun 2023 07:38:53 GMT
+      ETag:
+      - W/"760245fde66163382f5ee5004c821d81"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Authorization, Origin
+      X-Request-Id:
+      - 16142362-010e-4d35-8092-963212168b7d
+      X-Runtime:
+      - '0.241491'
+    http_version: HTTP/1.1
+    status_code: 201
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - a91e3d5b-b5ba-401d-b96b-d68e5b90c78b
+    method: GET
+    uri: https://api.yay.space/v2/conversations/25814303?number=1
+  response:
+    content: '{"posts": [], "result": "success"}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 05 Jun 2023 07:38:53 GMT
+      ETag:
+      - W/"85549354e189028280a65919e3174523"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      X-Request-Id:
+      - 2bf6e478-3509-4b14-91ef-17f5db81226e
+      X-Runtime:
+      - '0.110407'
+    http_version: HTTP/1.1
+    status_code: 200
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - a91e3d5b-b5ba-401d-b96b-d68e5b90c78b
+    method: GET
+    uri: https://api.yay.space/v2/conversations/root_posts?ids%5B%5D=25814303
+  response:
+    content: '{"posts": [{"id": 371794081, "text": "testing", "group_id": null, "font_size":
+      2, "likes_count": 0, "post_type": "text", "color": 3, "reposts_count": 0, "reported_count":
+      0, "in_reply_to_post_count": 1, "thread_id": null, "message_tags": [], "conversation_id":
+      25814303, "created_at": 1685950732, "updated_at": 1685950733, "edited_at": null,
+      "repostable": true, "user": {"id": 7425553, "nickname": "\u0081\u008d\u0081\u008d",
+      "biography": "\u304a\u3068\u3053\u3067\u3059", "followers_count": 0, "is_private":
+      false, "title": null, "posts_count": 30, "groups_users_count": 0, "reviews_count":
+      0, "age_verified": false, "country_code": "JP", "vip": false, "hide_vip": false,
+      "online_status": "online", "profile_icon": "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "profile_icon_thumbnail": "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/thumb_w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "cover_image": null, "cover_image_thumbnail": null, "last_loggedin_at": 1685950645,
+      "qr_code": null, "following": false, "followed_by": false, "follow_pending":
+      false, "hidden": false, "recently_kenta": false, "dangerous_user": false, "new_user":
+      false, "interests_selected": false}, "liked": false, "reposted": false, "highlighted":
+      false, "hidden": false}], "result": "success"}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 05 Jun 2023 07:38:54 GMT
+      ETag:
+      - W/"034ea8e21c0603964f162e4e05a41893"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      X-Request-Id:
+      - eb439ca2-7b43-4771-950a-146dbaee4468
+      X-Runtime:
+      - '0.182824'
+    http_version: HTTP/1.1
+    status_code: 200
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - a91e3d5b-b5ba-401d-b96b-d68e5b90c78b
+    method: GET
+    uri: https://api.yay.space/v1/users/ws_token
+  response:
+    content: '{"result": "success"}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 05 Jun 2023 07:38:54 GMT
+      ETag:
+      - W/"7797062326ac3918447539eca5fb657e"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Authorization, Origin
+      X-Request-Id:
+      - 3d499f21-30f0-4bed-bda1-5bd45fe609d2
+      X-Runtime:
+      - '0.031553'
+    http_version: HTTP/1.1
+    status_code: 200
+- request:
+    body: '{"post_id": 371794081, "text": "testing", "font_size": 2, "color": 3, "in_reply_to":
+      371794081, "group_id": null, "post_type": null, "mention_ids[]": null, "choices[]":
+      null, "shared_url": null, "message_tags": "[]", "attachment_filename": null,
+      "attachment_2_filename": null, "attachment_3_filename": null, "attachment_4_filename":
+      null, "attachment_5_filename": null, "attachment_6_filename": null, "attachment_7_filename":
+      null, "attachment_8_filename": null, "attachment_9_filename": null, "video_file_name":
+      null}'
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-length:
+      - '518'
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - a91e3d5b-b5ba-401d-b96b-d68e5b90c78b
+    method: POST
+    uri: https://api.yay.space/v3/posts/repost
+  response:
+    content: '{"post": {"id": 371794087, "text": "testing", "group_id": null, "font_size":
+      2, "likes_count": 0, "post_type": "text", "color": 3, "reposts_count": 0, "created_at":
+      1685950734, "updated_at": 1685950734, "edited_at": null, "reported_count": 0,
+      "in_reply_to_post_count": 0, "repostable": true, "highlighted": false, "hidden":
+      false, "thread_id": null, "message_tags": [], "in_reply_to": 371794081, "conversation_id":
+      25814303, "liked": false, "reposted": false, "user": {"id": 7425553, "username":
+      null, "nickname": "\u0081\u008d\u0081\u008d", "prefecture": "", "biography":
+      "\u304a\u3068\u3053\u3067\u3059", "followers_count": 0, "followings_count":
+      0, "gender": -1, "is_private": false, "title": null, "posts_count": 30, "groups_users_count":
+      0, "reviews_count": 0, "profile_icon": "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "cover_image": null, "cover_image_thumbnail": null, "profile_icon_thumbnail":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/thumb_w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "last_loggedin_at": 1685950645, "created_at": 1683989812, "login_streak_count":
+      2, "is_online": true, "online_status": "online", "country_code": "JP", "vip":
+      false, "hide_vip": false, "following": false, "followed_by": false, "follow_pending":
+      false, "hidden": false, "mobile_number": null, "mobile_verified": false, "age_verified":
+      false, "recently_kenta": false, "dangerous_user": false, "generation": 3, "new_user":
+      false}, "in_reply_to_post": {"id": 371794081, "text": "testing", "group_id":
+      null, "color": 3, "created_at": 1685950732, "thread_id": null, "user": {"id":
+      7425553, "username": null, "nickname": "\u0081\u008d\u0081\u008d", "prefecture":
+      "", "biography": "\u304a\u3068\u3053\u3067\u3059", "followers_count": 0, "followings_count":
+      0, "gender": -1, "is_private": false, "title": null, "posts_count": 30, "groups_users_count":
+      0, "reviews_count": 0, "profile_icon": "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "cover_image": null, "cover_image_thumbnail": null, "profile_icon_thumbnail":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/thumb_w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "last_loggedin_at": 1685950645, "created_at": 1683989812, "login_streak_count":
+      2, "is_online": true, "online_status": "online", "country_code": "JP", "vip":
+      false, "hide_vip": false, "following": false, "followed_by": false, "follow_pending":
+      false, "hidden": false, "mobile_number": null, "mobile_verified": false, "age_verified":
+      false, "recently_kenta": false, "dangerous_user": false, "generation": 3, "new_user":
+      false}}, "shareable": {"type": "post", "post": {"id": 371794081, "text": "testing",
+      "group_id": null, "font_size": 2, "likes_count": 0, "post_type": "text", "color":
+      3, "reposts_count": 0, "created_at": 1685950732, "updated_at": 1685950733, "edited_at":
+      null, "reported_count": 0, "in_reply_to_post_count": 1, "repostable": true,
+      "highlighted": false, "hidden": false, "thread_id": null, "message_tags": [],
+      "conversation_id": 25814303, "liked": false, "reposted": true, "user": {"id":
+      7425553, "username": null, "nickname": "\u0081\u008d\u0081\u008d", "prefecture":
+      "", "biography": "\u304a\u3068\u3053\u3067\u3059", "followers_count": 0, "followings_count":
+      0, "gender": -1, "is_private": false, "title": null, "posts_count": 30, "groups_users_count":
+      0, "reviews_count": 0, "profile_icon": "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "cover_image": null, "cover_image_thumbnail": null, "profile_icon_thumbnail":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/thumb_w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "last_loggedin_at": 1685950645, "created_at": 1683989812, "login_streak_count":
+      2, "is_online": true, "online_status": "online", "country_code": "JP", "vip":
+      false, "hide_vip": false, "following": false, "followed_by": false, "follow_pending":
+      false, "hidden": false, "mobile_number": null, "mobile_verified": false, "age_verified":
+      false, "recently_kenta": false, "dangerous_user": false, "generation": 3, "new_user":
+      false}}}}, "result": "success"}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 05 Jun 2023 07:38:54 GMT
+      ETag:
+      - W/"2c92dc32365a8baf9293ea81789edb4d"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Authorization, Origin
+      X-Request-Id:
+      - 1f54eecd-6901-486b-8ea0-42cc75f5ae6b
+      X-Runtime:
+      - '0.401549'
+    http_version: HTTP/1.1
+    status_code: 201
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - a91e3d5b-b5ba-401d-b96b-d68e5b90c78b
+    method: GET
+    uri: https://api.yay.space/v2/posts/371794081/reposts?number=1
+  response:
+    content: '{"posts": [{"id": 371794087, "text": "testing", "group_id": null, "font_size":
+      2, "likes_count": 0, "post_type": "text", "color": 3, "reposts_count": 0, "created_at":
+      1685950734, "updated_at": 1685950734, "edited_at": null, "reported_count": 0,
+      "in_reply_to_post_count": 0, "repostable": true, "highlighted": false, "hidden":
+      false, "thread_id": null, "message_tags": [], "in_reply_to": 371794081, "conversation_id":
+      25814303, "liked": false, "reposted": false, "user": {"id": 7425553, "username":
+      null, "nickname": "\u0081\u008d\u0081\u008d", "prefecture": "", "biography":
+      "\u304a\u3068\u3053\u3067\u3059", "followers_count": 0, "followings_count":
+      0, "gender": -1, "is_private": false, "title": null, "posts_count": 30, "groups_users_count":
+      0, "reviews_count": 0, "profile_icon": "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "cover_image": null, "cover_image_thumbnail": null, "profile_icon_thumbnail":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/thumb_w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "last_loggedin_at": 1685950645, "created_at": 1683989812, "login_streak_count":
+      2, "is_online": true, "online_status": "online", "country_code": "JP", "vip":
+      false, "hide_vip": false, "following": false, "followed_by": false, "follow_pending":
+      false, "hidden": false, "mobile_number": null, "mobile_verified": false, "age_verified":
+      false, "recently_kenta": false, "dangerous_user": false, "generation": 3, "new_user":
+      false}, "in_reply_to_post": {"id": 371794081, "text": "testing", "group_id":
+      null, "color": 3, "created_at": 1685950732, "thread_id": null, "user": {"id":
+      7425553, "username": null, "nickname": "\u0081\u008d\u0081\u008d", "prefecture":
+      "", "biography": "\u304a\u3068\u3053\u3067\u3059", "followers_count": 0, "followings_count":
+      0, "gender": -1, "is_private": false, "title": null, "posts_count": 30, "groups_users_count":
+      0, "reviews_count": 0, "profile_icon": "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "cover_image": null, "cover_image_thumbnail": null, "profile_icon_thumbnail":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/thumb_w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "last_loggedin_at": 1685950645, "created_at": 1683989812, "login_streak_count":
+      2, "is_online": true, "online_status": "online", "country_code": "JP", "vip":
+      false, "hide_vip": false, "following": false, "followed_by": false, "follow_pending":
+      false, "hidden": false, "mobile_number": null, "mobile_verified": false, "age_verified":
+      false, "recently_kenta": false, "dangerous_user": false, "generation": 3, "new_user":
+      false}}, "shareable": {"type": "post", "post": {"id": 371794081, "text": "testing",
+      "group_id": null, "font_size": 2, "likes_count": 0, "post_type": "text", "color":
+      3, "reposts_count": 1, "created_at": 1685950732, "updated_at": 1685950733, "edited_at":
+      null, "reported_count": 0, "in_reply_to_post_count": 2, "repostable": true,
+      "highlighted": false, "hidden": false, "thread_id": null, "message_tags": [],
+      "conversation_id": 25814303, "liked": false, "reposted": false, "user": {"id":
+      7425553, "username": null, "nickname": "\u0081\u008d\u0081\u008d", "prefecture":
+      "", "biography": "\u304a\u3068\u3053\u3067\u3059", "followers_count": 0, "followings_count":
+      0, "gender": -1, "is_private": false, "title": null, "posts_count": 30, "groups_users_count":
+      0, "reviews_count": 0, "profile_icon": "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "cover_image": null, "cover_image_thumbnail": null, "profile_icon_thumbnail":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/13/thumb_w80ShSSlEYq9qlHp_1681354436_0_size_1536x1536.jpg",
+      "last_loggedin_at": 1685950645, "created_at": 1683989812, "login_streak_count":
+      2, "is_online": true, "online_status": "online", "country_code": "JP", "vip":
+      false, "hide_vip": false, "following": false, "followed_by": false, "follow_pending":
+      false, "hidden": false, "mobile_number": null, "mobile_verified": false, "age_verified":
+      false, "recently_kenta": false, "dangerous_user": false, "generation": 3, "new_user":
+      false}}}}], "result": "success"}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 05 Jun 2023 07:38:55 GMT
+      ETag:
+      - W/"c18311ea8c37584ba251b7c8761bdcd1"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      X-Request-Id:
+      - f0d16abf-16f4-4b77-8ae8-e0788d2a5dd3
+      X-Runtime:
+      - '0.076104'
+    http_version: HTTP/1.1
+    status_code: 200
+version: 1

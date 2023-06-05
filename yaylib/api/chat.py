@@ -8,7 +8,7 @@ from ..responses import *
 from ..utils import *
 
 
-def accept_request(self, chat_room_ids: List[int]):
+def accept_chat_request(self, chat_room_ids: List[int]):
     self._check_authorization()
     return self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
@@ -19,7 +19,7 @@ def accept_request(self, chat_room_ids: List[int]):
 def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
+        "GET", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/unread_status",
         params={"from_time": from_time},
         data_type=UnreadStatusResponse
     )

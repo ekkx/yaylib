@@ -50,6 +50,8 @@ def create_call_post(
     if "@:start:" in text and ":end:" in text:
         text, message_tags = parse_mention_format(self, text)
 
+    timestamp = int(datetime.now().timestamp())
+
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
         payload={
@@ -60,10 +62,9 @@ def create_call_post(
             "call_type": call_type,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp
             ),
             "category_id": category_id,
             "game_title": game_title,
@@ -276,6 +277,7 @@ def create_share_post(
         group_id: int = None,
 ) -> Post:
     self._check_authorization()
+    timestamp = int(datetime.now().timestamp())
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
         payload={
@@ -287,10 +289,9 @@ def create_share_post(
             "group_id": group_id,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp
             ),
         }, data_type=Post
     )
@@ -377,7 +378,7 @@ def delete_pin_post(self, post_id: int):
     )
 
 
-def get_bookmark(self, user_id: int, *, from_str: str = None) -> PostsResponse:
+def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
     self._check_authorization()
     params = {}
     if from_str:
@@ -647,9 +648,9 @@ def get_recommended_posts(self, **params) -> PostsResponse:
     Parameters:
     ---------------
 
-        - experiment_num: int
-        - variant_num: int
-        - number: int
+        - experiment_num: int - (Required)
+        - variant_num: int - (Required)
+        - number: int - (Optional)
 
     """
     self._check_authorization()
@@ -809,6 +810,8 @@ def update_post(
     if "@:start:" in text and ":end:" in text:
         text, message_tags = parse_mention_format(self, text)
 
+    timestamp = int(datetime.now().timestamp())
+
     return self._make_request(
         "PUT", endpoint=f"{Endpoints.POSTS_V3}/{post_id}",
         payload={
@@ -817,10 +820,9 @@ def update_post(
             "color": color,
             "message_tags": str(message_tags),
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp
             ),
         }
     )

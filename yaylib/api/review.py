@@ -10,16 +10,16 @@ from ..utils import *
 
 def create_review(self, user_id: int, comment: str):
     self._check_authorization()
+    timestamp = int(datetime.now().timestamp())
     return self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/reviews/{user_id}",
         payload={
             "comment": comment,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp, shared_key=True
             ),
         },
     )
@@ -27,17 +27,17 @@ def create_review(self, user_id: int, comment: str):
 
 def create_reviews(self, user_ids: List[int], comment: str):
     self._check_authorization()
+    timestamp = int(datetime.now().timestamp())
     return self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V1}/reviews/{user_ids}",
+        "POST", endpoint=f"{Endpoints.USERS_V1}/reviews",
         payload={
             "user_ids[]": user_ids,
             "comment": comment,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp, shared_key=True
             ),
         },
     )

@@ -1,5 +1,7 @@
 import os
 import logging
+
+from json import JSONDecodeError
 from typing import Optional, Dict, Any
 
 import httpx
@@ -94,7 +96,11 @@ class API:
             f"Response: {response.text}\n"
         )
         self._handle_response(response)
-        return response.json()
+
+        try:
+            return response.json()
+        except JSONDecodeError:
+            return response.text
 
     def _make_request(
             self, method: str, endpoint: str, params: dict = None,
