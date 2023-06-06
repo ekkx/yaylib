@@ -8,10 +8,8 @@ from ..utils import *
 def get_user_activities(self, **params) -> ActivitiesResponse:
     """
 
-    通知を取得します
-
-    Parameters:
-    ---------------
+    Parameters
+    ----------
         - important: bool - (required)
         - from_timestamp: int - (optional)
         - number: int - (optional)
@@ -25,16 +23,6 @@ def get_user_activities(self, **params) -> ActivitiesResponse:
 
 
 def get_user_merged_activities(self, from_timestamp: int = None) -> ActivitiesResponse:
-    """
-
-    全種類の通知を取得します
-
-    Parameters
-    ----------
-
-        - from_timestamp: int - (optional)
-
-    """
     self._check_authorization()
     params = {}
     if from_timestamp:

@@ -13,7 +13,16 @@ from .api.thread import *
 from .api.user import *
 
 from .config import *
-from .errors import *
+from .errors import (
+    YayError,
+    HTTPError,
+    BadRequestError,
+    AuthenticationError,
+    ForbiddenError,
+    NotFoundError,
+    RateLimitError,
+    YayServerError,
+)
 from .models import *
 from .utils import *
 
@@ -38,33 +47,53 @@ class Client(API):
         return bump_call(self, call_id, participant_limit)
 
     def get_user_active_call(self, user_id: int) -> Post:
+        """
+
+        ユーザーが参加中の通話を取得します
+
+        """
         return get_user_active_call(self, user_id)
 
     def get_bgms(self) -> List[Bgm]:
+        """
+
+        通話のBGMを取得します
+
+        """
         return get_bgms(self)
 
     def get_call(self, call_id: int) -> ConferenceCall:
+        """
+
+        通話の詳細を取得します
+
+        """
         return get_call(self, call_id)
 
-    def get_call_invitable_users(self, call_id: int, **params) -> UsersByTimestampResponse:
+    def get_call_invitable_users(self, call_id: int, from_timestamp: int = None) -> UsersByTimestampResponse:
         # @Nullable @Query("user[nickname]")
         """
 
-        Parameters:
-        ---------------
-            - from_timestamp: int - (optional)
+        通話に招待可能なユーザーを取得します
 
         """
-        return UsersByTimestampResponse(self, call_id, **params)
+        return UsersByTimestampResponse(self, call_id, from_timestamp)
 
     def get_call_status(self, opponent_id: int) -> CallStatusResponse:
+        """
+
+        通話の状態を取得します
+
+        """
         return get_call_status(self, opponent_id)
 
     def get_games(self, **params) -> GamesResponse:
         """
 
-        Parameters:
-        ---------------
+        ゲームを取得します
+
+        Parameters
+        ----------
             - number: int - (optional)
             - ids: List[int] - (optional)
             - from_id: int - (optional)
@@ -75,8 +104,10 @@ class Client(API):
     def get_genres(self, **params) -> GenresResponse:
         """
 
-        Parameters:
-        ---------------
+        ジャンルを取得します
+
+        Parameters
+        ----------
             - number: int - (optional)
             - from: int - (optional)
 
@@ -84,13 +115,25 @@ class Client(API):
         return get_genres(self, **params)
 
     def get_group_calls(self, **params) -> PostsResponse:
+        """
+
+        サークルの通話を取得します
+
+        Parameters
+        ----------
+            - number: int - (optional)
+            - group_category_id: int - (optional)
+            - from_timestamp: int - (optional)
+            - scope: str - (optional)
+
+        """
         return get_group_calls(self, **params)
 
     def invite_to_call_bulk(self, call_id: int, group_id: int = None):
         """
 
-        Parameters:
-        ---------------
+        Parameters
+        ----------
             - call_id: int - (required)
             - group_id: int - (optional)
 
@@ -100,8 +143,10 @@ class Client(API):
     def invite_users_to_call(self, call_id: int, user_ids: List[int]):
         """
 
-        Parameters:
-        ---------------
+        ユーザーを通話に招待します
+
+        Parameters
+        ----------
             - call_id: int - (required)
             - user_ids: List[int] - (required)
 
@@ -114,9 +159,32 @@ class Client(API):
             room_id: int,
             room_url: str
     ):
+        """
+
+        チャット通話にユーザーを招待します
+
+        Parameters
+        ----------
+
+            - chat_room_id: int - (required)
+            - room_id: int - (required)
+            - room_url: int - (required)
+
+        """
         return invite_users_to_chat_call(self, chat_room_id, room_id, room_url)
 
     def kick_and_ban_from_call(self, call_id: int, user_id: int):
+        """
+
+        ユーザーを通話からキックします
+
+        Parameters
+        ----------
+
+            - call_id: int - (required)
+            - user_id: int - (required)
+
+        """
         return kick_and_ban_from_call(self, call_id, user_id)
 
     def notify_anonymous_user_leave_agora_channel(
@@ -124,11 +192,21 @@ class Client(API):
             conference_id: int,
             agora_uid: str
     ):
+        """
+
+        匿名ユーザーが通話から退出したことを通知します
+
+        """
         return notify_anonymous_user_leave_agora_channel(
             self, conference_id, agora_uid
         )
 
     def notify_user_leave_agora_channel(self, conference_id: int, user_id: int):
+        """
+
+        ユーザーが通話から退出したことを通知します
+
+        """
         return notify_user_leave_agora_channel(self, conference_id, user_id)
 
     def send_call_screenshot(
@@ -136,6 +214,11 @@ class Client(API):
             screenshot_filename: str,
             conference_id: int
     ):
+        """
+
+        通話のスクリーンショットを送信します
+
+        """
         return send_call_screenshot(self, screenshot_filename, conference_id)
 
     def set_call(
@@ -145,6 +228,11 @@ class Client(API):
             game_title: str = None,
             category_id: str = None
     ):
+        """
+
+        通話を開始します
+
+        """
         return set_call(self, call_id, joinable_by, game_title, category_id)
 
     def set_user_role(
@@ -153,6 +241,11 @@ class Client(API):
             user_id: int,
             role: str
     ):
+        """
+
+        通話に参加中ののユーザーに役職を与えます
+
+        """
         return set_user_role(self, call_id, user_id, role)
 
     def start_call(
@@ -160,6 +253,11 @@ class Client(API):
             conference_id: int,
             call_sid: str
     ) -> ConferenceCall:
+        """
+
+        通話に参加します
+
+        """
         return start_call(self, conference_id, call_sid)
 
     def stop_call(
@@ -167,6 +265,11 @@ class Client(API):
             conference_id: int,
             call_sid: str
     ):
+        """
+
+        通話から退出します
+
+        """
         return stop_call(self, conference_id, call_sid)
 
     # -CASSANDRA
@@ -174,8 +277,10 @@ class Client(API):
     def get_user_activities(self, **params) -> ActivitiesResponse:
         """
 
-        Parameters:
-        ---------------
+        通知を取得します
+
+        Parameters
+        ----------
             - important: bool - (required)
             - from_timestamp: int - (optional)
             - number: int - (optional)
@@ -184,6 +289,16 @@ class Client(API):
         return get_user_activities(self, **params)
 
     def get_user_merged_activities(self, from_timestamp: int = None) -> ActivitiesResponse:
+        """
+
+        全種類の通知を取得します
+
+        Parameters
+        ----------
+
+            - from_timestamp: int - (optional)
+
+        """
         return get_user_merged_activities(self, from_timestamp)
 
     def received_notification(self, pid: str, type: str, opened_at: int = None):
@@ -205,6 +320,11 @@ class Client(API):
         return accept_chat_request(self, chat_room_ids)
 
     def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
+        """
+
+        チャットの未読ステータスを確認します
+
+        """
         return check_unread_status(self, from_time)
 
     def create_group_chat(
@@ -334,8 +454,8 @@ class Client(API):
 
         非表示のチャットルームを取得します
 
-        Parameters:
-        ---------------
+        Parameters
+        ----------
 
             - from_timestamp: int - (optional)
             - number: int - (optional)
@@ -356,7 +476,7 @@ class Client(API):
 
         メッセージを取得します
 
-        Parameters:
+        Parameters
         ---------------
             - from_message_id: int - (optional)
             - to_message_id: int - (optional)
@@ -723,7 +843,7 @@ class Client(API):
 
         グループのカテゴリーを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - page: int - (optional)
@@ -756,7 +876,7 @@ class Client(API):
 
         複数のグループの詳細を取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - group_category_id: int = None
@@ -772,7 +892,7 @@ class Client(API):
 
         グループに招待可能なユーザーを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - from_timestamp: int - (optional)
@@ -797,7 +917,7 @@ class Client(API):
 
         グループメンバーを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - id: int - (required)
@@ -824,7 +944,7 @@ class Client(API):
 
         関連がある可能性があるグループを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - group_id: int - (required)
@@ -839,7 +959,7 @@ class Client(API):
 
         関連があるグループを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - group_id: int - (required)
@@ -854,7 +974,7 @@ class Client(API):
 
         特定のユーザーが参加しているグループを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - user_id: int - (required)
@@ -1189,7 +1309,7 @@ class Client(API):
     def generate_sns_thumbnail(self, **params):
         """
 
-        Parameters:
+        Parameters
         ----------
 
             - resource_type: str - (Required)
@@ -1238,7 +1358,7 @@ class Client(API):
 
         プロモーションを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - page: int - (Optional)
@@ -1580,7 +1700,7 @@ class Client(API):
 
         誰でも通話を取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - group_id: int = None
@@ -1601,7 +1721,7 @@ class Client(API):
 
         会話を取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - conversation_id: int
@@ -1627,7 +1747,7 @@ class Client(API):
 
         フォロー中の通話を取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - from_timestamp: int = None
@@ -1645,7 +1765,7 @@ class Client(API):
 
         フォロー中のタイムラインを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - from_str: str = None
@@ -1662,7 +1782,7 @@ class Client(API):
     def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
         """
 
-        Parameters:
+        Parameters
         ----------
 
             - group_id: int
@@ -1677,7 +1797,7 @@ class Client(API):
 
         グループの投稿をキーワードで検索します
 
-        Parameters:
+        Parameters
         ----------
 
             - group_id: int
@@ -1694,7 +1814,7 @@ class Client(API):
 
         グループのタイムラインを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - group_id: int
@@ -1712,7 +1832,7 @@ class Client(API):
 
         ハッシュタグでタイムラインを検索します
 
-        Parameters:
+        Parameters
         ----------
 
             - hashtag: str - (required)
@@ -1727,8 +1847,8 @@ class Client(API):
 
         自分の投稿を取得します
 
-        Parameters:
-        ---------------
+        Parameters
+        ----------
 
             - from_post_id: int - (optional)
             - number: int - (optional)
@@ -1750,8 +1870,8 @@ class Client(API):
 
         投稿にいいねしたユーザーを取得します
 
-        Parameters:
-        ---------------
+        Parameters
+        ----------
 
             - from_id: int - (optional)
             - number: int - (optional)
@@ -1764,8 +1884,8 @@ class Client(API):
 
         投稿の(´∀｀∩)↑age↑を取得します
 
-        Parameters:
-        ---------------
+        Parameters
+        ----------
 
             - post_id: int - (required)
             - from_post_id: int - (optional)
@@ -1792,8 +1912,8 @@ class Client(API):
 
         おすすめの投稿を取得します
 
-        Parameters:
-        ---------------
+        Parameters
+        ----------
 
             - experiment_num: int
             - variant_num: int
@@ -1807,8 +1927,8 @@ class Client(API):
 
         キーワードでタイムラインを検索します
 
-        Parameters:
-        ---------------
+        Parameters
+        ----------
 
             - keyword: str
             - from_post_id: int
@@ -1823,8 +1943,8 @@ class Client(API):
 
         タイムラインを取得します
 
-        Parameters:
-        ---------------
+        Parameters
+        ----------
 
             - noreply_mode: bool - (optional)
             - from_post_id: int - (optional)
@@ -1849,8 +1969,8 @@ class Client(API):
 
         ユーザーのタイムラインを取得します
 
-        Parameters:
-        ---------------
+        Parameters
+        ----------
 
             - from_post_id: int - (optional)
             - number: int - (optional)
@@ -2088,7 +2208,7 @@ class Client(API):
 
         グループのスレッド一覧を取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - group_id: int
@@ -2111,7 +2231,7 @@ class Client(API):
 
         スレッドの投稿を取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - post_type: str
@@ -2248,7 +2368,7 @@ class Client(API):
     def get_active_followings(self, **params) -> ActiveFollowingsResponse:
         """
 
-        Parameters:
+        Parameters
         ----------
 
             - only_online: bool
@@ -2274,7 +2394,7 @@ class Client(API):
 
         フォローするのにおすすめのユーザーを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - from_timestamp: int = None,
@@ -2308,7 +2428,7 @@ class Client(API):
 
         足跡を取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - from_id: int = None
@@ -2326,7 +2446,7 @@ class Client(API):
 
         暇なユーザーを取得する
 
-        Parameters:
+        Parameters
         ----------
 
             - from_hima_id: int = None
@@ -2343,7 +2463,7 @@ class Client(API):
     ) -> UsersResponse:
         """
 
-        Parameters:
+        Parameters
         ----------
 
             - user_id: int - (Required)
@@ -2361,7 +2481,7 @@ class Client(API):
     def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
         """
 
-        Parameters:
+        Parameters
         ----------
 
             - sns_name: str - (Required)
@@ -2403,7 +2523,7 @@ class Client(API):
 
         ユーザーのフォロワーを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - user_id: int
@@ -2418,7 +2538,7 @@ class Client(API):
 
         フォロー中のユーザーを取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - user_id: int
@@ -2534,7 +2654,7 @@ class Client(API):
 
         Lobiのユーザーを検索します
 
-        Parameters:
+        Parameters
         ----------
 
             - nickname: str = None
@@ -2549,7 +2669,7 @@ class Client(API):
 
         ユーザーを検索します
 
-        Parameters:
+        Parameters
         ----------
 
             - gender: int = None
@@ -2674,7 +2794,7 @@ class Client(API):
 
         非表示のユーザー一覧を取得します
 
-        Parameters:
+        Parameters
         ----------
 
             - from: str = None

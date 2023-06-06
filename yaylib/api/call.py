@@ -19,17 +19,6 @@ def bump_call(self, call_id: int, participant_limit: int = None):
 
 
 def get_user_active_call(self, user_id: int) -> Post:
-    """
-
-    ユーザーが参加中の通話を取得します
-
-    Parameters
-    ----------
-
-        - user_id: int - (required)
-        - from_timestamp: int - (optional)
-
-    """
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V1}/active_call",
         params={"user_id": user_id}, data_type=PostResponse
@@ -44,36 +33,17 @@ def get_bgms(self) -> List[Bgm]:
 
 
 def get_call(self, call_id: int) -> ConferenceCall:
-    """
-
-    通話の詳細を取得します
-
-    Parameters
-    ----------
-
-        - user_id: int - (required)
-        - from_timestamp: int - (optional)
-
-    """
     return self._make_request(
         "GET", endpoint=f"{Endpoints.CALLS_V1}/conferences/{call_id}",
         data_type=ConferenceCallResponse
     ).conference_call
 
 
-def get_call_invitable_users(self, call_id: int, **params) -> UsersByTimestampResponse:
+def get_call_invitable_users(self, call_id: int, from_timestamp: int = None) -> UsersByTimestampResponse:
     # @Nullable @Query("user[nickname]")
-    """
-
-    通話に参加可能なユーザーを取得します
-
-    Parameters
-    ----------
-
-        - call_id: int - (required)
-        - from_timestamp: int - (optional)
-
-    """
+    params = {}
+    if from_timestamp:
+        params["from_timestamp"] = from_timestamp
     return self._make_request(
         "GET", endpoint=f"{Endpoints.CALLS_V1}/{call_id}/users/invitable",
         params=params, data_type=UsersByTimestampResponse
@@ -121,8 +91,6 @@ def get_genres(self, **params) -> GenresResponse:
 def get_group_calls(self, **params) -> PostsResponse:
     """
 
-    サークルの通話を取得します
-
     Parameters
     ----------
         - number: int - (optional)
@@ -140,8 +108,8 @@ def get_group_calls(self, **params) -> PostsResponse:
 def invite_to_call_bulk(self, call_id: int, group_id: int = None):
     """
 
-    Parameters:
-    ---------------
+    Parameters
+    ----------
         - call_id: int - (required)
         - group_id: int - (optional)
 
@@ -158,10 +126,8 @@ def invite_to_call_bulk(self, call_id: int, group_id: int = None):
 def invite_users_to_call(self, call_id: int, user_ids: List[int]):
     """
 
-    ユーザーを通話に招待します
-
-    Parameters:
-    ---------------
+    Parameters
+    ----------
         - call_id: int - (required)
         - user_ids: List[int] - (required)
 
@@ -181,18 +147,6 @@ def invite_users_to_chat_call(
         room_id: int,
         room_url: str
 ):
-    """
-
-    チャット通話にユーザーを招待します
-
-    Parameters
-    ----------
-
-        - chat_room_id: int - (required)
-        - room_id: int - (required)
-        - room_url: int - (required)
-
-    """
     return self._make_request(
         "POST", endpoint=f"{Endpoints.CALLS_V2}/invite",
         payload={
@@ -204,17 +158,6 @@ def invite_users_to_chat_call(
 
 
 def kick_and_ban_from_call(self, call_id: int, user_id: int):
-    """
-
-    ユーザーを通話からキックします
-
-    Parameters
-    ----------
-
-        - call_id: int - (required)
-        - user_id: int - (required)
-
-    """
     return self._make_request(
         "POST", endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/kick",
         payload={"user_id": user_id}
