@@ -26,7 +26,7 @@ def create_user(
         vn: int = None
 ) -> CreateUserResponse:
     timestamp = int(datetime.now().timestamp())
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/edit",
         payload={
             "app_version": self.api_version,
@@ -52,20 +52,26 @@ def create_user(
             "vn": vn,
         }
     )
+    self.logger.info("Account created.")
+    return response
 
 
 def delete_contact_friends(self):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V1}/contact_friends"
     )
+    self.logger.info("Contact friends deleted.")
+    return response
 
 
 def delete_footprint(self, user_id: int, footprint_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V2}/{user_id}/footprints/{footprint_id}"
     )
+    self.logger.info("Footprint deleted.")
+    return response
 
 
 def destroy_user(self):
@@ -74,7 +80,7 @@ def destroy_user(self):
     if answer.lower() != "y":
         return
     timestamp = int(datetime.now().timestamp())
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/destroy",
         payload={
             "uuid": self.uuid,
@@ -85,21 +91,27 @@ def destroy_user(self):
             ),
         }
     )
+    self.logger.info("User has been deleted.")
+    return response
 
 
 def follow_user(self, user_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/follow"
     )
+    self.logger.info(f"User '{user_id}' followed.")
+    return response
 
 
 def follow_users(self, user_ids: List[int]):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/follow",
         params={"user_ids[]": user_ids}
     )
+    self.logger.info("Users followed.")
+    return response
 
 
 def get_active_followings(self, **params) -> ActiveFollowingsResponse:
@@ -404,23 +416,27 @@ def get_users_from_uuid(self, uuid: str) -> UsersResponse:
 
 
 def post_social_shared(self, sns_name: str):
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/social_shared",
         params={"sns_name": sns_name}
     )
+    self.logger.info("Social shared posted.")
+    return response
 
 
 def record_app_review_status(self):
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/{self.url_uuid}/app_review_status",
         params={"uuid": self.uuid}
     )
+    self.logger.info("App review status recored.")
+    return response
 
 
 def reduce_kenta_penalty(self, user_id: int):
     self._check_authorization()
     timestamp = int(datetime.now().timestamp())
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{self.host}api/v3/users/{user_id}/reduce_penalty",
         payload={
             "uuid": self.uuid,
@@ -432,25 +448,33 @@ def reduce_kenta_penalty(self, user_id: int):
             "signed_version": signed_version_calculating()
         }, data_type=CreatePostResponse
     )
+    self.logger.info("Penalty reduced.")
+    return response
 
 
 def refresh_counter(self, counter: str):
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/reset_counters",
         payload={"counter": counter}
     )
+    self.logger.info("Counter refreshed.")
+    return response
 
 
 def remove_user_avatar(self):
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/remove_profile_photo"
     )
+    self.logger.info("User avatar removed.")
+    return response
 
 
 def remove_user_cover(self):
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/remove_cover_image"
     )
+    self.logger.info("User cover removed.")
+    return response
 
 
 def report_user(
@@ -464,7 +488,7 @@ def report_user(
         screenshot_4_filename: str = None
 ):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/{user_id}/report",
         payload={
             "category_id": category_id,
@@ -475,10 +499,12 @@ def report_user(
             "screenshot_4_filename": screenshot_4_filename,
         }
     )
+    self.logger.info("User reported.")
+    return response
 
 
 def reset_password(self, email: str, email_grant_token: str, password: str):
-    return self._make_request(
+    response = self._make_request(
         "PUT", endpoint=f"{Endpoints.USERS_V1}/reset_password",
         payload={
             "email": email,
@@ -486,6 +512,8 @@ def reset_password(self, email: str, email_grant_token: str, password: str):
             "password": password,
         }
     )
+    self.logger.info("Password has been reset.")
+    return response
 
 
 def search_lobi_users(self, **params) -> UsersResponse:
@@ -530,15 +558,17 @@ def search_users(self, **params) -> UsersResponse:
 
 
 def set_additional_setting_enabled(self, mode: str, on: int = None):
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/additonal_notification_setting",
         payload={"mode": mode, "on": on}
     )
+    self.logger.info("Additional setting enabled.")
+    return response
 
 
 def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
     timestamp = int(datetime.now().timestamp())
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/edit",
         payload={
             "nickname": nickname,
@@ -552,48 +582,60 @@ def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
             "signed_version": signed_version_calculating()
         }
     )
+    self.logger.info("Follow permission enabled.")
+    return response
 
 
 def set_setting_follow_recommendation_enabled(self, on: bool):
-    return self._make_request(
+    response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/visible_on_sns_friend_recommendation_setting",
         params={"on": on}
     )
+    self.logger.info("Follow recommendation enabled.")
+    return response
 
 
 def take_action_follow_request(self, target_id: int, action: str):
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{target_id}/follow_request",
         payload={"action": action}
     )
+    self.logger.info("Took action follow request.")
+    return response
 
 
 def turn_on_hima(self):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V1}/hima",
     )
+    self.logger.info("Turned on hima now.")
+    return response
 
 
 def unfollow_user(self, user_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow",
     )
+    self.logger.info("User unfollowed.")
+    return response
 
 
 def update_invite_contact_status(self, mobile_number: str):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/invite_contact",
         params={"mobile_number": mobile_number}
     )
+    self.logger.info("Invite contact status updated.")
+    return response
 
 
 def update_language(self, language: str):
     timestamp = int(datetime.now().timestamp())
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/language",
         payload={
             "uuid": self.uuid,
@@ -604,6 +646,8 @@ def update_language(self, language: str):
             "language": language,
         }
     )
+    self.logger.info("Language updated.")
+    return response
 
 
 def update_user(
@@ -619,7 +663,7 @@ def update_user(
 ):
     self._check_authorization()
     timestamp = int(datetime.now().timestamp())
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/edit",
         payload={
             "nickname": nickname,
@@ -638,6 +682,8 @@ def update_user(
             ),
         }
     )
+    self.logger.info("User profile updated.")
+    return response
 
 
 def update_user_interests(
@@ -657,10 +703,12 @@ def upload_contacts_friends(
 
 def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/twitter_friends",
         payload={"twitter_friend_ids[]": twitter_friend_ids}
     )
+    self.logger.info("Twitter friend ids updated.")
+    return response
 
 
 # BlockApi
@@ -668,9 +716,11 @@ def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]):
 
 def block_user(self, user_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/{user_id}/block",
     )
+    self.logger.info("User blocked.")
+    return response
 
 
 def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
@@ -695,9 +745,11 @@ def get_blocked_users(self, from_id: int = None) -> BlockedUsersResponse:
 
 def unblock_user(self, user_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unblock"
     )
+    self.logger.info("User unblocked.")
+    return response
 
 
 # HiddenApi
@@ -722,15 +774,19 @@ def get_hidden_users_list(self, **params: Union[str, int]) -> HiddenResponse:
 
 def hide_user(self, user_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.HIDDEN_V1}/users",
         payload={"user_id": user_id}
     )
+    self.logger.info("user hidden.")
+    return response
 
 
 def unhide_users(self, user_ids: List[int]):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.HIDDEN_V1}/users",
         params={"user_ids[]": user_ids}
     )
+    self.logger.info("User unhidden.")
+    return response

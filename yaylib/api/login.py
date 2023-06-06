@@ -14,7 +14,7 @@ def change_email(
         password: str,
         email_grant_token: str = None
 ) -> LoginUpdateResponse:
-    return self._make_request(
+    response = self._make_request(
         "PUT", endpoint=f"{Endpoints.USERS_V1}/change_email",
         payload={
             "api_key": self.api_key,
@@ -23,6 +23,8 @@ def change_email(
             "email_grant_token": email_grant_token
         }, data_type=LoginUpdateResponse
     )
+    self.logger.info("Email has been changed.")
+    return response
 
 
 def change_password(
@@ -30,7 +32,7 @@ def change_password(
         current_password: str,
         new_password: str
 ) -> LoginUpdateResponse:
-    return self._make_request(
+    response = self._make_request(
         "PUT", endpoint=f"{Endpoints.USERS_V1}/change_email",
         payload={
             "api_key": self.api_key,
@@ -38,6 +40,8 @@ def change_password(
             "password": new_password
         }, data_type=LoginUpdateResponse
     )
+    self.logger.info("Password has been changed.")
+    return response
 
 
 def connect_account_with_sns(self):
@@ -125,7 +129,7 @@ def resend_confirm_email(self):
 
 
 def restore_user(self, user_id: int) -> LoginUserResponse:
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/restore",
         payload={
             "user_id": user_id,
@@ -138,12 +142,16 @@ def restore_user(self, user_id: int) -> LoginUserResponse:
             ),
         }
     )
+    self.logger.info("User restored.")
+    return response
 
 
 def revoke_tokens(self):
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V1}/device_tokens"
     )
+    self.logger.info("Token revoked.")
+    return response
 
 
 def save_account_with_email(
@@ -153,7 +161,7 @@ def save_account_with_email(
         current_password: str = None,
         email_grant_token: str = None
 ) -> LoginUpdateResponse:
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/login_update",
         payload={
             "api_key": self.api_key,
@@ -163,3 +171,5 @@ def save_account_with_email(
             "email_grant_token": email_grant_token
         }, data_type=LoginUpdateResponse
     )
+    self.logger.info("Account has been save with email.")
+    return response

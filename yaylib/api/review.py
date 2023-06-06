@@ -11,7 +11,7 @@ from ..utils import *
 def create_review(self, user_id: int, comment: str):
     self._check_authorization()
     timestamp = int(datetime.now().timestamp())
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/reviews/{user_id}",
         payload={
             "comment": comment,
@@ -23,12 +23,14 @@ def create_review(self, user_id: int, comment: str):
             ),
         },
     )
+    self.logger.info("Review created.")
+    return response
 
 
 def create_reviews(self, user_ids: List[int], comment: str):
     self._check_authorization()
     timestamp = int(datetime.now().timestamp())
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/reviews",
         payload={
             "user_ids": user_ids,
@@ -41,14 +43,18 @@ def create_reviews(self, user_ids: List[int], comment: str):
             ),
         },
     )
+    self.logger.info("Reviews created.")
+    return response
 
 
 def delete_reviews(self, review_ids: List[int]):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V1}/reviews",
         params={"review_ids[]": review_ids}
     )
+    self.logger.info("Reviews deleted.")
+    return response
 
 
 def get_my_reviews(self, **params) -> ReviewsResponse:
@@ -87,14 +93,18 @@ def get_reviews(self, user_id: int, **params) -> ReviewsResponse:
 
 def pin_review(self, review_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.PINNED_V1}/reviews",
         payload={"id": review_id}
     )
+    self.logger.info("Pinned the review.")
+    return response
 
 
 def unpin_review(self, review_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.PINNED_V1}/reviews{review_id}"
     )
+    self.logger.info("Review unpinned.")
+    return response

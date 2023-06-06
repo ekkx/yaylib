@@ -11,17 +11,21 @@ from ..utils import *
 
 def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "PUT", endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
         data_type=BookmarkPostResponse
     )
+    self.logger.info("Added to bookmarks.")
+    return response
 
 
 def add_group_highlight_post(self, group_id: int, post_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
     )
+    self.logger.info("Added to group highlight.")
+    return response
 
 
 def create_call_post(
@@ -52,7 +56,7 @@ def create_call_post(
 
     timestamp = int(datetime.now().timestamp())
 
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
         payload={
             "text": text,
@@ -81,22 +85,29 @@ def create_call_post(
             "attachment_9_filename": attachment_9_filename,
         }, data_type=CreatePostResponse
     ).conference_call
+    self.logger.info("Call post created.")
+    return response
 
 
 def create_group_pin_post(self, post_id: int, group_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "PUT", endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
         payload={"post_id": post_id, "group_id": group_id}
     )
+    self.logger.info("Pinned post in a group.")
+    return response
 
 
 def create_pin_post(self, post_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.PINNED_V1}/posts",
         payload={"id": post_id}
     )
+    self.logger.info("Pinned post")
+    return response
+
 
 
 def mention(self, user_id: int) -> str:
@@ -264,7 +275,7 @@ def create_repost(
                 self.logger.error("Unable to get the URL metadata")
                 shared_url = None
 
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/repost",
         payload={
             "post_id": post_id,
@@ -290,6 +301,8 @@ def create_repost(
             "video_file_name": video_file_name,
         }, data_type=CreatePostResponse, headers=headers
     ).post
+    self.logger.info("Repost created.")
+    return response
 
 
 def create_share_post(
@@ -303,7 +316,7 @@ def create_share_post(
 ) -> Post:
     self._check_authorization()
     timestamp = int(datetime.now().timestamp())
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
         payload={
             "shareable_type": shareable_type,
@@ -320,6 +333,8 @@ def create_share_post(
             ),
         }, data_type=Post
     )
+    self.logger.info("Share post created.")
+    return response
 
 
 def create_thread_post(
@@ -365,7 +380,7 @@ def create_thread_post(
                 self.logger.error("Unable to get the URL metadata")
                 shared_url = None
 
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.THREADS_V1}/{post_id}/posts",
         payload={
             "id": post_id,
@@ -391,31 +406,39 @@ def create_thread_post(
             "video_file_name": video_file_name,
         }, data_type=Post, headers=headers
     )
+    self.logger.info("Thread post created.")
+    return response
 
 
 def delete_all_post(self):
     self._check_authorization()
     try:
-        return self._make_request(
+        response = self._make_request(
             "POST", endpoint=f"{Endpoints.POSTS_V1}/delete_all_post",
         )
+        self.logger.info("Post deletion requested.")
+        return response
     except NotFoundError:
         self.logger.info("Post not found.")
 
 
 def delete_group_pin_post(self, group_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
         payload={"group_id": group_id}
     )
+    self.logger.info("Unpinned post in a group.")
+    return response
 
 
 def delete_pin_post(self, post_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.PINNED_V1}/posts/{post_id}"
     )
+    self.logger.info("Unpinned post.")
+    return response
 
 
 def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
@@ -776,24 +799,30 @@ def get_user_timeline(self, user_id: int, **params) -> PostsResponse:
 
 def like_posts(self, post_ids: List[int]) -> LikePostsResponse:
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/like",
         payload={"post_ids[]": post_ids}, data_type=LikePostsResponse
     )
+    self.logger.info("Posts liked.")
+    return response
 
 
 def remove_bookmark(self, user_id: int, post_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
     )
+    self.logger.info("Bookmark removed.")
+    return response
 
 
 def remove_group_highlight_post(self, group_id: int, post_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
     )
+    self.logger.info("Group hightlight post removed.")
+    return response
 
 
 def remove_posts(self, post_ids: List[int]):
@@ -818,7 +847,7 @@ def report_post(
         screenshot_4_filename: str = None
 ):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/{post_id}/report",
         payload={
             "opponent_id": opponent_id,
@@ -830,13 +859,17 @@ def report_post(
             "screenshot_4_filename": screenshot_4_filename,
         }
     )
+    self.logger.info("Post reported.")
+    return response
 
 
 def unlike_post(self, post_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V1}/{post_id}/unlike",
     )
+    self.logger.info("Post unliked.")
+    return response
 
 
 def update_post(
@@ -854,7 +887,7 @@ def update_post(
 
     timestamp = int(datetime.now().timestamp())
 
-    return self._make_request(
+    response = self._make_request(
         "PUT", endpoint=f"{Endpoints.POSTS_V3}/{post_id}",
         payload={
             "text": text,
@@ -868,6 +901,8 @@ def update_post(
             ),
         }
     )
+    self.logger.info("Post updated.")
+    return response
 
 
 def update_recommendation_feedback(
@@ -875,7 +910,7 @@ def update_recommendation_feedback(
         experiment_num: int, variant_num: int,
 ):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/{post_id}/recommendation_feedback",
         payload={
             "feedback_result": feedback_result,
@@ -883,27 +918,35 @@ def update_recommendation_feedback(
             "variant_num": variant_num
         }
     )
+    self.logger.info("Recommendation feedback updated.")
+    return response
 
 
 def validate_post(self, text: str, *, group_id: int = None, thread_id: int = None) -> ValidationPostResponse:
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V1}/validate",
         payload={
             "text": text, "group_id": group_id, "thread_id": thread_id
         }, data_type=ValidationPostResponse
     )
+    self.logger.info("Post validated.")
+    return response
 
 
 def view_video(self, video_id: int):
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V1}/videos/{video_id}/view"
     )
+    self.logger.info("Viewed a video")
+    return response
 
 
 def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",
         payload={"choice_id": choice_id}, data_type=ValidationPostResponse
     ).survey
+    self.logger.info("Survey voted.")
+    return response

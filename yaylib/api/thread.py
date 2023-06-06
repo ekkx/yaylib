@@ -10,10 +10,12 @@ from ..utils import *
 
 def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "PUT", endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread/{thread_id}",
         data_type=ThreadInfo
     )
+    self.logger.info("Post added to the thread.")
+    return response
 
 
 def convert_post_to_thread(
@@ -23,13 +25,15 @@ def convert_post_to_thread(
         thread_icon_filename: str = None
 ) -> ThreadInfo:
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread",
         payload={
             "title": title,
             "thread_icon_filename": thread_icon_filename
         }, data_type=ThreadInfo
     )
+    self.logger.info("Post converted to a thread.")
+    return response
 
 
 def create_thread(
@@ -39,7 +43,7 @@ def create_thread(
         thread_icon_filename: str
 ) -> ThreadInfo:
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.THREADS_V1}",
         payload={
             "group_id": group_id,
@@ -47,6 +51,8 @@ def create_thread(
             "thread_icon_filename": thread_icon_filename,
         }, data_type=ThreadInfo
     )
+    self.logger.info("Thread created.")
+    return response
 
 
 def get_group_thread_list(self, group_id: int, from_str: str = None, **params) -> GroupThreadListResponse:
@@ -98,23 +104,29 @@ def get_thread_posts(self, thread_id: int, from_str: str = None, **params) -> Po
 
 def join_thread(self, thread_id: int, user_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
     )
+    self.logger.info("Joined the thread.")
+    return response
 
 
 def leave_thread(self, thread_id: int, user_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
     )
+    self.logger.info("Left the thread.")
+    return response
 
 
 def remove_thread(self, thread_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
     )
+    self.logger.info("Thread removed.")
+    return response
 
 
 def update_thread(
@@ -124,7 +136,9 @@ def update_thread(
         thread_icon_filename: str
 ):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "PUT", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
         payload={"title": title, "thread_icon_filename": thread_icon_filename}
     )
+    self.logger.info("Thread updated.")
+    return response

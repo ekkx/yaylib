@@ -10,10 +10,12 @@ from ..utils import *
 
 def accept_chat_request(self, chat_room_ids: List[int]):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
         payload={"chat_room_ids[]": chat_room_ids}
     )
+    self.logger.info("Chat request accepted.")
+    return response
 
 
 def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
@@ -33,7 +35,7 @@ def create_group_chat(
         background_filename: str = None
 ) -> CreateChatRoomResponse:
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V3}/new",
         payload={
             "name": name,
@@ -43,6 +45,8 @@ def create_group_chat(
         },
         data_type=CreateChatRoomResponse
     )
+    self.logger.info(f"Group chat '{name}' created.")
+    return response
 
 
 def create_private_chat(
@@ -52,7 +56,7 @@ def create_private_chat(
         hima_chat: bool = False
 ) -> CreateChatRoomResponse:
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/new",
         payload={
             "with_user_id": with_user_id,
@@ -61,20 +65,26 @@ def create_private_chat(
         },
         data_type=CreateChatRoomResponse
     )
+    self.logger.info(f"Private chatroom with '{with_user_id}' created.")
+    return response
 
 
 def delete_background(self, room_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{room_id}/background",
     )
+    self.logger.info("Background deleted.")
+    return response
 
 
 def delete_message(self, room_id: int, message_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/messages/{message_id}/delete",
     )
+    self.logger.info("Message deleted.")
+    return response
 
 
 def edit_chat_room(
@@ -85,7 +95,7 @@ def edit_chat_room(
         background_filename: str = None
 ):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/edit",
         payload={
             "name": name,
@@ -93,6 +103,8 @@ def edit_chat_room(
             "background_filename": background_filename,
         }
     )
+    self.logger.info("Chatroom updated.")
+    return response
 
 
 def get_chatable_users(
@@ -208,33 +220,41 @@ def get_total_chat_requests(self) -> int:
 
 def hide_chat(self, chat_room_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.HIDDEN_V1}/chats",
         payload={"chat_room_id": chat_room_id},
     )
+    self.logger.info("Chatroom hidden.")
+    return response
 
 
 def invite_to_chat(self, chat_room_id: int, user_ids: List[int]):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/invite",
         payload={"with_user_ids[]": user_ids},
     )
+    self.logger.info("Chatroom invitation sent.")
+    return response
 
 
 def kick_users_from_chat(self, chat_room_id: int, user_ids: List[int]):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/kick",
         payload={"with_user_ids[]": user_ids},
     )
+    self.logger.info(f"Users have been kicked from the chatroom.")
+    return response
 
 
 def pin_chat(self, room_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/pinned"
     )
+    self.logger.info("Pinned chatroom.")
+    return response
 
 
 def read_attachment(
@@ -244,19 +264,23 @@ def read_attachment(
 ):
     # TODO: check if this works
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/attachments_read",
         payload={
             "attachment_msg_ids[]": attachment_msg_ids
         }
     )
+    self.logger.info("Attachment read.")
+    return response
 
 
 def read_message(self, chat_room_id: int, message_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages/{message_id}/read",
     )
+    self.logger.info("Message read.")
+    return response
 
 
 def read_video_message(
@@ -265,10 +289,12 @@ def read_video_message(
         video_msg_ids: List[int]
 ):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/videos_read",
         payload={"video_msg_ids": video_msg_ids},
     )
+    self.logger.info("Video message read.")
+    return response
 
 
 def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
@@ -284,10 +310,12 @@ def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
 
 def remove_chat_rooms(self, chat_room_ids: List[int]):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/mass_destroy",
         payload={"chat_room_ids[]": chat_room_ids},
     )
+    self.logger.info("Chat rooms removed.")
+    return response
 
 
 def report_chat_room(
@@ -302,7 +330,7 @@ def report_chat_room(
         screenshot_4_filename: str = None
 ):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/report",
         payload={
             "chat_room_id": chat_room_id,
@@ -315,13 +343,17 @@ def report_chat_room(
             "screenshot_4_filename": screenshot_4_filename,
         },
     )
+    self.logger.info("Chat room reported.")
+    return response
 
 
 def send_media_screenshot_notification(self, room_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/screen_captured"
     )
+    self.logger.info("Media screenshot notification sent.")
+    return response
 
 
 def send_message(
@@ -337,7 +369,7 @@ def send_message(
         video_file_name: str = None
 ) -> MessageResponse:
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/messages/new",
         payload={
             "chat_room_id": chat_room_id,
@@ -351,6 +383,8 @@ def send_message(
             "video_file_name": video_file_name,
         }, data_type=MessageResponse
     )
+    self.logger.info("Message sent.")
+    return response
 
 
 def set_notification_settings(
@@ -364,14 +398,18 @@ def set_notification_settings(
 
 def unhide_chat(self, chat_room_ids: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.HIDDEN_V1}/chats",
         params={"chat_room_ids[]": chat_room_ids},
     )
+    self.logger.info("Chatroom unhidden.")
+    return response
 
 
 def unpin_chat(self, chat_room_id: int):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/pinned"
     )
+    self.logger.info("Chatroom unpinned.")
+    return response

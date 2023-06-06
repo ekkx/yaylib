@@ -14,9 +14,11 @@ from ..utils import *
 
 
 def accept_policy_agreement(self, type: str):
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/policy_agreements/{type}"
     )
+    self.logger.info("Accepted to policy agreement.")
+    return response
 
 
 def generate_sns_thumbnail(self, **params):
@@ -29,10 +31,12 @@ def generate_sns_thumbnail(self, **params):
         - resource_id: int - (Required)
 
     """
-    return self._make_request(
+    response = self._make_request(
         "GET", endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate",
         params=params
     )
+    self.logger.info("SNS thumbnail generated.")
+    return response
 
 
 def get_email_verification_presigned_url(self, email: str, locale: str, intent: str = None) -> str:
@@ -124,7 +128,7 @@ def verify_device(
         verification_string: str
 ) -> VerifyDeviceResponse:
     # TODO: check platform, verification_string
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.GENUINE_DEVICES_V1}/verify",
         payload={
             "app_version": app_version,
@@ -133,6 +137,8 @@ def verify_device(
             "verification_string": verification_string,
         }, data_type=VerifyDeviceResponse
     )
+    self.logger.info("Device verified.")
+    return response
 
 
 def upload_image(self, image_type: str, image_path: str) -> str:
