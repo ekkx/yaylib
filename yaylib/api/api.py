@@ -8,6 +8,7 @@ import httpx
 
 from ..config import *
 from ..errors import *
+from ..responses import LoginUserResponse
 from ..utils import *
 
 
@@ -19,6 +20,7 @@ class API:
     def __init__(
             self,
             access_token: str = None,
+            refresh_token: str = None,
             proxy: str = None,
             timeout=60,
             base_path=current_path,
@@ -26,12 +28,13 @@ class API:
             host=Configs.YAY_PRODUCTION_HOST,
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
-        self.yay_version_message = Configs.YAY_VERSION_MESSAGE
         self.api_version = Configs.YAY_API_VERSION
-        self.api_version_key = Configs.YAY_API_VERSION_KEY
         self.api_key = Configs.YAY_API_KEY
-        self.access_token = access_token
-        self.login_data = None
+
+        self.login_data = LoginUserResponse({
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+        })
 
         self.proxy = {}
         if proxy is not None:

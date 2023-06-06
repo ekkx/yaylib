@@ -158,10 +158,9 @@ def create_post(
         color: int = 0,
         in_reply_to: int = None,
         group_id: int = None,
-        post_type: str = None,
         mention_ids: List[int] = None,
         choices: List[str] = None,
-        shared_url: Dict[str, str | int] = None,
+        shared_url: str = None,
         message_tags: str = "[]",
         attachment_filename: str = None,
         attachment_2_filename: str = None,
@@ -178,10 +177,22 @@ def create_post(
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token()
 
-    if "@:start:" in text and ":end:" in text:
-        text, message_tags = parse_mention_format(self, text)
+    if text is not None:
+        if "@:start:" in text and ":end:" in text:
+            text, message_tags = parse_mention_format(self, text)
 
-    return self._make_request(
+    post_type = "survey" if choices else "shareable_url" if shared_url else "video" if video_file_name else "image" if attachment_filename else "text"
+
+    # 自分でサムネイルを指定することもできる
+    if shared_url is not None:
+        if isinstance(shared_url, str):
+            try:
+                shared_url = self.get_url_metadata(url=shared_url)
+            except ForbiddenError:
+                self.logger.error("Unable to get the URL metadata")
+                shared_url = None
+
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/new",
         payload={
             "text": text,
@@ -191,7 +202,7 @@ def create_post(
             "group_id": group_id,
             "post_type": post_type,
             "mention_ids[]": mention_ids,
-            "choices[]": choices,
+            "choices": choices,
             "shared_url": shared_url,
             "message_tags": message_tags,
             "attachment_filename": attachment_filename,
@@ -206,6 +217,8 @@ def create_post(
             "video_file_name": video_file_name,
         }, data_type=Post, headers=headers
     )
+    self.logger.info("Post created.")
+    return response
 
 
 def create_repost(
@@ -236,8 +249,20 @@ def create_repost(
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token()
 
-    if "@:start:" in text and ":end:" in text:
-        text, message_tags = parse_mention_format(self, text)
+    if text is not None:
+        if "@:start:" in text and ":end:" in text:
+            text, message_tags = parse_mention_format(self, text)
+
+    post_type = "survey" if choices else "shareable_url" if shared_url else "video" if video_file_name else "image" if attachment_filename else "text"
+
+    # 自分でサムネイルを指定することもできる
+    if shared_url is not None:
+        if isinstance(shared_url, str):
+            try:
+                shared_url = self.get_url_metadata(url=shared_url)
+            except ForbiddenError:
+                self.logger.error("Unable to get the URL metadata")
+                shared_url = None
 
     return self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/repost",
@@ -250,7 +275,7 @@ def create_repost(
             "group_id": group_id,
             "post_type": post_type,
             "mention_ids[]": mention_ids,
-            "choices[]": choices,
+            "choices": choices,
             "shared_url": shared_url,
             "message_tags": message_tags,
             "attachment_filename": attachment_filename,
@@ -325,8 +350,20 @@ def create_thread_post(
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token()
 
-    if "@:start:" in text and ":end:" in text:
-        text, message_tags = parse_mention_format(self, text)
+    if text is not None:
+        if "@:start:" in text and ":end:" in text:
+            text, message_tags = parse_mention_format(self, text)
+
+    post_type = "survey" if choices else "shareable_url" if shared_url else "video" if video_file_name else "image" if attachment_filename else "text"
+
+    # 自分でサムネイルを指定することもできる
+    if shared_url is not None:
+        if isinstance(shared_url, str):
+            try:
+                shared_url = self.get_url_metadata(url=shared_url)
+            except ForbiddenError:
+                self.logger.error("Unable to get the URL metadata")
+                shared_url = None
 
     return self._make_request(
         "POST", endpoint=f"{Endpoints.THREADS_V1}/{post_id}/posts",
@@ -339,7 +376,7 @@ def create_thread_post(
             "group_id": group_id,
             "post_type": post_type,
             "mention_ids[]": mention_ids,
-            "choices[]": choices,
+            "choices": choices,
             "shared_url": shared_url,
             "message_tags": message_tags,
             "attachment_filename": attachment_filename,
@@ -358,9 +395,12 @@ def create_thread_post(
 
 def delete_all_post(self):
     self._check_authorization()
-    return self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V1}/delete_all_post",
-    )
+    try:
+        return self._make_request(
+            "POST", endpoint=f"{Endpoints.POSTS_V1}/delete_all_post",
+        )
+    except NotFoundError:
+        self.logger.info("Post not found.")
 
 
 def delete_group_pin_post(self, group_id: int):
@@ -712,7 +752,7 @@ def get_timeline(self, **params: int | str | bool) -> PostsResponse:
 def get_url_metadata(self, url: str) -> SharedUrl:
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/url_metadata",
-        params={"url": url}, data_type=SharedUrl
+        params={"url": url}
     )
 
 
@@ -758,10 +798,12 @@ def remove_group_highlight_post(self, group_id: int, post_id: int):
 
 def remove_posts(self, post_ids: List[int]):
     self._check_authorization()
-    return self._make_request(
+    response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/mass_destroy",
-        payload={"post_ids[]": post_ids}
+        payload={"posts_ids": post_ids}
     )
+    self.logger.info("Posts removed.")
+    return response
 
 
 def report_post(

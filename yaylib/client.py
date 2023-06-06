@@ -1399,6 +1399,21 @@ class Client(API):
             verification_string
         )
 
+    def upload_image(self, image_type: str, image_path: str) -> str:
+        """
+
+        画像をアップロードしてattachment_filenameを返します。
+
+        ※ 対応形式: jpeg, png, gif
+
+        Parameteres
+        -----------
+            - image_type: str - (required): "post", "user_avatar" のどちらか
+            - image_path: str - (required): "画像のパス
+
+        """
+        return upload_image(self, image_type, image_path)
+
     # -POST
 
     def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
@@ -1491,7 +1506,6 @@ class Client(API):
             color: int = 0,
             in_reply_to: int = None,
             group_id: int = None,
-            post_type: str = None,
             mention_ids: List[int] = None,
             choices: List[str] = None,
             shared_url: Dict[str, str | int] = None,
@@ -1519,7 +1533,6 @@ class Client(API):
             color,
             in_reply_to,
             group_id,
-            post_type,
             mention_ids,
             choices,
             shared_url,

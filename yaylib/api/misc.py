@@ -1,3 +1,8 @@
+import os
+import io
+import httpx
+
+from PIL import Image
 from datetime import datetime
 from typing import Dict, List
 
@@ -128,3 +133,54 @@ def verify_device(
             "verification_string": verification_string,
         }, data_type=VerifyDeviceResponse
     )
+
+
+def upload_image(self, image_type: str, image_path: str) -> str:
+    """
+
+    画像をアップロードしてattachment_filenameを返します。
+
+    ※ 対応形式: jpeg, png, gif
+
+    Parameteres
+    -----------
+        - image_type: str - (required): "post", "user_avatar" のどちらか
+        - image_path: str - (required): "画像のパス
+
+    """
+    valid_types = ["post", "user_avatar"]
+    if image_type not in valid_types:
+        message = f"Invalid post type. Must be one of {valid_types}"
+        raise ValueError(message)
+
+    date = datetime.now()
+    timestamp = int(date.timestamp() * 1000)
+    filename, ext = os.path.splitext(image_path)
+
+    with Image.open(image_path) as image:
+        width, height = image.size
+
+    base_url = f"{image_type}/{date.year}/{date.month}/{date.day}"
+    mid_url = f"{filename}_{timestamp}_0_size_"
+    original_url = f"{base_url}/{mid_url}{width}x{height}{ext}"
+    thumb_url = f"{base_url}/thumb_{mid_url}{width}x{height}{ext}"
+
+    presigned_urls = get_file_upload_presigned_urls(
+        self, [original_url, thumb_url]
+    )
+
+    with open(image_path, "rb") as f:
+        response = httpx.put(presigned_urls[0].url, data=f.read())
+        self._handle_response(response)
+
+    with open(image_path, "rb") as f:
+        response = httpx.put(presigned_urls[1].url, data=f.read())
+        self._handle_response(response)
+
+    self.logger.info(f"Image '{filename}{ext}' is uploaded")
+
+    return presigned_urls[0].filename
+
+
+def upload_video(self, video_path: str):
+    pass
