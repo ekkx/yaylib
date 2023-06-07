@@ -51,8 +51,9 @@ def create_call_post(
 ) -> ConferenceCall:
     self._check_authorization()
 
-    if "@:start:" in text and ":end:" in text:
-        text, message_tags = parse_mention_format(self, text)
+    if text is not None:
+        if "@:start:" in text and ":end:" in text:
+            text, message_tags = parse_mention_format(self, text)
 
     timestamp = int(datetime.now().timestamp())
 
@@ -107,7 +108,6 @@ def create_pin_post(self, post_id: int):
     )
     self.logger.info("Pinned post")
     return response
-
 
 
 def mention(self, user_id: int) -> str:
@@ -194,14 +194,12 @@ def create_post(
 
     post_type = "survey" if choices else "shareable_url" if shared_url else "video" if video_file_name else "image" if attachment_filename else "text"
 
-    # 自分でサムネイルを指定することもできる
     if shared_url is not None:
-        if isinstance(shared_url, str):
-            try:
-                shared_url = self.get_url_metadata(url=shared_url)
-            except ForbiddenError:
-                self.logger.error("Unable to get the URL metadata")
-                shared_url = None
+        try:
+            shared_url = self.get_url_metadata(url=shared_url).data
+        except ForbiddenError:
+            self.logger.error("Unable to get the URL metadata")
+            shared_url = None
 
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/new",
@@ -266,14 +264,12 @@ def create_repost(
 
     post_type = "survey" if choices else "shareable_url" if shared_url else "video" if video_file_name else "image" if attachment_filename else "text"
 
-    # 自分でサムネイルを指定することもできる
     if shared_url is not None:
-        if isinstance(shared_url, str):
-            try:
-                shared_url = self.get_url_metadata(url=shared_url)
-            except ForbiddenError:
-                self.logger.error("Unable to get the URL metadata")
-                shared_url = None
+        try:
+            shared_url = self.get_url_metadata(url=shared_url).data
+        except ForbiddenError:
+            self.logger.error("Unable to get the URL metadata")
+            shared_url = None
 
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V3}/repost",
@@ -371,14 +367,12 @@ def create_thread_post(
 
     post_type = "survey" if choices else "shareable_url" if shared_url else "video" if video_file_name else "image" if attachment_filename else "text"
 
-    # 自分でサムネイルを指定することもできる
     if shared_url is not None:
-        if isinstance(shared_url, str):
-            try:
-                shared_url = self.get_url_metadata(url=shared_url)
-            except ForbiddenError:
-                self.logger.error("Unable to get the URL metadata")
-                shared_url = None
+        try:
+            shared_url = self.get_url_metadata(url=shared_url).data
+        except ForbiddenError:
+            self.logger.error("Unable to get the URL metadata")
+            shared_url = None
 
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.THREADS_V1}/{post_id}/posts",
@@ -775,7 +769,7 @@ def get_timeline(self, **params: int | str | bool) -> PostsResponse:
 def get_url_metadata(self, url: str) -> SharedUrl:
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/url_metadata",
-        params={"url": url}
+        params={"url": url}, data_type=SharedUrl
     )
 
 

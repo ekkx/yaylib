@@ -1,5 +1,4 @@
 import os
-import io
 import httpx
 
 from PIL import Image

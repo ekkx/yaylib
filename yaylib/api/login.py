@@ -129,16 +129,16 @@ def resend_confirm_email(self):
 
 
 def restore_user(self, user_id: int) -> LoginUserResponse:
+    timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/restore",
         payload={
             "user_id": user_id,
             "api_key": self.api_key,
             "uuid": self.uuid,
-            "timestamp": int(datetime.now().timestamp()),
+            "timestamp": timestamp,
             "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid,
-                int(datetime.now().timestamp())
+                self.device_uuid, timestamp
             ),
         }
     )
