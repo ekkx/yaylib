@@ -1,0 +1,78 @@
+interactions:
+- request:
+    body: ''
+    headers:
+      accept:
+      - '*/*'
+      accept-encoding:
+      - gzip, deflate
+      accept-language:
+      - ja
+      connection:
+      - keep-alive
+      content-type:
+      - application/json;charset=UTF-8
+      host:
+      - api.yay.space
+      user-agent:
+      - android 11 (3.5x 1440x2960 Galaxy S9)
+      x-app-version:
+      - '3.16'
+      x-connection-type:
+      - wifi
+      x-device-info:
+      - yay 3.16.1 android 11 (3.5x 1440x2960 Galaxy S9)
+      x-device-uuid:
+      - f2d099f9-5e95-404f-a0e6-71b191fc05f2
+    method: GET
+    uri: https://cas.yay.space/api/user_activities?number=1
+  response:
+    content: '{"activities": [{"created_at": 1686112203, "type": "like", "user": {"id":
+      26565, "nickname": "\u8272\u591c\u30e6\u30a6@\u30b7\u30d5\u30a9\u30f3\u4e3b\u7fa9\u262d",
+      "profile_icon_thumbnail": "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/24/thumb_aR75nZQicC3hoeo1_1682342510028_0_size_586x586.jpg"},
+      "metadata": {}, "to_post": {"id": 372209351, "text": "testing", "post_type":
+      "text", "likers": [{"id": 26565, "nickname": "\u8272\u591c\u30e6\u30a6@\u30b7\u30d5\u30a9\u30f3\u4e3b\u7fa9\u262d",
+      "profile_icon_thumbnail": "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/4/24/thumb_aR75nZQicC3hoeo1_1682342510028_0_size_586x586.jpg"},
+      {"id": 7489979, "nickname": "\u2741\u3164\u3164\u273e", "profile_icon_thumbnail":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/6/1/thumb_ppF9ldoJALcHgWjX_1685579677976_0_size_512x512.jpg"},
+      {"id": 2611910, "nickname": "\u2741\u304d\u3087\u3080\u273e", "profile_icon_thumbnail":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/5/22/thumb_EFOd7LYJSzLmtlpf_1684684268522_0_size_783x783.jpg"},
+      {"id": 2293566, "nickname": "\u2741\u304d\u3087\u30fc\u3080\u273e", "profile_icon_thumbnail":
+      "https://yay-cdn.com/file/yay-space/uploads/user_avatar/2023/5/22/thumb_8Pb7R75GDXkFVNVCeon19a_1684681911645_0_size_640x640.gif"}]}}],
+      "last_timestamp": 1686112203}'
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 07 Jun 2023 04:33:47 GMT
+      ETag:
+      - W/"821c2d0b3b1a9dc67a12789cfe91fa00"
+      Server:
+      - nginx
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - c9a673ad-a79e-4282-ad99-8aa442da4f8b
+      X-Runtime:
+      - '0.019921'
+      X-XSS-Protection:
+      - 1; mode=block
+    http_version: HTTP/1.1
+    status_code: 200
+version: 1

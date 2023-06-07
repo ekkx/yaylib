@@ -304,7 +304,7 @@ class Client(API):
         """
         return get_user_activities(self, **params)
 
-    def get_user_merged_activities(self, from_timestamp: int = None) -> ActivitiesResponse:
+    def get_user_merged_activities(self, **params) -> ActivitiesResponse:
         """
 
         全種類の通知を取得します
@@ -313,9 +313,10 @@ class Client(API):
         ----------
 
             - from_timestamp: int - (optional)
+            - number: int - (optional)
 
         """
-        return get_user_merged_activities(self, from_timestamp)
+        return get_user_merged_activities(self, **params)
 
     def received_notification(self, pid: str, type: str, opened_at: int = None) -> dict:
         return received_notification(self, pid, type, opened_at)

@@ -1,10 +1,10 @@
 import unittest
 
 from config import (
-    YaylibTestCase,
     tape,
     user_id,
-    opponent_id
+    opponent_id,
+    YaylibTestCase,
 )
 
 

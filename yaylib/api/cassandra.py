@@ -17,18 +17,23 @@ def get_user_activities(self, **params) -> ActivitiesResponse:
     """
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"{self.host}/api/user_activities",
+        "GET", endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/user_activities",
         params=params, data_type=ActivitiesResponse
     )
 
 
-def get_user_merged_activities(self, from_timestamp: int = None) -> ActivitiesResponse:
+def get_user_merged_activities(self, **params) -> ActivitiesResponse:
+    """
+    Parameters
+    ----------
+
+        - from_timestamp: int - (optional)
+        - number: int - (optional)
+
+    """
     self._check_authorization()
-    params = {}
-    if from_timestamp:
-        params["from_timestamp"] = from_timestamp
     return self._make_request(
-        "GET", endpoint=f"{self.host}/api/v2/user_activities",
+        "GET", endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/v2/user_activities",
         params=params, data_type=ActivitiesResponse
     )
 
