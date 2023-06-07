@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from yaylib import __version__
 
 name = "yaylib"
-author = "qvco, Konn"
+author = "Qvco, Konn"
 author_email = "nikola.desuga@gmail.com"
 description = "This Python package provides an easy-to-use interface for accessing data from Yay! (https://yay.space/). With this API Client, you can retrieve user profiles, posts, comments, and other content from Yay!, as well as perform common tasks like liking and commenting on posts."
 long_description_content_type = "text/markdown"
@@ -15,7 +15,9 @@ keywords = [
     "api",
     "bot",
     "library",
-    "wrapper"
+    "wrapper",
+    "ボット",
+    "ライブラリ"
 ]
 
 install_requires = [

@@ -29,21 +29,37 @@ from .utils import *
 
 class Client(API):
     """
-    Client( \
-        access_token=None, proxy=None, timeout=60, \
-        base_path=current_path, loglevel_stream=logging.INFO, \
-        host=Configs.YAY_PRODUCTION_HOST \
-    )
+
+    Yay!（イェイ）の API クライアント
+
+    #### Useage
+
+        >>> api = yaylib.Client()
+        >>> timeline = api.get_timeline(number=30)
+
+    #### Parameters
+
+        - access_token: str - (optional)
+        - refresh_token: str - (optional)
+        - proxy: str - (optional)
+        - timeout: int - (optional)
+        - base_path: str - (optional)
+        - loglevel_stream: int - (optional)
+        - host: str - (optional)
+
+    <https://github.com/qvco/yaylib>
 
     ---
 
-    #### Yay! API v3 Client
+    ### Yay! API v3 Client
+
+    Copyright (c) 2023 Qvco, Konn
 
     """
 
     # -CALL
 
-    def bump_call(self, call_id: int, participant_limit: int = None):
+    def bump_call(self, call_id: int, participant_limit: int = None) -> dict:
         return bump_call(self, call_id, participant_limit)
 
     def get_user_active_call(self, user_id: int) -> Post:
@@ -129,7 +145,7 @@ class Client(API):
         """
         return get_group_calls(self, **params)
 
-    def invite_to_call_bulk(self, call_id: int, group_id: int = None):
+    def invite_to_call_bulk(self, call_id: int, group_id: int = None) -> dict:
         """
 
         Parameters
@@ -140,7 +156,7 @@ class Client(API):
         """
         return invite_to_call_bulk(self, call_id, group_id)
 
-    def invite_users_to_call(self, call_id: int, user_ids: List[int]):
+    def invite_users_to_call(self, call_id: int, user_ids: List[int]) -> dict:
         """
 
         ユーザーを通話に招待します
@@ -158,7 +174,7 @@ class Client(API):
             chat_room_id: int,
             room_id: int,
             room_url: str
-    ):
+    ) -> dict:
         """
 
         チャット通話にユーザーを招待します
@@ -173,7 +189,7 @@ class Client(API):
         """
         return invite_users_to_chat_call(self, chat_room_id, room_id, room_url)
 
-    def kick_and_ban_from_call(self, call_id: int, user_id: int):
+    def kick_and_ban_from_call(self, call_id: int, user_id: int) -> dict:
         """
 
         ユーザーを通話からキックします
@@ -191,7 +207,7 @@ class Client(API):
             self,
             conference_id: int,
             agora_uid: str
-    ):
+    ) -> dict:
         """
 
         匿名ユーザーが通話から退出したことを通知します
@@ -201,7 +217,7 @@ class Client(API):
             self, conference_id, agora_uid
         )
 
-    def notify_user_leave_agora_channel(self, conference_id: int, user_id: int):
+    def notify_user_leave_agora_channel(self, conference_id: int, user_id: int) -> dict:
         """
 
         ユーザーが通話から退出したことを通知します
@@ -213,7 +229,7 @@ class Client(API):
             self,
             screenshot_filename: str,
             conference_id: int
-    ):
+    ) -> dict:
         """
 
         通話のスクリーンショットを送信します
@@ -227,7 +243,7 @@ class Client(API):
             joinable_by: str,
             game_title: str = None,
             category_id: str = None
-    ):
+    ) -> dict:
         """
 
         通話を開始します
@@ -240,7 +256,7 @@ class Client(API):
             call_id: int,
             user_id: int,
             role: str
-    ):
+    ) -> dict:
         """
 
         通話に参加中ののユーザーに役職を与えます
@@ -264,7 +280,7 @@ class Client(API):
             self,
             conference_id: int,
             call_sid: str
-    ):
+    ) -> dict:
         """
 
         通話から退出します
@@ -301,12 +317,12 @@ class Client(API):
         """
         return get_user_merged_activities(self, from_timestamp)
 
-    def received_notification(self, pid: str, type: str, opened_at: int = None):
+    def received_notification(self, pid: str, type: str, opened_at: int = None) -> dict:
         return received_notification(self, pid, type, opened_at)
 
     # -CHAT
 
-    def accept_chat_request(self, chat_room_ids: List[int]):
+    def accept_chat_request(self, chat_room_ids: List[int]) -> dict:
         """
 
         チャットリクエストを承認します
@@ -381,7 +397,7 @@ class Client(API):
             hima_chat
         )
 
-    def delete_background(self, room_id: int):
+    def delete_background(self, room_id: int) -> dict:
         """
 
         チャットの背景画像を削除します
@@ -394,7 +410,7 @@ class Client(API):
         """
         return delete_background(self, room_id)
 
-    def delete_message(self, room_id: int, message_id: int):
+    def delete_message(self, room_id: int, message_id: int) -> dict:
         """
 
         メッセージを削除します
@@ -414,7 +430,7 @@ class Client(API):
             name: str,
             icon_filename: str = None,
             background_filename: str = None
-    ):
+    ) -> dict:
         """
 
         チャットルームを編集します
@@ -519,7 +535,7 @@ class Client(API):
         """
         return get_total_chat_requests(self)
 
-    def hide_chat(self, chat_room_id: int):
+    def hide_chat(self, chat_room_id: int) -> dict:
         """
 
         チャットルームを非表示にします
@@ -527,7 +543,7 @@ class Client(API):
         """
         return hide_chat(self, chat_room_id)
 
-    def invite_to_chat(self, chat_room_id: int, user_ids: List[int]):
+    def invite_to_chat(self, chat_room_id: int, user_ids: List[int]) -> dict:
         """
 
         チャットルームにユーザーを招待します
@@ -535,7 +551,7 @@ class Client(API):
         """
         return invite_to_chat(self, chat_room_id, user_ids)
 
-    def kick_users_from_chat(self, chat_room_id: int, user_ids: List[int]):
+    def kick_users_from_chat(self, chat_room_id: int, user_ids: List[int]) -> dict:
         """
 
         チャットルームからユーザーを追放します
@@ -543,7 +559,7 @@ class Client(API):
         """
         return kick_users_from_chat(self, chat_room_id, user_ids)
 
-    def pin_chat(self, room_id: int):
+    def pin_chat(self, room_id: int) -> dict:
         """
 
         チャットルームをピン止めします
@@ -555,7 +571,7 @@ class Client(API):
             self,
             room_id: int,
             attachment_msg_ids: List[int]
-    ):
+    ) -> dict:
         """
 
         アタッチメントを既読にします
@@ -564,7 +580,7 @@ class Client(API):
         # TODO: check if this works
         return read_attachment(self, room_id, attachment_msg_ids)
 
-    def read_message(self, chat_room_id: int, message_id: int):
+    def read_message(self, chat_room_id: int, message_id: int) -> dict:
         """
 
         メッセージを既読にします
@@ -576,7 +592,7 @@ class Client(API):
             self,
             room_id: int,
             video_msg_ids: List[int]
-    ):
+    ) -> dict:
         """
 
         動画のメッセージを既読にします
@@ -592,7 +608,7 @@ class Client(API):
         """
         return refresh_chat_rooms(self, from_time)
 
-    def remove_chat_rooms(self, chat_room_ids: List[int]):
+    def remove_chat_rooms(self, chat_room_ids: List[int]) -> dict:
         """
 
         チャットルームを削除します
@@ -610,7 +626,7 @@ class Client(API):
         screenshot_2_filename: str = None,
         screenshot_3_filename: str = None,
         screenshot_4_filename: str = None
-    ):
+    ) -> dict:
         """
 
         チャットルームを通報します
@@ -628,7 +644,7 @@ class Client(API):
             screenshot_4_filename
         )
 
-    def send_media_screenshot_notification(self, room_id: int):
+    def send_media_screenshot_notification(self, room_id: int) -> dict:
         """
 
         スクリーンショットを通知します
@@ -673,7 +689,7 @@ class Client(API):
     # ) -> Settings:
     #     return set_notification_settings(self)
 
-    def unhide_chat(self, chat_room_ids: int):
+    def unhide_chat(self, chat_room_ids: int) -> dict:
         """
 
         チャットの非表示を解除します
@@ -681,7 +697,7 @@ class Client(API):
         """
         return unhide_chat(self, chat_room_ids)
 
-    def unpin_chat(self, chat_room_id: int):
+    def unpin_chat(self, chat_room_id: int) -> dict:
         """
 
         チャットルームのピン止めを解除します
@@ -691,7 +707,7 @@ class Client(API):
 
     # -GROUP
 
-    def accept_moderator_offer(self, group_id: int):
+    def accept_moderator_offer(self, group_id: int) -> dict:
         """
 
         グループ副管理人の権限オファーを引き受けます
@@ -699,7 +715,7 @@ class Client(API):
         """
         return accept_moderator_offer(self, group_id)
 
-    def accept_ownership_offer(self, group_id: int):
+    def accept_ownership_offer(self, group_id: int) -> dict:
         """
 
         グループ管理人の権限オファーを引き受けます
@@ -707,7 +723,7 @@ class Client(API):
         """
         return accept_ownership_offer(self, group_id)
 
-    def accept_group_join_request(self, group_id: int, user_id: int):
+    def accept_group_join_request(self, group_id: int, user_id: int) -> dict:
         """
 
         グループ参加リクエストを承認します
@@ -715,7 +731,7 @@ class Client(API):
         """
         return accept_group_join_request(self, group_id, user_id)
 
-    def add_related_groups(self, group_id: int, related_group_id: List[int]):
+    def add_related_groups(self, group_id: int, related_group_id: List[int]) -> dict:
         """
 
         関連グループを追加します
@@ -723,7 +739,7 @@ class Client(API):
         """
         return add_related_groups(self, group_id, related_group_id)
 
-    def ban_group_user(self, group_id: int, user_id: int):
+    def ban_group_user(self, group_id: int, user_id: int) -> dict:
         """
 
         グループからユーザーを追放します
@@ -790,7 +806,7 @@ class Client(API):
             guidelines
         )
 
-    def create_pin_group(self, group_id: int):
+    def create_pin_group(self, group_id: int) -> dict:
         """
 
         グループの投稿をピンします
@@ -798,7 +814,7 @@ class Client(API):
         """
         return create_pin_group(self, group_id)
 
-    def decline_moderator_offer(self, group_id: int):
+    def decline_moderator_offer(self, group_id: int) -> dict:
         """
 
         グループ副管理人の権限オファーを断ります
@@ -806,7 +822,7 @@ class Client(API):
         """
         return decline_moderator_offer(self, group_id)
 
-    def decline_ownership_offer(self, group_id: int):
+    def decline_ownership_offer(self, group_id: int) -> dict:
         """
 
         グループ管理人の権限オファーを断ります
@@ -814,7 +830,7 @@ class Client(API):
         """
         return decline_ownership_offer(self, group_id)
 
-    def decline_group_join_request(self, group_id: int, user_id: int):
+    def decline_group_join_request(self, group_id: int, user_id: int) -> dict:
         """
 
         グループ参加リクエストを断ります
@@ -822,7 +838,7 @@ class Client(API):
         """
         return decline_ownership_offer(self, group_id, user_id)
 
-    def delete_pin_group(self, group_id: int):
+    def delete_pin_group(self, group_id: int) -> dict:
         """
 
         グループのピン投稿を解除します
@@ -983,7 +999,7 @@ class Client(API):
         """
         return get_user_groups(self, **params)
 
-    def invite_users_to_group(self, group_id: int, user_ids: List[int]):
+    def invite_users_to_group(self, group_id: int, user_ids: List[int]) -> dict:
         """
 
         グループにユーザーを招待します
@@ -991,7 +1007,7 @@ class Client(API):
         """
         return invite_users_to_group(self, group_id, user_ids)
 
-    def join_group(self, group_id: int):
+    def join_group(self, group_id: int) -> dict:
         """
 
         グループに参加します
@@ -999,7 +1015,7 @@ class Client(API):
         """
         return join_group(self, group_id)
 
-    def leave_group(self, group_id: int):
+    def leave_group(self, group_id: int) -> dict:
         """
 
         グループから脱退します
@@ -1007,10 +1023,10 @@ class Client(API):
         """
         return leave_group(self, group_id)
 
-    def post_gruop_social_shared(self, group_id: int, sns_name: str):
+    def post_gruop_social_shared(self, group_id: int, sns_name: str) -> dict:
         return post_gruop_social_shared(self, group_id, sns_name)
 
-    def remove_group_cover(self, group_id: int):
+    def remove_group_cover(self, group_id: int) -> dict:
         """
 
         グループのカバー画像を削除します
@@ -1018,7 +1034,7 @@ class Client(API):
         """
         return remove_group_cover(self, group_id)
 
-    def remove_moderator(self, group_id: int, user_id: int):
+    def remove_moderator(self, group_id: int, user_id: int) -> dict:
         """
 
         グループの副管理人を削除します
@@ -1026,7 +1042,7 @@ class Client(API):
         """
         return remove_moderator(self, group_id, user_id)
 
-    def remove_related_groups(self, group_id: int, related_group_ids: List[int]):
+    def remove_related_groups(self, group_id: int, related_group_ids: List[int]) -> dict:
         """
 
         関連のあるグループを削除します
@@ -1044,7 +1060,7 @@ class Client(API):
             screenshot_2_filename: str = None,
             screenshot_3_filename: str = None,
             screenshot_4_filename: str = None,
-    ):
+    ) -> dict:
         """
 
         グループを通報します
@@ -1062,7 +1078,7 @@ class Client(API):
             screenshot_4_filename
         )
 
-    def send_moderator_offers(self, group_id: int, user_ids: List[int]):
+    def send_moderator_offers(self, group_id: int, user_ids: List[int]) -> dict:
         """
 
         複数人に副管理人のオファーを送信します
@@ -1070,7 +1086,7 @@ class Client(API):
         """
         return send_moderator_offers(self, group_id, user_ids)
 
-    def send_ownership_offer(self, group_id: int, user_id: int):
+    def send_ownership_offer(self, group_id: int, user_id: int) -> dict:
         """
 
         グループ管理人権限のオファーを送信します
@@ -1088,7 +1104,7 @@ class Client(API):
     # ) -> AdditionalSettingsResponse:
     #     return set_group_notification_settings(self)
 
-    def set_group_title(self, group_id: int, title: str):
+    def set_group_title(self, group_id: int, title: str) -> dict:
         """
 
         グループのタイトルを設定します
@@ -1096,7 +1112,7 @@ class Client(API):
         """
         return set_group_title(self, group_id, title)
 
-    def take_over_group_ownership(self, group_id: int):
+    def take_over_group_ownership(self, group_id: int) -> dict:
         """
 
         グループ管理人の権限を引き継ぎます
@@ -1104,7 +1120,7 @@ class Client(API):
         """
         return take_over_group_ownership(self, group_id)
 
-    def unban_group_member(self, group_id: int, user_id: int):
+    def unban_group_member(self, group_id: int, user_id: int) -> dict:
         """
 
         特定のグループメンバーの追放を解除します
@@ -1165,7 +1181,7 @@ class Client(API):
             guidelines,
         )
 
-    def visit_group(self, group_id: int):
+    def visit_group(self, group_id: int) -> dict:
         """
 
         グループを訪問します
@@ -1173,7 +1189,7 @@ class Client(API):
         """
         return visit_group(self, group_id)
 
-    def withdraw_moderator_offer(self, group_id: int, user_id: int):
+    def withdraw_moderator_offer(self, group_id: int, user_id: int) -> dict:
         """
 
         グループ副管理人のオファーを取り消します
@@ -1181,7 +1197,7 @@ class Client(API):
         """
         return withdraw_moderator_offer(self, group_id, user_id)
 
-    def withdraw_ownership_offer(self, group_id: int, user_id: int):
+    def withdraw_ownership_offer(self, group_id: int, user_id: int) -> dict:
         """
 
         グループ管理人のオファーを取り消します
@@ -1216,10 +1232,10 @@ class Client(API):
         """
         return change_password(self, current_password, new_password)
 
-    # def connect_account_with_sns(self):
+    # def connect_account_with_sns(self) -> dict:
     #     return connect_account_with_sns(self)
 
-    # def disconnect_account_with_sns(self):
+    # def disconnect_account_with_sns(self) -> dict:
     #     return disconnect_account_with_sns(self)
 
     def get_token(
@@ -1250,10 +1266,10 @@ class Client(API):
         """
         return login_with_email(self, email, password)
 
-    # def login_with_sns(self):
+    # def login_with_sns(self) -> dict:
     #     return login_with_sns(self)
 
-    def logout(self):
+    def logout(self) -> dict:
         """
 
         ログアウトします
@@ -1261,19 +1277,19 @@ class Client(API):
         """
         return logout(self)
 
-    # def migrate_token(self):
+    # def migrate_token(self) -> dict:
     #     return migrate_token(self)
 
-    # def register_device_token(self):
+    # def register_device_token(self) -> dict:
     #     return register_device_token(self)
 
-    def resend_confirm_email(self):
+    def resend_confirm_email(self) -> dict:
         return resend_confirm_email(self)
 
     def restore_user(self, user_id: int) -> LoginUserResponse:
         return restore_user(self, user_id)
 
-    def revoke_tokens(self):
+    def revoke_tokens(self) -> dict:
         """
 
         トークンを無効化します
@@ -1303,10 +1319,10 @@ class Client(API):
 
     # -MISC
 
-    def accept_policy_agreement(self, type: str):
+    def accept_policy_agreement(self, type: str) -> dict:
         return accept_policy_agreement(self, type)
 
-    def generate_sns_thumbnail(self, **params):
+    def generate_sns_thumbnail(self, **params) -> dict:
         """
 
         Parameters
@@ -1424,7 +1440,7 @@ class Client(API):
         """
         return add_bookmark(self, user_id, post_id)
 
-    def add_group_highlight_post(self, group_id: int, post_id: int):
+    def add_group_highlight_post(self, group_id: int, post_id: int) -> dict:
         return add_group_highlight_post(self, group_id, post_id)
 
     def create_call_post(
@@ -1475,7 +1491,7 @@ class Client(API):
             attachment_9_filename
         )
 
-    def create_group_pin_post(self, post_id: int, group_id: int):
+    def create_group_pin_post(self, post_id: int, group_id: int) -> dict:
         """
 
         グループの投稿をピンします
@@ -1483,7 +1499,7 @@ class Client(API):
         """
         return create_group_pin_post(self, post_id, group_id)
 
-    def create_pin_post(self, post_id: int):
+    def create_pin_post(self, post_id: int) -> dict:
         """
 
         投稿をピンします
@@ -1676,7 +1692,7 @@ class Client(API):
             video_file_name,
         )
 
-    def delete_all_post(self):
+    def delete_all_post(self) -> dict:
         """
 
         すべての投稿を削除します
@@ -1684,7 +1700,7 @@ class Client(API):
         """
         return delete_all_post(self)
 
-    def delete_group_pin_post(self, group_id: int):
+    def delete_group_pin_post(self, group_id: int) -> dict:
         """
 
         グループのピン投稿を削除します
@@ -1692,7 +1708,7 @@ class Client(API):
         """
         return delete_group_pin_post(self, group_id)
 
-    def delete_pin_post(self, post_id: int):
+    def delete_pin_post(self, post_id: int) -> dict:
         """
 
         ピン投稿を削除します
@@ -2000,7 +2016,7 @@ class Client(API):
         """
         return like_posts(self, post_ids)
 
-    def remove_bookmark(self, user_id: int, post_id: int):
+    def remove_bookmark(self, user_id: int, post_id: int) -> dict:
         """
 
         ブックマークを削除します
@@ -2008,10 +2024,10 @@ class Client(API):
         """
         return remove_bookmark(self, user_id, post_id)
 
-    def remove_group_highlight_post(self, group_id: int, post_id: int):
+    def remove_group_highlight_post(self, group_id: int, post_id: int) -> dict:
         return remove_group_highlight_post(self, group_id, post_id)
 
-    def remove_posts(self, post_ids: List[int]):
+    def remove_posts(self, post_ids: List[int]) -> dict:
         """
 
         複数の投稿を削除します
@@ -2029,7 +2045,7 @@ class Client(API):
             screenshot_2_filename: str = None,
             screenshot_3_filename: str = None,
             screenshot_4_filename: str = None
-    ):
+    ) -> dict:
         """
 
         投稿を通報します
@@ -2047,7 +2063,7 @@ class Client(API):
             screenshot_4_filename
         )
 
-    def unlike_post(self, post_id: int):
+    def unlike_post(self, post_id: int) -> dict:
         """
 
         投稿のいいねを解除します
@@ -2075,7 +2091,7 @@ class Client(API):
     def update_recommendation_feedback(
         self, post_id: int, feedback_result: str, *,
         experiment_num: int, variant_num: int,
-    ):
+    ) -> dict:
         return update_recommendation_feedback(
             self, post_id, feedback_result, experiment_num, variant_num
         )
@@ -2083,7 +2099,7 @@ class Client(API):
     def validate_post(self, text: str, *, group_id: int = None, thread_id: int = None) -> ValidationPostResponse:
         return validate_post(self, text, group_id, thread_id)
 
-    def view_video(self, video_id: int):
+    def view_video(self, video_id: int) -> dict:
         """
 
         動画を視聴します
@@ -2101,7 +2117,7 @@ class Client(API):
 
     # -REVIEW
 
-    def create_review(self, user_id: int, comment: str):
+    def create_review(self, user_id: int, comment: str) -> dict:
         """
 
         レターを送信します
@@ -2109,7 +2125,7 @@ class Client(API):
         """
         return create_review(self, user_id, comment)
 
-    def create_reviews(self, user_ids: List[int], comment: str):
+    def create_reviews(self, user_ids: List[int], comment: str) -> dict:
         """
 
         複数人にレターを送信します
@@ -2117,7 +2133,7 @@ class Client(API):
         """
         return create_reviews(self, user_ids, comment)
 
-    def delete_reviews(self, review_ids: List[int]):
+    def delete_reviews(self, review_ids: List[int]) -> dict:
         """
 
         レターを削除します
@@ -2154,7 +2170,7 @@ class Client(API):
         """
         return get_reviews(self, user_id, **params)
 
-    def pin_review(self, review_id: int):
+    def pin_review(self, review_id: int) -> dict:
         """
 
         レターをピンします
@@ -2162,7 +2178,7 @@ class Client(API):
         """
         return pin_review(self, review_id)
 
-    def unpin_review(self, review_id: int):
+    def unpin_review(self, review_id: int) -> dict:
         """
 
         レターのピンを解除します
@@ -2254,7 +2270,7 @@ class Client(API):
         """
         return get_thread_posts(self, thread_id, from_str, **params)
 
-    def join_thread(self, thread_id: int, user_id: int):
+    def join_thread(self, thread_id: int, user_id: int) -> dict:
         """
 
         スレッドに参加します
@@ -2262,7 +2278,7 @@ class Client(API):
         """
         return join_thread(self, thread_id, user_id)
 
-    def leave_thread(self, thread_id: int, user_id: int):
+    def leave_thread(self, thread_id: int, user_id: int) -> dict:
         """
 
         スレッドから脱退します
@@ -2270,7 +2286,7 @@ class Client(API):
         """
         return leave_thread(self, thread_id, user_id)
 
-    def remove_thread(self, thread_id: int):
+    def remove_thread(self, thread_id: int) -> dict:
         """
 
         スレッドを削除します
@@ -2283,7 +2299,7 @@ class Client(API):
             thread_id: int,
             title: str,
             thread_icon_filename: str
-    ):
+    ) -> dict:
         """
 
         スレッドを編集します
@@ -2338,7 +2354,7 @@ class Client(API):
             vn
         )
 
-    def delete_contact_friends(self):
+    def delete_contact_friends(self) -> dict:
         """
 
         連絡先の友人を削除します
@@ -2346,7 +2362,7 @@ class Client(API):
         """
         return delete_contact_friends(self)
 
-    def delete_footprint(self, user_id: int, footprint_id: int):
+    def delete_footprint(self, user_id: int, footprint_id: int) -> dict:
         """
 
         足跡を削除します
@@ -2354,7 +2370,7 @@ class Client(API):
         """
         return delete_footprint(self, user_id, footprint_id)
 
-    def destroy_user(self):
+    def destroy_user(self) -> dict:
         """
 
         アカウントを削除します
@@ -2362,7 +2378,7 @@ class Client(API):
         """
         return destroy_user(self)
 
-    def follow_user(self, user_id: int):
+    def follow_user(self, user_id: int) -> dict:
         """
 
         ユーザーをフォローします
@@ -2370,7 +2386,7 @@ class Client(API):
         """
         return follow_user(self, user_id)
 
-    def follow_users(self, user_ids: List[int]):
+    def follow_users(self, user_ids: List[int]) -> dict:
         """
 
         複数のユーザーをフォローします
@@ -2570,7 +2586,7 @@ class Client(API):
         """
         return get_user_from_qr(self, qr)
 
-    # def get_user_interests(self):
+    # def get_user_interests(self) -> dict:
     #     return get_user_interests(self)
 
     def get_user_without_leaving_footprint(self, user_id: int) -> UserResponse:
@@ -2595,13 +2611,13 @@ class Client(API):
         """
         return get_users_from_uuid(self, uuid)
 
-    def post_social_shared(self, sns_name: str):
+    def post_social_shared(self, sns_name: str) -> dict:
         return post_social_shared(self, sns_name)
 
-    def record_app_review_status(self):
+    def record_app_review_status(self) -> dict:
         return record_app_review_status(self)
 
-    def reduce_kenta_penalty(self, user_id: int):
+    def reduce_kenta_penalty(self, user_id: int) -> dict:
         """
 
         ペナルティーを緩和します
@@ -2609,10 +2625,10 @@ class Client(API):
         """
         return reduce_kenta_penalty(self, user_id)
 
-    def refresh_counter(self, counter: str):
+    def refresh_counter(self, counter: str) -> dict:
         return refresh_counter(self, counter)
 
-    def remove_user_avatar(self):
+    def remove_user_avatar(self) -> dict:
         """
 
         ユーザーのアイコンを削除します
@@ -2620,7 +2636,7 @@ class Client(API):
         """
         return remove_user_avatar(self)
 
-    def remove_user_cover(self):
+    def remove_user_cover(self) -> dict:
         """
 
         ユーザーのカバー画像を削除します
@@ -2637,7 +2653,7 @@ class Client(API):
             screenshot_2_filename: str = None,
             screenshot_3_filename: str = None,
             screenshot_4_filename: str = None
-    ):
+    ) -> dict:
         """
 
         ユーザーを通報します
@@ -2654,7 +2670,7 @@ class Client(API):
             screenshot_4_filename
         )
 
-    def reset_password(self, email: str, email_grant_token: str, password: str):
+    def reset_password(self, email: str, email_grant_token: str, password: str) -> dict:
         """
 
         パスワードをリセットします
@@ -2699,21 +2715,21 @@ class Client(API):
         """
         return search_users(self, **params)
 
-    def set_additional_setting_enabled(self, mode: str, on: int = None):
+    def set_additional_setting_enabled(self, mode: str, on: int = None) -> dict:
         return set_additional_setting_enabled(self, mode, on)
 
     def set_follow_permission_enabled(
             self, nickname: str, is_private: bool = None
-    ):
+    ) -> dict:
         return set_follow_permission_enabled(self, nickname, is_private)
 
-    def set_setting_follow_recommendation_enabled(self, on: bool):
-        return set_setting_follow_recommendation_enabled(self, bool)
+    def set_setting_follow_recommendation_enabled(self, on: bool) -> dict:
+        return set_setting_follow_recommendation_enabled(self, on)
 
-    def take_action_follow_request(self, target_id: int, action: str):
+    def take_action_follow_request(self, target_id: int, action: str) -> dict:
         return take_action_follow_request(self, target_id, action)
 
-    def turn_on_hima(self):
+    def turn_on_hima(self) -> dict:
         """
 
         ひまなう
@@ -2721,7 +2737,7 @@ class Client(API):
         """
         return turn_on_hima(self)
 
-    def unfollow_user(self, user_id: int):
+    def unfollow_user(self, user_id: int) -> dict:
         """
 
         ユーザーをアンフォローします
@@ -2729,10 +2745,10 @@ class Client(API):
         """
         return unfollow_user(self, user_id)
 
-    def update_invite_contact_status(self, mobile_number: str):
+    def update_invite_contact_status(self, mobile_number: str) -> dict:
         return update_invite_contact_status(self, mobile_number)
 
-    def update_language(self, language: str):
+    def update_language(self, language: str) -> dict:
         """
 
         言語を更新します
@@ -2750,7 +2766,7 @@ class Client(API):
             profile_icon_filename: str = None,
             cover_image_filename: str = None,
             username: str = None,
-    ):
+    ) -> dict:
         """
 
         プロフィールを更新します
@@ -2761,16 +2777,16 @@ class Client(API):
             profile_icon_filename, cover_image_filename, username
         )
 
-    # def update_user_interests(self):
+    # def update_user_interests(self) -> dict:
     #     return update_user_interests(self)
 
-    # def upload_contacts_friends(self):
+    # def upload_contacts_friends(self) -> dict:
     #     return upload_contacts_friends(self)
 
-    def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]):
+    def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]) -> dict:
         return upload_twitter_friend_ids(self, twitter_friend_ids)
 
-    def block_user(self, user_id: int):
+    def block_user(self, user_id: int) -> dict:
         """
 
         ユーザーをブロックします
@@ -2794,7 +2810,7 @@ class Client(API):
         """
         return get_blocked_users(self, from_id)
 
-    def unblock_user(self, user_id: int):
+    def unblock_user(self, user_id: int) -> dict:
         """
 
         ユーザーをアンブロックします
@@ -2816,7 +2832,7 @@ class Client(API):
         """
         return get_hidden_users_list(self, **params)
 
-    def hide_user(self, user_id: int):
+    def hide_user(self, user_id: int) -> dict:
         """
 
         ユーザーを非表示にします
@@ -2824,7 +2840,7 @@ class Client(API):
         """
         return hide_user(self, user_id)
 
-    def unhide_users(self, user_ids: List[int]):
+    def unhide_users(self, user_ids: List[int]) -> dict:
         """
 
         ユーザーの非表示を解除します

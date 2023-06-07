@@ -161,7 +161,7 @@ def invite_users_to_chat_call(
             "room_url": room_url
         }
     )
-    self.logger.info("Invitation send.")
+    self.logger.info("Invitation of chat call sent.")
     return response
 
 
@@ -179,7 +179,7 @@ def notify_anonymous_user_leave_agora_channel(self, conference_id: int, agora_ui
         "POST", endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/leave_agora_channel",
         payload={"conference_id": conference_id, "agora_uid": agora_uid}
     )
-    self.logger.info("Notified.")
+    self.logger.info("Notified anonymous user left the call.")
     return response
 
 
@@ -188,7 +188,7 @@ def notify_user_leave_agora_channel(self, conference_id: int, user_id: int):
         "POST", endpoint=f"{Endpoints.CALLS_V1}/leave_agora_channel",
         payload={"conference_id": conference_id, "user_id": user_id}
     )
-    self.logger.info("Notified")
+    self.logger.info(f"Notified user '{user_id}' left the call.")
     return response
 
 
@@ -251,7 +251,7 @@ def start_call(
         payload={"conference_id": conference_id, "call_sid": call_sid},
         data_type=ConferenceCallResponse
     ).conference_call
-    self.logger.info("Joined call.")
+    self.logger.info("Joined the call.")
     return response
 
 
@@ -264,5 +264,5 @@ def stop_call(
         "POST", endpoint=f"{Endpoints.CALLS_V1}/leave_conference_call",
         payload={"conference_id": conference_id, "call_sid": call_sid}
     )
-    self.logger.info("Left call.")
+    self.logger.info("Left the call.")
     return response
