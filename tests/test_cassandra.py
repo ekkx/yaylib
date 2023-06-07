@@ -19,7 +19,8 @@ class YaylibCassandraTests(YaylibTestCase):
 
     @tape.use_cassette(path + "test_get_user_merged_activities.yaml")
     def test_get_user_merged_activities(self):
-        self.api.get_user_merged_activities()
+        number = 1
+        self.api.get_user_merged_activities(number=number)
 
     # @tape.use_cassette(path + "test_received_notification.yaml")
     # def test_received_notification(self):

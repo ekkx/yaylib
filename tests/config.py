@@ -45,11 +45,11 @@ class YaylibTestCase(unittest.TestCase):
         if access_token:
             self.api = yaylib.Client(
                 access_token=access_token,
-                # loglevel_stream=logging.DEBUG,
+                loglevel_stream=logging.DEBUG,
             )
         else:
             self.api = yaylib.Client(
-                # loglevel_stream=logging.DEBUG,
+                loglevel_stream=logging.DEBUG,
             )
             self.api.login_with_email(email, password)
 

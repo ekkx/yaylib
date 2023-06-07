@@ -1343,10 +1343,10 @@ class User:
     # TODO: last_logged_in_at, created_at, updated_time_millis 確かめる
 
     __slots__ = (
-        "data", "id", "username", "prefecture", "biography", "gender", "generation",
+        "data", "id", "nickname", "prefecture", "biography", "gender", "generation",
         "last_logged_in_at", "last_logged_in_at_parsed", "created_at",
         "created_at_parsed", "badge", "followers_count", "followings_count",
-        "posts_count", "joined_groups_count", "reviews_count", "login_streak_count",
+        "posts_count", "groups_users_count", "reviews_count", "login_streak_count",
         "profile_icon", "profile_icon_thumbnail", "cover_image",
         "cover_image_thumbnail", "is_private", "is_vip", "is_vip_hidden",
         "is_chat_request_on", "mobile_number", "is_age_verified", "is_new_user",
@@ -1360,21 +1360,21 @@ class User:
     def __init__(self, data):
         self.data = data
         self.id = data.get("id")
-        self.username = data.get("nickname")
+        self.nickname = data.get("nickname")
         self.prefecture = data.get("prefecture")
         self.biography = data.get("biography")
         self.gender = data.get("gender")
         self.generation = data.get("generation")
-        self.last_logged_in_at = data.get("last_logged_in_at_seconds")
+        self.last_logged_in_at = data.get("last_logged_in_at")
         self.last_logged_in_at_parsed = parse_datetime(
-            data.get("last_logged_in_at_seconds"))
-        self.created_at = data.get("created_at_seconds")
-        self.created_at_parsed = parse_datetime(data.get("created_at_seconds"))
+            data.get("last_logged_in_at"))
+        self.created_at = data.get("created_at")
+        self.created_at_parsed = parse_datetime(data.get("created_at"))
         self.badge = data.get("title")
         self.followers_count = data.get("followers_count")
         self.followings_count = data.get("followings_count")
         self.posts_count = data.get("posts_count")
-        self.joined_groups_count = data.get("groups_users_count")
+        self.groups_users_count = data.get("groups_users_count")
         self.reviews_count = data.get("reviews_count")
         self.login_streak_count = data.get("login_streak_count")
         self.profile_icon = data.get("profile_icon")
