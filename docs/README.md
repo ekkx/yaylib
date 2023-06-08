@@ -9,10 +9,21 @@
         <li>
             <a href=#インストール>インストール</a>
             <ul>
-                <li><a href="#Pythonをインストールする">Python をインストールする</a></li>
-                <li><a href="#yaylibをインストールする">yaylib をインストールする</a></li>
+                <li><a href="#Pythonをインストール">Python をインストール</a></li>
+                <li><a href="#yaylibをインストール">yaylib をインストール</a></li>
             </ul>
         </li>
+        <li>
+            <a href="コードを書いてみる">コードを書いてみる</a>
+            <ul>
+                <li><a href="#コードエディタ">コードエディタ</a></li>
+                <li><a href="#実際にコードを書く">実際にコードを書く</a></li>
+                <li><a href="#タイムラインの取得">タイムラインの取得</a></li>
+                <li><a href="#投稿する方法">投稿する方法</a></li>
+                <li><a href="#さらに詳しい機能">さらに詳しい機能</a></li>
+            </ul>
+        </li>
+        <li><a href="コンタクト">コンタクト</a></li>
     </ul>
 </details>
 
@@ -37,15 +48,17 @@ Yay!アカウントを持っている前提で、記載しています。
 また、このライブラリを使用する前に、以下の点に注意してください。
 
 - **絶対に過度なリクエストは送信しない**
+
   膨大なデータの取得、いいね爆やレター爆の過度な実行はサーバーに負担をかけます。
   ユーザーが気持ちよく利用できるよう最低限の節度を守って使用しましょう。
 
 - **何があっても自己責任**
+
   運営の手によってアカウントが BAN されたとしてもそれは自己責任です。
 
 ## インストール
 
-### Python をインストールする
+### Python をインストール
 
 yaylib を使用するには、Python 3.11 かそれ以上のバージョンが必要になります。
 Python 3.11 のインストール方法については、以下の記事を参考にしてください。
@@ -54,9 +67,9 @@ Python 3.11 のインストール方法については、以下の記事を参�
 記事: Pythonのダウンロードとインストール | Let'sプログラミング
 </a>
 
-### yaylib をインストールする
+### yaylib をインストール
 
-「yaylib」をダウンロード・インストールするのは実は簡単です。
+「yaylib」をダウンロード・インストールするのは超簡単です。
 
 コマンドプロンプトを起動します。
 
@@ -66,13 +79,13 @@ Python 3.11 のインストール方法については、以下の記事を参�
 pip install yaylib
 ```
 
-<image alt="コマンドプロンプト<pip install yaylibの画像>">
+<image src="https://github.com/qvco/yaylib/assets/77382767/63c75259-b7de-47ba-a115-d1f14f34864a" alt="コマンドプロンプト<pip install yaylibの画像>">
 
 すぐに「yaylib」のダウンロードがはじまります。そして続けて、インストールが始まります。
 
-<image alt="コマンドプロンプト<yaylibインストール完了画像>">
+<image src="https://github.com/qvco/yaylib/assets/77382767/2751de59-96ac-4b89-9113-48cbbf8bf9d7" alt="コマンドプロンプト<yaylibインストール完了画像>">
 
-これで「yaylib」のダウンロード・インストールは完了です。
+「**Successfully installed yaylib**」と表示されていれば、「yaylib」のインストールは完了です。
 
 ## コードを書いてみる
 
@@ -190,7 +203,7 @@ bot.create_post(text="投稿したい内容")
 先ほどのコード最終行を、以下のように変更します。
 
 ```python
-# サーバーにtest.pngファイルをアップロードする
+# test.pngファイルをアップロードする
 uploaded_filename = bot.upload_image(
     image_type="post", # 画像の使い道を「投稿」に指定
     image_path="./test.png"
