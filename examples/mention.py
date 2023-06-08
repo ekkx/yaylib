@@ -2,7 +2,7 @@ import yaylib
 
 api = yaylib.Client()
 
-api.login_with_email(email="", password="")
+api.login(email="", password="")
 
 api.create_post(
     # IDが 123 のユーザーをメンションする場合

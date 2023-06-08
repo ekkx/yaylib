@@ -70,7 +70,7 @@ def get_token(
     )
 
 
-def login_with_email(self, email: str, password: str) -> LoginUserResponse:
+def login(self, email: str, password: str) -> LoginUserResponse:
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/login_with_email",
         payload={

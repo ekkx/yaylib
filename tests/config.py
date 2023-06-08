@@ -51,7 +51,7 @@ class YaylibTestCase(unittest.TestCase):
             self.api = yaylib.Client(
                 loglevel_stream=logging.DEBUG,
             )
-            self.api.login_with_email(email, password)
+            self.api.login(email, password)
 
             config["ACCESS_TOKEN"] = self.api.login_data.access_token
             with open(json_path, "w") as f:

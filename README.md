@@ -114,7 +114,7 @@ import yaylib
 
 api = yaylib.Client()
 
-api.login_with_email(email="hello@example.com", password="abc123")
+api.login(email="hello@example.com", password="abc123")
 
 api.create_post(text="Hi there.", color=2)
 ```
@@ -132,25 +132,31 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
 <table align="center">
     <thead>
         <tr>
-            <th>MindReader AI</th>
-            <th>Funktion (架空)</th>
-            <th>香ばしいボット (架空)</th>
+            <th>
+                <a href="https://yay.space/user/5855987">MindReader AI</a>
+            </th>
+            <th>
+                <a href="https://yay.space/user/5855987">Funktion (架空)</a>
+            </th>
+            <th>
+                <a href="https://yay.space/user/5855987">香ばしいボット (架空)</a>
+            </th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td align="center">
-                <a href="https://yay.space/user/5855987"><img src="https://github.com/qvco/yaylib/assets/77382767/472febe4-4c5f-490c-8417-de0d5dbbbc72" width="200px"></a>
+                <img src="https://github.com/qvco/yaylib/assets/77382767/472febe4-4c5f-490c-8417-de0d5dbbbc72" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
             </td>
             <td align="center">
-                <a href="https://yay.space/user/0"><img src="https://github.com/qvco/yaylib/assets/77382767/ff207016-21bf-4e76-b0e0-f70ebc4a121f" width="200px"></a>
+                <img src="https://github.com/qvco/yaylib/assets/77382767/ff207016-21bf-4e76-b0e0-f70ebc4a121f" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/0">ぺゅー</a></p>
             </td>
             <td align="center">
-                <a href="https://yay.space/user/0"><img src="https://github.com/qvco/yaylib/assets/77382767/2324e518-b2c8-43cd-95e5-90ee2383aec1" width="200px"></a>
+                <img src="https://github.com/qvco/yaylib/assets/77382767/2324e518-b2c8-43cd-95e5-90ee2383aec1" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/0">めんぶれ天然水。</a></p>
             </td>

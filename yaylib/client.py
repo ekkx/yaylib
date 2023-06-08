@@ -1259,13 +1259,13 @@ class Client(API):
             password
         )
 
-    def login_with_email(self, email: str, password: str) -> LoginUserResponse:
+    def login(self, email: str, password: str) -> LoginUserResponse:
         """
 
         メールアドレスでログインします
 
         """
-        return login_with_email(self, email, password)
+        return login(self, email, password)
 
     # def login_with_sns(self) -> dict:
     #     return login_with_sns(self)
