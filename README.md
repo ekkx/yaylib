@@ -24,7 +24,7 @@
     汎用的な機能を備えた、SNS「Yay!」の非公式APIです。<br />
     とてもシンプルな記述で実装できます。<br />
     <br />
-    <a href="https://github.com/qvco/yaylib"><strong>※ 改良版のライブラリはこちらから (開発中) >></strong></a>
+    <a href="https://github.com/qvco/yaylib"><strong>※ 改良版のライブラリはこちらから >></strong></a>
     <br />
     <br />
     <a href="#handshake-共同開発について">開発に参加する</a>
@@ -39,6 +39,12 @@
   <summary>- - - 目次 - - -</summary>
   <ol>
     <li>
+      <a href="#このライブラリについて">このライブラリについて</a>
+      <ul>
+        <li><a href="#改良版ライブラリyaylibへ">改良版ライブラリ「yaylib」へ</a></li>
+      </ul>
+    </li>
+    <li>
       <a href="#-使用方法">使用方法</a>
       <ul>
         <li><a href="#-ダウンロード">ダウンロード</a></li>
@@ -50,6 +56,22 @@
     <li><a href="#scroll-ライセンス--免責事項">ライセンス & 免責事項</a></li>
   </ol>
 </details>
+
+## このライブラリについて
+
+このライブラリは現在開発を行っておらず、メンテナンスも行っていません。代わりに、改良版のプロジェクト「**yaylib**」をご利用いただけます。yaylibでは、以下のような改善が行われています。
+
+- 機能の追加・改善
+- パフォーマンスの向上
+- 複数人での共同開発
+
+### 改良版ライブラリ「yaylib」へ
+
+改良バージョンのライブラリはこちらになります。ぜひご利用ください。
+
+https://github.com/qvco/yaylib
+
+プロジェクトの貢献については<a href="https://github.com/qvco/yaylib/blob/main/CONTRIBUTING.md">こちら</a>をご覧ください。
 
 ## ☕ 使用方法
 
