@@ -1152,7 +1152,7 @@ class UserTimestampResponse:
 
     def __init__(self, data):
         self.data = data
-        self.id = data.get("time")
+        self.time = data.get("time")
         self.ip_address = data.get("ip_address")
         self.country = data.get("country")
 

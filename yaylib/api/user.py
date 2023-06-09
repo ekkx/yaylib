@@ -310,7 +310,6 @@ def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
 
 
 def get_timestamp(self) -> UserTimestampResponse:
-    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V2}/timestamp",
         data_type=UserTimestampResponse
@@ -346,12 +345,12 @@ def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
     Parameters:
     ----------
 
-        - user_id: int
-        - from_follow_id: int = None
-        - followed_by_me: int = None
+        - user_id: int - (required)
+        - from_follow_id: int - (optional)
+        - followed_by_me: int - (optional)
+        - number: int - (optional)
 
     """
-    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V2}/{user_id}/followers",
         params=params, data_type=FollowUsersResponse
@@ -369,6 +368,7 @@ def get_user_followings(self, user_id: int, **params) -> FollowUsersResponse:
         - from_follow_id: int = None
         - from_timestamp: int = None
         - order_by: str = None
+        - number: int - (optional)
 
     """
     self._check_authorization()

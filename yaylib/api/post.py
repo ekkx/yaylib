@@ -463,7 +463,6 @@ def get_timeline_calls(self, **params) -> PostsResponse:
         - shared_interest_categories: bool = None
 
     """
-    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/call_timeline",
         params=params, data_type=PostsResponse
@@ -484,7 +483,6 @@ def get_conversation(self, conversation_id: int, **params) -> PostsResponse:
         - reverse: bool = True
 
     """
-    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
         params=params, data_type=PostsResponse
@@ -492,7 +490,6 @@ def get_conversation(self, conversation_id: int, **params) -> PostsResponse:
 
 
 def get_conversation_root_posts(self, post_ids: List[int]) -> PostsResponse:
-    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.CONVERSATIONS_V2}/root_posts",
         params={"ids[]": post_ids}, data_type=PostsResponse
@@ -553,7 +550,6 @@ def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
         - number: int = None
 
     """
-    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights",
         params=params, data_type=PostsResponse
@@ -573,7 +569,6 @@ def get_group_timeline_by_keyword(self, group_id: int, keyword: str, **params) -
         - only_thread_posts: bool = False
 
     """
-    self._check_authorization()
     params["keyword"] = keyword
     return self._make_request(
         "GET", endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/posts/search",
@@ -595,7 +590,6 @@ def get_group_timeline(self, group_id: int, **params) -> PostsResponse:
         - only_root: bool
 
     """
-    self._check_authorization()
     params["group_id"] = group_id
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/group_timeline",
@@ -614,7 +608,6 @@ def get_timeline_by_hashtag(self, hashtag: str, **params) -> PostsResponse:
         - number: int - (optional)
 
     """
-    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/tags/{hashtag}",
         params=params, data_type=PostsResponse
@@ -681,7 +674,6 @@ def get_post_reposts(self, post_id: int, **params: int) -> PostsResponse:
 
 
 def get_posts(self, post_ids: List[int]) -> PostsResponse:
-    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/multiple",
         params={"post_ids[]": post_ids}, data_type=PostsResponse
@@ -691,7 +683,6 @@ def get_posts(self, post_ids: List[int]) -> PostsResponse:
 def get_recommended_post_tags(
         self, tag: str = None, save_recent_search: bool = False
 ) -> PostTagsResponse:
-    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V1}/recommended_tag",
         payload={"tag": tag, "save_recent_search": save_recent_search},
@@ -710,7 +701,6 @@ def get_recommended_posts(self, **params) -> PostsResponse:
         - number: int - (Optional)
 
     """
-    self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/recommended_timeline",
         params=params, data_type=PostsResponse
@@ -728,7 +718,6 @@ def get_timeline_by_keyword(self, keyword: str = None, **params) -> PostsRespons
         - number: int
 
     """
-    self._check_authorization()
     params["keyword"] = keyword
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/search",
