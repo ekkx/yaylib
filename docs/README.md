@@ -14,10 +14,15 @@
             </ul>
         </li>
         <li>
-            <a href="コードを書いてみる">コードを書いてみる</a>
+            <a href="コードを書く準備">コードを書く準備</a>
             <ul>
+                <li><a href="#本記事のゴール">目標</a></li>
                 <li><a href="#コードエディタ">コードエディタ</a></li>
-                <li><a href="#実際にコードを書く">実際にコードを書く</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#実際にコードを書く">実際にコードを書く</a>
+            <ul>
                 <li><a href="#タイムラインの取得">タイムラインの取得</a></li>
                 <li><a href="#投稿する方法">投稿する方法</a></li>
                 <li><a href="#さらに詳しい機能">さらに詳しい機能</a></li>
@@ -31,14 +36,14 @@
 
 主な機能は、以下の通りです。
 
-- **投稿、リプライ、スレッド、グループの作成**
+- **投稿、スレッド、グループの作成**
 - **指定したユーザー、投稿、グループの詳細情報を入手**
 - **投稿、ユーザーの検索**
-- **フォロー、いいね、age↑、ブロック**
+- **フォロー、いいね、リプ、age↑、ブロック**
 - **指定したユーザーの投稿、レター、サークル、フォロワーの取得**
 
 などです。すべて合わせると、**200 を超える機能**があります。
-より詳細を知りたい方は、<a>ドキュメント</a>をご覧ください。
+ここでは紹介しきれないので、より詳細を知りたい方は、<a>ドキュメント</a>をご覧ください。
 
 ### 前提条件
 
@@ -63,7 +68,7 @@ Yay!アカウントを持っている前提で、記載しています。
 yaylib を使用するには、Python 3.11 かそれ以上のバージョンが必要になります。
 Python 3.11 のインストール方法については、以下の記事を参考にしてください。
 
-<a href=#https://www.javadrive.jp/python/install/index1.html>
+<a href=https://www.javadrive.jp/python/install/index1.html>
 記事: Pythonのダウンロードとインストール | Let'sプログラミング
 </a>
 
@@ -87,32 +92,32 @@ pip install yaylib
 
 「**Successfully installed yaylib**」と表示されていれば、「yaylib」のインストールは完了です。
 
-## コードを書いてみる
+## コードを書く準備
 
-<h4>【本記事のゴール】</h4>
+####【本記事のゴール】
 
 - yaylib を使用して、
 - 投稿を検索したり、
-- Yay!に、投稿する。（文字だけじゃなくて、画像投稿も可）
-- それ以外にも便利な機能を紹介しています。
+- Yay!に投稿する。（文字だけじゃなくて、画像投稿も可）
+- それ以外の機能も紹介しています。
 
 ### コードエディタ
 
-コードエディタはなんでも構いませんが、ここでは Visual Studio Code を使用します。
-Visual Studio Code は、多くのプログラミング言語に対応しているテキストエディタです。
+コードエディタはなんでも構いませんが、ここでは Visual Studio Code（以下、VS Code という）を使用します。
+VS Code は、多くのプログラミング言語に対応しているテキストエディタです。
 
 <a href="https://code.visualstudio.com/download">
-Visual Studio Code のダウンロードはこちらから
+    Visual Studio Code のダウンロードはこちらから
 </a>
 
-### 実際にコードを書く
+## 実際にコードを書く
 
 場所はどこでも構いませんので、プロジェクトのフォルダーを作成します。
 フォルダー名は「my_bot」にでもしておきましょう。
 
 <image alt="フォルダ作成のgif">
 
-次に、作成したフォルダーを Visual Studio Code で開き、Python ファイルを作成します。
+次に、作成したフォルダーを VS Code で開き、Python ファイルを作成します。
 ファイル名はなんでも構いません。
 
 <image alt="bot.pyの作成gif">
@@ -203,14 +208,14 @@ bot.create_post(text="投稿したい内容")
 先ほどのコード最終行を、以下のように変更します。
 
 ```python
-# test.pngファイルをアップロードする
-uploaded_filename = bot.upload_image(
+# test.pngファイルをサーバーにアップロードする
+filename = bot.upload_image(
     image_type="post", # 画像の使い道を「投稿」に指定
     image_path="./test.png"
 )
 
 # アップロードした画像の名前を指定して投稿する
-bot.create_post(text="投稿したい内容", attachment_filename=uploaded_filename)
+bot.create_post(text="投稿したい内容", attachment_filename=filename)
 ```
 
 ### さらに詳しい機能
