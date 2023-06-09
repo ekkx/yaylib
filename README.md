@@ -1,200 +1,234 @@
-<div><a id="readme-top"></a></div>
-<p align="center">
-    <img src=https://img.shields.io/github/stars/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue />
-    <img src=https://img.shields.io/github/forks/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue />
-    <img src=https://img.shields.io/github/issues/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational />
-    <img src=https://img.shields.io/github/issues-pr/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational />
-</p>
-<br />
-<p align="center">
-    <a href="https://github.com/othneildrew/Best-README-Template">
-        <img src="https://github.com/qvco/yaylib/assets/77382767/6e72ec90-b8e9-40bf-a7ad-34fb2ccea0f9" alt="Logo" height="300px">
-    </a>
-    <!-- <a href="https://github.com/othneildrew/Best-README-Template">
-        <img src="https://github.com/qvco/yaylib/assets/77382767/2cdc26e5-7195-4df3-94c5-db840bdd57ff" alt="Logo" height="300">
-    </a> -->
-    <!-- <a href="https://github.com/othneildrew/Best-README-Template">
-        <img src="https://github.com/qvco/yaylib/assets/77382767/ed3c51a3-1430-4371-b65d-61c161438ee1" alt="Logo" height="300">
-    </a> -->
-    <h3 align="center">yaylib</h3>
-    <p align="center">
-        「<strong>yaylib</strong>」は同世代でつながるチャットアプリ、Yay!（イェイ）の API クライアントです。<br />
-        このライブラリを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
-        <br />
-        <br />
-        <a href="https://github.com/qvco/yaylib">
-            <strong>詳しい機能の詳細や使い方はこちらから »</strong>
-        </a>
-        <br />
-        <br />
-        <a href="https://github.com/qvco/yaylib/issues">Report Bug</a>
-        ·
-        <a href="https://github.com/qvco/yaylib/issues">Request Feature</a>
-        ·
-        <a href="https://discord.gg/MEuBfNtqRN">Join the discord</a>
-    </p>
-</p>
+# yaylib へようこそ！
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <!-- <li><a href="#機能--特徴">機能 & 特徴</a></li> -->
-    <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
-    <li><a href="#インストール">インストール</a></li>
-    <li><a href="#使用例">使用例</a></li>
-    <li><a href="#yaylib-で誕生したロボットたち">yaylib で誕生したロボットたち</a></li>
-    <li><a href="#共同開発について">共同開発について</a></li>
-    <li><a href="#免責事項">免責事項</a></li>
-    <li><a href="#利用許諾">利用許諾</a></li>
-  </ol>
+<image src="https://github.com/qvco/yaylib/assets/77382767/96f5795d-1ba5-4ec6-b00c-ffd245968dc3" width="550px">
+
+ここでは「yaylib」のインストール方法から基本的な使い方を紹介します。
+
+「yaylib」の主な機能は、以下の通りです。
+
+- **投稿、スレッド、グループの作成**
+- **指定したユーザー、投稿、グループの詳細情報を入手**
+- **投稿、ユーザーの検索**
+- **フォロー、いいね、リプ、age↑、ブロック**
+- **指定したユーザーの投稿、レター、サークル、フォロワーの取得**
+
+などなど、すべて合わせると、**200 を超える機能**があります。
+
+ここでは紹介しきれないので、より詳細を知りたい方は、<a href="#さらに詳しい機能ドキュメント">ドキュメント</a>をご覧ください。
+
+<details open>
+    <summary>もくじ</summary>
+    <ol>
+        <li><a href="前提条件">前提条件</a></li>
+        <li>
+            <a href=#インストール>インストール</a>
+            <ul>
+                <li><a href="#python-をインストール">Python をインストール</a></li>
+                <li><a href="#yaylib-をインストール">yaylib をインストール</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="コードを書く準備">コードを書く準備</a>
+            <ul>
+                <li><a href="#本記事のゴール">目標</a></li>
+                <li><a href="#コードエディター">コードエディター</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#実際にコードを書く">実際にコードを書く</a>
+            <ul>
+                <li><a href="#タイムラインの取得">タイムラインの取得</a></li>
+                <li><a href="#投稿する方法">投稿する方法</a></li>
+                <li><a href="#さらに詳しい機能ドキュメント">さらに詳しい機能&ドキュメント</a></li>
+            </ul>
+        </li>
+        <li><a href="コンタクト">コンタクト</a></li>
+    </ol>
 </details>
 
-<!-- 機能 & 特徴 -->
+## 前提条件
 
-<!-- ## 機能 & 特徴
+Yay!アカウントを持っている前提で、記載しています。
+まだの方は、アカウント登録を済ませておいて下さい。
 
-そこは将来何しろこんな参考者というのの時よりしでた。何だか結果に堕落児はよくそのらくたですまでで知っばいるにも影響突き抜けますですば、いっそにもしたましだっます。支を至るたものはなお生涯にちょうどありでする。
+また、このライブラリを使用する前に、以下の点に注意してください。
 
-Here's why:
+- **絶対に過度なリクエストは送信しない**
 
-- しかるに岡田さんで準備本人これから把持に見るたごまかしこの英文いつか発展よりに従ってご意味でしょたでしょですて
-- 否さてお師範をありのしかこれから安泰と始めたて、その会にも申し上げうてという春にあるばいうた
-- そのため書物のうちそんな国家は私上に取り巻かんかと嘉納さんを罹りましん :smile:
+  膨大なデータの取得、いいね爆やレター爆の過度な実行はサーバーに負担をかけます。
+  ユーザーが気持ちよく利用できるよう最低限の節度を守って使用しましょう。
 
-TODO:
+- **何があっても自己責任**
 
-- 非同期処理に対応
-
-Use the `BLANK_README.md` to get started. -->
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
-
-<!-- Buy me a coffee -->
-
-## Buy me a coffee
-
-もしこのライブラリが気に入っていただけたら  
-私たちに ↓ コーヒー ↓ をお恵みくださいませ！！❤
-
-<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
-
-<!-- インストール -->
+  運営の手によってアカウントが BAN されたとしてもそれは自己責任です。
 
 ## インストール
 
-**※ Python 3.11 かそれ以上のバージョンが必要です。**
+### Python をインストール
 
-ライブラリをインストールするには、以下のコマンドを実行します:
+yaylib を使用するには、Python 3.11 かそれ以上のバージョンが必要になります。
+Python 3.11 のインストール方法については、以下の記事を参考にしてください。
+
+<a href=https://www.javadrive.jp/python/install/index1.html>
+記事: Pythonのダウンロードとインストール | Let'sプログラミング
+</a>
+
+### yaylib をインストール
+
+「yaylib」をダウンロード・インストールするのは超簡単です。
+
+コマンドプロンプトを起動します。
+
+コマンドプロンプトに「pip install yaylib」と入力するだけです。最後にエンターキーをおします。
 
 ```bash
 pip install yaylib
 ```
 
-開発バージョンをインストールするには、以下の手順を実行します:
+<image src="https://github.com/qvco/yaylib/assets/77382767/63c75259-b7de-47ba-a115-d1f14f34864a" alt="コマンドプロンプト<pip install yaylibの画像>">
 
-```bash
-git clone https://github.com/qvco/yaylib
+すぐに「yaylib」のダウンロードがはじまります。そして続けて、インストールが始まります。
 
-cd yaylib
+<image src="https://github.com/qvco/yaylib/assets/77382767/2751de59-96ac-4b89-9113-48cbbf8bf9d7" alt="コマンドプロンプト<yaylibインストール完了画像>">
 
-pip install -r requirements.txt
+「**Successfully installed yaylib**」と表示されていれば、「yaylib」のインストールは完了です。
 
-pip install -e .
-```
+## コードを書く準備
 
-<!-- 使用例 -->
+#### 【本記事のゴール】
 
-## 使用例
+- yaylib を使用して、
+- 投稿を検索したり、
+- Yay!に投稿する。（文字だけじゃなくて、画像投稿も可）
+- それ以外の機能も紹介しています。
 
-メールアドレスとパスワードを用いてログイン後、新しく投稿を作成するコードです。
+### コードエディター
+
+コードエディターはなんでも構いませんが、ここでは Visual Studio Code（以下、VS Code という）を使用します。
+VS Code は、多くのプログラミング言語に対応しているテキストエディターです。
+
+<a href="https://code.visualstudio.com/download">
+    Visual Studio Code のダウンロードはこちらから
+</a>
+
+## 実際にコードを書く
+
+場所はどこでも構いませんので、プロジェクトのフォルダーを作成します。
+フォルダー名は「my_bot」にでもしておきましょう。
+
+<image alt="フォルダ作成のgif">
+
+次に、作成したフォルダーを VS Code で開き、Python ファイルを作成します。
+ファイル名はなんでも構いません。
+
+<image alt="bot.pyの作成gif">
+
+### タイムラインの取得
+
+投稿を検索して、取得する方法を記します。
+
+投稿を検索するにあたり、下記条件が設定できます。
+
+（よく使用するものを、ピックアップしてみました。）
+
+- キーワード
+- ハッシュタグ
+- 取得件数
+
+具体的な使い方は、下記コードをご確認ください。（注釈を入れました。）
 
 ```python
 import yaylib
 
-api = yaylib.Client()
+bot = yaylib.Client()
 
-api.login(email="hello@example.com", password="abc123")
 
-api.create_post(text="Hi there.", color=2)
+# タイムラインを取得
+timeline = bot.get_timeline(
+    noreply_mode=True, # 返信も取得するか
+    number=10 # 取得件数
+)
+# 代表的な取得情報を表示
+for post in timeline.posts:
+    print(post.user.nickname) # 投稿者の名前
+    print(post.text) # 投稿本文
+    print(post.likes_count) # いいね数
+    print(post.reposts_count) # (´∀｀∩)↑age↑の数
+
+
+# キーワードでタイムラインを取得
+timeline = bot.get_timeline_by_keyword(
+    keyword="おはようございます", # 検索キーワード
+    number=10 # 取得件数
+)
+# 代表的な取得情報を表示
+for post in timeline.posts:
+    print(post.user.nickname) # 投稿者の名前
+    print(post.text) # 投稿本文
+    print(post.likes_count) # いいね数
+    print(post.reposts_count) # (´∀｀∩)↑age↑の数
+
+
+# ハッシュタグでタイムラインを取得
+timeline = bot.get_timeline_by_hashtag(
+    hashtag="いいねでレター", # 検索ハッシュタグ
+    number=10 # 取得件数
+)
+# 代表的な取得情報を表示
+for post in timeline.posts:
+    print(post.user.nickname) # 投稿者の名前
+    print(post.text) # 投稿本文
+    print(post.likes_count) # いいね数
+    print(post.reposts_count) # (´∀｀∩)↑age↑の数
 ```
 
-より詳細な使用例については、[こちら](https://github.com/qvco/yaylib/blob/master/examples) を参照してください。
+### 投稿する方法
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+#### 文字のみを投稿する場合
 
-<!-- yaylib で誕生したボットの一覧 -->
+```python
+import yaylib
 
-## yaylib で誕生したロボットたち
+# 認証情報
+email = "メールアドレス"
+password = "パスワード"
 
-yaylib を用いて開発したロボットがある場合は、ぜひ教えてください！
+bot = yaylib.Client()
 
-<table align="center">
-    <thead>
-        <tr>
-            <th>
-                <a href="https://yay.space/user/5855987">MindReader AI</a>
-            </th>
-            <th>
-                <a href="https://yay.space/user/5855987">Funktion (架空)</a>
-            </th>
-            <th>
-                <a href="https://yay.space/user/5855987">香ばしいボット (架空)</a>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td align="center">
-                <img src="https://github.com/qvco/yaylib/assets/77382767/472febe4-4c5f-490c-8417-de0d5dbbbc72" width="200px">
-                <br />
-                <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
-            </td>
-            <td align="center">
-                <img src="https://github.com/qvco/yaylib/assets/77382767/ff207016-21bf-4e76-b0e0-f70ebc4a121f" width="200px">
-                <br />
-                <p>開発者: <a href="https://yay.space/user/0">ぺゅー</a></p>
-            </td>
-            <td align="center">
-                <img src="https://github.com/qvco/yaylib/assets/77382767/2324e518-b2c8-43cd-95e5-90ee2383aec1" width="200px">
-                <br />
-                <p>開発者: <a href="https://yay.space/user/0">めんぶれ天然水。</a></p>
-            </td>
-        </tr>
-    </tbody>
-</table>
+# ログインする
+bot.login(email, password)
 
-<!-- 共同開発について -->
+# 投稿する
+bot.create_post(text="投稿したい内容")
+```
 
-## 共同開発について
+#### 文字に加え、画像も投稿する場合
 
-私たちと一緒に開発することに興味を持っていただけているなら大歓迎です。
+ローカルに保存している画像ファイルを、送信するケースになります。
 
-- <a href="https://github.com/qvco/yaylib/pulls">プルリクエストを送信する</a>
-- nikola.desuga@gmail.com にメールを送信する
-- <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
+先ほどのコード最終行を、以下のように変更します。
 
-のいずれかの方法でコンタクトしてください！
+```python
+# test.pngファイルをサーバーにアップロードする
+filename = bot.upload_image(
+    image_type="post", # 画像の使い道を「投稿」に指定
+    image_path="./test.png"
+)
 
-<!-- サポート -->
+# アップロードした画像の名前を指定して投稿する
+bot.create_post(text="投稿したい内容", attachment_filename=filename)
+```
 
-<!-- ## サポート
+### さらに詳しい機能&ドキュメント
 
-Whether you use this project, have learned something from it, or just like it, please consider supporting it by buying me a coffee, so I can dedicate more time on open-source projects like this :)
+ここまでで紹介した機能以外にももっとたくさんの便利な機能があります。
 
-<a href="https://www.buymeacoffee.com/" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a> -->
+ですがドキュメントはまだ整備できていないので、しばらくはコードエディターのドット入力補完を使ってくださいな。😙
 
-<!-- 免責事項 -->
+<image alt="ドット補完の画像">
 
-## 免責事項
+<!-- さらに詳しい機能の種類や詳細についてはこちらを確認してください。 -->
 
-yaylib は、API の公式なサポートやメンテナンスを提供するものではありません。このクライアントを使用する場合、利用者は**リスクや責任を自己負担**できるものとします。このクライアントによって提供される情報やデータの正確性、信頼性、完全性、適時性について、いかなる保証も行いません。また、このクライアントの使用によって生じた損害や不利益について、一切の責任を負いかねます。利用者は自己の責任において、このクライアントを使用し、API にアクセスするものとします。なお、この免責事項は予告なく変更される場合があります。
+## コンタクト
 
-<!-- 利用許諾 -->
-
-## 利用許諾
-
-フルライセンスは [こちら](https://github.com/qvco/yaylib/blob/master/LICENSE) からご確認いただけます。  
-このプロジェクトは、 **【MIT ライセンス】** の条件の下でライセンスされています。
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+ここまでの説明がわからなかったり、バグを発見したり、もし一緒に開発したいと思ってくださる方がいましたら、ぜひ 「yaylib」 の <a href="https://discord.gg/MEuBfNtqRN">Discord サーバー</a>に参加して声をかけてください。
