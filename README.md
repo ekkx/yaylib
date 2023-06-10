@@ -22,7 +22,7 @@
         このライブラリを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
         <br />
         <br />
-        <a href="https://github.com/qvco/yaylib">
+        <a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">
             <strong>詳しい機能の詳細や使い方はこちらから »</strong>
         </a>
         <br />
@@ -114,9 +114,9 @@ import yaylib
 
 api = yaylib.Client()
 
-api.login_with_email(email="hello@example.com", password="abc123")
+api.login(email="メールアドレス", password="パスワード")
 
-api.create_post(text="Hi there.", color=2)
+api.create_post(text="初めての投稿！", color=2)
 ```
 
 より詳細な使用例については、[こちら](https://github.com/qvco/yaylib/blob/master/examples) を参照してください。

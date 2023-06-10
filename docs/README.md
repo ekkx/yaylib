@@ -114,14 +114,16 @@ VS Code は、多くのプログラミング言語に対応しているテキス
 ## 実際にコードを書く
 
 場所はどこでも構いませんので、プロジェクトのフォルダーを作成します。
+
 フォルダー名は「my_bot」にでもしておきましょう。
 
-<image alt="フォルダ作成のgif">
+<image src="https://github.com/qvco/yaylib/assets/77382767/56fa9a2d-b9d4-446b-b937-d0f8d22a99c4" alt="フォルダ作成のgif">
 
 次に、作成したフォルダーを VS Code で開き、Python ファイルを作成します。
-ファイル名はなんでも構いません。
 
-<image alt="bot.pyの作成gif">
+ファイル名はなんでも構いませんが拡張子を必ず「.py」にしましょう。
+
+<image src="https://github.com/qvco/yaylib/assets/77382767/a798d90b-2ae4-428f-8653-ad420082edde" alt="bot.pyの作成gif" width="800px">
 
 ### タイムラインの取得
 
@@ -225,7 +227,7 @@ bot.create_post(text="投稿したい内容", attachment_filename=filename)
 
 ですがドキュメントはまだ整備できていないので、しばらくはコードエディターのドット入力補完を使ってくださいな。😙
 
-<image alt="ドット補完の画像">
+<image src="https://github.com/qvco/yaylib/assets/77382767/666e6eb9-bfeb-4b4c-8f6c-033555436fc3" alt="ドット補完の画像">
 
 <!-- さらに詳しい機能の種類や詳細についてはこちらを確認してください。 -->
 
