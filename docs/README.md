@@ -5,21 +5,21 @@
 <details open>
     <summary>もくじ</summary>
     <ol>
-        <li><a href="インストール">インストール</a></li>
-        <li><a href="client">Client</a></li>
+        <li><a href="#インストール">インストール</a></li>
+        <li><a href="#client">Client</a></li>
         <!-- <li><a href="async-client">Async Client</a></li> -->
-        <li><a href="api-一覧">API 一覧</a></li>
+        <li><a href="#api-一覧">API 一覧</a></li>
         <ul>
-            <li><a href="ログイン-api">ログイン API</a></li>
-            <li><a href="ユーザー-api">ユーザー API</a></li>
-            <li><a href="投稿-api">投稿 API</a></li>
-            <li><a href="スレッド-api">スレッド API</a></li>
-            <li><a href="レター-api">レター API</a></li>
-            <li><a href="チャット-api">チャット API</a></li>
-            <li><a href="グループ-api">グループ API</a></li>
-            <li><a href="通話-api">通話 API</a></li>
-            <li><a href="通知-api">通知 API</a></li>
-            <li><a href="その他-api">その他 API</a></li>
+            <li><a href="#ログイン-api">ログイン API</a></li>
+            <li><a href="#ユーザー-api">ユーザー API</a></li>
+            <li><a href="#投稿-api">投稿 API</a></li>
+            <li><a href="#スレッド-api">スレッド API</a></li>
+            <li><a href="#レター-api">レター API</a></li>
+            <li><a href="#チャット-api">チャット API</a></li>
+            <li><a href="#グループ-api">グループ API</a></li>
+            <li><a href="#通話-api">通話 API</a></li>
+            <li><a href="#通知-api">通知 API</a></li>
+            <li><a href="#その他-api">その他 API</a></li>
         </ul>
     </ol>
 </details>
@@ -27,6 +27,10 @@
 ## インストール
 
 インストール手順の説明
+
+## Client
+
+クライアントの使い方の説明
 
 ## API 一覧
 
