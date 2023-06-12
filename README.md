@@ -10,19 +10,13 @@
     <a href="https://github.com/othneildrew/Best-README-Template">
         <img src="https://github.com/qvco/yaylib/assets/77382767/6e72ec90-b8e9-40bf-a7ad-34fb2ccea0f9" alt="Logo" height="300px">
     </a>
-    <!-- <a href="https://github.com/othneildrew/Best-README-Template">
-        <img src="https://github.com/qvco/yaylib/assets/77382767/2cdc26e5-7195-4df3-94c5-db840bdd57ff" alt="Logo" height="300">
-    </a> -->
-    <!-- <a href="https://github.com/othneildrew/Best-README-Template">
-        <img src="https://github.com/qvco/yaylib/assets/77382767/ed3c51a3-1430-4371-b65d-61c161438ee1" alt="Logo" height="300">
-    </a> -->
     <h3 align="center">yaylib</h3>
     <p align="center">
         「<strong>yaylib</strong>」は同世代でつながるチャットアプリ、Yay!（イェイ）の API クライアントです。<br />
         このライブラリを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
         <br />
         <br />
-        <a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">
+        <a href="https://github.com/qvco/yaylib/blob/master/docs/README.md">
             <strong>詳しい機能の詳細や使い方はこちらから »</strong>
         </a>
         <br />
@@ -36,6 +30,7 @@
 </p>
 
 <!-- TABLE OF CONTENTS -->
+
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -49,26 +44,6 @@
     <li><a href="#利用許諾">利用許諾</a></li>
   </ol>
 </details>
-
-<!-- 機能 & 特徴 -->
-
-<!-- ## 機能 & 特徴
-
-そこは将来何しろこんな参考者というのの時よりしでた。何だか結果に堕落児はよくそのらくたですまでで知っばいるにも影響突き抜けますですば、いっそにもしたましだっます。支を至るたものはなお生涯にちょうどありでする。
-
-Here's why:
-
-- しかるに岡田さんで準備本人これから把持に見るたごまかしこの英文いつか発展よりに従ってご意味でしょたでしょですて
-- 否さてお師範をありのしかこれから安泰と始めたて、その会にも申し上げうてという春にあるばいうた
-- そのため書物のうちそんな国家は私上に取り巻かんかと嘉納さんを罹りましん :smile:
-
-TODO:
-
-- 非同期処理に対応
-
-Use the `BLANK_README.md` to get started. -->
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 <!-- Buy me a coffee -->
 
@@ -102,6 +77,8 @@ pip install -r requirements.txt
 
 pip install -e .
 ```
+
+「yaylib」の始め方や機能&特徴については、[こちら](https://github.com/qvco/yaylib/blob/master/docs/TUTORIAL.md) を参照してください。
 
 <!-- 使用例 -->
 
@@ -169,14 +146,6 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
 - <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
 
 のいずれかの方法でコンタクトしてください！
-
-<!-- サポート -->
-
-<!-- ## サポート
-
-Whether you use this project, have learned something from it, or just like it, please consider supporting it by buying me a coffee, so I can dedicate more time on open-source projects like this :)
-
-<a href="https://www.buymeacoffee.com/" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a> -->
 
 <!-- 免責事項 -->
 

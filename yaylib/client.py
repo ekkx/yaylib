@@ -360,7 +360,6 @@ class Client(API):
 
             - name: str - (required)
             - with_user_ids: List[int] - (required)
-            - chat_room_ids: List[int] - (required)
             - icon_filename: str - (optional)
             - background_filename: str - (optional)
 
@@ -386,7 +385,7 @@ class Client(API):
         Parameters
         ----------
 
-            - with_user_ids: List[int] - (required)
+            - with_user_id: int - (required)
             - matching_id: str - (optional)
             - hima_chat: bool - (optional)
 

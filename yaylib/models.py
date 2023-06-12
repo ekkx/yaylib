@@ -38,10 +38,9 @@ class Activity:
             ]
 
         self.from_post_ids = data.get("from_post_ids")
-
         self.vip_reward = data.get("vip_reward")
-
         self.metadata = data.get("metadata")
+
         # if self.metadata is not None:
         #     self.metadata = Metadata(self.metadata)
 
