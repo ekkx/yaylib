@@ -5,7 +5,8 @@ class Activity:
 
     __slots__ = (
         "data", "id", "created_at", "created_at_parsed", "type", "user", "from_post",
-        "to_post", "group", "followers", "from_post_ids", "vip_reward", "metadata",
+        "to_post", "group", "followers", "from_post_ids", "vip_reward",
+        "is_bulk_invitation",
     )
 
     def __init__(self, data):
@@ -39,10 +40,7 @@ class Activity:
 
         self.from_post_ids = data.get("from_post_ids")
         self.vip_reward = data.get("vip_reward")
-        self.metadata = data.get("metadata")
-
-        # if self.metadata is not None:
-        #     self.metadata = Metadata(self.metadata)
+        self.is_bulk_invitation = data.get("is_bulk_invitation")
 
     def __repr__(self):
         return f"Activity(data={self.data})"

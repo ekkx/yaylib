@@ -51,7 +51,7 @@ class Client(API):
 
     ---
 
-    ### Yay! API v3 Client
+    ### Yay! (nanameue, Inc.) API Client
 
     Copyright (c) 2023 Qvco, Konn
 
@@ -1247,7 +1247,7 @@ class Client(API):
     ) -> TokenResponse:
         """
 
-        トークンを再取得します
+        アクセストークンを再発行します
 
         """
         return get_token(
