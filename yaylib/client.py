@@ -1284,9 +1284,19 @@ class Client(API):
     #     return register_device_token(self)
 
     def resend_confirm_email(self) -> dict:
+        """
+        
+        確認メールを再送信します
+        
+        """
         return resend_confirm_email(self)
 
     def restore_user(self, user_id: int) -> LoginUserResponse:
+        """
+        
+        ユーザーを復元します
+        
+        """
         return restore_user(self, user_id)
 
     def revoke_tokens(self) -> dict:

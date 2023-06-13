@@ -120,7 +120,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 ```
 
 一定時間内に何度もログインすると、**429 Too Many Requests エラー**が発生します。
-よって、初回実行するときは、② の方法でアクセストークンを取得し、以後は ① のようにアクセストークンを使用してクライアントを初期化することをお勧めします。
+よって、初回実行するときは、② の方法でアクセストークンを取得し、以後は ① のように<ins>アクセストークンを使用してクライアントを初期化すること</ins>をお勧めします。
 
 ※ アクセストークンには有効期限が設けられており、24 時間が経過する前に<a href="#get-token">`get_token()`</a>関数を使用するか、ログインして再発行してください。
 
@@ -148,6 +148,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<th>メソッド</th>
 		<th>引数</th>
 		<th>型</th>
+		<th>返り値</th>
 		<th>説明</th>
 	</tr>
     <!-- change_email -->
@@ -155,6 +156,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="3"><code>change_email()</code></td>
 		<td>email</td>
 		<td><code>str</code></td>
+		<td rowspan="3"><code><a href="#">LoginUpdateResponse</a></code></td>
 		<td rowspan="3">メールアドレスを変更します</td>
 	</tr>
 	<tr>
@@ -165,11 +167,25 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td>email_grant_token</td>
 		<td><code>str</code></td>
 	</tr>
+    <!-- change_password -->
+    <tr>
+		<td rowspan="2"><code>change_password()</code></td>
+		<td>current_password</td>
+		<td><code>str</code></td>
+		<td rowspan="2"><code><a href="#">LoginUpdateResponse</a></code></td>
+		<td rowspan="2">パスワードを変更します</td>
+	</tr>
+	<tr>
+		<td>new_password</td>
+		<td><code>str</code></td>
+	</tr>
     <!-- get_token -->
-	<tr id="get-token">
+    <a id="get-token"></a>
+	<tr>
 		<td rowspan="4"><code>get_token()</code></td>
 		<td>grant_type</td>
 		<td><code>str</code></td>
+        <td rowspan="4"><code><a href="#">TokenResponse</a></code></td>
 		<td rowspan="4">
         アクセストークンを再発行します。<br>
         ※ <code>grant_type</code>が"refresh_token"の場合は、emailとpasswordは必要ありません。
@@ -187,7 +203,73 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td>password</td>
 		<td><code>str</code></td>
 	</tr>
+    <!-- login -->
+    <tr>
+		<td rowspan="2"><code>login()</code></td>
+		<td>email</td>
+		<td><code>str</code></td>
+		<td rowspan="2"><code><a href="#">LoginUserResponse</a></code></td>
+		<td rowspan="2">メールアドレスでログインします</td>
+	</tr>
+	<tr>
+		<td>password</td>
+		<td><code>str</code></td>
+	</tr>
+    <!-- logout -->
+    <tr>
+		<td><code>logout()</code></td>
+		<td></td>
+		<td></td>
+		<td><code>dict</code></td>
+		<td>ログアウトします</td>
+	</tr>
+    <!-- resend_confirm_email -->
+    <tr>
+		<td><code>resend_confirm_email()</code></td>
+		<td></td>
+		<td></td>
+		<td><code>dict</code></td>
+		<td>確認メールを再送信します</td>
+	</tr>
+    <!-- restore_user -->
+    <tr>
+		<td><code>restore_user()</code></td>
+		<td>user_id</td>
+		<td>int</td>
+		<td><code><a href="#">LoginUserResponse</a></code></td>
+		<td>ユーザーを復元します</td>
+	</tr>
+    <!-- revoke_tokens -->
+    <tr>
+		<td><code>revoke_tokens()</code></td>
+		<td></td>
+		<td></td>
+		<td><code>dict</code></td>
+		<td>トークンを無効化します</td>
+	</tr>
+    <!-- save_account_with_email -->
+    <tr>
+		<td rowspan="4"><code>save_account_with_email()</code></td>
+		<td>email</td>
+		<td><code>str</code></td>
+		<td rowspan="4"><code><a href="#">LoginUpdateResponse</a></code></td>
+		<td rowspan="4">メールアドレスでアカウントを保存します</td>
+	</tr>
+	<tr>
+		<td>password</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>current_password</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>email_grant_token</td>
+		<td><code>str</code></td>
+	</tr>
 </table>
+
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### ユーザー API
 
@@ -206,73 +288,23 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+
 ### 投稿 API
 
-<table>
-    <tr>
-		<th>メソッド</th>
-		<th>引数</th>
-		<th>説明</th>
-	</tr>
-    <tr>
-		<td><code>accept_moderator_offer()</code></td>
-		<td>
-            <li>group_id: int</li>
-        </td>
-		<td>グループ副管理人の権限オファーを引き受けます</td>
-	</tr>
-</table>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### スレッド API
 
-<table>
-    <tr>
-		<th>メソッド</th>
-		<th>引数</th>
-		<th>説明</th>
-	</tr>
-    <tr>
-		<td><code>accept_moderator_offer()</code></td>
-		<td>
-            <li>group_id: int</li>
-        </td>
-		<td>グループ副管理人の権限オファーを引き受けます</td>
-	</tr>
-</table>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### レター API
 
-<table>
-    <tr>
-		<th>メソッド</th>
-		<th>引数</th>
-		<th>説明</th>
-	</tr>
-    <tr>
-		<td><code>accept_moderator_offer()</code></td>
-		<td>
-            <li>group_id: int</li>
-        </td>
-		<td>グループ副管理人の権限オファーを引き受けます</td>
-	</tr>
-</table>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### チャット API
 
-<table>
-    <tr>
-		<th>メソッド</th>
-		<th>引数</th>
-		<th>説明</th>
-	</tr>
-    <tr>
-		<td><code>accept_moderator_offer()</code></td>
-		<td>
-            <li>group_id: int</li>
-        </td>
-		<td>グループ副管理人の権限オファーを引き受けます</td>
-	</tr>
-</table>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### グループ API
 
@@ -384,56 +416,17 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+
 ### 通話 API
 
-<table>
-    <tr>
-		<th>メソッド</th>
-		<th>引数</th>
-		<th>説明</th>
-	</tr>
-    <tr>
-		<td><code>accept_moderator_offer()</code></td>
-		<td>
-            <li>group_id: int</li>
-        </td>
-		<td>グループ副管理人の権限オファーを引き受けます</td>
-	</tr>
-</table>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### 通知 API
 
-<table>
-    <tr>
-		<th>メソッド</th>
-		<th>引数</th>
-		<th>説明</th>
-	</tr>
-    <tr>
-		<td><code>accept_moderator_offer()</code></td>
-		<td>
-            <li>group_id: int</li>
-        </td>
-		<td>グループ副管理人の権限オファーを引き受けます</td>
-	</tr>
-</table>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### その他 API
-
-<table>
-    <tr>
-		<th>メソッド</th>
-		<th>引数</th>
-		<th>説明</th>
-	</tr>
-    <tr>
-		<td><code>accept_moderator_offer()</code></td>
-		<td>
-            <li>group_id: int</li>
-        </td>
-		<td>グループ副管理人の権限オファーを引き受けます</td>
-	</tr>
-</table>
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
@@ -447,79 +440,6 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 ### Activity
 
 通知データのオブジェクトモデル
-
-<table>
-    <tr>
-		<th>フィールド</th>
-		<th>型</th>
-		<th>概要</th>
-	</tr>
-    <tr>
-		<td><code>data</code></td>
-		<td>dict</td>
-		<td>レスポンス</td>
-	</tr>
-    <tr>
-		<td><code>id</code></td>
-		<td>int</td>
-		<td>通知のID</td>
-	</tr>
-    <tr>
-		<td><code>created_at</code></td>
-		<td>int</td>
-		<td>タイムスタンブ</td>
-	</tr>
-    <tr>
-		<td><code>created_at_parsed</code></td>
-		<td>str</td>
-		<td>パースされたタイムスタンブ</td>
-	</tr>
-    <tr>
-		<td><code>type</code></td>
-		<td>str</td>
-		<td>通知のタイプ</td>
-	</tr>
-    <tr>
-		<td><code>user</code></td>
-		<td>User</td>
-		<td>ユーザーの詳細</td>
-	</tr>
-    <tr>
-		<td><code>from_post</code></td>
-		<td>Post</td>
-		<td>投稿の詳細</td>
-	</tr>
-    <tr>
-		<td><code>to_post</code></td>
-		<td>Post</td>
-		<td>投稿の詳細</td>
-	</tr>
-    <tr>
-		<td><code>group</code></td>
-		<td>int</td>
-		<td>サークルの詳細</td>
-	</tr>
-    <tr>
-		<td><code>followers</code></td>
-		<td>list of User</td>
-		<td>ユーザーの</td>
-	</tr>
-    <tr>
-		<td><code>from_post_ids</code></td>
-		<td>list of int</td>
-		<td>投稿IDのリスト</td>
-	</tr>
-    <tr>
-		<td><code>vip_reward</code></td>
-		<td>int</td>
-		<td>VIPのリワード</td>
-	</tr>
-    <tr>
-		<td><code>is_bulk_invitation</code></td>
-		<td>bool</td>
-		<td>通話への招待かどうか</td>
-	</tr>
-</table>
 
 ### Activity
 
@@ -558,27 +478,27 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
     <tr>
 		<td><code>user</code></td>
-		<td><code>User</code></td>
+		<td><code><a href="#">User</a></code></td>
 		<td>ユーザーの詳細</td>
 	</tr>
     <tr>
 		<td><code>from_post</code></td>
-		<td><code>Post</code></td>
+		<td><code><a href="#">Post</a></code></td>
 		<td>投稿の詳細</td>
 	</tr>
     <tr>
 		<td><code>to_post</code></td>
-		<td><code>Post</code></td>
+		<td><code><a href="#">Post</a></code></td>
 		<td>投稿の詳細</td>
 	</tr>
     <tr>
 		<td><code>group</code></td>
-		<td><code>int</code></td>
+		<td><code><a href="#">Group</a></code></td>
 		<td>サークルの詳細</td>
 	</tr>
     <tr>
 		<td><code>followers</code></td>
-		<td><code>list of User</code></td>
+		<td><code>list of <a href="#">User</a></code></td>
 		<td>ユーザーの詳細のリスト</td>
 	</tr>
     <tr>
@@ -618,17 +538,17 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
     <tr>
 		<td><code>data</code></td>
-		<td>dict</td>
+		<td><code>dict</code></td>
 		<td>レスポンス</td>
 	</tr>
     <tr>
 		<td><code>last_loggedin_at</code></td>
-		<td>int</td>
+		<td><code>int</code></td>
 		<td>最終ログイン日時</td>
 	</tr>
     <tr>
 		<td><code>users</code></td>
-		<td>list of User</td>
+		<td><code>list of <a href="#">User</a></code></td>
 		<td>ユーザーの詳細のリスト</td>
 	</tr>
 </table>
