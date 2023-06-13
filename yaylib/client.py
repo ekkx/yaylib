@@ -1451,6 +1451,11 @@ class Client(API):
         return add_bookmark(self, user_id, post_id)
 
     def add_group_highlight_post(self, group_id: int, post_id: int) -> dict:
+        """
+
+        投稿をグループハイライトに追加します
+
+        """
         return add_group_highlight_post(self, group_id, post_id)
 
     def create_call_post(
@@ -1501,7 +1506,7 @@ class Client(API):
             attachment_9_filename
         )
 
-    def create_group_pin_post(self, post_id: int, group_id: int) -> dict:
+    def pin_group_post(self, post_id: int, group_id: int) -> dict:
         """
 
         グループの投稿をピンします
@@ -1509,7 +1514,7 @@ class Client(API):
         """
         return create_group_pin_post(self, post_id, group_id)
 
-    def create_pin_post(self, post_id: int) -> dict:
+    def pin_post(self, post_id: int) -> dict:
         """
 
         投稿をピンします
@@ -1534,7 +1539,7 @@ class Client(API):
             group_id: int = None,
             mention_ids: List[int] = None,
             choices: List[str] = None,
-            shared_url: Dict[str, str | int] = None,
+            shared_url: str = None,
             message_tags: str = "[]",
             attachment_filename: str = None,
             attachment_2_filename: str = None,
@@ -1583,7 +1588,6 @@ class Client(API):
             color: int = None,
             in_reply_to: int = None,
             group_id: int = None,
-            post_type: str = None,
             mention_ids: List[int] = None,
             choices: List[str] = None,
             shared_url: Dict[str, Union[str, int]] = None,
@@ -1612,7 +1616,6 @@ class Client(API):
             color,
             in_reply_to,
             group_id,
-            post_type,
             mention_ids,
             choices,
             shared_url,
@@ -1638,6 +1641,11 @@ class Client(API):
             color: int = None,
             group_id: int = None,
     ) -> Post:
+        """
+        
+        シェア投稿を作成します
+
+        """
         return create_share_post(
             self,
             shareable_type,
@@ -1656,7 +1664,6 @@ class Client(API):
             color: int = None,
             in_reply_to: int = None,
             group_id: int = None,
-            post_type: str = None,
             mention_ids: List[int] = None,
             choices: List[str] = None,
             shared_url: Dict[str, Union[str, int]] = None,
@@ -1685,7 +1692,6 @@ class Client(API):
             color,
             in_reply_to,
             group_id,
-            post_type,
             mention_ids,
             choices,
             shared_url,
@@ -1710,15 +1716,15 @@ class Client(API):
         """
         return delete_all_post(self)
 
-    def delete_group_pin_post(self, group_id: int) -> dict:
+    def unpin_group_post(self, group_id: int) -> dict:
         """
 
-        グループのピン投稿を削除します
+        グループのピン投稿を解除します
 
         """
         return delete_group_pin_post(self, group_id)
 
-    def delete_pin_post(self, post_id: int) -> dict:
+    def unpin_post(self, post_id: int) -> dict:
         """
 
         ピン投稿を削除します

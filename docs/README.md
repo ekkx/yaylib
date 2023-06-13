@@ -1,5 +1,3 @@
-<div><a id="readme-top"></a></div>
-
 # yaylib - API ドキュメント
 
 ### yaylib について
@@ -120,11 +118,11 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 ```
 
 一定時間内に何度もログインすると、**429 Too Many Requests エラー**が発生します。
-よって、初回実行するときは、② の方法でアクセストークンを取得し、以後は ① のように<ins>アクセストークンを使用してクライアントを初期化すること</ins>をお勧めします。
+よって、初回実行するときは、② の方法でアクセストークンを取得し、以後は ① のように**アクセストークンを使用してクライアントを初期化すること**をお勧めします。
 
 ※ アクセストークンには有効期限が設けられており、24 時間が経過する前に<a href="#get-token">`get_token()`</a>関数を使用するか、ログインして再発行してください。
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ## API 一覧
 
@@ -156,7 +154,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="3"><code>change_email()</code></td>
 		<td>email</td>
 		<td><code>str</code></td>
-		<td rowspan="3"><code><a href="#">LoginUpdateResponse</a></code></td>
+		<td rowspan="3"><code><a href="#login-update-response">LoginUpdateResponse</a></code></td>
 		<td rowspan="3">メールアドレスを変更します</td>
 	</tr>
 	<tr>
@@ -172,7 +170,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="2"><code>change_password()</code></td>
 		<td>current_password</td>
 		<td><code>str</code></td>
-		<td rowspan="2"><code><a href="#">LoginUpdateResponse</a></code></td>
+		<td rowspan="2"><code><a href="#login-update-response">LoginUpdateResponse</a></code></td>
 		<td rowspan="2">パスワードを変更します</td>
 	</tr>
 	<tr>
@@ -180,12 +178,11 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td><code>str</code></td>
 	</tr>
     <!-- get_token -->
-    <a id="get-token"></a>
 	<tr>
-		<td rowspan="4"><code>get_token()</code></td>
+		<td rowspan="4" id="get-token"><code>get_token()</code></td>
 		<td>grant_type</td>
 		<td><code>str</code></td>
-        <td rowspan="4"><code><a href="#">TokenResponse</a></code></td>
+        <td rowspan="4"><code><a href="#token-response">TokenResponse</a></code></td>
 		<td rowspan="4">
         アクセストークンを再発行します。<br>
         ※ <code>grant_type</code>が"refresh_token"の場合は、emailとpasswordは必要ありません。
@@ -208,7 +205,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="2"><code>login()</code></td>
 		<td>email</td>
 		<td><code>str</code></td>
-		<td rowspan="2"><code><a href="#">LoginUserResponse</a></code></td>
+		<td rowspan="2"><code><a href="#login-user-response">LoginUserResponse</a></code></td>
 		<td rowspan="2">メールアドレスでログインします</td>
 	</tr>
 	<tr>
@@ -235,8 +232,8 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
     <tr>
 		<td><code>restore_user()</code></td>
 		<td>user_id</td>
-		<td>int</td>
-		<td><code><a href="#">LoginUserResponse</a></code></td>
+		<td><code>int</code></td>
+		<td><code><a href="#login-user-response">LoginUserResponse</a></code></td>
 		<td>ユーザーを復元します</td>
 	</tr>
     <!-- revoke_tokens -->
@@ -252,7 +249,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="4"><code>save_account_with_email()</code></td>
 		<td>email</td>
 		<td><code>str</code></td>
-		<td rowspan="4"><code><a href="#">LoginUpdateResponse</a></code></td>
+		<td rowspan="4"><code><a href="#login-update-response">LoginUpdateResponse</a></code></td>
 		<td rowspan="4">メールアドレスでアカウントを保存します</td>
 	</tr>
 	<tr>
@@ -269,7 +266,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ### ユーザー API
 
@@ -288,23 +285,549 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ### 投稿 API
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<table>
+    <tr>
+		<th>メソッド</th>
+		<th>引数</th>
+		<th>型</th>
+		<th>返り値</th>
+		<th>説明</th>
+	</tr>
+    <!-- add_bookmark -->
+    <tr>
+		<td rowspan="2"><code>add_bookmark()</code></td>
+		<td>user_id</td>
+		<td><code>int</code></td>
+		<td rowspan="2"><code><a href="#bookmark-post-response">BookmarkPostResponse</a></code></td>
+		<td rowspan="2">ブックマークに追加します</td>
+	</tr>
+	<tr>
+		<td>post_id</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- add_group_highlight_post -->
+    <tr>
+		<td rowspan="2"><code>add_group_highlight_post()</code></td>
+		<td>group_id</td>
+		<td><code>int</code></td>
+		<td rowspan="2"><code>dict</code></td>
+		<td rowspan="2">投稿をグループハイライトに追加します</td>
+	</tr>
+	<tr>
+		<td>post_id</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- create_call_post -->
+	<tr>
+		<td rowspan="18"><code>create_call_post()</code></td>
+		<td>text</td>
+		<td><code>str</code></td>
+        <td rowspan="18"><code><a href="#conference-call">ConferenceCall</a></code></td>
+		<td rowspan="18">通話の投稿を作成します</td>
+	</tr>
+	<tr>
+		<td>font_size</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>color</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>group_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>call_type</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>category_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>game_title</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>joinable_by</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>message_tags</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_2_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_3_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_4_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_5_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_6_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_7_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_8_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_9_filename</td>
+		<td><code>str</code></td>
+	</tr>
+    <!-- pin_group_post -->
+    <tr>
+		<td rowspan="2"><code>pin_group_post()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+		<td rowspan="2"><code>dict</code></td>
+		<td rowspan="2">グループの投稿をピンします</td>
+	</tr>
+	<tr>
+		<td>group_id</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- pin_post -->
+    <tr>
+		<td><code>pin_post()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+		<td><code>dict</code></td>
+		<td>投稿をピンします</td>
+	</tr>
+    <!-- mention -->
+    <tr>
+		<td><code>mention()</code></td>
+		<td>user_id</td>
+		<td><code>int</code></td>
+		<td><code>str</code></td>
+		<td>メンション用文字列を返します</td>
+	</tr>
+    <!-- create_post -->
+	<tr>
+		<td rowspan="19"><code>create_post()</code></td>
+		<td>text</td>
+		<td><code>str</code></td>
+        <td rowspan="19"><code><a href="#post">Post</a></code></td>
+		<td rowspan="19">投稿を作成します</td>
+	</tr>
+	<tr>
+		<td>font_size</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>color</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>in_reply_to</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>group_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>mention_ids</td>
+		<td><code>list of int</code></td>
+	</tr>
+	<tr>
+		<td>choices</td>
+		<td><code>list of str</code></td>
+	</tr>
+	<tr>
+		<td>shared_url</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>message_tags</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_2_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_3_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_4_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_5_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_6_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_7_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_8_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_9_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>video_file_name</td>
+		<td><code>str</code></td>
+	</tr>
+    <!-- create_repost -->
+	<tr>
+		<td rowspan="20"><code>create_repost()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+        <td rowspan="20"><code><a href="#post">Post</a></code></td>
+		<td rowspan="20">投稿を(´∀｀∩)↑age↑します</td>
+	</tr>
+	<tr>
+		<td>text</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>font_size</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>color</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>in_reply_to</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>group_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>mention_ids</td>
+		<td><code>list of int</code></td>
+	</tr>
+	<tr>
+		<td>choices</td>
+		<td><code>list of str</code></td>
+	</tr>
+	<tr>
+		<td>shared_url</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>message_tags</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_2_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_3_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_4_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_5_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_6_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_7_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_8_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_9_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>video_file_name</td>
+		<td><code>str</code></td>
+	</tr>
+        <!-- create_share_post -->
+	<tr>
+		<td rowspan="6"><code>create_share_post()</code></td>
+		<td>shareable_type</td>
+		<td><code>str</code></td>
+        <td rowspan="6"><code><a href="#post">Post</a></code></td>
+		<td rowspan="6">シェア投稿を作成します</td>
+	</tr>
+	<tr>
+		<td>shareable_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>text</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>font_size</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>color</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>group_id</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- create_thread_post -->
+	<tr>
+		<td rowspan="20"><code>create_thread_post()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+        <td rowspan="20"><code><a href="#post">Post</a></code></td>
+		<td rowspan="20">スレッドの投稿を作成します</td>
+	</tr>
+	<tr>
+		<td>text</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>font_size</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>color</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>in_reply_to</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>group_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>mention_ids</td>
+		<td><code>list of int</code></td>
+	</tr>
+	<tr>
+		<td>choices</td>
+		<td><code>list of str</code></td>
+	</tr>
+	<tr>
+		<td>shared_url</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>message_tags</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_2_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_3_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_4_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_5_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_6_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_7_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_8_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>attachment_9_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>video_file_name</td>
+		<td><code>str</code></td>
+	</tr>
+    <!-- delete_all_post -->
+    <tr>
+		<td><code>delete_all_post()</code></td>
+		<td></td>
+		<td></td>
+		<td><code>dict</code></td>
+		<td>すべての投稿を削除します</td>
+	</tr>
+    <!-- unpin_group_post -->
+    <tr>
+		<td><code>unpin_group_post()</code></td>
+		<td>group_id</td>
+		<td><code>int</code></td>
+		<td><code>dict</code></td>
+		<td>グループのピン投稿を解除します</td>
+	</tr>
+    <!-- unpin_post -->
+    <tr>
+		<td><code>unpin_post()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+		<td><code>dict</code></td>
+		<td>ピン投稿を削除します</td>
+	</tr>
+    <!-- get_bookmark -->
+    <tr>
+		<td rowspan="2"><code>get_bookmark()</code></td>
+		<td>user_id</td>
+		<td><code>int</code></td>
+		<td rowspan="2"><code><a href="#posts-response">PostsResponse</a></code></td>
+		<td rowspan="2">ブックマークを取得します</td>
+	</tr>
+	<tr>
+		<td>from_str</td>
+		<td><code>str</code></td>
+	</tr>
+    <!-- get_timeline_calls -->
+    <tr>
+		<td rowspan="9"><code>get_timeline_calls()</code></td>
+		<td>group_id</td>
+		<td><code>int</code></td>
+		<td rowspan="9"><code><a href="#posts-response">PostsResponse</a></code></td>
+		<td rowspan="9">誰でも通話を取得します</td>
+	</tr>
+	<tr>
+		<td>from_timestamp</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>category_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>call_type</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>include_circle_call</td>
+		<td><code>bool</code></td>
+	</tr>
+	<tr>
+		<td>cross_generation</td>
+		<td><code>bool</code></td>
+	</tr>
+	<tr>
+		<td>exclude_recent_gomimushi</td>
+		<td><code>bool</code></td>
+	</tr>
+	<tr>
+		<td>shared_interest_categories</td>
+		<td><code>bool</code></td>
+	</tr>
+    <!-- get_conversation -->
+    <tr>
+		<td rowspan="6"><code>get_conversation()</code></td>
+		<td>conversation_id</td>
+		<td><code>int</code></td>
+		<td rowspan="6"><code><a href="#posts-response">PostsResponse</a></code></td>
+		<td rowspan="6">会話を取得します</td>
+	</tr>
+	<tr>
+		<td>group_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>thread_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>from_post_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>reverse</td>
+		<td><code>bool</code></td>
+	</tr>
+    <!-- get_conversation_root_posts -->
+    <tr>
+		<td><code>get_conversation_root_posts()</code></td>
+		<td>post_ids</td>
+		<td><code>list of int</code></td>
+		<td><code><a href="#posts-response">PostsResponse</a></code></td>
+		<td>会話の原点の投稿を取得します</td>
+	</tr>
+</table>
+
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ### スレッド API
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ### レター API
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ### チャット API
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ### グループ API
 
@@ -416,19 +939,19 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ### 通話 API
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ### 通知 API
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ### その他 API
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ## モデル
 
@@ -518,7 +1041,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
 
 ## レスポンス
 
@@ -553,4 +1076,4 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+<p align="right">(<a href="#">トップに戻る</a>)</p>
