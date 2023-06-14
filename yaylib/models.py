@@ -185,11 +185,11 @@ class CoinAmount:
 
 class CoinExpiration:
 
-    __slots__ = ("data", "expired_at_seconds", "amount")
+    __slots__ = ("data", "expired_at", "amount")
 
     def __init__(self, data):
         self.data = data
-        self.expired_at_seconds = data.get("expired_at_seconds")
+        self.expired_at = data.get("expired_at")
         self.amount = data.get("amount")
 
     def __repr__(self):

@@ -1,13 +1,11 @@
 <div><a id="readme-top"></a></div>
 
-# yaylib - API ドキュメント
+# yaylib - API ドキュメント | Docs
 
-### yaylib について
-
-「yaylib」は、Yay!（イェイ）内データのプログラムによる取得や解析、あらゆる操作の自動化や、ボットの開発に使用することができます。
+「yaylib」を使用すると、独自かつ高度な方法でプログラムを使用して Yay!にアクセスできます。投稿、個人チャット、サークル、通話、ユーザーなど、Yay!の主要な機能を活用しましょう。
 
 <details open>
-    <summary>もくじ</summary>
+    <summary>目録</summary>
     <ol>
         <li><a href="#インストール">インストール</a></li>
         <li><a href="#使用方法">使用方法</a></li>
@@ -15,6 +13,7 @@
         <li><a href="#api-一覧">API 一覧</a></li>
         <li><a href="#モデル">モデル</a></li>
         <li><a href="#レスポンス">レスポンス</a></li>
+        <li><a href="#yay-エラーコード一覧">Yay! エラーコード一覧</a></li>
     </ol>
 </details>
 
@@ -1320,6 +1319,19 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 
 <ul>
     <li><a href="#activity">Activity</a></li>
+    <li><a href="#banword">BanWord</a></li>
+    <li><a href="#bgm">Bgm</a></li>
+    <li><a href="#callgifthistory">CallGiftHistory</a></li>
+    <li><a href="#chatroom">ChatRoom</a></li>
+    <li><a href="#chatroomdraft">ChatRoomDraft</a></li>
+    <li><a href="#choice">Choice</a></li>
+    <li><a href="#coinamount">CoinAmount</a></li>
+    <li><a href="#coinexpiration">CoinExpiration</a></li>
+    <li><a href="#coinproduct">CoinProduct</a></li>
+    <li><a href="#coinproductquota">CoinProductQuota</a></li>
+    <li><a href="#conferencecall">ConferenceCall</a></li>
+    <li><a href="#conferencecalluserrole">ConferenceCallUserRole</a></li>
+    <li><a href="#contactstatus">ContactStatus</a></li>
 </ul>
 
 ### Activity
@@ -1399,6 +1411,544 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
+### BanWord
+
+禁止ワードのオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>id</code></td>
+		<td><code>int</code></td>
+		<td>ID</td>
+	</tr>
+    <tr>
+		<td><code>type</code></td>
+		<td><code>str</code></td>
+		<td>タイプ</td>
+	</tr>
+    <tr>
+		<td><code>word</code></td>
+		<td><code>str</code></td>
+		<td>単語</td>
+	</tr>
+</table>
+
+### Bgm
+
+Bgm のオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>id</code></td>
+		<td><code>int</code></td>
+		<td>ID</td>
+	</tr>
+    <tr>
+		<td><code>title</code></td>
+		<td><code>str</code></td>
+		<td>タイトル</td>
+	</tr>
+    <tr>
+		<td><code>music_url</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>order</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+</table>
+
+### CallGiftHistory
+
+通話のギフト履歴のオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>gifts_count</code></td>
+		<td><code>list of <a href="#giftcount">GiftCount</a></code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>sent_at</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>sent_at_parsed</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>sender</code></td>
+		<td><code><a href="#user">User</a></code></td>
+		<td></td>
+	</tr>
+</table>
+
+### ChatRoom
+
+個人チャットのオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>id</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>unread_count</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>updated_at</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>updated_at_parsed</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>members</code></td>
+		<td><code>list of <a href="#user">User</a></code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>background</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>last_message</code></td>
+		<td><code><a href="#message">Message</a></code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>name</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>is_group</code></td>
+		<td><code>bool</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>owner</code></td>
+		<td><code><a href="#user">User</a></code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>is_request</code></td>
+		<td><code>bool</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>user_setting</code></td>
+		<td><code><a href="#usersetting">UserSetting</a></code></td>
+		<td></td>
+	</tr>
+</table>
+
+### ChatRoomDraft
+
+保留中の個人チャットのオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>id</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>text</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+</table>
+
+### Choice
+
+アンケート選択肢のオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>id</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>label</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>votes_count</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+</table>
+
+### CoinAmount
+
+コインアマウントのオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>paid</code></td>
+		<td><code>float</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>free</code></td>
+		<td><code>float</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>total</code></td>
+		<td><code>float</code></td>
+		<td></td>
+	</tr>
+</table>
+
+### CoinExpiration
+
+コインの期限のオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>expired_at</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>amount</code></td>
+		<td><code>float</code></td>
+		<td></td>
+	</tr>
+</table>
+
+### CoinProduct
+
+コインプロダクトのオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>id</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>purchasable</code></td>
+		<td><code>bool</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>amount</code></td>
+		<td><code>float</code></td>
+		<td></td>
+	</tr>
+</table>
+
+### CoinProductQuota
+
+コインプロダクトの割当量のオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>bought</code></td>
+		<td><code>float</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>limit</code></td>
+		<td><code>float</code></td>
+		<td></td>
+	</tr>
+</table>
+
+### ConferenceCall
+
+通話投稿のオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>id</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>post_id</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>group_id</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>is_active</code></td>
+		<td><code>bool</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>anonymous_call_users_count</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>agora_channel</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>agora_token</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>call_type</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>joinable_by</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>game</code></td>
+		<td><code><a href="#game">Game</a></code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>genre</code></td>
+		<td><code><a href="#genre">Genre</a></code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>duration_seconds</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>max_participants</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>conference_call_users</code></td>
+		<td><code>list of <a href="#user">User</a></code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>bump_params</code></td>
+		<td><code>dict</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>conference_call_users_role</code></td>
+		<td><code>list of <a href="#conferencecalluserrole">ConferenceCallUserRole</a></code></td>
+		<td></td>
+	</tr>
+</table>
+
+### ConferenceCallUserRole
+
+通話のユーザー権限のオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>id</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>role</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+</table>
+
+### ContactStatus
+
+コンタクトステータスのオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>status</code></td>
+		<td><code>str</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>user_id</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+</table>
+
+### CreateGroupQuota
+
+サークルの作成可能割当量のオブジェクトモデル
+
+<table>
+    <tr>
+		<th>フィールド</th>
+		<th>型</th>
+		<th>概要</th>
+	</tr>
+    <tr>
+		<td><code>data</code></td>
+		<td><code>dict</code></td>
+		<td>レスポンス</td>
+	</tr>
+    <tr>
+		<td><code>used_quota</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+    <tr>
+		<td><code>remaining_quota</code></td>
+		<td><code>int</code></td>
+		<td></td>
+	</tr>
+</table>
+
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ## レスポンス
@@ -1435,3 +1985,382 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 </table>
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
+
+## Yay! エラーコード一覧
+
+<!-- ここではエラーのコードと概要を紹介します。 -->
+
+<table>
+    <tr>
+		<th>コード</th>
+		<th>エラーの原因</th>
+	</tr>
+    <tr>
+		<td><code>0</code></td>
+		<td>原因不明</td>
+	</tr>
+    <tr>
+		<td><code>-1</code></td>
+		<td>パラメターが不正です</td>
+	</tr>
+    <tr>
+		<td><code>-2</code></td>
+		<td>既に登録されているユーザー</td>
+	</tr>
+    <tr>
+		<td><code>-3</code></td>
+		<td>アクセストークンの有効期限切れ</td>
+	</tr>
+    <tr>
+		<td><code>-4</code></td>
+		<td>スクリーンネームが既に取得されています</td>
+	</tr>
+    <tr>
+		<td><code>-5</code></td>
+		<td>ユーザーが見つかりません</td>
+	</tr>
+    <tr>
+		<td><code>-6</code></td>
+		<td>投稿が見つかりません</td>
+	</tr>
+    <tr>
+		<td><code>-7</code></td>
+		<td>チャットルームが見つかりません</td>
+	</tr>
+    <tr>
+		<td><code>-8</code></td>
+		<td>チャットメッセージが見つかりません</td>
+	</tr>
+    <tr>
+		<td><code>-9</code></td>
+		<td>チャットルームに特定のユーザーが見つかりません</td>
+	</tr>
+    <tr>
+		<td><code>-10</code></td>
+		<td>チャットルーム内のユーザーは2人以上の必要があります</td>
+	</tr>
+    <tr>
+		<td><code>-11</code></td>
+		<td>パスワードが不正です</td>
+	</tr>
+    <tr>
+		<td><code>-12</code></td>
+		<td>ユーザーはブロックされています</td>
+	</tr>
+    <tr>
+		<td><code>-13</code></td>
+		<td>プライベートユーザー</td>
+	</tr>
+    <tr>
+		<td><code>-14</code></td>
+		<td>アプリケーションが見つかりません</td>
+	</tr>
+    <tr>
+		<td><code>-15</code></td>
+		<td>不正なSNS認証情報</td>
+	</tr>
+    <tr>
+		<td><code>-16</code></td>
+		<td>SNSは既に連携しています</td>
+	</tr>
+    <tr>
+		<td><code>-17</code></td>
+		<td>SNSの連携を解除できません</td>
+	</tr>
+    <tr>
+		<td><code>-18</code></td>
+		<td>アクセストークンが不正です</td>
+	</tr>
+    <tr>
+		<td><code>-19</code></td>
+		<td>スポットが見つかりません</td>
+	</tr>
+    <tr>
+		<td><code>-20</code></td>
+		<td>凍結されたユーザー</td>
+	</tr>
+    <tr>
+		<td><code>-21</code></td>
+		<td>一時的に凍結されたユーザー</td>
+	</tr>
+    <tr>
+		<td><code>-22</code></td>
+		<td>学校の情報が変更されています</td>
+	</tr>
+    <tr>
+		<td><code>-26</code></td>
+		<td>新規ユーザーは削除できません</td>
+	</tr>
+    <tr>
+		<td><code>-29</code></td>
+		<td>Captcha認証が必要です</td>
+	</tr>
+    <tr>
+		<td><code>-30</code></td>
+		<td>Captcha認証に失敗しました</td>
+	</tr>
+    <tr>
+		<td><code>-100</code></td>
+		<td>グループが満員です</td>
+	</tr>
+    <tr>
+		<td><code>-103</code></td>
+		<td>グループから追放されています</td>
+	</tr>
+    <!-- <tr>
+		<td><code>-0</code></td>
+		<td>InvalidCurrentPassword</td>
+	</tr>
+    <tr>
+		<td><code>-0</code></td>
+		<td>InvalidPassword</td>
+	</tr> -->
+    <tr>
+		<td><code>-203</code></td>
+		<td>Emailは既に登録済みです</td>
+	</tr>
+    <tr>
+		<td><code>-204</code></td>
+		<td>スパムメールの可能性</td>
+	</tr>
+    <tr>
+		<td><code>-308</code></td>
+		<td>チャットルームが満員です</td>
+	</tr>
+    <tr>
+		<td><code>-309</code></td>
+		<td>通話が満員です</td>
+	</tr>
+    <tr>
+		<td><code>-310</code></td>
+		<td>通話は終了しました</td>
+	</tr>
+    <tr>
+		<td><code>-312</code></td>
+		<td>サークルの管理人があなたをブロックしました</td>
+	</tr>
+    <tr>
+		<td><code>-313</code></td>
+		<td>チャットするにはフォローされる必要があります</td>
+	</tr>
+    <tr>
+		<td><code>-315</code></td>
+		<td>通話はロックされています</td>
+	</tr>
+    <tr>
+		<td><code>-317</code></td>
+		<td>通話はフォロワーのみ参加可能</td>
+	</tr>
+    <tr>
+		<td><code>-321</code></td>
+		<td>通話から追放されました</td>
+	</tr>
+    <tr>
+		<td><code>-322</code></td>
+		<td>通話のオーナーではありません</td>
+	</tr>
+    <tr>
+		<td><code>-326</code></td>
+		<td>VIPユーザーではありません</td>
+	</tr>
+    <tr>
+		<td><code>-331</code></td>
+		<td>ブロック可能人数の制限に達しました</td>
+	</tr>
+    <tr>
+		<td><code>-332</code></td>
+		<td>認証コードが不正です</td>
+	</tr>
+    <tr>
+		<td><code>-333</code></td>
+		<td>認証コードの有効期限切れ</td>
+	</tr>
+    <tr>
+		<td><code>-336</code></td>
+		<td>フォロー制限</td>
+	</tr>
+    <tr>
+		<td><code>-338</code></td>
+		<td>年齢が離れすぎています</td>
+	</tr>
+    <tr>
+		<td><code>-339</code></td>
+		<td>サークル管理人か副管理人のみ可能な操作です</td>
+	</tr>
+    <tr>
+		<td><code>-342</code></td>
+		<td>SnsShareRewardAlreadyBeenClaimed</td>
+	</tr>
+    <tr>
+		<td><code>-343</code></td>
+		<td>操作可能回数の制限に達しました</td>
+	</tr>
+    <tr>
+		<td><code>-346</code></td>
+		<td>チャット送信に年齢確認が必要です</td>
+	</tr>
+    <tr>
+		<td><code>-347</code></td>
+		<td>年齢確認済みのユーザーのみ参加可能なサークルです</td>
+	</tr>
+    <tr>
+		<td><code>-348</code></td>
+		<td>電話番号認証済みのユーザーのみ参加可能なサークルです</td>
+	</tr>
+    <tr>
+		<td><code>-350</code></td>
+		<td>投稿主ではありません</td>
+	</tr>
+    <tr>
+		<td><code>-352</code></td>
+		<td>このサークルに参加可能な年齢ではありません</td>
+	</tr>
+    <tr>
+		<td><code>-355</code></td>
+		<td>電話番号の確認の提出回数制限に達しました。</td>
+	</tr>
+    <tr>
+		<td><code>-356</code></td>
+		<td>電話番号確認のリクエスト回数制限に達しました</td>
+	</tr>
+    <tr>
+		<td><code>-357</code></td>
+		<td>サークルの招待は承諾されています</td>
+	</tr>
+    <tr>
+		<td><code>-358</code></td>
+		<td>サークルの招待は拒否されています</td>
+	</tr>
+    <tr>
+		<td><code>-360</code></td>
+		<td>IPがBanされました</td>
+	</tr>
+    <tr>
+		<td><code>-361</code></td>
+		<td>Twitterに接続されていません</td>
+	</tr>
+    <tr>
+		<td><code>-363</code></td>
+		<td>プライベートユーザーのタイムラインです</td>
+	</tr>
+    <tr>
+		<td><code>-364</code></td>
+		<td>カウンター更新の回数制限に達しました</td>
+	</tr>
+    <tr>
+		<td><code>-367</code></td>
+		<td>相手にフォローされていません</td>
+	</tr>
+    <tr>
+		<td><code>-369</code></td>
+		<td>在住国の変更回数制限に達しました</td>
+	</tr>
+    <tr>
+		<td><code>-370</code></td>
+		<td>サークルのメンバーではありません</td>
+	</tr>
+    <tr>
+		<td><code>-371</code></td>
+		<td>グループ保留中の移動</td>
+	</tr>
+    <tr>
+		<td><code>-372</code></td>
+		<td>グループ保留中の代理指名</td>
+	</tr>
+    <tr>
+		<td><code>-373</code></td>
+		<td>相手は危険なユーザーとのチャットを許可していません</td>
+	</tr>
+    <tr>
+		<td><code>-374</code></td>
+		<td>新規ユーザーとのチャット制限</td>
+	</tr>
+    <tr>
+		<td><code>-375</code></td>
+		<td>リツイートはリツイートできません</td>
+	</tr>
+    <tr>
+		<td><code>-376</code></td>
+		<td>作成したアカウントが多すぎます</td>
+	</tr>
+    <tr>
+		<td><code>-377</code></td>
+		<td>特定の性別のみ参加可能なサークルです</td>
+	</tr>
+    <tr>
+		<td><code>-378</code></td>
+		<td>特定の性別のグループを作成するには、性別の指定が必要です</td>
+	</tr>
+    <tr>
+		<td><code>-382</code></td>
+		<td>関連するグループの数が制限を超えています</td>
+	</tr>
+    <tr>
+		<td><code>-383</code></td>
+		<td>ピン可能な投稿の数が制限を超えています</td>
+	</tr>
+    <tr>
+		<td><code>-384</code></td>
+		<td>Twitterでのグループ共有の制限を超えています</td>
+	</tr>
+    <tr>
+		<td><code>-385</code></td>
+		<td>通報されたコンテンツ</td>
+	</tr>
+    <!-- <tr>
+		<td><code>-000</code></td>
+		<td>InsufficientCoins</td>
+	</tr> -->
+    <tr>
+		<td><code>-402</code></td>
+		<td>通話の参加は相互フォローのみに制限されています</td>
+	</tr>
+    <tr>
+		<td><code>-403</code></td>
+		<td>回数制限に達しました</td>
+	</tr>
+    <tr>
+		<td><code>-404</code></td>
+		<td>サークルに招待可能な回数制限に達しました</td>
+	</tr>
+    <tr>
+		<td><code>-405</code></td>
+		<td>電話番号の認証が必要です</td>
+	</tr>
+    <tr>
+		<td><code>-406</code></td>
+		<td>コンテンツが古すぎます</td>
+	</tr>
+    <tr>
+		<td><code>-407</code></td>
+		<td>パスワードが短すぎます</td>
+	</tr>
+    <tr>
+		<td><code>-408</code></td>
+		<td>パスワードが長すぎます</td>
+	</tr>
+    <tr>
+		<td><code>-409</code></td>
+		<td>パスワードが許可されていません</td>
+	</tr>
+    <tr>
+		<td><code>-410</code></td>
+		<td>一般的なパスワードです</td>
+	</tr>
+    <tr>
+		<td><code>-412</code></td>
+		<td>投稿をスレッドに移動できません</td>
+	</tr>
+    <tr>
+		<td><code>-413</code></td>
+		<td>URLを投稿できません</td>
+	</tr>
+    <!-- <tr>
+		<td><code>-000</code></td>
+		<td>InvalidAppVersion</td>
+	</tr> -->
+    <tr>
+		<td><code>-1000</code></td>
+		<td>電話番号がBanされています</td>
+	</tr>
+</table>
