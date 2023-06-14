@@ -16,7 +16,7 @@
         このライブラリを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
         <br />
         <br />
-        <a href="https://github.com/qvco/yaylib/blob/master/docs/README.md">
+        <a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">
             <strong>詳しい機能の詳細や使い方はこちらから »</strong>
         </a>
         <br />
@@ -34,7 +34,6 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <!-- <li><a href="#機能--特徴">機能 & 特徴</a></li> -->
     <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
     <li><a href="#インストール">インストール</a></li>
     <li><a href="#使用例">使用例</a></li>
@@ -78,7 +77,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-「yaylib」の始め方や機能&特徴については、[こちら](https://github.com/qvco/yaylib/blob/master/docs/TUTORIAL.md) を参照してください。
+「yaylib」の始め方や機能&特徴については、[こちら](https://github.com/qvco/yaylib/blob/main/docs/TUTORIAL.md) を参照してください。
 
 <!-- 使用例 -->
 
@@ -96,7 +95,7 @@ api.login(email="メールアドレス", password="パスワード")
 api.create_post(text="初めての投稿！", color=2)
 ```
 
-より詳細な使用例については、[こちら](https://github.com/qvco/yaylib/blob/master/examples) を参照してください。
+より詳細な使用例については、[こちら](https://github.com/qvco/yaylib/blob/main/examples) を参照してください。
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
@@ -109,25 +108,25 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
 <table align="center">
     <thead>
         <tr>
-            <th>MindReader AI</th>
-            <th>Funktion (架空)</th>
-            <th>香ばしいボット (架空)</th>
+            <th><a href="https://yay.space/user/5855987">MindReader AI</a></th>
+            <th><a href="https://yay.space/user/0">Funktion (架空)</a></th>
+            <th><a href="https://yay.space/user/0">香ばしいボット (架空)</a></th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td align="center">
-                <a href="https://yay.space/user/5855987"><img src="https://github.com/qvco/yaylib/assets/77382767/472febe4-4c5f-490c-8417-de0d5dbbbc72" width="200px"></a>
+                <img src="https://github.com/qvco/yaylib/assets/77382767/472febe4-4c5f-490c-8417-de0d5dbbbc72" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
             </td>
             <td align="center">
-                <a href="https://yay.space/user/0"><img src="https://github.com/qvco/yaylib/assets/77382767/ff207016-21bf-4e76-b0e0-f70ebc4a121f" width="200px"></a>
+                <img src="https://github.com/qvco/yaylib/assets/77382767/ff207016-21bf-4e76-b0e0-f70ebc4a121f" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/0">ぺゅー</a></p>
             </td>
             <td align="center">
-                <a href="https://yay.space/user/0"><img src="https://github.com/qvco/yaylib/assets/77382767/2324e518-b2c8-43cd-95e5-90ee2383aec1" width="200px"></a>
+                <img src="https://github.com/qvco/yaylib/assets/77382767/2324e518-b2c8-43cd-95e5-90ee2383aec1" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/0">めんぶれ天然水。</a></p>
             </td>
@@ -157,7 +156,7 @@ yaylib は、API の公式なサポートやメンテナンスを提供するも
 
 ## 利用許諾
 
-フルライセンスは [こちら](https://github.com/qvco/yaylib/blob/master/LICENSE) からご確認いただけます。  
+フルライセンスは [こちら](https://github.com/qvco/yaylib/blob/main/LICENSE) からご確認いただけます。  
 このプロジェクトは、 **【MIT ライセンス】** の条件の下でライセンスされています。
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>

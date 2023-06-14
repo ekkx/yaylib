@@ -1,3 +1,5 @@
+<div><a id="readme-top"></a></div>
+
 # yaylib - API ドキュメント
 
 ### yaylib について
@@ -110,7 +112,7 @@ api = yaylib.Client(access_token="[アクセストークン]")
 ```python
 import yaylib
 
-api = yaylib.Client
+api = yaylib.Client()
 api.login(email="[メールアドレス]", password="[パスワード]")
 
 api.login_data.access_token # アクセストークンを取得
@@ -122,7 +124,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 
 ※ アクセストークンには有効期限が設けられており、24 時間が経過する前に<a href="#get-token">`get_token()`</a>関数を使用するか、ログインして再発行してください。
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ## API 一覧
 
@@ -266,26 +268,11 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### ユーザー API
 
-<table>
-    <tr>
-		<th>メソッド</th>
-		<th>引数</th>
-		<th>型</th>
-		<th>説明</th>
-	</tr>
-    <tr>
-		<td id="get-token"><code>change_email()</code></td>
-		<td>group_id</td>
-		<td><code>int</code></td>
-		<td>アクセストークンを再発行します</td>
-	</tr>
-</table>
-
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### 投稿 API
 
@@ -815,19 +802,19 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### スレッド API
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### レター API
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### チャット API
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### グループ API
 
@@ -939,19 +926,19 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### 通話 API
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### 通知 API
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ### その他 API
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ## モデル
 
@@ -1041,7 +1028,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 ## レスポンス
 
@@ -1076,4 +1063,4 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
 </table>
 
-<p align="right">(<a href="#">トップに戻る</a>)</p>
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
