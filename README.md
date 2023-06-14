@@ -16,7 +16,7 @@
         このライブラリを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
         <br />
         <br />
-        <a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">
+        <a href="https://github.com/qvco/yaylib/tree/main/docs">
             <strong>詳しい機能の詳細や使い方はこちらから »</strong>
         </a>
         <br />

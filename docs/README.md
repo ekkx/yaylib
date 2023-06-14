@@ -156,7 +156,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="3"><code>change_email()</code></td>
 		<td>email</td>
 		<td><code>str</code></td>
-		<td rowspan="3"><code><a href="#login-update-response">LoginUpdateResponse</a></code></td>
+		<td rowspan="3"><code><a href="#loginupdateresponse">LoginUpdateResponse</a></code></td>
 		<td rowspan="3">メールアドレスを変更します</td>
 	</tr>
 	<tr>
@@ -172,7 +172,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="2"><code>change_password()</code></td>
 		<td>current_password</td>
 		<td><code>str</code></td>
-		<td rowspan="2"><code><a href="#login-update-response">LoginUpdateResponse</a></code></td>
+		<td rowspan="2"><code><a href="#loginupdateresponse">LoginUpdateResponse</a></code></td>
 		<td rowspan="2">パスワードを変更します</td>
 	</tr>
 	<tr>
@@ -180,11 +180,11 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td><code>str</code></td>
 	</tr>
     <!-- get_token -->
-	<tr id="user-content-get-token">
+	<tr id="get-token">
 		<td rowspan="4"><code>get_token()</code></td>
 		<td>grant_type</td>
 		<td><code>str</code></td>
-        <td rowspan="4"><code><a href="#token-response">TokenResponse</a></code></td>
+        <td rowspan="4"><code><a href="#tokenresponse">TokenResponse</a></code></td>
 		<td rowspan="4">
         アクセストークンを再発行します。<br>
         ※ <code>grant_type</code>が"refresh_token"の場合は、emailとpasswordは必要ありません。
@@ -207,7 +207,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="2"><code>login()</code></td>
 		<td>email</td>
 		<td><code>str</code></td>
-		<td rowspan="2"><code><a href="#login-user-response">LoginUserResponse</a></code></td>
+		<td rowspan="2"><code><a href="#loginuserresponse">LoginUserResponse</a></code></td>
 		<td rowspan="2">メールアドレスでログインします</td>
 	</tr>
 	<tr>
@@ -235,7 +235,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td><code>restore_user()</code></td>
 		<td>user_id</td>
 		<td><code>int</code></td>
-		<td><code><a href="#login-user-response">LoginUserResponse</a></code></td>
+		<td><code><a href="#loginuserresponse">LoginUserResponse</a></code></td>
 		<td>ユーザーを復元します</td>
 	</tr>
     <!-- revoke_tokens -->
@@ -251,7 +251,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="4"><code>save_account_with_email()</code></td>
 		<td>email</td>
 		<td><code>str</code></td>
-		<td rowspan="4"><code><a href="#login-update-response">LoginUpdateResponse</a></code></td>
+		<td rowspan="4"><code><a href="#loginupdateresponse">LoginUpdateResponse</a></code></td>
 		<td rowspan="4">メールアドレスでアカウントを保存します</td>
 	</tr>
 	<tr>
@@ -289,7 +289,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="2"><code>add_bookmark()</code></td>
 		<td>user_id</td>
 		<td><code>int</code></td>
-		<td rowspan="2"><code><a href="#bookmark-post-response">BookmarkPostResponse</a></code></td>
+		<td rowspan="2"><code><a href="#bookmarkpostresponse">BookmarkPostResponse</a></code></td>
 		<td rowspan="2">ブックマークに追加します</td>
 	</tr>
 	<tr>
@@ -313,7 +313,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="18"><code>create_call_post()</code></td>
 		<td>text</td>
 		<td><code>str</code></td>
-        <td rowspan="18"><code><a href="#conference-call">ConferenceCall</a></code></td>
+        <td rowspan="18"><code><a href="#conferencecall">ConferenceCall</a></code></td>
 		<td rowspan="18">通話の投稿を作成します</td>
 	</tr>
 	<tr>
@@ -717,7 +717,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="2"><code>get_bookmark()</code></td>
 		<td>user_id</td>
 		<td><code>int</code></td>
-		<td rowspan="2"><code><a href="#posts-response">PostsResponse</a></code></td>
+		<td rowspan="2"><code><a href="#postsresponse">PostsResponse</a></code></td>
 		<td rowspan="2">ブックマークを取得します</td>
 	</tr>
 	<tr>
@@ -729,7 +729,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="9"><code>get_timeline_calls()</code></td>
 		<td>group_id</td>
 		<td><code>int</code></td>
-		<td rowspan="9"><code><a href="#posts-response">PostsResponse</a></code></td>
+		<td rowspan="9"><code><a href="#postsresponse">PostsResponse</a></code></td>
 		<td rowspan="9">誰でも通話を取得します</td>
 	</tr>
 	<tr>
@@ -769,7 +769,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td rowspan="6"><code>get_conversation()</code></td>
 		<td>conversation_id</td>
 		<td><code>int</code></td>
-		<td rowspan="6"><code><a href="#posts-response">PostsResponse</a></code></td>
+		<td rowspan="6"><code><a href="#postsresponse">PostsResponse</a></code></td>
 		<td rowspan="6">会話を取得します</td>
 	</tr>
 	<tr>
@@ -797,8 +797,492 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 		<td><code>get_conversation_root_posts()</code></td>
 		<td>post_ids</td>
 		<td><code>list of int</code></td>
-		<td><code><a href="#posts-response">PostsResponse</a></code></td>
+		<td><code><a href="#postsresponse">PostsResponse</a></code></td>
 		<td>会話の原点の投稿を取得します</td>
+	</tr>
+    <!-- get_following_call_timeline -->
+    <tr>
+		<td rowspan="6"><code>get_following_call_timeline()</code></td>
+		<td>from_timestamp</td>
+		<td><code>int</code></td>
+		<td rowspan="6"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="6">フォロー中の通話を取得します</td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>category_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>call_type</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>include_circle_call</td>
+		<td><code>bool</code></td>
+	</tr>
+	<tr>
+		<td>exclude_recent_gomimushi</td>
+		<td><code>bool</code></td>
+	</tr>
+    <!-- get_following_timeline -->
+    <tr>
+		<td rowspan="7"><code>get_following_timeline()</code></td>
+		<td>from_str</td>
+		<td><code>str</code></td>
+		<td rowspan="7"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="7">フォロー中のタイムラインを取得します</td>
+	</tr>
+	<tr>
+		<td>only_root</td>
+		<td><code>bool</code></td>
+	</tr>
+	<tr>
+		<td>order_by</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>mxn</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>reduce_selfie</td>
+		<td><code>bool</code></td>
+	</tr>
+	<tr>
+		<td>custom_generation_range</td>
+		<td><code>bool</code></td>
+	</tr>
+    <!-- get_group_highlight_posts -->
+    <tr>
+		<td rowspan="3"><code>get_group_highlight_posts()</code></td>
+		<td>group_id</td>
+		<td><code>int</code></td>
+		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="3">グループのハイライト投稿を取得します</td>
+	</tr>
+	<tr>
+		<td>from_post</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- get_group_timeline_by_keyword -->
+    <tr>
+		<td rowspan="5"><code>get_group_timeline_by_keyword()</code></td>
+		<td>group_id</td>
+		<td><code>int</code></td>
+		<td rowspan="5"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="5">グループの投稿をキーワードで検索します</td>
+	</tr>
+	<tr>
+		<td>keyword</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>from_post_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>only_thread_posts</td>
+		<td><code>bool</code></td>
+	</tr>
+    <!-- get_group_timeline -->
+    <tr>
+		<td rowspan="6"><code>get_group_timeline()</code></td>
+		<td>group_id</td>
+		<td><code>int</code></td>
+		<td rowspan="6"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="6">グループのタイムラインを取得します</td>
+	</tr>
+	<tr>
+		<td>from_post_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>reverse</td>
+		<td><code>bool</code></td>
+	</tr>
+	<tr>
+		<td>post_type</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>only_root</td>
+		<td><code>bool</code></td>
+	</tr>
+    <!-- get_timeline -->
+    <tr>
+		<td rowspan="11"><code>get_timeline()</code></td>
+		<td>noreply_mode</td>
+		<td><code>bool</code></td>
+		<td rowspan="11"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="11">タイムラインを取得します</td>
+	</tr>
+	<tr>
+		<td>from_post_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>order_by</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>experiment_older_age_rules</td>
+		<td><code>bool</code></td>
+	</tr>
+	<tr>
+		<td>shared_interest_categories</td>
+		<td><code>bool</code></td>
+	</tr>
+	<tr>
+		<td>mxn</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>en</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>vn</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>reduce_selfie</td>
+		<td><code>bool</code></td>
+	</tr>
+	<tr>
+		<td>custom_generation_range</td>
+		<td><code>bool</code></td>
+	</tr>
+    <!-- get_timeline_by_hashtag -->
+    <tr>
+		<td rowspan="3"><code>get_timeline_by_hashtag()</code></td>
+		<td>hashtag</td>
+		<td><code>str</code></td>
+		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="3">ハッシュタグでタイムラインを検索します</td>
+	</tr>
+	<tr>
+		<td>from_post_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- get_timeline_by_keyword -->
+    <tr>
+		<td rowspan="3"><code>get_timeline_by_keyword()</code></td>
+		<td>keyword</td>
+		<td><code>str</code></td>
+		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="3">キーワードでタイムラインを検索します</td>
+	</tr>
+	<tr>
+		<td>from_post_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- get_user_timeline -->
+    <tr>
+		<td rowspan="3"><code>get_user_timeline()</code></td>
+		<td>from_post_id</td>
+		<td><code>int</code></td>
+		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="3">ユーザーのタイムラインを取得します</td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+    <tr>
+		<td>post_type</td>
+		<td><code>str</code></td>
+	</tr>
+    <!-- get_my_posts -->
+    <tr>
+		<td rowspan="3"><code>get_my_posts()</code></td>
+		<td>from_post_id</td>
+		<td><code>int</code></td>
+		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="3">自分の投稿を取得します</td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>include_group_post</td>
+		<td><code>bool</code></td>
+	</tr>
+    <!-- get_post -->
+    <tr>
+		<td><code>get_post()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+		<td><code><a href="#post">Post</a></code></td>
+		<td>投稿の詳細を取得します</td>
+	</tr>
+    <!-- get_posts -->
+    <tr>
+		<td><code>get_posts()</code></td>
+		<td>post_ids</td>
+		<td><code>list of int</code></td>
+		<td><code><a href="#postspesponse">PostsResponse</a></code></td>
+		<td>複数の投稿を取得します</td>
+	</tr>
+    <!-- get_post_likers -->
+    <tr>
+		<td rowspan="2"><code>get_post_likers()</code></td>
+		<td>from_id</td>
+		<td><code>int</code></td>
+		<td rowspan="2"><code><a href="#postlikersresponse">PostLikersResponse</a></code></td>
+		<td rowspan="2">投稿にいいねしたユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- get_reposts -->
+    <tr>
+		<td rowspan="3"><code>get_reposts()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="3">投稿の(´∀｀∩)↑age↑を取得します</td>
+	</tr>
+	<tr>
+		<td>from_post_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- get_recommended_post_tags -->
+    <tr>
+		<td rowspan="2"><code>get_recommended_post_tags()</code></td>
+		<td>tag</td>
+		<td><code>str</code></td>
+		<td rowspan="2"><code><a href="#posttagsresponse">PostTagsResponse</a></code></td>
+		<td rowspan="2">おすすめのタグ候補を取得します</td>
+	</tr>
+	<tr>
+		<td>save_recent_search</td>
+		<td><code>bool</code></td>
+	</tr>
+    <!-- get_recommended_posts -->
+    <tr>
+		<td rowspan="3"><code>get_recommended_posts()</code></td>
+		<td>experiment_num</td>
+		<td><code>int</code></td>
+		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
+		<td rowspan="3">おすすめの投稿を取得します</td>
+	</tr>
+	<tr>
+		<td>variant_num</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- get_url_metadata -->
+    <tr>
+		<td><code>get_url_metadata()</code></td>
+		<td>url</td>
+		<td><code>str</code></td>
+		<td><code><a href="#sharedurl">SharedUrl</a></code></td>
+		<td>URLのメタデータを取得します</td>
+	</tr>
+    <!-- like_posts -->
+    <tr>
+		<td><code>like_posts()</code></td>
+		<td>post_ids</td>
+		<td><code>list of int</code></td>
+		<td><code><a href="#likepostsresponse">LikePostsResponse</a></code></td>
+		<td>投稿にいいねします</td>
+	</tr>
+    <!-- unlike_post -->
+    <tr>
+		<td><code>unlike_post()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+		<td><code>dict</code></td>
+		<td>投稿のいいねを解除します</td>
+	</tr>
+    <!-- remove_bookmark -->
+    <tr>
+		<td rowspan="2"><code>remove_bookmark()</code></td>
+		<td>user_id</td>
+		<td><code>int</code></td>
+		<td rowspan="2"><code>dict</code></td>
+		<td rowspan="2">ブックマークを削除します</td>
+	</tr>
+	<tr>
+		<td>post_id</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- remove_group_highlight_post -->
+    <tr>
+		<td rowspan="2"><code>remove_group_highlight_post()</code></td>
+		<td>group_id</td>
+		<td><code>int</code></td>
+		<td rowspan="2"><code>dict</code></td>
+		<td rowspan="2">サークルのハイライト投稿を解除します</td>
+	</tr>
+	<tr>
+		<td>post_id</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- remove_posts -->
+    <tr>
+		<td><code>remove_posts()</code></td>
+		<td>post_ids</td>
+		<td><code>list of int</code></td>
+		<td><code>dict</code></td>
+		<td>複数の投稿を削除します</td>
+	</tr>
+    <!-- report_post -->
+    <tr>
+		<td rowspan="8"><code>report_post()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+		<td rowspan="8"><code>dict</code></td>
+		<td rowspan="8">投稿を通報します</td>
+	</tr>
+	<tr>
+		<td>opponent_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>category_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>reason</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>screenshot_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>screenshot_2_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>screenshot_3_filename</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>screenshot_4_filename</td>
+		<td><code>str</code></td>
+	</tr>
+    <!-- update_post -->
+    <tr>
+		<td rowspan="5"><code>update_post()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+		<td rowspan="5"><code><a href="#post">Post</a></code></td>
+		<td rowspan="5">投稿を編集します</td>
+	</tr>
+	<tr>
+		<td>text</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>font_size</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>color</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>message_tags</td>
+		<td><code>str</code></td>
+	</tr>
+    <!-- update_recommendation_feedback -->
+    <tr>
+		<td rowspan="4"><code>update_recommendation_feedback()</code></td>
+		<td>post_id</td>
+		<td><code>int</code></td>
+		<td rowspan="4"><code>dict</code></td>
+		<td rowspan="4">おすすめのフィードバックを更新します</td>
+	</tr>
+	<tr>
+		<td>feedback_result</td>
+		<td><code>str</code></td>
+	</tr>
+	<tr>
+		<td>experiment_num</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>variant_num</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- validate_post -->
+    <tr>
+		<td rowspan="3"><code>validate_post()</code></td>
+		<td>text</td>
+		<td><code>str</code></td>
+		<td rowspan="3"><code><a href="#validationpostresponse">ValidationPostResponse</a></code></td>
+		<td rowspan="3">与えられたテキストが有効な投稿であるかどうかを検証します</td>
+	</tr>
+	<tr>
+		<td>group_id</td>
+		<td><code>int</code></td>
+	</tr>
+	<tr>
+		<td>thread_id</td>
+		<td><code>int</code></td>
+	</tr>
+    <!-- view_video -->
+    <tr>
+		<td><code>view_video()</code></td>
+		<td>video_id</td>
+		<td><code>int</code></td>
+		<td><code>dict</code></td>
+		<td>動画を視聴します</td>
+	</tr>
+    <!-- vote_survey -->
+    <tr>
+		<td rowspan="2"><code>vote_survey()</code></td>
+		<td>survey_id</td>
+		<td><code>int</code></td>
+		<td rowspan="2"><code><a href="#survey">Survey</a></code></td>
+		<td rowspan="2">アンケートに投票します</td>
+	</tr>
+	<tr>
+		<td>choice_id</td>
+		<td><code>int</code></td>
 	</tr>
 </table>
 
@@ -875,27 +1359,27 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
     <tr>
 		<td><code>user</code></td>
-		<td><code><a href="#">User</a></code></td>
+		<td><code><a href="#user">User</a></code></td>
 		<td>ユーザーの詳細</td>
 	</tr>
     <tr>
 		<td><code>from_post</code></td>
-		<td><code><a href="#">Post</a></code></td>
+		<td><code><a href="#post">Post</a></code></td>
 		<td>投稿の詳細</td>
 	</tr>
     <tr>
 		<td><code>to_post</code></td>
-		<td><code><a href="#">Post</a></code></td>
+		<td><code><a href="#post">Post</a></code></td>
 		<td>投稿の詳細</td>
 	</tr>
     <tr>
 		<td><code>group</code></td>
-		<td><code><a href="#">Group</a></code></td>
+		<td><code><a href="#group">Group</a></code></td>
 		<td>サークルの詳細</td>
 	</tr>
     <tr>
 		<td><code>followers</code></td>
-		<td><code>list of <a href="#">User</a></code></td>
+		<td><code>list of <a href="#user">User</a></code></td>
 		<td>ユーザーの詳細のリスト</td>
 	</tr>
     <tr>
@@ -945,7 +1429,7 @@ api.login_data.refresh_token # リフレッシュトークンを取得（アク�
 	</tr>
     <tr>
 		<td><code>users</code></td>
-		<td><code>list of <a href="#">User</a></code></td>
+		<td><code>list of <a href="#user">User</a></code></td>
 		<td>ユーザーの詳細のリスト</td>
 	</tr>
 </table>

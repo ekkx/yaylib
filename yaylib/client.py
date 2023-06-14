@@ -1285,17 +1285,17 @@ class Client(API):
 
     def resend_confirm_email(self) -> dict:
         """
-        
+
         確認メールを再送信します
-        
+
         """
         return resend_confirm_email(self)
 
     def restore_user(self, user_id: int) -> LoginUserResponse:
         """
-        
+
         ユーザーを復元します
-        
+
         """
         return restore_user(self, user_id)
 
@@ -1642,7 +1642,7 @@ class Client(API):
             group_id: int = None,
     ) -> Post:
         """
-        
+
         シェア投稿を作成します
 
         """
@@ -1827,6 +1827,8 @@ class Client(API):
     def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
         """
 
+        グループのハイライト投稿を取得します
+
         Parameters
         ----------
 
@@ -1924,7 +1926,7 @@ class Client(API):
         """
         return get_post_likers(self, post_id, **params)
 
-    def get_post_reposts(self, post_id: int, **params: int) -> PostsResponse:
+    def get_reposts(self, post_id: int, **params: int) -> PostsResponse:
         """
 
         投稿の(´∀｀∩)↑age↑を取得します
@@ -1950,6 +1952,11 @@ class Client(API):
     def get_recommended_post_tags(
         self, tag: str = None, save_recent_search: bool = False
     ) -> PostTagsResponse:
+        """
+
+        おすすめのタグ候補を取得します
+
+        """
         return get_recommended_post_tags(self, tag, save_recent_search)
 
     def get_recommended_posts(self, **params) -> PostsResponse:
@@ -1982,7 +1989,7 @@ class Client(API):
         """
         return get_timeline_by_keyword(self, keyword, **params)
 
-    def get_timeline(self, **params: int | str | bool) -> PostsResponse:
+    def get_timeline(self, **params) -> PostsResponse:
         # - from: str - (optional)
         """
 
@@ -2007,6 +2014,11 @@ class Client(API):
         return get_timeline(self, **params)
 
     def get_url_metadata(self, url: str) -> SharedUrl:
+        """
+
+        URLのメタデータを取得します
+
+        """
         return get_url_metadata(self, url)
 
     def get_user_timeline(self, user_id: int, **params) -> PostsResponse:
@@ -2041,6 +2053,11 @@ class Client(API):
         return remove_bookmark(self, user_id, post_id)
 
     def remove_group_highlight_post(self, group_id: int, post_id: int) -> dict:
+        """
+
+        サークルのハイライト投稿を解除します
+
+        """
         return remove_group_highlight_post(self, group_id, post_id)
 
     def remove_posts(self, post_ids: List[int]) -> dict:
@@ -2105,14 +2122,24 @@ class Client(API):
         )
 
     def update_recommendation_feedback(
-        self, post_id: int, feedback_result: str, *,
+        self, post_id: int, feedback_result: str,
         experiment_num: int, variant_num: int,
     ) -> dict:
+        """
+
+        おすすめのフィードバックを更新します
+
+        """
         return update_recommendation_feedback(
             self, post_id, feedback_result, experiment_num, variant_num
         )
 
     def validate_post(self, text: str, *, group_id: int = None, thread_id: int = None) -> ValidationPostResponse:
+        """
+        
+        与えられたテキストが有効な投稿であるかどうかを検証します
+        
+        """
         return validate_post(self, text, group_id, thread_id)
 
     def view_video(self, video_id: int) -> dict:
