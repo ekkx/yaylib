@@ -14,7 +14,7 @@
 
 などなど、すべて合わせると、**200 を超える機能**があります。
 
-ここでは紹介しきれないので、より詳細を知りたい方は、<a href="#さらに詳しい機能ドキュメント">ドキュメント</a>をご覧ください。
+ここでは紹介しきれないので、より詳細を知りたい方は、<a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">ドキュメント</a>をご覧ください。
 
 <details open>
     <summary>もくじ</summary>
@@ -225,7 +225,7 @@ bot.create_post(text="投稿したい内容", attachment_filename=filename)
 
 ここまでで紹介した機能以外にももっとたくさんの便利な機能があります。
 
-しかしながら、ドキュメントはまだ整備できていないので、コードエディターのドット入力補完を使用してください。😙
+詳しい情報は<a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">ドキュメントを参照</a>するか、コードエディターのドット入力補完を使用してください。
 
 <image src="https://github.com/qvco/yaylib/assets/77382767/666e6eb9-bfeb-4b4c-8f6c-033555436fc3" alt="ドット補完の画像">
 

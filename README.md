@@ -48,8 +48,8 @@
 
 ## Buy me a coffee
 
-もしこのライブラリが気に入っていただけたら  
-私たちに ↓ コーヒー ↓ をお恵みくださいませ！！❤
+もしこのライブラリが気に入っていただけたら、ぜひスターをお願いします ⭐️
+また、Buy Me a Coffee からご支援いただけますと幸いです。
 
 <a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
@@ -77,7 +77,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-「yaylib」の始め方や機能&特徴については、[こちら](https://github.com/qvco/yaylib/blob/main/docs/TUTORIAL.md) を参照してください。
+「yaylib」の始め方については、[こちら](https://github.com/qvco/yaylib/blob/main/docs/TUTORIAL.md) を確認してください。
 
 <!-- 使用例 -->
 
@@ -95,7 +95,7 @@ api.login(email="メールアドレス", password="パスワード")
 api.create_post(text="初めての投稿！", color=2)
 ```
 
-より詳細な使用例については、[こちら](https://github.com/qvco/yaylib/blob/main/examples) を参照してください。
+より詳しい使用例については、[こちら](https://github.com/qvco/yaylib/blob/main/examples) を参照してください。
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
