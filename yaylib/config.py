@@ -1,3 +1,6 @@
+from enum import Enum
+
+
 class Configs:
 
     YAYLIB_VERSION = "0.1.2"
@@ -27,6 +30,19 @@ class Configs:
         "Accept-Language": "ja",
         "Content-Type": "application/json;charset=UTF-8"
     }
+
+
+class LogMessage(Enum):
+
+    change_email = {
+        "en": "Email has been changed.",
+        "ja": "メールアドレスはを変更しました。"
+    }
+
+    get_user = {
+        "en": "Get user [{user_id}]",
+        "ja": "ユーザーを取得 [{user_id}]"
+    }  # あとで消す
 
 
 class Endpoints:

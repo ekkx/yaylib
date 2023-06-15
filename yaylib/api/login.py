@@ -23,7 +23,7 @@ def change_email(
             "email_grant_token": email_grant_token
         }, data_type=LoginUpdateResponse
     )
-    self.logger.info("Email has been changed.")
+    logger(self, "change_email")
     return response
 
 

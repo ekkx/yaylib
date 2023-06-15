@@ -43,6 +43,7 @@ class Client(API):
         - refresh_token: str - (optional)
         - proxy: str - (optional)
         - timeout: int - (optional)
+        - lang: str - (optional)
         - base_path: str - (optional)
         - loglevel_stream: int - (optional)
         - host: str - (optional)
@@ -2136,9 +2137,9 @@ class Client(API):
 
     def validate_post(self, text: str, *, group_id: int = None, thread_id: int = None) -> ValidationPostResponse:
         """
-        
+
         与えられたテキストが有効な投稿であるかどうかを検証します
-        
+
         """
         return validate_post(self, text, group_id, thread_id)
 

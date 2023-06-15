@@ -48,7 +48,7 @@
 
 ## Buy me a coffee
 
-もしこのライブラリが気に入っていただけたら、ぜひスターをお願いします ⭐️
+もしこのライブラリが気に入っていただけたら、ぜひスターをお願いします ⭐️  
 また、Buy Me a Coffee からご支援いただけますと幸いです。
 
 <a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
