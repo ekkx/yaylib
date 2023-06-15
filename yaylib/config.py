@@ -391,7 +391,7 @@ class LogMessage(Enum):
         "ja": "実行完了"
     }
 
-    # misc
+    # -MISC
     accept_policy_agreement = {
         "en": "Accepted to policy agreement.",
         "ja": "実行完了"
@@ -409,171 +409,105 @@ class LogMessage(Enum):
         "ja": "実行完了"
     }
 
-    # 
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    # -POST
+    add_bookmark = {
+        "en": "Post added to bookmarks.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    add_group_highlight_post = {
+        "en": "Post added to group highlight.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    create_call_post = {
+        "en": "Call post created.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    create_group_pin_post = {
+        "en": "Pinned post in a group.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    create_pin_post = {
+        "en": "Pinned post.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    create_post = {
+        "en": "Post has been created.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    create_repost = {
+        "en": "Repost has been created.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    create_share_post = {
+        "en": "Share post has been created.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    create_thread_post = {
+        "en": "Thread post has been created.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    delete_all_post = {
+        "en": "Post deletion requested.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    delete_all_post_not_found = {
+        "en": "Post not found.",
+        "ja": "投稿が見つかりません"
+    }
+    delete_group_pin_post = {
+        "en": "Unpinned post in a group.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    delete_pin_post = {
+        "en": "Unpinned post.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    like_posts = {
+        "en": "Posts liked.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    remove_bookmark = {
+        "en": "Bookmark has been removed.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    remove_group_highlight_post = {
+        "en": "Group hightlight post removed.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    remove_posts = {
+        "en": "Posts have been removed.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    report_post = {
+        "en": "Post has been reported.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    unlike_post = {
+        "en": "Post unliked.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    update_post = {
+        "en": "Post has been updated.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    update_recommendation_feedback = {
+        "en": "Recommendation feedback updated.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    validate_post = {
+        "en": "Post validated.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    view_video = {
+        "en": "Viewed the video",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
+    vote_survey = {
+        "en": "Survey voted.",
         "ja": "実行完了"
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaaaaaaaaa",
-        "ja": "実行完了"
-    }
+
+    # -REVIEW
     send_call_screenshot = {
         "en": "aaaaaaaaaaaaaaaaaa",
         "ja": "実行完了"

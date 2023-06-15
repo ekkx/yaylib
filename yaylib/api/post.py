@@ -15,7 +15,7 @@ def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
         "PUT", endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
         data_type=BookmarkPostResponse
     )
-    self.logger.info("Added to bookmarks.")
+    logger(self, fname="add_bookmark")
     return response
 
 
@@ -24,7 +24,7 @@ def add_group_highlight_post(self, group_id: int, post_id: int):
     response = self._make_request(
         "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
     )
-    self.logger.info("Added to group highlight.")
+    logger(self, fname="add_group_highlight_post")
     return response
 
 
@@ -86,7 +86,7 @@ def create_call_post(
             "attachment_9_filename": attachment_9_filename,
         }, data_type=CreatePostResponse
     ).conference_call
-    self.logger.info("Call post created.")
+    logger(self, fname="create_call_post")
     return response
 
 
@@ -96,7 +96,7 @@ def create_group_pin_post(self, post_id: int, group_id: int):
         "PUT", endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
         payload={"post_id": post_id, "group_id": group_id}
     )
-    self.logger.info("Pinned post in a group.")
+    logger(self, fname="create_group_pin_post")
     return response
 
 
@@ -106,7 +106,7 @@ def create_pin_post(self, post_id: int):
         "POST", endpoint=f"{Endpoints.PINNED_V1}/posts",
         payload={"id": post_id}
     )
-    self.logger.info("Pinned post")
+    logger(self, fname="create_pin_post")
     return response
 
 
@@ -226,7 +226,7 @@ def create_post(
             "video_file_name": video_file_name,
         }, data_type=Post, headers=headers
     )
-    self.logger.info("Post created.")
+    logger(self, fname="create_post")
     return response
 
 
@@ -296,7 +296,7 @@ def create_repost(
             "video_file_name": video_file_name,
         }, data_type=CreatePostResponse, headers=headers
     ).post
-    self.logger.info("Repost created.")
+    logger(self, fname="create_repost")
     return response
 
 
@@ -328,7 +328,7 @@ def create_share_post(
             ),
         }, data_type=Post
     )
-    self.logger.info("Share post created.")
+    logger(self, fname="create_share_post")
     return response
 
 
@@ -398,7 +398,7 @@ def create_thread_post(
             "video_file_name": video_file_name,
         }, data_type=Post, headers=headers
     )
-    self.logger.info("Thread post created.")
+    logger(self, fname="create_thread_post")
     return response
 
 
@@ -408,10 +408,10 @@ def delete_all_post(self):
         response = self._make_request(
             "POST", endpoint=f"{Endpoints.POSTS_V1}/delete_all_post",
         )
-        self.logger.info("Post deletion requested.")
+        logger(self, fname="delete_all_post")
         return response
     except NotFoundError:
-        self.logger.info("Post not found.")
+        logger(self, fname="delete_all_post_not_found", level=logging.ERROR)
 
 
 def delete_group_pin_post(self, group_id: int):
@@ -420,7 +420,7 @@ def delete_group_pin_post(self, group_id: int):
         "DELETE", endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
         payload={"group_id": group_id}
     )
-    self.logger.info("Unpinned post in a group.")
+    logger(self, fname="delete_group_pin_post")
     return response
 
 
@@ -429,7 +429,7 @@ def delete_pin_post(self, post_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.PINNED_V1}/posts/{post_id}"
     )
-    self.logger.info("Unpinned post.")
+    logger(self, fname="delete_pin_post")
     return response
 
 
@@ -784,7 +784,7 @@ def like_posts(self, post_ids: List[int]) -> LikePostsResponse:
         "POST", endpoint=f"{Endpoints.POSTS_V2}/like",
         payload={"post_ids[]": post_ids}, data_type=LikePostsResponse
     )
-    self.logger.info("Posts liked.")
+    logger(self, fname="like_posts")
     return response
 
 
@@ -793,7 +793,7 @@ def remove_bookmark(self, user_id: int, post_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
     )
-    self.logger.info("Bookmark removed.")
+    logger(self, fname="remove_bookmark")
     return response
 
 
@@ -802,7 +802,7 @@ def remove_group_highlight_post(self, group_id: int, post_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
     )
-    self.logger.info("Group hightlight post removed.")
+    logger(self, fname="remove_group_highlight_post")
     return response
 
 
@@ -812,7 +812,7 @@ def remove_posts(self, post_ids: List[int]):
         "POST", endpoint=f"{Endpoints.POSTS_V2}/mass_destroy",
         payload={"posts_ids": post_ids}
     )
-    self.logger.info("Posts removed.")
+    logger(self, fname="remove_posts")
     return response
 
 
@@ -840,7 +840,7 @@ def report_post(
             "screenshot_4_filename": screenshot_4_filename,
         }
     )
-    self.logger.info("Post reported.")
+    logger(self, fname="report_post")
     return response
 
 
@@ -849,7 +849,7 @@ def unlike_post(self, post_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V1}/{post_id}/unlike",
     )
-    self.logger.info("Post unliked.")
+    logger(self, fname="unlike_post")
     return response
 
 
@@ -882,7 +882,7 @@ def update_post(
             ),
         }
     )
-    self.logger.info("Post updated.")
+    logger(self, fname="update_post")
     return response
 
 
@@ -899,7 +899,7 @@ def update_recommendation_feedback(
             "variant_num": variant_num
         }
     )
-    self.logger.info("Recommendation feedback updated.")
+    logger(self, fname="update_recommendation_feedback")
     return response
 
 
@@ -911,7 +911,7 @@ def validate_post(self, text: str, *, group_id: int = None, thread_id: int = Non
             "text": text, "group_id": group_id, "thread_id": thread_id
         }, data_type=ValidationPostResponse
     )
-    self.logger.info("Post validated.")
+    logger(self, fname="validate_post")
     return response
 
 
@@ -919,7 +919,7 @@ def view_video(self, video_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V1}/videos/{video_id}/view"
     )
-    self.logger.info("Viewed a video")
+    logger(self, fname="view_video")
     return response
 
 
@@ -929,5 +929,5 @@ def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
         "POST", endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",
         payload={"choice_id": choice_id}, data_type=ValidationPostResponse
     ).survey
-    self.logger.info("Survey voted.")
+    logger(self, fname="vote_survey")
     return response

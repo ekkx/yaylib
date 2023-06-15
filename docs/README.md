@@ -85,7 +85,7 @@ Client クラスは、API クライアントのメインクラスです。
     <tr>
 		<td><code>lang</code></td>
 		<td><code>str</code></td>
-		<td><code>ja</code></td>
+		<td><code>en</code></td>
 		<td>ログ出力などの言語（ja もしくは、en）</td>
 	</tr>
     <tr>
