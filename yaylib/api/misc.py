@@ -16,7 +16,7 @@ def accept_policy_agreement(self, type: str):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/policy_agreements/{type}"
     )
-    self.logger.info("Accepted to policy agreement.")
+    logger(self, fname="accept_policy_agreement")
     return response
 
 
@@ -34,7 +34,7 @@ def generate_sns_thumbnail(self, **params):
         "GET", endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate",
         params=params
     )
-    self.logger.info("SNS thumbnail generated.")
+    logger(self, fname="generate_sns_thumbnail")
     return response
 
 
@@ -136,7 +136,7 @@ def verify_device(
             "verification_string": verification_string,
         }, data_type=VerifyDeviceResponse
     )
-    self.logger.info("Device verified.")
+    logger(self, fname="verify_device")
     return response
 
 
@@ -144,8 +144,6 @@ def upload_image(self, image_type: str, image_path: str) -> str:
     """
 
     画像をアップロードしてattachment_filenameを返します。
-
-    ※ 対応形式: jpeg, png, gif
 
     Parameteres
     -----------
@@ -182,7 +180,7 @@ def upload_image(self, image_type: str, image_path: str) -> str:
         response = httpx.put(presigned_urls[1].url, data=f.read())
         self._handle_response(response)
 
-    self.logger.info(f"Image '{filename}{ext}' is uploaded")
+    logger(self, fname="upload_image", filename=filename, ext=ext)
 
     return presigned_urls[0].filename
 

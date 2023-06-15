@@ -23,7 +23,7 @@ def change_email(
             "email_grant_token": email_grant_token
         }, data_type=LoginUpdateResponse
     )
-    logger(self, "change_email")
+    logger(self, fname="change_email")
     return response
 
 
@@ -40,7 +40,7 @@ def change_password(
             "password": new_password
         }, data_type=LoginUpdateResponse
     )
-    self.logger.info("Password has been changed.")
+    logger(self, fname="change_password.")
     return response
 
 
@@ -89,7 +89,7 @@ def login(self, email: str, password: str) -> LoginUserResponse:
         "Authorization", f"Bearer {self.login_data.access_token}"
     )
 
-    self.logger.info(f'Successfully logged in as [{self.login_data.user_id}]')
+    logger(self, fname="login", user_id=response.user_id)
     return response
 
 
@@ -104,13 +104,13 @@ def logout(self):
             "POST", endpoint=f"{Endpoints.USERS_V1}/logout",
             payload={"uuid": self.uuid}
         )
-        self.session.headers.pop('Authorization', None)
+        self.session.headers.pop("Authorization", None)
         self.login_data = None
-        self.logger.info('User has Logged out.')
+        logger(self, fname="logout")
         return response
 
     except:
-        self.logger.error(f'User is not logged in.')
+        self.logger.error("User is not logged in.")
         return None
 
 
@@ -142,7 +142,7 @@ def restore_user(self, user_id: int) -> LoginUserResponse:
             ),
         }
     )
-    self.logger.info("User restored.")
+    logger(self, fname="restore_user")
     return response
 
 
@@ -150,7 +150,7 @@ def revoke_tokens(self):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V1}/device_tokens"
     )
-    self.logger.info("Token revoked.")
+    logger(self, fname="revoke_tokens")
     return response
 
 
@@ -171,5 +171,5 @@ def save_account_with_email(
             "email_grant_token": email_grant_token
         }, data_type=LoginUpdateResponse
     )
-    self.logger.info("Account has been save with email.")
+    logger(self, fname="save_account_with_email")
     return response

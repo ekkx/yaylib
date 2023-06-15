@@ -1433,8 +1433,6 @@ class Client(API):
 
         画像をアップロードしてattachment_filenameを返します。
 
-        ※ 対応形式: jpeg, png, gif
-
         Parameteres
         -----------
             - image_type: str - (required): "post", "user_avatar" のどちらか

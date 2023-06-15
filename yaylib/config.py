@@ -362,23 +362,219 @@ class LogMessage(Enum):
     }
 
     # -LOGIN
+    change_email = {
+        "en": "Your email has been changed.",
+        "ja": "実行完了"
+    }
+    change_password = {
+        "en": "Password has been changed.",
+        "ja": "実行完了"
+    }
+    login = {
+        "en": "Successfully logged in as '{user_id}'",
+        "ja": "実行完了"
+    }
+    logout = {
+        "en": "User has Logged out.",
+        "ja": "実行完了"
+    }
+    restore_user = {
+        "en": "User restored.",
+        "ja": "実行完了"
+    }
+    revoke_tokens = {
+        "en": "Token revoked.",
+        "ja": "実行完了"
+    }
+    save_account_with_email = {
+        "en": "Account has been save with email.",
+        "ja": "実行完了"
+    }
+
+    # misc
+    accept_policy_agreement = {
+        "en": "Accepted to policy agreement.",
+        "ja": "実行完了"
+    }
+    generate_sns_thumbnail = {
+        "en": "SNS thumbnail generated.",
+        "ja": "実行完了"
+    }
+    verify_device = {
+        "en": "Device verified.",
+        "ja": "実行完了"
+    }
+    upload_image = {
+        "en": "Image '{filename}{ext}' is uploaded",
+        "ja": "実行完了"
+    }
+
+    # 
     send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
-        "ja": ""
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
     }
     send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
-        "ja": ""
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
     }
     send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
-        "ja": ""
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
     }
     send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
-        "ja": ""
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
     }
     send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
-        "ja": ""
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaaaaaaaaa",
+        "ja": "実行完了"
     }
