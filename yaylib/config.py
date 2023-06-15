@@ -32,19 +32,6 @@ class Configs:
     }
 
 
-class LogMessage(Enum):
-
-    change_email = {
-        "en": "Email has been changed.",
-        "ja": "メールアドレスはを変更しました。"
-    }
-
-    get_user = {
-        "en": "Get user [{user_id}]",
-        "ja": "ユーザーを取得 [{user_id}]"
-    }  # あとで消す
-
-
 class Endpoints:
 
     # api v1 endpoints
@@ -127,3 +114,128 @@ class Endpoints:
     SKYFALL_V3 = Configs.YAY_API_URL + "/v3/skyfall"
     GENUINE_DEVICES_V3 = Configs.YAY_API_URL + "/v3/genuine_devices"
     LOBI_FRIENDS_V3 = Configs.YAY_API_URL + "/v3/lobi_friends"
+
+
+class LogMessage(Enum):
+
+    # logger(self, fname="invite_users_to_call")
+
+    # -CALL
+    bump_call = {
+        "en": "Call bumped.",
+        "ja": ""
+    }
+    invite_to_call_bulk = {
+        "en": "Invited to call bulk.",
+        "ja": ""
+    }
+    invite_users_to_call = {
+        "en": "Invitation sent.",
+        "ja": ""
+    }
+    invite_users_to_chat_call = {
+        "en": "Invitation of chat call sent.",
+        "ja": ""
+    }
+    kick_and_ban_from_call = {
+        "en": "User has been banned from the call.",
+        "ja": ""
+    }
+    notify_anonymous_user_leave_agora_channel = {
+        "en": "Notified anonymous user left the call.",
+        "ja": ""
+    }
+    notify_user_leave_agora_channel = {
+        "en": "Notified user '{user_id}' left the call.",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "Call screenshot sent.",
+        "ja": ""
+    }
+    set_call = {
+        "en": "Call set.",
+        "ja": ""
+    }
+    set_user_role = {
+        "en": "User has been given a role.",
+        "ja": ""
+    }
+    start_call = {
+        "en": "Joined the call.",
+        "ja": ""
+    }
+    stop_call = {
+        "en": "Left the call.",
+        "ja": ""
+    }
+
+    # -CASSANDRA
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }
+    send_call_screenshot = {
+        "en": "aaaaaaaaaaa",
+        "ja": ""
+    }

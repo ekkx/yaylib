@@ -23,7 +23,7 @@ class API:
             refresh_token: str = None,
             proxy: str = None,
             timeout=60,
-            lang="ja",
+            lang="en",
             base_path=current_path,
             loglevel_stream=logging.INFO,
             host=Configs.YAY_PRODUCTION_HOST,
@@ -42,6 +42,7 @@ class API:
             self.proxy["https"] = proxy
 
         self.timeout = timeout
+        self.lang = lang
         self.base_path = base_path
         self.host = "https://" + host
 
