@@ -118,6 +118,9 @@ class Endpoints:
 
 class LogMessage(Enum):
 
+    # <https://yay.space/locales/en/translation.json?v=3.18.0>
+    # <https://yay.space/locales/ja/translation.json?v=3.18.0>
+
     # logger(self, fname="invite_users_to_call")
 
     # -CALL
@@ -126,8 +129,8 @@ class LogMessage(Enum):
         "ja": ""
     }
     invite_to_call_bulk = {
-        "en": "Invited to call bulk.",
-        "ja": ""
+        "en": "Invited your online followings to the call",
+        "ja": "オンラインを友達をまとめて通話に招待しました"
     }
     invite_users_to_call = {
         "en": "Invitation sent.",
@@ -170,55 +173,195 @@ class LogMessage(Enum):
         "ja": ""
     }
 
-    # -CASSANDRA
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    # -CHAT
+    accept_chat_request = {
+        "en": "Chat request accepted.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    create_group_chat = {
+        "en": "Group chat '{name}' created.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    create_private_chat = {
+        "en": "Private chatroom with '{with_user_id}' created.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    delete_background = {
+        "en": "Background deleted.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    delete_message = {
+        "en": "Message deleted.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    edit_chat_room = {
+        "en": "Chatroom updated.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    invite_to_chat = {
+        "en": "Chatroom invitation sent.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    kick_users_from_chat = {
+        "en": "Users have been kicked from the chatroom.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    pin_chat = {
+        "en": "Pinned chatroom.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    read_attachment = {
+        "en": "Attachment has been read.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    read_message = {
+        "en": "Message has been read.",
         "ja": ""
     }
-    send_call_screenshot = {
-        "en": "aaaaaaaaaaa",
+    read_video_message = {
+        "en": "Video message has been read.",
         "ja": ""
     }
+    remove_chat_rooms = {
+        "en": "Chat rooms removed.",
+        "ja": ""
+    }
+    report_chat_room = {
+        "en": "Chatroom '{chat_room_id}' has been reported.",
+        "ja": ""
+    }
+    send_media_screenshot_notification = {
+        "en": "Media screenshot notification sent.",
+        "ja": ""
+    }
+    send_message = {
+        "en": "Your message has been sent.",
+        "ja": ""
+    }
+    unhide_chat = {
+        "en": "Chatroom unhidden.",
+        "ja": ""
+    }
+    unpin_chat = {
+        "en": "Chatroom unpinned.",
+        "ja": ""
+    }
+
+    # -GROUP
+    accept_moderator_offer = {
+        "en": "Moderator offer accepted.",
+        "ja": ""
+    }
+    accept_ownership_offer = {
+        "en": "Accepted ownership offer.",
+        "ja": ""
+    }
+    accept_group_join_request = {
+        "en": "Accepted group join request.",
+        "ja": ""
+    }
+    add_related_groups = {
+        "en": "Group added to the related groups",
+        "ja": ""
+    }
+    ban_group_user = {
+        "en": "User has been banned from the group.",
+        "ja": ""
+    }
+    create_group = {
+        "en": "Group created.",
+        "ja": ""
+    }
+    create_pin_group = {
+        "en": "Pinned post in the group.",
+        "ja": ""
+    }
+    decline_moderator_offer = {
+        "en": "Declined moderator offer.",
+        "ja": ""
+    }
+    decline_ownership_offer = {
+        "en": "Declined ownership offer.",
+        "ja": ""
+    }
+    decline_group_join_request = {
+        "en": "Declined group join request",
+        "ja": ""
+    }
+    delete_pin_group = {
+        "en": "Unpinned group post.",
+        "ja": ""
+    }
+    invite_users_to_group = {
+        "en": "Group invitation sent.",
+        "ja": ""
+    }
+    join_group = {
+        "en": "Joined the group.",
+        "ja": ""
+    }
+    leave_group = {
+        "en": "Left the group.",
+        "ja": ""
+    }
+    post_gruop_social_shared = {
+        "en": "Group social shared posted.",
+        "ja": ""
+    }
+    remove_group_cover = {
+        "en": "Group cover removed.",
+        "ja": ""
+    }
+    remove_moderator = {
+        "en": "Group moderator removed.",
+        "ja": ""
+    }
+    remove_related_groups = {
+        "en": "Related groups removed.",
+        "ja": ""
+    }
+    report_group = {
+        "en": "Group reported.",
+        "ja": ""
+    }
+    send_moderator_offers = {
+        "en": "Group moderator offer sent.",
+        "ja": ""
+    }
+    send_ownership_offer = {
+        "en": "Group ownership offer sent.",
+        "ja": ""
+    }
+    set_group_title = {
+        "en": "Group title set.",
+        "ja": ""
+    }
+    take_over_group_ownership = {
+        "en": "Took over the group ownership of {group_id}",
+        "ja": ""
+    }
+    unban_group_member = {
+        "en": "Group user has been unbanned.",
+        "ja": ""
+    }
+    update_group = {
+        "en": "Group details have been updated.",
+        "ja": ""
+    }
+    visit_group = {
+        "en": "Visited the group.",
+        "ja": ""
+    }
+    withdraw_moderator_offer = {
+        "en": "Group moderator offer withdrawn",
+        "ja": ""
+    }
+    withdraw_ownership_offer = {
+        "en": "Group ownershipt offer withdrawn",
+        "ja": ""
+    }
+
+    # -LOGIN
     send_call_screenshot = {
         "en": "aaaaaaaaaaa",
         "ja": ""

@@ -13,7 +13,7 @@ def accept_moderator_offer(self, group_id: int):
     response = self._make_request(
         "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize"
     )
-    self.logger.info("Moderator offer accepted.")
+    logger(self, fname="accept_moderator_offer")
     return response
 
 
@@ -22,7 +22,7 @@ def accept_ownership_offer(self, group_id: int):
     response = self._make_request(
         "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer"
     )
-    self.logger.info("Ownership offer accepted.")
+    logger(self, fname="accept_ownership_offer")
     return response
 
 
@@ -31,7 +31,7 @@ def accept_group_join_request(self, group_id: int, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/accept/{user_id}"
     )
-    self.logger.info("Accepted group join request.")
+    logger(self, fname="accept_group_join_request")
     return response
 
 
@@ -41,7 +41,7 @@ def add_related_groups(self, group_id: int, related_group_id: List[int]):
         "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
         params={"related_group_id[]": related_group_id}
     )
-    self.logger.info("Group added to the related groups")
+    logger(self, fname="add_related_groups")
     return response
 
 
@@ -50,7 +50,7 @@ def ban_group_user(self, group_id: int, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban/{user_id}"
     )
-    self.logger.info("User has been banned from the group.")
+    logger(self, fname="ban_group_user")
     return response
 
 
@@ -121,7 +121,7 @@ def create_group(
             "guidelines": guidelines,
         }, data_type=CreateGroupResponse
     )
-    self.logger.info("Group created.")
+    logger(self, fname="create_group")
     return response
 
 
@@ -131,7 +131,7 @@ def create_pin_group(self, group_id: int):
         "POST", endpoint=f"{Endpoints.PINNED_V1}/groups",
         payload={"id": group_id}
     )
-    self.logger.info("Pinned post in the group.")
+    logger(self, fname="create_pin_group")
     return response
 
 
@@ -140,7 +140,7 @@ def decline_moderator_offer(self, group_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize"
     )
-    self.logger.info("Declined moderator offer.")
+    logger(self, fname="decline_moderator_offer")
     return response
 
 
@@ -149,7 +149,7 @@ def decline_ownership_offer(self, group_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer"
     )
-    self.logger.info("Declined ownership offer.")
+    logger(self, fname="decline_ownership_offer")
     return response
 
 
@@ -158,7 +158,7 @@ def decline_group_join_request(self, group_id: int, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/decline/{user_id}"
     )
-    self.logger.info("Declined group join request")
+    logger(self, fname="decline_group_join_request")
     return response
 
 
@@ -167,7 +167,7 @@ def delete_pin_group(self, group_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.PINNED_V1}/groups/{group_id}"
     )
-    self.logger.info("Unpinned group post.")
+    logger(self, fname="delete_pin_group")
     return response
 
 
@@ -352,7 +352,7 @@ def invite_users_to_group(self, group_id: int, user_ids: List[int]):
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/invite",
         payload={"user_ids[]": user_ids}
     )
-    self.logger.info("Group invitation sent.")
+    logger(self, fname="invite_users_to_group")
     return response
 
 
@@ -361,7 +361,7 @@ def join_group(self, group_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/join",
     )
-    self.logger.info("Joined the group.")
+    logger(self, fname="join_group")
     return response
 
 
@@ -370,7 +370,7 @@ def leave_group(self, group_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/leave",
     )
-    self.logger.info("Left the group.")
+    logger(self, fname="leave_group")
     return response
 
 
@@ -380,7 +380,7 @@ def post_gruop_social_shared(self, group_id: int, sns_name: str):
         "POST", endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/social_shared",
         params={"sns_name": sns_name}
     )
-    self.logger.info("Group social shared posted.")
+    logger(self, fname="post_gruop_social_shared")
     return response
 
 
@@ -389,7 +389,7 @@ def remove_group_cover(self, group_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/remove_cover",
     )
-    self.logger.info("Group cover removed.")
+    logger(self, fname="remove_group_cover")
     return response
 
 
@@ -398,7 +398,7 @@ def remove_moderator(self, group_id: int, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/fire/{user_id}",
     )
-    self.logger.info("Group moderator removed.")
+    logger(self, fname="remove_moderator")
     return response
 
 
@@ -408,7 +408,7 @@ def remove_related_groups(self, group_id: int, related_group_ids: List[int]):
         "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
         params={"related_group_id[]": related_group_ids}
     )
-    self.logger.info("Related groups removed.")
+    logger(self, fname="remove_related_groups")
     return response
 
 
@@ -427,13 +427,16 @@ def report_group(
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/report",
         payload={
-            "category_id": category_id, "reason": reason,
-            "opponent_id": opponent_id, "screenshot_filename": screenshot_filename, "screenshot_2_filename": screenshot_2_filename,
+            "category_id": category_id,
+            "reason": reason,
+            "opponent_id": opponent_id,
+            "screenshot_filename": screenshot_filename,
+            "screenshot_2_filename": screenshot_2_filename,
             "screenshot_3_filename": screenshot_3_filename,
             "screenshot_4_filename": screenshot_4_filename
         }
     )
-    self.logger.info("Group reported.")
+    logger(self, fname="report_group")
     return response
 
 
@@ -450,7 +453,7 @@ def send_moderator_offers(self, group_id: int, user_ids: List[int]):
             ),
         }
     )
-    self.logger.info("Group moderator offer sent.")
+    logger(self, fname="send_moderator_offers")
     return response
 
 
@@ -467,7 +470,7 @@ def send_ownership_offer(self, group_id: int, user_id: int):
             ),
         }
     )
-    self.logger.info("Group ownership offer sent.")
+    logger(self, fname="send_ownership_offer")
     return response
 
 
@@ -488,7 +491,7 @@ def set_group_title(self, group_id: int, title: str):
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/set_title",
         payload={"title": title}
     )
-    self.logger.info("Group title set.")
+    logger(self, fname="set_group_title")
     return response
 
 
@@ -497,7 +500,7 @@ def take_over_group_ownership(self, group_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/take_over",
     )
-    self.logger.info(f"Took over the group ownership of {group_id}")
+    logger(self, fname="take_over_group_ownership", group_id=group_id)
     return response
 
 
@@ -506,7 +509,7 @@ def unban_group_member(self, group_id: int, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/unban/{user_id}",
     )
-    self.logger.info("Group user has been unbanned.")
+    logger(self, fname="unban_group_member")
     return response
 
 
@@ -567,7 +570,7 @@ def update_group(
             "guidelines": guidelines,
         }, data_type=GroupResponse
     )
-    self.logger.info("Group has been updated.")
+    logger(self, fname="update_group")
     return response
 
 
@@ -575,7 +578,7 @@ def visit_group(self, group_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/visit",
     )
-    self.logger.info("Group visited.")
+    logger(self, fname="visit_group")
     return response
 
 
@@ -584,7 +587,7 @@ def withdraw_moderator_offer(self, group_id: int, user_id: int):
     response = self._make_request(
         "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize/{user_id}/withdraw",
     )
-    self.logger.info("Group moderator offer withdrawn")
+    logger(self, fname="withdraw_moderator_offer")
     return response
 
 
@@ -594,5 +597,5 @@ def withdraw_ownership_offer(self, group_id: int, user_id: int):
         "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer/withdraw",
         payload={"user_id": user_id}
     )
-    self.logger.info("Group ownershipt offer withdrawn")
+    logger(self, fname="withdraw_ownership_offer")
     return response

@@ -149,6 +149,8 @@ class Client(API):
     def invite_to_call_bulk(self, call_id: int, group_id: int = None) -> dict:
         """
 
+        オンラインを友達をまとめて通話に招待します
+
         Parameters
         ----------
             - call_id: int - (required)

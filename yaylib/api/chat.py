@@ -14,7 +14,7 @@ def accept_chat_request(self, chat_room_ids: List[int]):
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
         payload={"chat_room_ids[]": chat_room_ids}
     )
-    self.logger.info("Chat request accepted.")
+    logger(self, fname="accept_chat_request")
     return response
 
 
@@ -45,7 +45,7 @@ def create_group_chat(
         },
         data_type=CreateChatRoomResponse
     )
-    self.logger.info(f"Group chat '{name}' created.")
+    logger(self, fname=f"create_group_chat", name=name)
     return response
 
 
@@ -65,7 +65,7 @@ def create_private_chat(
         },
         data_type=CreateChatRoomResponse
     )
-    self.logger.info(f"Private chatroom with '{with_user_id}' created.")
+    logger(self, fname="create_private_chat", with_user_id=with_user_id)
     return response
 
 
@@ -74,7 +74,7 @@ def delete_background(self, room_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{room_id}/background",
     )
-    self.logger.info("Background deleted.")
+    logger(self, fname="delete_background")
     return response
 
 
@@ -83,7 +83,7 @@ def delete_message(self, room_id: int, message_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/messages/{message_id}/delete",
     )
-    self.logger.info("Message deleted.")
+    logger(self, fname="delete_message")
     return response
 
 
@@ -103,7 +103,7 @@ def edit_chat_room(
             "background_filename": background_filename,
         }
     )
-    self.logger.info("Chatroom updated.")
+    logger(self, fname="edit_chat_room")
     return response
 
 
@@ -224,7 +224,7 @@ def hide_chat(self, chat_room_id: int):
         "POST", endpoint=f"{Endpoints.HIDDEN_V1}/chats",
         payload={"chat_room_id": chat_room_id},
     )
-    self.logger.info("Chatroom hidden.")
+    logger(self, fname="Chatroom hidden.")
     return response
 
 
@@ -234,7 +234,7 @@ def invite_to_chat(self, chat_room_id: int, user_ids: List[int]):
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/invite",
         payload={"with_user_ids[]": user_ids},
     )
-    self.logger.info("Chatroom invitation sent.")
+    logger(self, fname="invite_to_chat")
     return response
 
 
@@ -244,7 +244,7 @@ def kick_users_from_chat(self, chat_room_id: int, user_ids: List[int]):
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/kick",
         payload={"with_user_ids[]": user_ids},
     )
-    self.logger.info(f"Users have been kicked from the chatroom.")
+    logger(self, fname=f"kick_users_from_chat")
     return response
 
 
@@ -253,7 +253,7 @@ def pin_chat(self, room_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/pinned"
     )
-    self.logger.info("Pinned chatroom.")
+    logger(self, fname="pin_chat")
     return response
 
 
@@ -270,7 +270,7 @@ def read_attachment(
             "attachment_msg_ids[]": attachment_msg_ids
         }
     )
-    self.logger.info("Attachment read.")
+    logger(self, fname="read_attachment")
     return response
 
 
@@ -279,7 +279,7 @@ def read_message(self, chat_room_id: int, message_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages/{message_id}/read",
     )
-    self.logger.info("Message read.")
+    logger(self, fname="read_message")
     return response
 
 
@@ -293,7 +293,7 @@ def read_video_message(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/videos_read",
         payload={"video_msg_ids": video_msg_ids},
     )
-    self.logger.info("Video message read.")
+    logger(self, fname="read_video_message")
     return response
 
 
@@ -314,7 +314,7 @@ def remove_chat_rooms(self, chat_room_ids: List[int]):
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/mass_destroy",
         payload={"chat_room_ids[]": chat_room_ids},
     )
-    self.logger.info("Chat rooms removed.")
+    logger(self, fname="remove_chat_rooms")
     return response
 
 
@@ -343,7 +343,7 @@ def report_chat_room(
             "screenshot_4_filename": screenshot_4_filename,
         },
     )
-    self.logger.info("Chat room reported.")
+    logger(self, fname="report_chat_room", chat_room_id=chat_room_id)
     return response
 
 
@@ -352,7 +352,7 @@ def send_media_screenshot_notification(self, room_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/screen_captured"
     )
-    self.logger.info("Media screenshot notification sent.")
+    logger(self, fname="send_media_screenshot_notification")
     return response
 
 
@@ -383,7 +383,7 @@ def send_message(
             "video_file_name": video_file_name,
         }, data_type=MessageResponse
     )
-    self.logger.info("Message sent.")
+    logger(self, fname="send_message")
     return response
 
 
@@ -402,7 +402,7 @@ def unhide_chat(self, chat_room_ids: int):
         "DELETE", endpoint=f"{Endpoints.HIDDEN_V1}/chats",
         params={"chat_room_ids[]": chat_room_ids},
     )
-    self.logger.info("Chatroom unhidden.")
+    logger(self, fname="unhide_chat")
     return response
 
 
@@ -411,5 +411,5 @@ def unpin_chat(self, chat_room_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/pinned"
     )
-    self.logger.info("Chatroom unpinned.")
+    logger(self, fname="unpin_chat")
     return response
