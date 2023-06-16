@@ -237,7 +237,7 @@ def set_user_role(
         "PUT", endpoint=f"{Endpoints.CALLS_V1}/{call_id}/users/{user_id}",
         payload={"role": role}
     )
-    logger(self, fname="set_user_role")
+    logger(self, fname="set_user_role", user_id=user_id)
     return response
 
 

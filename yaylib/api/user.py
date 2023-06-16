@@ -52,7 +52,7 @@ def create_user(
             "vn": vn,
         }
     )
-    self.logger.info("Account created.")
+    logger(self, fname="create_user")
     return response
 
 
@@ -61,7 +61,7 @@ def delete_contact_friends(self):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V1}/contact_friends"
     )
-    self.logger.info("Contact friends deleted.")
+    logger(self, fname="delete_contact_friends")
     return response
 
 
@@ -70,7 +70,7 @@ def delete_footprint(self, user_id: int, footprint_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V2}/{user_id}/footprints/{footprint_id}"
     )
-    self.logger.info("Footprint deleted.")
+    logger(self, fname="delete_footprint")
     return response
 
 
@@ -91,7 +91,7 @@ def destroy_user(self):
             ),
         }
     )
-    self.logger.info("User has been deleted.")
+    logger(self, fname="destroy_user")
     return response
 
 
@@ -100,7 +100,7 @@ def follow_user(self, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/follow"
     )
-    self.logger.info(f"User '{user_id}' followed.")
+    logger(self, fname="follow_user", user_id=user_id)
     return response
 
 
@@ -110,7 +110,7 @@ def follow_users(self, user_ids: List[int]):
         "POST", endpoint=f"{Endpoints.USERS_V2}/follow",
         params={"user_ids[]": user_ids}
     )
-    self.logger.info("Users followed.")
+    logger(self, fname="follow_users")
     return response
 
 
@@ -420,7 +420,7 @@ def post_social_shared(self, sns_name: str):
         "POST", endpoint=f"{Endpoints.USERS_V2}/social_shared",
         params={"sns_name": sns_name}
     )
-    self.logger.info("Social shared posted.")
+    logger(self, fname="post_social_shared")
     return response
 
 
@@ -429,7 +429,7 @@ def record_app_review_status(self):
         "POST", endpoint=f"{Endpoints.USERS_V1}/{self.url_uuid}/app_review_status",
         params={"uuid": self.uuid}
     )
-    self.logger.info("App review status recored.")
+    logger(self, fname="record_app_review_status")
     return response
 
 
@@ -448,7 +448,7 @@ def reduce_kenta_penalty(self, user_id: int):
             "signed_version": signed_version_calculating()
         }, data_type=CreatePostResponse
     )
-    self.logger.info("Penalty reduced.")
+    logger(self, fname="reduce_kenta_penalty")
     return response
 
 
@@ -457,7 +457,7 @@ def refresh_counter(self, counter: str):
         "POST", endpoint=f"{Endpoints.USERS_V1}/reset_counters",
         payload={"counter": counter}
     )
-    self.logger.info("Counter refreshed.")
+    logger(self, fname="refresh_counter")
     return response
 
 
@@ -465,7 +465,7 @@ def remove_user_avatar(self):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/remove_profile_photo"
     )
-    self.logger.info("User avatar removed.")
+    logger(self, fname="remove_user_avatar")
     return response
 
 
@@ -473,7 +473,7 @@ def remove_user_cover(self):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/remove_cover_image"
     )
-    self.logger.info("User cover removed.")
+    logger(self, fname="remove_user_cover")
     return response
 
 
@@ -499,7 +499,7 @@ def report_user(
             "screenshot_4_filename": screenshot_4_filename,
         }
     )
-    self.logger.info("User reported.")
+    logger(self, fname="report_user", user_id=user_id)
     return response
 
 
@@ -512,7 +512,7 @@ def reset_password(self, email: str, email_grant_token: str, password: str):
             "password": password,
         }
     )
-    self.logger.info("Password has been reset.")
+    logger(self, fname="reset_password")
     return response
 
 
@@ -562,7 +562,7 @@ def set_additional_setting_enabled(self, mode: str, on: int = None):
         "POST", endpoint=f"{Endpoints.USERS_V1}/additonal_notification_setting",
         payload={"mode": mode, "on": on}
     )
-    self.logger.info("Additional setting enabled.")
+    logger(self, fname="set_additional_setting_enabled")
     return response
 
 
@@ -582,7 +582,7 @@ def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
             "signed_version": signed_version_calculating()
         }
     )
-    self.logger.info("Follow permission enabled.")
+    logger(self, fname="set_follow_permission_enabled")
     return response
 
 
@@ -592,7 +592,7 @@ def set_setting_follow_recommendation_enabled(self, on: bool):
         endpoint=f"{Endpoints.USERS_V1}/visible_on_sns_friend_recommendation_setting",
         params={"on": on}
     )
-    self.logger.info("Follow recommendation enabled.")
+    logger(self, fname="set_setting_follow_recommendation_enabled")
     return response
 
 
@@ -601,7 +601,7 @@ def take_action_follow_request(self, target_id: int, action: str):
         "POST", endpoint=f"{Endpoints.USERS_V2}/{target_id}/follow_request",
         payload={"action": action}
     )
-    self.logger.info("Took action follow request.")
+    logger(self, fname="take_action_follow_request")
     return response
 
 
@@ -610,7 +610,7 @@ def turn_on_hima(self):
     response = self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V1}/hima",
     )
-    self.logger.info("Turned on hima now.")
+    logger(self, fname="turn_on_hima")
     return response
 
 
@@ -619,7 +619,7 @@ def unfollow_user(self, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow",
     )
-    self.logger.info("User unfollowed.")
+    logger(self, fname="unfollow_user", user_id=user_id)
     return response
 
 
@@ -629,7 +629,7 @@ def update_invite_contact_status(self, mobile_number: str):
         "POST", endpoint=f"{Endpoints.USERS_V1}/invite_contact",
         params={"mobile_number": mobile_number}
     )
-    self.logger.info("Invite contact status updated.")
+    logger(self, fname="update_invite_contact_status")
     return response
 
 
@@ -646,7 +646,7 @@ def update_language(self, language: str):
             "language": language,
         }
     )
-    self.logger.info("Language updated.")
+    logger(self, fname="update_language")
     return response
 
 
@@ -682,7 +682,7 @@ def update_user(
             ),
         }
     )
-    self.logger.info("User profile updated.")
+    logger(self, fname="update_user")
     return response
 
 
@@ -707,7 +707,7 @@ def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]):
         "POST", endpoint=f"{Endpoints.USERS_V1}/twitter_friends",
         payload={"twitter_friend_ids[]": twitter_friend_ids}
     )
-    self.logger.info("Twitter friend ids updated.")
+    logger(self, fname="upload_twitter_friend_ids")
     return response
 
 
@@ -719,7 +719,7 @@ def block_user(self, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/{user_id}/block",
     )
-    self.logger.info("User blocked.")
+    logger(self, fname="block_user", user_id=user_id)
     return response
 
 
@@ -748,7 +748,7 @@ def unblock_user(self, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unblock"
     )
-    self.logger.info("User unblocked.")
+    logger(self, fname="unblock_user", user_id=user_id)
     return response
 
 
@@ -778,7 +778,7 @@ def hide_user(self, user_id: int):
         "POST", endpoint=f"{Endpoints.HIDDEN_V1}/users",
         payload={"user_id": user_id}
     )
-    self.logger.info("user hidden.")
+    logger(self, fname="hide_user", user_id=user_id)
     return response
 
 
@@ -788,5 +788,5 @@ def unhide_users(self, user_ids: List[int]):
         "DELETE", endpoint=f"{Endpoints.HIDDEN_V1}/users",
         params={"user_ids[]": user_ids}
     )
-    self.logger.info("User unhidden.")
+    logger(self, fname="unhide_users")
     return response

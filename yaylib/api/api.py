@@ -23,7 +23,7 @@ class API:
             refresh_token: str = None,
             proxy: str = None,
             timeout=60,
-            lang="en",
+            lang="ja",
             base_path=current_path,
             loglevel_stream=logging.INFO,
             host=Configs.YAY_PRODUCTION_HOST,
@@ -100,12 +100,13 @@ class API:
             f"Headers: {response.headers}\n\n"
             f"Response: {response.text}\n"
         )
-        self._handle_response(response)
 
         try:
-            return response.json()
+            json_response = response.json()
         except JSONDecodeError:
             return response.text
+
+        return self._handle_response(response, json_response)
 
     def _make_request(
             self, method: str, endpoint: str, params: dict = None,
@@ -131,22 +132,38 @@ class API:
             raise AuthenticationError(
                 "Authorization is not present in the header.")
 
-    def _handle_response(self, response):
+    def _handle_response(self, response, json_response):
+        translated_response = self.translate_error_message(json_response)
         if response.status_code == 400:
-            raise BadRequestError(response.text)
+            raise BadRequestError(translated_response)
         if response.status_code == 401:
-            raise AuthenticationError(response.text)
+            raise AuthenticationError(translated_response)
         if response.status_code == 403:
-            raise ForbiddenError(response.text)
+            raise ForbiddenError(translated_response)
         if response.status_code == 404:
-            raise NotFoundError(response.text)
+            raise NotFoundError(translated_response)
         if response.status_code == 429:
-            raise RateLimitError(response.text)
+            raise RateLimitError(translated_response)
         if response.status_code == 500:
-            raise YayServerError(response.text)
+            raise YayServerError(translated_response)
         if response.status_code and not 200 <= response.status_code < 300:
-            raise HTTPError(response.text)
-        return response
+            raise HTTPError(translated_response)
+        return json_response
+
+    def translate_error_message(self, response):
+        if self.lang == "ja":
+            try:
+                error_code = response.get("error_code", None)
+                if error_code is not None:
+                    error_type = ErrorType(error_code)
+                    if error_type.name in ErrorMessage.__members__:
+                        error_message = ErrorMessage[error_type.name].value
+                        response["message"] = error_message
+                return response
+            except ValueError:
+                return response
+        else:
+            return response
 
     def generate_all_uuids(self):
         self.device_uuid = generate_uuid()[0]

@@ -713,7 +713,7 @@ class Client(API):
     def accept_moderator_offer(self, group_id: int) -> dict:
         """
 
-        グループ副管理人の権限オファーを引き受けます
+        サークル副管理人の権限オファーを引き受けます
 
         """
         return accept_moderator_offer(self, group_id)
@@ -721,7 +721,7 @@ class Client(API):
     def accept_ownership_offer(self, group_id: int) -> dict:
         """
 
-        グループ管理人の権限オファーを引き受けます
+        サークル管理人の権限オファーを引き受けます
 
         """
         return accept_ownership_offer(self, group_id)
@@ -729,7 +729,7 @@ class Client(API):
     def accept_group_join_request(self, group_id: int, user_id: int) -> dict:
         """
 
-        グループ参加リクエストを承認します
+        サークル参加リクエストを承認します
 
         """
         return accept_group_join_request(self, group_id, user_id)
@@ -737,7 +737,7 @@ class Client(API):
     def add_related_groups(self, group_id: int, related_group_id: List[int]) -> dict:
         """
 
-        関連グループを追加します
+        関連サークルを追加します
 
         """
         return add_related_groups(self, group_id, related_group_id)
@@ -745,7 +745,7 @@ class Client(API):
     def ban_group_user(self, group_id: int, user_id: int) -> dict:
         """
 
-        グループからユーザーを追放します
+        サークルからユーザーを追放します
 
         """
         return ban_group_user(self, group_id, user_id)
@@ -753,7 +753,7 @@ class Client(API):
     def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
         """
 
-        グループの未読ステータスを取得します
+        サークルの未読ステータスを取得します
 
         """
         return check_unread_status(self, from_time)
@@ -783,7 +783,7 @@ class Client(API):
     ) -> CreateGroupResponse:
         """
 
-        グループを作成します
+        サークルを作成します
 
         """
         return create_group(
@@ -812,7 +812,7 @@ class Client(API):
     def create_pin_group(self, group_id: int) -> dict:
         """
 
-        グループの投稿をピンします
+        サークルの投稿をピンします
 
         """
         return create_pin_group(self, group_id)
@@ -820,7 +820,7 @@ class Client(API):
     def decline_moderator_offer(self, group_id: int) -> dict:
         """
 
-        グループ副管理人の権限オファーを断ります
+        サークル副管理人の権限オファーを断ります
 
         """
         return decline_moderator_offer(self, group_id)
@@ -828,7 +828,7 @@ class Client(API):
     def decline_ownership_offer(self, group_id: int) -> dict:
         """
 
-        グループ管理人の権限オファーを断ります
+        サークル管理人の権限オファーを断ります
 
         """
         return decline_ownership_offer(self, group_id)
@@ -836,7 +836,7 @@ class Client(API):
     def decline_group_join_request(self, group_id: int, user_id: int) -> dict:
         """
 
-        グループ参加リクエストを断ります
+        サークル参加リクエストを断ります
 
         """
         return decline_ownership_offer(self, group_id, user_id)
@@ -844,7 +844,7 @@ class Client(API):
     def delete_pin_group(self, group_id: int) -> dict:
         """
 
-        グループのピン投稿を解除します
+        サークルのピン投稿を解除します
 
         """
         return delete_pin_group(self, group_id)
@@ -852,7 +852,7 @@ class Client(API):
     def get_banned_group_members(self, group_id: int, page: int = None) -> UsersResponse:
         """
 
-        追放されたグループメンバーを取得します
+        追放されたサークルメンバーを取得します
 
         """
         return get_banned_group_members(self, group_id, page)
@@ -860,7 +860,7 @@ class Client(API):
     def get_group_categories(self, **params) -> GroupCategoriesResponse:
         """
 
-        グループのカテゴリーを取得します
+        サークルのカテゴリーを取得します
 
         Parameters
         ----------
@@ -874,7 +874,7 @@ class Client(API):
     def get_create_group_quota(self) -> CreateGroupQuota:
         """
 
-        グループ作成可能な割当量を取得します
+        サークル作成可能な割当量を取得します
 
         """
         return get_create_group_quota(self)
@@ -882,7 +882,7 @@ class Client(API):
     def get_group(self, group_id: int) -> GroupResponse:
         """
 
-        グループの詳細を取得します
+        サークルの詳細を取得します
 
         """
         return get_group(self, group_id)
@@ -893,7 +893,7 @@ class Client(API):
     def get_groups(self, **params) -> GroupsResponse:
         """
 
-        複数のグループの詳細を取得します
+        複数のサークルの詳細を取得します
 
         Parameters
         ----------
@@ -909,7 +909,7 @@ class Client(API):
     def get_invitable_users(self, group_id: int, **params) -> UsersByTimestampResponse:
         """
 
-        グループに招待可能なユーザーを取得します
+        サークルに招待可能なユーザーを取得します
 
         Parameters
         ----------
@@ -926,7 +926,7 @@ class Client(API):
     def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
         """
 
-        特定のグループメンバーの情報を取得します
+        特定のサークルメンバーの情報を取得します
 
         """
         return get_group_member(self, group_id, user_id)
@@ -934,7 +934,7 @@ class Client(API):
     def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
         """
 
-        グループメンバーを取得します
+        サークルメンバーを取得します
 
         Parameters
         ----------
@@ -953,7 +953,7 @@ class Client(API):
     def get_my_groups(self, from_timestamp: None) -> GroupsResponse:
         """
 
-        自分のグループを取得します
+        自分のサークルを取得します
 
         """
         return get_my_groups(self, from_timestamp)
@@ -961,7 +961,7 @@ class Client(API):
     def get_relatable_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
         """
 
-        関連がある可能性があるグループを取得します
+        関連がある可能性があるサークルを取得します
 
         Parameters
         ----------
@@ -976,7 +976,7 @@ class Client(API):
     def get_related_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
         """
 
-        関連があるグループを取得します
+        関連があるサークルを取得します
 
         Parameters
         ----------
@@ -991,7 +991,7 @@ class Client(API):
     def get_user_groups(self, **params) -> GroupsResponse:
         """
 
-        特定のユーザーが参加しているグループを取得します
+        特定のユーザーが参加しているサークルを取得します
 
         Parameters
         ----------
@@ -1005,7 +1005,7 @@ class Client(API):
     def invite_users_to_group(self, group_id: int, user_ids: List[int]) -> dict:
         """
 
-        グループにユーザーを招待します
+        サークルにユーザーを招待します
 
         """
         return invite_users_to_group(self, group_id, user_ids)
@@ -1013,7 +1013,7 @@ class Client(API):
     def join_group(self, group_id: int) -> dict:
         """
 
-        グループに参加します
+        サークルに参加します
 
         """
         return join_group(self, group_id)
@@ -1021,18 +1021,23 @@ class Client(API):
     def leave_group(self, group_id: int) -> dict:
         """
 
-        グループから脱退します
+        サークルから脱退します
 
         """
         return leave_group(self, group_id)
 
     def post_gruop_social_shared(self, group_id: int, sns_name: str) -> dict:
+        """
+        
+        サークルのソーシャルシェアを投稿します
+        
+        """
         return post_gruop_social_shared(self, group_id, sns_name)
 
     def remove_group_cover(self, group_id: int) -> dict:
         """
 
-        グループのカバー画像を削除します
+        サークルのカバー画像を削除します
 
         """
         return remove_group_cover(self, group_id)
@@ -1040,7 +1045,7 @@ class Client(API):
     def remove_moderator(self, group_id: int, user_id: int) -> dict:
         """
 
-        グループの副管理人を削除します
+        サークルの副管理人を削除します
 
         """
         return remove_moderator(self, group_id, user_id)
@@ -1048,7 +1053,7 @@ class Client(API):
     def remove_related_groups(self, group_id: int, related_group_ids: List[int]) -> dict:
         """
 
-        関連のあるグループを削除します
+        関連のあるサークルを削除します
 
         """
         return remove_related_groups(self, group_id, related_group_ids)
@@ -1066,7 +1071,7 @@ class Client(API):
     ) -> dict:
         """
 
-        グループを通報します
+        サークルを通報します
 
         """
         return report_group(
@@ -1084,7 +1089,7 @@ class Client(API):
     def send_moderator_offers(self, group_id: int, user_ids: List[int]) -> dict:
         """
 
-        複数人に副管理人のオファーを送信します
+        複数人にサークル副管理人のオファーを送信します
 
         """
         return send_moderator_offers(self, group_id, user_ids)
@@ -1092,7 +1097,7 @@ class Client(API):
     def send_ownership_offer(self, group_id: int, user_id: int) -> dict:
         """
 
-        グループ管理人権限のオファーを送信します
+        サークル管理人権限のオファーを送信します
 
         """
         return send_ownership_offer(self, group_id, user_id)
@@ -1110,7 +1115,7 @@ class Client(API):
     def set_group_title(self, group_id: int, title: str) -> dict:
         """
 
-        グループのタイトルを設定します
+        サークルのタイトルを設定します
 
         """
         return set_group_title(self, group_id, title)
@@ -1118,7 +1123,7 @@ class Client(API):
     def take_over_group_ownership(self, group_id: int) -> dict:
         """
 
-        グループ管理人の権限を引き継ぎます
+        サークル管理人の権限を引き継ぎます
 
         """
         return take_over_group_ownership(self, group_id)
@@ -1126,7 +1131,7 @@ class Client(API):
     def unban_group_member(self, group_id: int, user_id: int) -> dict:
         """
 
-        特定のグループメンバーの追放を解除します
+        特定のサークルメンバーの追放を解除します
 
         """
         return unban_group_member(self, group_id, user_id)
@@ -1157,7 +1162,7 @@ class Client(API):
     ) -> GroupResponse:
         """
 
-        グループを編集します
+        サークルを編集します
 
         """
         return update_group(
@@ -1187,7 +1192,7 @@ class Client(API):
     def visit_group(self, group_id: int) -> dict:
         """
 
-        グループを訪問します
+        サークルを訪問します
 
         """
         return visit_group(self, group_id)
@@ -1195,7 +1200,7 @@ class Client(API):
     def withdraw_moderator_offer(self, group_id: int, user_id: int) -> dict:
         """
 
-        グループ副管理人のオファーを取り消します
+        サークル副管理人のオファーを取り消します
 
         """
         return withdraw_moderator_offer(self, group_id, user_id)
@@ -1203,7 +1208,7 @@ class Client(API):
     def withdraw_ownership_offer(self, group_id: int, user_id: int) -> dict:
         """
 
-        グループ管理人のオファーを取り消します
+        サークル管理人のオファーを取り消します
 
         """
         return withdraw_ownership_offer(self, group_id, user_id)

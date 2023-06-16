@@ -85,7 +85,7 @@ Client クラスは、API クライアントのメインクラスです。
     <tr>
 		<td><code>lang</code></td>
 		<td><code>str</code></td>
-		<td><code>en</code></td>
+		<td><code>ja</code></td>
 		<td>ログ出力などの言語（ja もしくは、en）</td>
 	</tr>
     <tr>
@@ -2057,7 +2057,7 @@ Bgm のオブジェクトモデル
 	</tr>
     <tr>
 		<td><code>-13</code></td>
-		<td>プライベートユーザー</td>
+		<td>プライベートユーザーです</td>
 	</tr>
     <tr>
 		<td><code>-14</code></td>
@@ -2133,7 +2133,7 @@ Bgm のオブジェクトモデル
 	</tr>
     <tr>
 		<td><code>-204</code></td>
-		<td>スパムメールの可能性</td>
+		<td>スパムメールの可能性があり、操作を完了できません</td>
 	</tr>
     <tr>
 		<td><code>-308</code></td>

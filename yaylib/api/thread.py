@@ -14,7 +14,10 @@ def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
         "PUT", endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread/{thread_id}",
         data_type=ThreadInfo
     )
-    self.logger.info("Post added to the thread.")
+    logger(
+        self, fname="add_post_to_thread",
+        post_id=post_id, hread_id=thread_id
+    )
     return response
 
 
@@ -32,7 +35,7 @@ def convert_post_to_thread(
             "thread_icon_filename": thread_icon_filename
         }, data_type=ThreadInfo
     )
-    self.logger.info("Post converted to a thread.")
+    logger(self, fname="convert_post_to_thread")
     return response
 
 
@@ -51,7 +54,7 @@ def create_thread(
             "thread_icon_filename": thread_icon_filename,
         }, data_type=ThreadInfo
     )
-    self.logger.info("Thread created.")
+    logger(self, fname="create_thread")
     return response
 
 
@@ -107,7 +110,7 @@ def join_thread(self, thread_id: int, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
     )
-    self.logger.info("Joined the thread.")
+    logger(self, fname="join_thread", thread_id=thread_id)
     return response
 
 
@@ -116,7 +119,7 @@ def leave_thread(self, thread_id: int, user_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
     )
-    self.logger.info("Left the thread.")
+    logger(self, fname="leave_thread")
     return response
 
 
@@ -125,7 +128,7 @@ def remove_thread(self, thread_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
     )
-    self.logger.info("Thread removed.")
+    logger(self, fname="remove_thread", thread_id=thread_id)
     return response
 
 
@@ -140,5 +143,5 @@ def update_thread(
         "PUT", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
         payload={"title": title, "thread_icon_filename": thread_icon_filename}
     )
-    self.logger.info("Thread updated.")
+    logger(self, fname="update_thread", thread_id=thread_id)
     return response
