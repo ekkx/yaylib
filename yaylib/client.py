@@ -146,10 +146,10 @@ class Client(API):
         """
         return get_group_calls(self, **params)
 
-    def invite_to_call_bulk(self, call_id: int, group_id: int = None) -> dict:
+    def invite_online_followings_to_call(self, call_id: int, group_id: int = None) -> dict:
         """
 
-        オンラインを友達をまとめて通話に招待します
+        オンラインの友達をまとめて通話に招待します
 
         Parameters
         ----------
@@ -570,18 +570,18 @@ class Client(API):
         """
         return pin_chat(self, room_id)
 
-    def read_attachment(
-            self,
-            room_id: int,
-            attachment_msg_ids: List[int]
-    ) -> dict:
-        """
+    # def read_attachment(
+    #         self,
+    #         room_id: int,
+    #         attachment_msg_ids: List[int]
+    # ) -> dict:
+    #     """
 
-        アタッチメントを既読にします
+    #     アタッチメントを既読にします
 
-        """
-        # TODO: check if this works
-        return read_attachment(self, room_id, attachment_msg_ids)
+    #     """
+    #     # TODO: check if this works
+    #     return read_attachment(self, room_id, attachment_msg_ids)
 
     def read_message(self, chat_room_id: int, message_id: int) -> dict:
         """
@@ -591,17 +591,17 @@ class Client(API):
         """
         return read_message(self, chat_room_id, message_id)
 
-    def read_video_message(
-            self,
-            room_id: int,
-            video_msg_ids: List[int]
-    ) -> dict:
-        """
+    # def read_video_message(
+    #         self,
+    #         room_id: int,
+    #         video_msg_ids: List[int]
+    # ) -> dict:
+    #     """
 
-        動画のメッセージを既読にします
+    #     動画のメッセージを既読にします
 
-        """
-        return read_video_message(self, room_id, video_msg_ids)
+    #     """
+    #     return read_video_message(self, room_id, video_msg_ids)
 
     def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
         """
@@ -1028,9 +1028,9 @@ class Client(API):
 
     def post_gruop_social_shared(self, group_id: int, sns_name: str) -> dict:
         """
-        
+
         サークルのソーシャルシェアを投稿します
-        
+
         """
         return post_gruop_social_shared(self, group_id, sns_name)
 
@@ -1337,20 +1337,20 @@ class Client(API):
 
     # -MISC
 
-    def accept_policy_agreement(self, type: str) -> dict:
-        return accept_policy_agreement(self, type)
+    # def accept_policy_agreement(self, type: str) -> dict:
+    #     return accept_policy_agreement(self, type)
 
-    def generate_sns_thumbnail(self, **params) -> dict:
-        """
+    # def generate_sns_thumbnail(self, **params) -> dict:
+    #     """
 
-        Parameters
-        ----------
+    #     Parameters
+    #     ----------
 
-            - resource_type: str - (Required)
-            - resource_id: int - (Required)
+    #         - resource_type: str - (Required)
+    #         - resource_id: int - (Required)
 
-        """
-        return generate_sns_thumbnail(self, **params)
+    #     """
+    #     return generate_sns_thumbnail(self, **params)
 
     def get_email_verification_presigned_url(self, email: str, locale: str, intent: str = None) -> str:
         """
@@ -1379,7 +1379,7 @@ class Client(API):
     def get_old_file_upload_presigned_url(self, video_file_name: str) -> str:
         """
 
-        ファイルアップロード用の署名付きURLを取得します
+        動画ファイルアップロード用の署名付きURLを取得します
 
         """
         return get_old_file_upload_presigned_url(self, video_file_name)
@@ -1387,22 +1387,22 @@ class Client(API):
     def get_policy_agreements(self) -> PolicyAgreementsResponse:
         return get_policy_agreements(self)
 
-    def get_promotions(self, **params) -> List[Promotion]:
-        """
+    # def get_promotions(self, **params) -> List[Promotion]:
+    #     """
 
-        プロモーションを取得します
+    #     プロモーションを取得します
 
-        Parameters
-        ----------
+    #     Parameters
+    #     ----------
 
-            - page: int - (Optional)
-            - number: int - (Optional)
+    #         - page: int - (Optional)
+    #         - number: int - (Optional)
 
-        """
-        return get_promotions(self, **params)
+    #     """
+    #     return get_promotions(self, **params)
 
-    def get_vip_game_reward_url(self, device_type: str) -> str:
-        return get_vip_game_reward_url(self, device_type)
+    # def get_vip_game_reward_url(self, device_type: str) -> str:
+    #     return get_vip_game_reward_url(self, device_type)
 
     def get_web_socket_token(self) -> str:
         """
@@ -1412,26 +1412,26 @@ class Client(API):
         """
         return get_web_socket_token(self)
 
-    def verify_device(
-            self,
-            app_version: str,
-            device_uuid: str,
-            platform: str,
-            verification_string: str
-    ) -> VerifyDeviceResponse:
-        """
+    # def verify_device(
+    #         self,
+    #         app_version: str,
+    #         device_uuid: str,
+    #         platform: str,
+    #         verification_string: str
+    # ) -> VerifyDeviceResponse:
+    #     """
 
-        デバイスを検証します
+    #     デバイスを検証します
 
-        """
-        # TODO: check platform, verification_string
-        return verify_device(
-            self,
-            app_version,
-            device_uuid,
-            platform,
-            verification_string
-        )
+    #     """
+    #     # TODO: check platform, verification_string
+    #     return verify_device(
+    #         self,
+    #         app_version,
+    #         device_uuid,
+    #         platform,
+    #         verification_string
+    #     )
 
     def upload_image(self, image_type: str, image_path: str) -> str:
         """
@@ -2127,18 +2127,18 @@ class Client(API):
             self, post_id, text, font_size, color, message_tags
         )
 
-    def update_recommendation_feedback(
-        self, post_id: int, feedback_result: str,
-        experiment_num: int, variant_num: int,
-    ) -> dict:
-        """
+    # def update_recommendation_feedback(
+    #     self, post_id: int, feedback_result: str,
+    #     experiment_num: int, variant_num: int,
+    # ) -> dict:
+    #     """
 
-        おすすめのフィードバックを更新します
+    #     おすすめのフィードバックを更新します
 
-        """
-        return update_recommendation_feedback(
-            self, post_id, feedback_result, experiment_num, variant_num
-        )
+    #     """
+    #     return update_recommendation_feedback(
+    #         self, post_id, feedback_result, experiment_num, variant_num
+    #     )
 
     def validate_post(self, text: str, *, group_id: int = None, thread_id: int = None) -> ValidationPostResponse:
         """
@@ -2403,13 +2403,13 @@ class Client(API):
             vn
         )
 
-    def delete_contact_friends(self) -> dict:
-        """
+    # def delete_contact_friends(self) -> dict:
+    #     """
 
-        連絡先の友人を削除します
+    #     連絡先の友人を削除します
 
-        """
-        return delete_contact_friends(self)
+    #     """
+    #     return delete_contact_friends(self)
 
     def delete_footprint(self, user_id: int, footprint_id: int) -> dict:
         """
@@ -2446,6 +2446,8 @@ class Client(API):
     def get_active_followings(self, **params) -> ActiveFollowingsResponse:
         """
 
+        アクティブなフォロー中のユーザーを取得します
+
         Parameters
         ----------
 
@@ -2458,11 +2460,11 @@ class Client(API):
     # def get_additional_settings(self) -> Settings:
     #     return get_additional_settings(self)
 
-    def get_app_review_status(self) -> AppReviewStatusResponse:
-        return get_app_review_status(self)
+    # def get_app_review_status(self) -> AppReviewStatusResponse:
+    #     return get_app_review_status(self)
 
-    def get_contact_status(self, mobile_numbers: List[str]) -> ContactStatusResponse:
-        return get_contact_status(self, mobile_numbers)
+    # def get_contact_status(self, mobile_numbers: List[str]) -> ContactStatusResponse:
+    #     return get_contact_status(self, mobile_numbers)
 
     # def get_default_settings(self) -> TimelineSettings:
     #     return get_default_settings(self)
@@ -2499,6 +2501,11 @@ class Client(API):
         return get_follow_request_count(self)
 
     def get_following_users_born(self, birthdate: int = None) -> UsersResponse:
+        """
+
+        フォロー中のユーザーの誕生日を取得します
+
+        """
         return get_following_users_born(self, birthdate)
 
     def get_footprints(self, **params) -> List[Footprint]:
@@ -2533,27 +2540,32 @@ class Client(API):
         """
         return get_hima_users(self, **params)
 
-    def get_initial_recommended_users_to_follow(self, **params) -> UsersResponse:
-        return get_initial_recommended_users_to_follow(self, **params)
+    # def get_initial_recommended_users_to_follow(self, **params) -> UsersResponse:
+    #     return get_initial_recommended_users_to_follow(self, **params)
 
-    def get_recommended_users_to_follow_for_profile(
-            self, user_id: int, **params
-    ) -> UsersResponse:
-        """
+    # def get_recommended_users_to_follow_for_profile(
+    #         self, user_id: int, **params
+    # ) -> UsersResponse:
+    #     """
 
-        Parameters
-        ----------
+    #     Parameters
+    #     ----------
 
-            - user_id: int - (Required)
-            - number: int - (Optional)
-            - page: int - (Optional)
+    #         - user_id: int - (Required)
+    #         - number: int - (Optional)
+    #         - page: int - (Optional)
 
-        """
-        return get_recommended_users_to_follow_for_profile(
-            self, user_id, **params
-        )
+    #     """
+    #     return get_recommended_users_to_follow_for_profile(
+    #         self, user_id, **params
+    #     )
 
     def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
+        """
+
+        カウンター更新のリクエストを取得します
+
+        """
         return get_refresh_counter_requests(self)
 
     def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
@@ -2585,8 +2597,8 @@ class Client(API):
         """
         return get_user(self, user_id)
 
-    def get_user_custom_definitions(self) -> UserCustomDefinitionsResponse:
-        return get_user_custom_definitions(self)
+    # def get_user_custom_definitions(self) -> UserCustomDefinitionsResponse:
+    #     return get_user_custom_definitions(self)
 
     def get_user_email(self, user_id: int) -> str:
         """
@@ -2652,19 +2664,19 @@ class Client(API):
         """
         return get_users(self, user_ids)
 
-    def get_users_from_uuid(self, uuid: str) -> UsersResponse:
-        """
+    # def get_users_from_uuid(self, uuid: str) -> UsersResponse:
+    #     """
 
-        UUIDからユーザーを取得します
+    #     UUIDからユーザーを取得します
 
-        """
-        return get_users_from_uuid(self, uuid)
+    #     """
+    #     return get_users_from_uuid(self, uuid)
 
     def post_social_shared(self, sns_name: str) -> dict:
         return post_social_shared(self, sns_name)
 
-    def record_app_review_status(self) -> dict:
-        return record_app_review_status(self)
+    # def record_app_review_status(self) -> dict:
+    #     return record_app_review_status(self)
 
     def reduce_kenta_penalty(self, user_id: int) -> dict:
         """
@@ -2675,6 +2687,11 @@ class Client(API):
         return reduce_kenta_penalty(self, user_id)
 
     def refresh_counter(self, counter: str) -> dict:
+        """
+
+        カウンターを更新します
+
+        """
         return refresh_counter(self, counter)
 
     def remove_user_avatar(self) -> dict:
@@ -2764,16 +2781,16 @@ class Client(API):
         """
         return search_users(self, **params)
 
-    def set_additional_setting_enabled(self, mode: str, on: int = None) -> dict:
-        return set_additional_setting_enabled(self, mode, on)
+    # def set_additional_setting_enabled(self, mode: str, on: int = None) -> dict:
+    #     return set_additional_setting_enabled(self, mode, on)
 
     def set_follow_permission_enabled(
             self, nickname: str, is_private: bool = None
     ) -> dict:
         return set_follow_permission_enabled(self, nickname, is_private)
 
-    def set_setting_follow_recommendation_enabled(self, on: bool) -> dict:
-        return set_setting_follow_recommendation_enabled(self, on)
+    # def set_setting_follow_recommendation_enabled(self, on: bool) -> dict:
+    #     return set_setting_follow_recommendation_enabled(self, on)
 
     def take_action_follow_request(self, target_id: int, action: str) -> dict:
         return take_action_follow_request(self, target_id, action)
@@ -2794,8 +2811,8 @@ class Client(API):
         """
         return unfollow_user(self, user_id)
 
-    def update_invite_contact_status(self, mobile_number: str) -> dict:
-        return update_invite_contact_status(self, mobile_number)
+    # def update_invite_contact_status(self, mobile_number: str) -> dict:
+    #     return update_invite_contact_status(self, mobile_number)
 
     def update_language(self, language: str) -> dict:
         """
@@ -2832,8 +2849,13 @@ class Client(API):
     # def upload_contacts_friends(self) -> dict:
     #     return upload_contacts_friends(self)
 
-    def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]) -> dict:
-        return upload_twitter_friend_ids(self, twitter_friend_ids)
+    # def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]) -> dict:
+    #     """
+
+    #     TwitterのフレンドのIDをアップロードします
+
+    #     """
+    #     return upload_twitter_friend_ids(self, twitter_friend_ids)
 
     def block_user(self, user_id: int) -> dict:
         """
