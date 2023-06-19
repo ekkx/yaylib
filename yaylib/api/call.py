@@ -16,7 +16,7 @@ def bump_call(self, call_id: int, participant_limit: int = None):
         "POST", endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bump",
         params=params
     )
-    logger(self, fname="bump_call")
+    self.logger.info("Call bumped.")
     return response
 
 
@@ -123,7 +123,7 @@ def invite_to_call_bulk(self, call_id: int, group_id: int = None):
         "POST", endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bulk_invite",
         params=params
     )
-    logger(self, fname="invite_to_call_bulk")
+    self.logger.info("Invited your online followings to the call.")
     return response
 
 
@@ -143,7 +143,7 @@ def invite_users_to_call(self, call_id: int, user_ids: List[int]):
             "user_ids[]": user_ids
         }
     )
-    logger(self, fname="invite_users_to_call")
+    self.logger.info("Invited users to call.")
     return response
 
 
@@ -161,7 +161,7 @@ def invite_users_to_chat_call(
             "room_url": room_url
         }
     )
-    logger(self, fname="invite_users_to_chat_call")
+    self.logger.info("Invited users to chat call.")
     return response
 
 
@@ -170,7 +170,7 @@ def kick_and_ban_from_call(self, call_id: int, user_id: int):
         "POST", endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/kick",
         payload={"user_id": user_id}
     )
-    logger(self, fname="kick_and_ban_from_call")
+    self.logger.info("User has been banned from the call.")
     return response
 
 
@@ -179,7 +179,7 @@ def notify_anonymous_user_leave_agora_channel(self, conference_id: int, agora_ui
         "POST", endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/leave_agora_channel",
         payload={"conference_id": conference_id, "agora_uid": agora_uid}
     )
-    logger(self, fname="notify_anonymous_user_leave_agora_channel")
+    self.logger.info("Notified anonymous user left the call.")
     return response
 
 
@@ -188,7 +188,7 @@ def notify_user_leave_agora_channel(self, conference_id: int, user_id: int):
         "POST", endpoint=f"{Endpoints.CALLS_V1}/leave_agora_channel",
         payload={"conference_id": conference_id, "user_id": user_id}
     )
-    logger(self, fname="notify_user_leave_agora_channel", user_id=user_id)
+    self.logger.info(f"Notified user '{user_id}' left the call.")
     return response
 
 
@@ -204,7 +204,7 @@ def send_call_screenshot(
             "screenshot_filename": screenshot_filename
         }
     )
-    logger(self, fname="send_call_screenshot")
+    self.logger.info("Call screenshot sent.")
     return response
 
 
@@ -223,7 +223,7 @@ def set_call(
             "category_id": category_id,
         }
     )
-    logger(self, fname="set_call")
+    self.logger.info("Started a call")
     return response
 
 
@@ -237,7 +237,7 @@ def set_user_role(
         "PUT", endpoint=f"{Endpoints.CALLS_V1}/{call_id}/users/{user_id}",
         payload={"role": role}
     )
-    logger(self, fname="set_user_role", user_id=user_id)
+    self.logger.info(f"User '{user_id}' has been given a role.")
     return response
 
 
@@ -251,7 +251,7 @@ def start_call(
         payload={"conference_id": conference_id, "call_sid": call_sid},
         data_type=ConferenceCallResponse
     ).conference_call
-    logger(self, fname="start_call")
+    self.logger.info("Joined the call.")
     return response
 
 
@@ -264,5 +264,5 @@ def stop_call(
         "POST", endpoint=f"{Endpoints.CALLS_V1}/leave_conference_call",
         payload={"conference_id": conference_id, "call_sid": call_sid}
     )
-    logger(self, fname="stop_call")
+    self.logger.info("Left the call.")
     return response

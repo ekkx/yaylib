@@ -23,7 +23,7 @@ def create_review(self, user_id: int, comment: str):
             ),
         },
     )
-    logger(self, fname="create_review", user_id=user_id)
+    self.logger.info("Review has been sent to {user_id}.")
     return response
 
 
@@ -43,7 +43,7 @@ def create_reviews(self, user_ids: List[int], comment: str):
             ),
         },
     )
-    logger(self, fname="create_reviews")
+    self.logger.info("Reviews have been sent to multiple users.")
     return response
 
 
@@ -53,7 +53,7 @@ def delete_reviews(self, review_ids: List[int]):
         "DELETE", endpoint=f"{Endpoints.USERS_V1}/reviews",
         params={"review_ids[]": review_ids}
     )
-    logger(self, fname="delete_reviews")
+    self.logger.info("Reviews have been deleted.")
     return response
 
 
@@ -97,7 +97,7 @@ def pin_review(self, review_id: int):
         "POST", endpoint=f"{Endpoints.PINNED_V1}/reviews",
         payload={"id": review_id}
     )
-    logger(self, fname="pin_review")
+    self.logger.info("Pinned the review.")
     return response
 
 
@@ -106,5 +106,5 @@ def unpin_review(self, review_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.PINNED_V1}/reviews{review_id}"
     )
-    logger(self, fname="unpin_review")
+    self.logger.info("Unpinned the review.")
     return response

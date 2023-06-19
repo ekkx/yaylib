@@ -23,7 +23,7 @@ def change_email(
             "email_grant_token": email_grant_token
         }, data_type=LoginUpdateResponse
     )
-    logger(self, fname="change_email")
+    self.logger.info(self, fname="Your email has been changed.")
     return response
 
 
@@ -40,7 +40,7 @@ def change_password(
             "password": new_password
         }, data_type=LoginUpdateResponse
     )
-    logger(self, fname="change_password.")
+    self.logger.info(self, fname="Your password has been changed..")
     return response
 
 
@@ -89,7 +89,7 @@ def login(self, email: str, password: str) -> LoginUserResponse:
         "Authorization", f"Bearer {self.login_data.access_token}"
     )
 
-    logger(self, fname="login", user_id=response.user_id)
+    self.logger.info(f"Successfully logged in as '{self.login_data.user_id}'")
     return response
 
 
@@ -106,7 +106,7 @@ def logout(self):
         )
         self.session.headers.pop("Authorization", None)
         self.login_data = None
-        logger(self, fname="logout")
+        self.logger.info("User has logged out.")
         return response
 
     except:
@@ -142,7 +142,7 @@ def restore_user(self, user_id: int) -> LoginUserResponse:
             ),
         }
     )
-    logger(self, fname="restore_user")
+    self.logger.info("User has been restored.")
     return response
 
 
@@ -150,7 +150,7 @@ def revoke_tokens(self):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V1}/device_tokens"
     )
-    logger(self, fname="revoke_tokens")
+    self.logger.info("Token has been revoked.")
     return response
 
 
@@ -171,5 +171,5 @@ def save_account_with_email(
             "email_grant_token": email_grant_token
         }, data_type=LoginUpdateResponse
     )
-    logger(self, fname="save_account_with_email")
+    self.logger.info("Account has been save with email.")
     return response
