@@ -1,9 +1,9 @@
 <div><a id="readme-top"></a></div>
 <div align="center">
-    <img src=https://img.shields.io/github/stars/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue />
-    <img src=https://img.shields.io/github/forks/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue />
-    <img src=https://img.shields.io/github/issues/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational />
-    <img src=https://img.shields.io/github/issues-pr/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational />
+    <img src="https://img.shields.io/github/stars/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue" />
+    <img src="https://img.shields.io/github/forks/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue" />
+    <img src="https://img.shields.io/github/issues/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational" />
+    <img src="https://img.shields.io/github/issues-pr/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational" />
 </div>
 <br />
 <p align="center">
@@ -109,8 +109,8 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
     <thead>
         <tr>
             <th><a href="https://yay.space/user/5855987">MindReader AI</a></th>
-            <th><a href="https://yay.space/user/0">Funktion (架空)</a></th>
-            <th><a href="https://yay.space/user/0">香ばしいボット (架空)</a></th>
+            <th><a href="https://yay.space/user/0">Funktion</a></th>
+            <th><a href="https://yay.space/user/0">香ばしいボット</a></th>
         </tr>
     </thead>
     <tbody>
