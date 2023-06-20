@@ -1,17 +1,7 @@
-<!-- <p align="center">
-<img src=https://img.shields.io/github/stars/qualia-5w4/yaybot?style=for-the-badge&logo=appveyor&color=blue />
-<img src=https://img.shields.io/github/forks/qualia-5w4/yaybot?style=for-the-badge&logo=appveyor&color=blue />
-<img src=https://img.shields.io/github/issues/qualia-5w4/yaybot?style=for-the-badge&logo=appveyor&color=informational />
-<img src=https://img.shields.io/github/issues-pr/qualia-5w4/yaybot?style=for-the-badge&logo=appveyor&color=informational />
-</p>
-<br /> -->
 <p align="center">
-  <a href="https://yay.space">
-    <img src="https://yay.space/images/home-group-categories-background-3.jpg" alt="Logo">
-    <!-- <img src="https://yay.space/images/announcement-banner-background.svg" alt="Logo"> -->
-    <!-- <img src="https://yay.space/images/app-logo-3.svg" alt="Logo" width="150px" height="150px"> -->
+  <a href="https://github.com/qvco/yaylib">
+    <img src="https://github.com/qvco/yaybot/assets/77382767/ea451824-43c1-478c-b7d0-7d34ef587c2e" alt="Logo">
   </a>
-  
   <p align="center">
     <img src="https://img.shields.io/github/release/qualia-5w4/yaybot">
     <img src="https://img.shields.io/badge/python-3.11-blue.svg">
@@ -59,7 +49,7 @@
 
 ## このライブラリについて
 
-このライブラリは現在開発を行っておらず、メンテナンスも行っていません。代わりに、改良版のプロジェクト「**yaylib**」をご利用いただけます。yaylibでは、以下のような改善が行われています。
+このライブラリは現在開発やメンテナンスを行っていません。代わりに、改良版のプロジェクト「**yaylib**」にて開発を進めています。yaylibでは、以下のような改善が行われています。
 
 - 機能の追加・改善
 - パフォーマンスの向上
