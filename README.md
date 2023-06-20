@@ -1,10 +1,10 @@
 <div><a id="readme-top"></a></div>
-<p align="center">
+<div align="center">
     <img src=https://img.shields.io/github/stars/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue />
     <img src=https://img.shields.io/github/forks/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue />
     <img src=https://img.shields.io/github/issues/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational />
     <img src=https://img.shields.io/github/issues-pr/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational />
-</p>
+</div>
 <br />
 <p align="center">
     <a href="https://github.com/othneildrew/Best-README-Template">
@@ -48,7 +48,7 @@
 
 ## Buy me a coffee
 
-もしこのライブラリが気に入っていただけたら、ぜひスターをお願いします ⭐️  
+もしこのライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">ぜひスターをお願いします</a> ⭐️  
 また、Buy Me a Coffee からご支援いただけますと幸いです。
 
 <a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
@@ -141,10 +141,10 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
 私たちと一緒に開発することに興味を持っていただけているなら大歓迎です。
 
 - <a href="https://github.com/qvco/yaylib/pulls">プルリクエストを送信する</a>
-- nikola.desuga@gmail.com にメールを送信する
+- <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com</a> にメールを送信する
 - <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
 
-のいずれかの方法でコンタクトしてください！
+のいずれかの方法でコンタクトしてください。詳しくは[こちら](https://github.com/qvco/yaylib/blob/main/CONTRIBUTING.md)から！
 
 <!-- 免責事項 -->
 
