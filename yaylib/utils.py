@@ -2,16 +2,9 @@ import hmac
 import hashlib
 import base64
 import uuid
-import logging
 
 from datetime import datetime
-from .config import Configs, LogMessage
-
-
-def logger(self, fname: str, lang=None, level=logging.INFO, **kwargs):
-    lang = self.lang if lang is None else lang
-    log = getattr(self.logger, logging.getLevelName(level).lower())
-    log(getattr(LogMessage, fname).value[lang].format(**kwargs))
+from .config import Configs
 
 
 def generate_uuid() -> tuple:
