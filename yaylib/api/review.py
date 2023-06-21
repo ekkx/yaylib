@@ -34,7 +34,7 @@ def create_review(self, user_id: int, comment: str):
         "POST", endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
         payload={"comment": comment}
     )
-    self.logger.info("Review has been sent to {user_id}.")
+    self.logger.info(f"Review has been sent to {user_id}.")
     return response
 
 

@@ -499,7 +499,7 @@ def report_user(
             "screenshot_4_filename": screenshot_4_filename,
         }
     )
-    self.logger.info("Reported the user '{user_id}'")
+    self.logger.info(f"Reported the user '{user_id}'")
     return response
 
 
@@ -619,7 +619,7 @@ def unfollow_user(self, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow",
     )
-    self.logger.info("Unfollowed the user '{user_id}'")
+    self.logger.info(f"Unfollowed the user '{user_id}'")
     return response
 
 
@@ -719,7 +719,7 @@ def block_user(self, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V1}/{user_id}/block",
     )
-    self.logger.info("Blocked the user '{user_id}'")
+    self.logger.info(f"Blocked the user '{user_id}'")
     return response
 
 
@@ -748,7 +748,7 @@ def unblock_user(self, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unblock"
     )
-    self.logger.info("Unblocked the user '{user_id}'")
+    self.logger.info(f"Unblocked the user '{user_id}'")
     return response
 
 
@@ -778,7 +778,7 @@ def hide_user(self, user_id: int):
         "POST", endpoint=f"{Endpoints.HIDDEN_V1}/users",
         payload={"user_id": user_id}
     )
-    self.logger.info("User '{user_id}' is hidden")
+    self.logger.info(f"User '{user_id}' is hidden")
     return response
 
 

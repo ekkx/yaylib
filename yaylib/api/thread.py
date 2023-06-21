@@ -107,7 +107,7 @@ def join_thread(self, thread_id: int, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
     )
-    self.logger.info("Joined the thread '{thread_id}'.")
+    self.logger.info(f"Joined the thread '{thread_id}'.")
     return response
 
 
@@ -125,7 +125,7 @@ def remove_thread(self, thread_id: int):
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
     )
-    self.logger.info("Thread '{thread_id}' has been removed.")
+    self.logger.info(f"Thread '{thread_id}' has been removed.")
     return response
 
 
@@ -140,5 +140,5 @@ def update_thread(
         "PUT", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
         payload={"title": title, "thread_icon_filename": thread_icon_filename}
     )
-    self.logger.info("Thread '{thread_id}' has been updated.")
+    self.logger.info(f"Thread '{thread_id}' has been updated.")
     return response
