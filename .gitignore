@@ -1,3 +1,6 @@
 Pipfile
 .idea
 .py
+
+credentials.json
+config.json

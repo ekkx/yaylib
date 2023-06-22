@@ -782,7 +782,7 @@ def like_posts(self, post_ids: List[int]) -> LikePostsResponse:
     self._check_authorization()
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.POSTS_V2}/like",
-        payload={"post_ids[]": post_ids}, data_type=LikePostsResponse
+        payload={"post_ids": post_ids}, data_type=LikePostsResponse
     )
     self.logger.info("Posts have been liked.")
     return response
