@@ -1,4 +1,5 @@
 import os
+import time
 import logging
 
 from json import JSONDecodeError
@@ -22,7 +23,9 @@ class API:
             access_token: str = None,
             refresh_token: str = None,
             proxy: str = None,
-            timeout=60,
+            max_retries=3,
+            backoff_factor=1.0,
+            timeout=30,
             lang="ja",
             base_path=current_path,
             loglevel_stream=logging.INFO,
@@ -41,6 +44,9 @@ class API:
         if proxy is not None:
             self.proxy["https"] = proxy
 
+        self.max_retries = max_retries
+        self.retry_statuses = [500, 502, 503, 504]
+        self.backoff_factor = backoff_factor
         self.timeout = timeout
         self.lang = lang
         self.base_path = base_path
@@ -82,24 +88,42 @@ class API:
         if not user_auth:
             headers["Authorization"] = None
 
-        self.logger.debug(
-            "Making API request:\n\n"
-            f"{method}: {endpoint}\n\n"
-            f"Parameters: {params}\n\n"
-            f"Headers: {headers}\n\n"
-            f"Body: {payload}\n"
-        )
+        response = None
+        backoff_duration = 0
 
-        response = self.session.request(
-            method, endpoint, params=params, json=payload, headers=headers
-        )
+        for i in range(self.max_retries):
+            time.sleep(backoff_duration)
+            try:
 
-        self.logger.debug(
-            "Received API response:\n\n"
-            f"Status Code: {response.status_code}\n\n"
-            f"Headers: {response.headers}\n\n"
-            f"Response: {response.text}\n"
-        )
+                self.logger.debug(
+                    "Making API request:\n\n"
+                    f"{method}: {endpoint}\n\n"
+                    f"Parameters: {params}\n\n"
+                    f"Headers: {headers}\n\n"
+                    f"Body: {payload}\n"
+                )
+                response = self.session.request(
+                    method, endpoint, params=params, json=payload, headers=headers
+                )
+                self.logger.debug(
+                    "Received API response:\n\n"
+                    f"Status Code: {response.status_code}\n\n"
+                    f"Headers: {response.headers}\n\n"
+                    f"Response: {response.text}\n"
+                )
+
+                if response.status_code not in self.retry_statuses:
+                    break
+
+            except httpx.HTTPError:
+                pass
+
+            if response is not None:
+                self.logger.error(
+                    f"Request failed with status code {response.status_code}. Retrying...")
+            else:
+                self.logger.error("Request failed. Retrying...")
+            backoff_duration = self.backoff_factor * (2 ** i)
 
         try:
             json_response = response.json()

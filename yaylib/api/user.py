@@ -32,8 +32,6 @@ def create_user(
         payload={"locale": "ja", "email": email}
     )
 
-    print(response)
-
     code = input("メールアドレスに認証コードを送信しました。\n認証コードを入力してください >> ")
     email_grant_token = self.get_email_grant_token(code=code, email=email)
 

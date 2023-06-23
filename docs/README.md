@@ -71,9 +71,21 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>プロキシサーバーのアドレス</td>
 	</tr>
     <tr>
+		<td><code>max_retries</code></td>
+		<td><code>int</code></td>
+		<td><code>None</code></td>
+		<td>リクエストに失敗した際のリトライ回数</td>
+	</tr>
+    <tr>
+		<td><code>backoff_factor</code></td>
+		<td><code>float</code></td>
+		<td><code>None</code></td>
+		<td>リトライ待機時間の増加割合を指定する係数</td>
+	</tr>
+    <tr>
 		<td><code>timeout</code></td>
 		<td><code>int</code></td>
-		<td><code>60</code></td>
+		<td><code>30</code></td>
 		<td>通信接続を待機する時間</td>
 	</tr>
     <tr>
@@ -86,7 +98,7 @@ Client クラスは、API クライアントのメインクラスです。
 		<td><code>lang</code></td>
 		<td><code>str</code></td>
 		<td><code>ja</code></td>
-		<td>ログ出力などの言語（ja もしくは、en）</td>
+		<td>エラー出力言語（ja もしくは、en）</td>
 	</tr>
     <tr>
 		<td><code>loglevel_stream</code></td>

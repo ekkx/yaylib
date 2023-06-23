@@ -42,6 +42,8 @@ class Client(API):
         - access_token: str - (optional)
         - refresh_token: str - (optional)
         - proxy: str - (optional)
+        - max_retries: int - (optional)
+        - backoff_factor: float - (optional)
         - timeout: int - (optional)
         - lang: str - (optional)
         - base_path: str - (optional)
