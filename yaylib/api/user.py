@@ -8,65 +8,6 @@ from ..responses import *
 from ..utils import *
 
 
-def create_user(
-        self,
-        email: str,
-        password: str,
-        nickname: str,
-        birth_date: str,
-        gender: int = -1,
-        country_code: str = "JP",
-        biography: str = None,
-        prefecture: str = None,
-        profile_icon_filename: str = None,
-        cover_image_filename: str = None,
-        # @Nullable @Part("sns_info") SignUpSnsInfoRequest signUpSnsInfoRequest,
-        en: int = None,
-        vn: int = None
-) -> CreateUserResponse:
-
-    response = self._make_request(
-        "POST", endpoint=self.get_email_verification_presigned_url(
-            email=email, locale="ja"
-        ),
-        payload={"locale": "ja", "email": email}
-    )
-
-    code = input("メールアドレスに認証コードを送信しました。\n認証コードを入力してください >> ")
-    email_grant_token = self.get_email_grant_token(code=code, email=email)
-
-    timestamp = int(datetime.now().timestamp())
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V3}/register",
-        payload={
-            "app_version": self.api_version,
-            "timestamp": timestamp,
-            "api_key": self.api_key,
-            "signed_version": signed_version_calculating(),
-            "signed_info": signed_info_calculating(
-                self.device_uuid, timestamp
-            ),
-            "uuid": self.uuid,
-            "nickname": nickname,
-            "birth_date": birth_date,
-            "gender": gender,
-            "country_code": country_code,
-            "biography": biography,
-            "prefecture": prefecture,
-            "profile_icon_filename": profile_icon_filename,
-            "cover_image_filename": cover_image_filename,
-            "email": email,
-            "password": password,
-            "email_grant_token": email_grant_token,
-            "en": en,
-            "vn": vn,
-        }, data_type=CreateUserResponse
-    )
-    self.logger.info(
-        f"A new account has been created. (USER ID: {response.id})")
-    return response
-
-
 def delete_contact_friends(self):
     self._check_authorization()
     response = self._make_request(

@@ -2373,45 +2373,6 @@ class Client(API):
 
     # -USER
 
-    def create_user(
-            self,
-            email: str,
-            password: str,
-            nickname: str,
-            birth_date: str,
-            gender: int = -1,
-            country_code: str = "JP",
-            biography: str = None,
-            prefecture: str = None,
-            profile_icon_filename: str = None,
-            cover_image_filename: str = None,
-            # @Nullable @Part("sns_info") SignUpSnsInfoRequest signUpSnsInfoRequest,
-            en: int = None,
-            vn: int = None
-    ) -> CreateUserResponse:
-        """
-
-        アカウントを作成します
-
-        - birth_date は YYYY-MM-DD の形式で入力してください。
-
-        """
-        return create_user(
-            self,
-            email,
-            password,
-            nickname,
-            birth_date,
-            gender,
-            country_code,
-            biography,
-            prefecture,
-            profile_icon_filename,
-            cover_image_filename,
-            en,
-            vn
-        )
-
     # def delete_contact_friends(self) -> dict:
     #     """
 
