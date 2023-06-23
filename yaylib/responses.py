@@ -294,6 +294,18 @@ class CreateUserResponse:
         return f"CreateUserResponse(data={self.data})"
 
 
+class EmailGrantTokenResponse:
+
+    __slots__ = ("data", "email_grant_token")
+
+    def __init__(self, data):
+        self.data = data
+        self.email_grant_token = data.get("email_grant_token")
+
+    def __repr__(self):
+        return f"EmailGrantTokenResponse(data={self.data})"
+
+
 class EmailVerificationPresignedUrlResponse:
 
     __slots__ = ("data", "url")

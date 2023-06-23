@@ -115,6 +115,10 @@ class Endpoints:
     GENUINE_DEVICES_V3 = Configs.YAY_API_URL + "/v3/genuine_devices"
     LOBI_FRIENDS_V3 = Configs.YAY_API_URL + "/v3/lobi_friends"
 
+    # misc
+    GET_EMAIL_GRANT_TOKEN = "https://" + Configs.ID_CARD_CHECK_HOST_PRODUCTION + \
+        "/apis/v1/apps/yay/email_grant_tokens"
+
 
 class ErrorType(Enum):
 

@@ -1352,6 +1352,14 @@ class Client(API):
     #     """
     #     return generate_sns_thumbnail(self, **params)
 
+    def get_email_grant_token(self, code: int, email: str) -> str:
+        """
+
+        email_grant_token を取得します
+
+        """
+        return get_email_grant_token(self, code, email)
+
     def get_email_verification_presigned_url(self, email: str, locale: str, intent: str = None) -> str:
         """
 
@@ -2365,6 +2373,8 @@ class Client(API):
 
     def create_user(
             self,
+            email: str,
+            password: str,
             nickname: str,
             birth_date: str,
             gender: int = -1,
@@ -2374,9 +2384,6 @@ class Client(API):
             profile_icon_filename: str = None,
             cover_image_filename: str = None,
             # @Nullable @Part("sns_info") SignUpSnsInfoRequest signUpSnsInfoRequest,
-            email: str = None,
-            password: str = None,
-            email_grant_token: str = None,
             en: int = None,
             vn: int = None
     ) -> CreateUserResponse:
@@ -2384,10 +2391,13 @@ class Client(API):
 
         アカウントを作成します
 
-        birth_date: 2000-01-01の形式
+        - birth_date は YYYY-MM-DD の形式で入力してください。
+
         """
         return create_user(
             self,
+            email,
+            password,
             nickname,
             birth_date,
             gender,
@@ -2396,9 +2406,6 @@ class Client(API):
             prefecture,
             profile_icon_filename,
             cover_image_filename,
-            email,
-            password,
-            email_grant_token,
             en,
             vn
         )

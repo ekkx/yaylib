@@ -38,6 +38,14 @@ def generate_sns_thumbnail(self, **params):
     return response
 
 
+def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenResponse:
+    return self._make_request(
+        "POST", endpoint=f"{Endpoints.GET_EMAIL_GRANT_TOKEN}",
+        payload={"code": code, "email": email},
+        data_type=EmailGrantTokenResponse
+    ).email_grant_token
+
+
 def get_email_verification_presigned_url(self, email: str, locale: str, intent: str = None) -> str:
     return self._make_request(
         "POST", endpoint=f"{Endpoints.EMAIL_VERIFICATION_URL_V1}",
