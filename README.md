@@ -7,8 +7,11 @@
 </div>
 <br />
 <p align="center">
-    <a href="https://github.com/othneildrew/Best-README-Template">
+<!--     <a href="https://github.com/othneildrew/Best-README-Template">
         <img src="https://github.com/qvco/yaylib/assets/77382767/6e72ec90-b8e9-40bf-a7ad-34fb2ccea0f9" alt="Logo" height="300px">
+    </a> -->
+    <a href="https://github.com/othneildrew/Best-README-Template">
+        <img src="https://github.com/qvco/yaylib/assets/77382767/5265b956-55b7-466c-8cdb-cf0f3abed946" alt="Logo" height="300px">
     </a>
     <h3 align="center">yaylib</h3>
     <p align="center">
