@@ -21,7 +21,8 @@ keywords = [
 ]
 
 install_requires = [
-    "httpx>=0.17.1"
+    "httpx>=0.17.1",
+    "Pillow>=9.3.0"
 ]
 
 classifiers = [
