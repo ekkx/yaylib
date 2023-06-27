@@ -1,6 +1,12 @@
 Pipfile
 .idea
+
+cassettes/
+nanameue/
+
 .py
+agora.py
 
 credentials.json
 config.json
+.json
