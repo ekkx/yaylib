@@ -219,6 +219,7 @@ class ErrorType(Enum):
     UnableToPostUrl = -413
     UnableToSetCall = -977
     PhoneNumberBanned = -1000
+    TooManyRequests = -5302
 
 
 class ErrorMessage(Enum):
@@ -320,3 +321,4 @@ class ErrorMessage(Enum):
     UnableToPostUrl = "URLを投稿できません"
     UnableToSetCall = "通話を開始できませんでした"
     PhoneNumberBanned = "電話番号がBanされています"
+    TooManyRequests = "リクエストが多すぎます"

@@ -7,9 +7,6 @@
 </div>
 <br />
 <p align="center">
-<!--     <a href="https://github.com/othneildrew/Best-README-Template">
-        <img src="https://github.com/qvco/yaylib/assets/77382767/6e72ec90-b8e9-40bf-a7ad-34fb2ccea0f9" alt="Logo" height="300px">
-    </a> -->
     <a href="https://github.com/othneildrew/Best-README-Template">
         <img src="https://github.com/qvco/yaylib/assets/77382767/5265b956-55b7-466c-8cdb-cf0f3abed946" alt="Logo" height="300px">
     </a>
@@ -86,16 +83,23 @@ pip install -e .
 
 ## 使用例
 
-メールアドレスとパスワードを用いてログイン後、新しく投稿を作成するコードです。
+メールアドレスとパスワードを使用してログインしたあと、タイムラインをキーワードで検索して「いいね」するコードです。
 
 ```python
 import yaylib
 
-api = yaylib.Client()
 
+api = yaylib.Client()
 api.login(email="メールアドレス", password="パスワード")
 
-api.create_post(text="初めての投稿！", color=2)
+timeline = api.get_timeline_by_keyword(
+    keyword="プログラミング",
+    number=15
+)
+
+for post in timeline.posts:
+    response = api.like_posts(post.id)
+    print(post.id, response.data) # 実行結果を出力
 ```
 
 より詳しい使用例については、[こちら](https://github.com/qvco/yaylib/blob/main/examples) を参照してください。
@@ -112,8 +116,8 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
     <thead>
         <tr>
             <th><a href="https://yay.space/user/5855987">MindReader AI</a></th>
-            <th><a href="https://yay.space/user/0">Funktion</a></th>
-            <th><a href="https://yay.space/user/0">香ばしいボット</a></th>
+            <th><a href="https://yay.space/user/7095374">Funktion</a></th>
+            <th><a href="https://yay.space/user/7293290">香ばしいボット</a></th>
         </tr>
     </thead>
     <tbody>
@@ -126,12 +130,12 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
             <td align="center">
                 <img src="https://github.com/qvco/yaylib/assets/77382767/ff207016-21bf-4e76-b0e0-f70ebc4a121f" width="200px">
                 <br />
-                <p>開発者: <a href="https://yay.space/user/0">ぺゅー</a></p>
+                <p>開発者: <a href="https://yay.space/user/1298298">ぺゅー</a></p>
             </td>
             <td align="center">
                 <img src="https://github.com/qvco/yaylib/assets/77382767/2324e518-b2c8-43cd-95e5-90ee2383aec1" width="200px">
                 <br />
-                <p>開発者: <a href="https://yay.space/user/0">めんぶれ天然水。</a></p>
+                <p>開発者: <a href="https://yay.space/user/93923">めんぶれ天然水。</a></p>
             </td>
         </tr>
     </tbody>
@@ -141,7 +145,7 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
 
 ## 共同開発について
 
-私たちと一緒に開発することに興味を持っていただけているなら大歓迎です。
+私たちと開発することに興味を持っていただけているなら、ぜひ参加してください！
 
 - <a href="https://github.com/qvco/yaylib/pulls">プルリクエストを送信する</a>
 - <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com</a> にメールを送信する

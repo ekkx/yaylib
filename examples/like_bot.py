@@ -1,0 +1,58 @@
+import time
+import yaylib
+
+
+class LikeBot:
+
+    def __init__(self, email=None, password=None, token=None):
+        self.api = yaylib.Client(token)
+        if token is None:
+            self.api.login(email, password)
+
+    def run(self, amount=None):
+        min_collect = 30 if amount is None else amount
+        amount = float("inf") if amount is None else amount
+        liked = 0
+
+        while liked < amount:
+
+            ids = []
+
+            try:
+
+                self.api.logger.info("投稿を取得しています...")
+
+                while len(ids) < min_collect:
+
+                    timeline = self.api.get_timeline(number=min_collect)
+                    new_ids = [post.id for post in timeline.posts if not post.liked]
+
+                    ids.extend(new_ids)
+                    self.api.logger.info(f"取得済み投稿数: {len(ids)}")
+
+                    if len(ids) < min_collect:
+                        time.sleep(5)
+
+                for id in ids:
+                    self.api.like_posts(id)
+
+                liked += len(ids)
+                self.api.logger.info(f"いいね数: {liked}")
+                ids.clear
+
+            except Exception as e:
+                self.api.logger.warning(str(e))
+                self.api.logger.info("休憩中...☕")
+                ids.clear
+                time.sleep(300)
+
+        self.api.logger.info(f"合計{liked}個の投稿にいいねしました。")
+
+
+if __name__ == "__main__":
+
+    email = "メールアドレス"
+    password = "パスワード"
+
+    bot = LikeBot()
+    bot.run()
