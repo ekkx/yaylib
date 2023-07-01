@@ -60,6 +60,7 @@ class Endpoints:
     SKYFALL_V1 = Configs.YAY_API_URL + "/v1/skyfall"
     GENUINE_DEVICES_V1 = Configs.YAY_API_URL + "/v1/genuine_devices"
     LOBI_FRIENDS_V1 = Configs.YAY_API_URL + "/v1/lobi_friends"
+    WEB_V1 = Configs.YAY_API_URL + "/v1/web"
 
     # api v2 endpoints
     USERS_V2 = Configs.YAY_API_URL + "/v2/users"
@@ -87,6 +88,7 @@ class Endpoints:
     SKYFALL_V2 = Configs.YAY_API_URL + "/v2/skyfall"
     GENUINE_DEVICES_V2 = Configs.YAY_API_URL + "/v2/genuine_devices"
     LOBI_FRIENDS_V2 = Configs.YAY_API_URL + "/v2/lobi_friends"
+    WEB_V2 = Configs.YAY_API_URL + "/v2/web"
 
     # api v3 endpoints
     USERS_V3 = Configs.YAY_API_URL + "/v3/users"
@@ -114,6 +116,7 @@ class Endpoints:
     SKYFALL_V3 = Configs.YAY_API_URL + "/v3/skyfall"
     GENUINE_DEVICES_V3 = Configs.YAY_API_URL + "/v3/genuine_devices"
     LOBI_FRIENDS_V3 = Configs.YAY_API_URL + "/v3/lobi_friends"
+    WEB_V3 = Configs.YAY_API_URL + "/v3/web"
 
     # misc
     GET_EMAIL_GRANT_TOKEN = "https://" + Configs.ID_CARD_CHECK_HOST_PRODUCTION + \

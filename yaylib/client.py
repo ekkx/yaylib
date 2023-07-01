@@ -2513,6 +2513,33 @@ class Client(API):
     # def get_initial_recommended_users_to_follow(self, **params) -> UsersResponse:
     #     return get_initial_recommended_users_to_follow(self, **params)
 
+    def get_user_ranking(self, mode: str) -> RankingUsersResponse:
+        """
+
+        ユーザーのランキングを取得します
+
+        Examples:
+        --------
+
+        >>> ルーキーを取得する場合:
+
+        >>> api.get_user_ranking(mode="one_month")
+
+        ---
+
+        >>> ミドルを取得する場合:
+
+        >>> api.get_user_ranking(mode="six_months")
+
+        ---
+
+        >>> 殿堂入りを取得する場合:
+
+        >>> api.get_user_ranking(mode="all_time")
+
+        """
+        return get_user_ranking(self, mode)
+
     # def get_recommended_users_to_follow_for_profile(
     #         self, user_id: int, **params
     # ) -> UsersResponse:

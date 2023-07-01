@@ -1090,6 +1090,23 @@ class UsersResponse:
         return f"UsersResponse(data={self.data})"
 
 
+class RankingUsersResponse:
+
+    __slots__ = ("data", "users")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.users = data.get("users")
+        if self.users is not None:
+            self.users = [
+                User(user) for user in self.users
+            ]
+
+    def __repr__(self):
+        return f"RankingUsersResponse(data={self.data})"
+
+
 class UserCustomDefinitionsResponse:
 
     __slots__ = (
