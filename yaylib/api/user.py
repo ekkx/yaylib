@@ -243,7 +243,7 @@ def get_user_ranking(self, mode: str) -> RankingUsersResponse:
 
     """
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.WEB_V1}/users/ranking?mode=one_month",
+        "GET", endpoint=f"{Endpoints.WEB_V1}/users/ranking",
         params={"mode": mode}, data_type=RankingUsersResponse
     )
 
