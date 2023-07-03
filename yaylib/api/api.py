@@ -93,30 +93,28 @@ class API:
 
         for i in range(self.max_retries):
             time.sleep(backoff_duration)
-            try:
 
-                self.logger.debug(
-                    "Making API request:\n\n"
-                    f"{method}: {endpoint}\n\n"
-                    f"Parameters: {params}\n\n"
-                    f"Headers: {headers}\n\n"
-                    f"Body: {payload}\n"
-                )
-                response = self.session.request(
-                    method, endpoint, params=params, json=payload, headers=headers
-                )
-                self.logger.debug(
-                    "Received API response:\n\n"
-                    f"Status Code: {response.status_code}\n\n"
-                    f"Headers: {response.headers}\n\n"
-                    f"Response: {response.text}\n"
-                )
+            self.logger.debug(
+                "Making API request:\n\n"
+                f"{method}: {endpoint}\n\n"
+                f"Parameters: {params}\n\n"
+                f"Headers: {headers}\n\n"
+                f"Body: {payload}\n"
+            )
 
-                if response.status_code not in self.retry_statuses:
-                    break
+            response = self.session.request(
+                method, endpoint, params=params, json=payload, headers=headers
+            )
 
-            except httpx.HTTPError:
-                pass
+            self.logger.debug(
+                "Received API response:\n\n"
+                f"Status Code: {response.status_code}\n\n"
+                f"Headers: {response.headers}\n\n"
+                f"Response: {response.text}\n"
+            )
+
+            if response.status_code not in self.retry_statuses:
+                break
 
             if response is not None:
                 self.logger.error(
