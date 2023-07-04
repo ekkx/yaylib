@@ -964,12 +964,12 @@ class StickerPacksResponse:
 class TokenResponse:
 
     __slots__ = (
-        "data", "id", "created_at", "access_token", "refresh_token", "expires_in"
+        "data", "user_id", "created_at", "access_token", "refresh_token", "expires_in"
     )
 
     def __init__(self, data):
         self.data = data
-        self.id = data.get("id")
+        self.user_id = data.get("id")
         self.created_at = data.get("created_at")
         self.access_token = data.get("access_token")
         self.refresh_token = data.get("refresh_token")

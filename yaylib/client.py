@@ -1217,6 +1217,14 @@ class Client(API):
 
     # -LOGIN
 
+    def is_valid_token(self, access_token: str):
+        """
+
+        アクセストークンが有効か検証します
+
+        """
+        return is_valid_token(self, access_token)
+
     def change_email(
             self,
             email: str,
@@ -1414,13 +1422,13 @@ class Client(API):
     # def get_vip_game_reward_url(self, device_type: str) -> str:
     #     return get_vip_game_reward_url(self, device_type)
 
-    def get_web_socket_token(self) -> str:
+    def get_web_socket_token(self, headers: dict = None) -> str:
         """
 
         Web Socket Token を取得します
 
         """
-        return get_web_socket_token(self)
+        return get_web_socket_token(self, headers)
 
     # def verify_device(
     #         self,

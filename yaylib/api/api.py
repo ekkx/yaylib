@@ -7,6 +7,8 @@ from typing import Optional, Dict, Any
 
 import httpx
 
+from .login import *
+
 from ..config import *
 from ..errors import *
 from ..responses import LoginUserResponse
@@ -21,24 +23,18 @@ class API:
     def __init__(
             self,
             access_token: str = None,
-            refresh_token: str = None,
             proxy: str = None,
             max_retries=3,
             backoff_factor=1.0,
             timeout=30,
             lang="ja",
-            base_path=current_path,
+            base_path=current_path + "/config/",
             loglevel_stream=logging.INFO,
             host=Configs.YAY_PRODUCTION_HOST,
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
         self.api_version = Configs.YAY_API_VERSION
         self.api_key = Configs.YAY_API_KEY
-
-        self.login_data = LoginUserResponse({
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-        })
 
         self.proxy = {}
         if proxy is not None:
@@ -64,6 +60,10 @@ class API:
         self.logger = logging.getLogger(
             "yaylib version: " + self.yaylib_version
         )
+
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+
         ch = logging.StreamHandler()
         ch.setLevel(loglevel_stream)
         ch.setFormatter(logging.Formatter(
@@ -82,14 +82,15 @@ class API:
         self.logger.info("yaylib version: " + self.yaylib_version + " started")
 
     def request(self, method, endpoint, params=None, payload=None, user_auth=True, headers=None):
+        headers = headers or self.session.headers
 
-        if headers is None:
-            headers = self.session.headers
         if not user_auth:
-            headers["Authorization"] = None
+            del headers["Authorization"]
 
         response = None
         backoff_duration = 0
+        auth_retry_count = 0
+        max_auth_retries = 2
 
         for i in range(self.max_retries):
             time.sleep(backoff_duration)
@@ -106,22 +107,56 @@ class API:
                 method, endpoint, params=params, json=payload, headers=headers
             )
 
-            self.logger.debug(
-                "Received API response:\n\n"
-                f"Status Code: {response.status_code}\n\n"
-                f"Headers: {response.headers}\n\n"
-                f"Response: {response.text}\n"
-            )
+            if response.status_code == 401:
+
+                if "/api/v1/oauth/token" in endpoint:
+                    os.remove(self.base_path + "credentials.json")
+                    message = "Refresh token expired. Try logging in again."
+                    raise AuthenticationError(message)
+
+                auth_retry_count += 1
+                self.logger.debug("Access token expired. Refreshing tokens...")
+
+                if auth_retry_count < max_auth_retries:
+                    credentials = load_credentials(self)
+
+                    if credentials is not None:
+                        refresh_token = credentials["refresh_token"]
+                        response = get_token(
+                            self, grant_type="refresh_token", refresh_token=refresh_token
+                        )
+                        save_credentials(
+                            self, response.access_token, response.refresh_token, response.user_id
+                        )
+                        self.session.headers["Authorization"] = f"Bearer {response.access_token}"
+                        continue
+
+                else:
+                    os.remove(self.base_path + "credentials.json")
+                    message = "Maximum authentication retries exceeded. Try logging in again."
+                    raise AuthenticationError(message)
 
             if response.status_code not in self.retry_statuses:
                 break
 
             if response is not None:
                 self.logger.error(
-                    f"Request failed with status code {response.status_code}. Retrying...")
+                    f"Request failed with status code {response.status_code}. Retrying...",
+                    exc_info=True
+                )
             else:
                 self.logger.error("Request failed. Retrying...")
             backoff_duration = self.backoff_factor * (2 ** i)
+
+        if response is None:
+            return None
+
+        self.logger.debug(
+            "Received API response:\n\n"
+            f"Status Code: {response.status_code}\n\n"
+            f"Headers: {response.headers}\n\n"
+            f"Response: {response.text}\n"
+        )
 
         try:
             json_response = response.json()

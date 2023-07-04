@@ -119,11 +119,11 @@ def get_vip_game_reward_url(self, device_type: str) -> str:
     ).url
 
 
-def get_web_socket_token(self) -> str:
+def get_web_socket_token(self, headers: dict = None) -> str:
     self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V1}/ws_token",
-        data_type=WebSocketTokenResponse
+        data_type=WebSocketTokenResponse, headers=headers
     ).token
 
 

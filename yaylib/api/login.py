@@ -1,6 +1,9 @@
 from datetime import datetime
 from typing import Dict, List
 
+import os
+import json
+
 from ..config import *
 from ..errors import *
 from ..models import *
@@ -70,7 +73,69 @@ def get_token(
     )
 
 
+def save_credentials(self, access_token, refresh_token, user_id, email=None):
+    credentials = load_credentials(self)
+    updated_credentials = {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "user_id": user_id,
+        "email": email
+    }
+    if email is None:
+        updated_credentials["email"] = credentials.get("email")
+    with open(self.base_path + "credentials.json", "w") as f:
+        json.dump(updated_credentials, f)
+
+
+def load_credentials(self, check_email: str = None):
+    """
+
+    ローカルの認証情報が欠けているか存在しない場合はNoneを返す
+
+    check_emailとローカルのメールアドレスが違う場合はNoneを返す
+
+    """
+    if not os.path.exists(self.base_path + "credentials.json"):
+        return None
+
+    with open(self.base_path + "credentials.json", "r") as f:
+        credentials = json.load(f)
+
+    result = all(key in credentials for key in (
+        "access_token", "refresh_token", "user_id", "email"
+    ))
+    credentials = None if result is False else credentials
+
+    if check_email is not None:
+        credentials = None if check_email != credentials["email"] else credentials
+
+    return credentials
+
+
+def is_valid_token(self, access_token: str):
+    headers = self.session.headers
+    headers.setdefault("Authorization", f"Bearer {access_token}")
+    try:
+        self.get_web_socket_token(headers)
+        return True
+    except AuthenticationError:
+        return False
+
+
 def login(self, email: str, password: str) -> LoginUserResponse:
+
+    # 既にローカルに保存されているか確認する
+    credentials = load_credentials(self, email)
+    # ローカルに保存されている場合
+    if credentials is not None:
+        self.session.headers.setdefault(
+            "Authorization", f"Bearer {credentials['access_token']}"
+        )
+        self.logger.info(
+            f"Successfully logged in as '{credentials['user_id']}'"
+        )
+        return credentials
+
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/login_with_email",
         payload={
@@ -84,12 +149,19 @@ def login(self, email: str, password: str) -> LoginUserResponse:
     if response.access_token is None:
         raise ForbiddenError(message)
 
-    self.login_data = response
     self.session.headers.setdefault(
-        "Authorization", f"Bearer {self.login_data.access_token}"
+        "Authorization", f"Bearer {response.access_token}"
     )
-
-    self.logger.info(f"Successfully logged in as '{self.login_data.user_id}'")
+    self.logger.info(
+        f"Successfully logged in as '{response.user_id}'"
+    )
+    save_credentials(
+        self,
+        access_token=response.access_token,
+        refresh_token=response.refresh_token,
+        user_id=response.user_id,
+        email=email
+    )
     return response
 
 
@@ -105,7 +177,6 @@ def logout(self):
             payload={"uuid": self.uuid}
         )
         self.session.headers.pop("Authorization", None)
-        self.login_data = None
         self.logger.info("User has logged out.")
         return response
 
