@@ -1,8 +1,18 @@
 <div><a id="readme-top"></a></div>
 
-# yaylib - API ドキュメント | Docs
+# yaylib - Docs | ドキュメント
 
-「yaylib」を使用すると、独自かつ高度な方法でプログラムを使用して Yay!にアクセスできます。投稿、個人チャット、サークル、通話、ユーザーなど、Yay!の主要な機能を活用しましょう。
+<p align="center">
+    <img src="https://github.com/qvco/yaylib/assets/77382767/5265b956-55b7-466c-8cdb-cf0f3abed946" alt="Logo" height="300px">
+    <h3 align="center">yaylib</h3>
+    <p align="center">
+        <a href="https://github.com/qvco/yaylib/issues">Report Bug</a>
+        ·
+        <a href="https://github.com/qvco/yaylib/issues">Request Feature</a>
+        ·
+        <a href="https://discord.gg/MEuBfNtqRN">Join the discord</a>
+    </p>
+</p>
 
 <details open>
     <summary>目録</summary>

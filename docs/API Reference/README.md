@@ -2,6 +2,18 @@
 
 # API reference index
 
+<p align="center">
+    <img src="https://github.com/qvco/yaylib/assets/77382767/5265b956-55b7-466c-8cdb-cf0f3abed946" alt="Logo" height="300px">
+    <h3 align="center">yaylib</h3>
+    <p align="center">
+        <a href="https://github.com/qvco/yaylib/issues">Report Bug</a>
+        ·
+        <a href="https://github.com/qvco/yaylib/issues">Request Feature</a>
+        ·
+        <a href="https://discord.gg/MEuBfNtqRN">Join the discord</a>
+    </p>
+</p>
+
 ## Posts
 
 ### Bookmarks
@@ -33,6 +45,31 @@
 - <a href="">GET /v2/posts/search</a>
 - <a href="">GET /v2/groups/:group_id/posts/search</a>
 
+## Threads
+
+- <a href="">PUT /v3/posts/:id/move_to_thread/:thread_id</a>
+<!-- addPostToThread -->
+- <a href="">POST /v3/posts/:id/move_to_thread</a>
+<!-- convertPostToThread -->
+- <a href="">POST /v1/threads</a>
+<!-- createThread -->
+- <a href="">GET /v1/threads</a>
+<!-- getGroupThreadList -->
+- <a href="">GET /v1/threads/joined_statuses</a>
+<!-- getJoinedStatuses -->
+- <a href="">GET /v1/threads/:id</a>
+<!-- getThread -->
+- <a href="">POST /v1/threads/:id/posts</a>
+<!-- getThreadPosts -->
+- <a href="">POST /v1/threads/:thread_id/members/:id</a>
+<!-- leaveThread -->
+- <a href="">DELETE /v1/threads/:thread_id/members/:id</a>
+<!-- joinThread -->
+- <a href="">DELETE /v1/threads/:id</a>
+<!-- removeThread -->
+- <a href="">PUT /v1/threads/:id</a>
+<!-- updateThread -->
+
 ## Users
 
 ### Blocks
@@ -61,3 +98,32 @@
 - <a href="">GET /v1/hidden/users</a>
 - <a href="">POST /v1/hidden/users</a>
 - <a href="">DELETE /v1/hidden/users</a>
+
+## Groups
+
+- <a href="">PUT /v1/groups/:id/deputize</a>
+<!-- acceptModeratorOffer -->
+- <a href="">PUT /v1/groups/:id/transfer</a>
+<!-- acceptOwnershipOffer -->
+- <a href="">POST /v1/groups/:id/accept/:userId</a>
+<!-- acceptUserRequest -->
+- <a href="">PUT /v1/groups/:id/related</a>
+<!-- addRelatedGroups -->
+- <a href="">POST /v1/groups/:id/ban/:userId</a>
+<!-- addRelatedGroups -->
+- <a href="">GET /v1/groups/unread_status</a>
+<!-- checkUnreadStatus -->
+- <a href="">POST /v3/groups/new</a>
+<!-- create -->
+- <a href="">POST /v1/pinned/groups</a>
+<!-- createPinGroup -->
+
+## Chats
+
+## Reviews
+
+## Login
+
+## Notifications
+
+## Misc
