@@ -8,15 +8,6 @@ from ..responses import *
 from ..utils import *
 
 
-def delete_contact_friends(self):
-    self._check_authorization()
-    response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.USERS_V1}/contact_friends"
-    )
-    self.logger.info("Contact friends have been deleted.")
-    return response
-
-
 def delete_footprint(self, user_id: int, footprint_id: int):
     self._check_authorization()
     response = self._make_request(
@@ -81,32 +72,6 @@ def get_active_followings(self, **params) -> ActiveFollowingsResponse:
         "GET", endpoint=f"{Endpoints.USERS_V1}/active_followings",
         params=params, data_type=ActiveFollowingsResponse
     )
-
-
-def get_additional_settings(self) -> Settings:
-    # AdditionalSettingsResponse
-    pass
-
-
-def get_app_review_status(self) -> AppReviewStatusResponse:
-    self._check_authorization()
-    return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V1}/{self.url_uuid}/app_review_status",
-        payload={"uuid": self.uuid}, data_type=AppReviewStatusResponse
-    )
-
-
-def get_contact_status(self, mobile_numbers: List[str]) -> ContactStatusResponse:
-    self._check_authorization()
-    return self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V1}/contact_status",
-        payload={"mobile_numbers[]": mobile_numbers}, data_type=ContactStatusResponse
-    )
-
-
-def get_default_settings(self) -> TimelineSettings:
-    # DefaultSettingsResponse
-    pass
 
 
 def get_follow_recommendations(self, **params) -> FollowRecommendationsResponse:
@@ -200,23 +165,6 @@ def get_hima_users(self, **params) -> List[UserWrapper]:
     ).hima_users
 
 
-# def get_initial_recommended_users_to_follow(self, **params) -> UsersResponse:
-#     """
-
-#     Parameters:
-#     ----------
-
-#         - en: int - (Optional)
-#         - vn: int - (Optional)
-
-#     """
-#     self._check_authorization()
-#     return self._make_request(
-#         "GET", endpoint=f"{Endpoints.USERS_V1}/initial_follow_recommended",
-#         params=params, data_type=UsersResponse
-#     )
-
-
 def get_user_ranking(self, mode: str) -> RankingUsersResponse:
     """
 
@@ -246,24 +194,6 @@ def get_user_ranking(self, mode: str) -> RankingUsersResponse:
         "GET", endpoint=f"{Endpoints.WEB_V1}/users/ranking",
         params={"mode": mode}, data_type=RankingUsersResponse
     )
-
-
-# def get_recommended_users_to_follow_for_profile(self, user_id: int, **params) -> UsersResponse:
-#     """
-
-#     Parameters:
-#     ----------
-
-#         - user_id: int - (Required)
-#         - number: int - (Optional)
-#         - page: int - (Optional)
-
-#     """
-#     self._check_authorization()
-#     return self._make_request(
-#         "GET", endpoint=f"{Endpoints.USERS_V1}/{user_id}/follow_recommended",
-#         params=params, data_type=UsersResponse
-#     )
 
 
 def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
@@ -304,14 +234,6 @@ def get_user(self, user_id: int) -> User:
         "GET", endpoint=f"{Endpoints.USERS_V2}/{user_id}",
         data_type=UserResponse
     ).user
-
-
-def get_user_custom_definitions(self) -> UserCustomDefinitionsResponse:
-    self._check_authorization()
-    return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V1}/custom_definitions",
-        data_type=UserCustomDefinitionsResponse
-    )
 
 
 def get_user_email(self, user_id: int) -> str:
@@ -368,11 +290,6 @@ def get_user_from_qr(self, qr: str) -> UserResponse:
     )
 
 
-def get_user_interests(self):
-    # @NotNull Continuation<? super UserInterestsResponse> continuation
-    pass
-
-
 def get_user_without_leaving_footprint(self, user_id: int) -> UserResponse:
     return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V2}/info/{user_id}",
@@ -390,29 +307,12 @@ def get_users(self, user_ids: List[int]) -> UsersResponse:
     )
 
 
-def get_users_from_uuid(self, uuid: str) -> UsersResponse:
-    # TODO: what it does?
-    return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V2}/list_uuid/",
-        params={"uuid": uuid}, data_type=UsersResponse
-    )
-
-
 def post_social_shared(self, sns_name: str):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/social_shared",
         params={"sns_name": sns_name}
     )
     self.logger.info("Posted social shared post.")
-    return response
-
-
-def record_app_review_status(self):
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V1}/{self.url_uuid}/app_review_status",
-        params={"uuid": self.uuid}
-    )
-    self.logger.info("App review status recored.")
     return response
 
 
@@ -540,15 +440,6 @@ def search_users(self, **params) -> UsersResponse:
     )
 
 
-def set_additional_setting_enabled(self, mode: str, on: int = None):
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V1}/additonal_notification_setting",
-        payload={"mode": mode, "on": on}
-    )
-    self.logger.info("Additional settings have been enabled.")
-    return response
-
-
 def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
@@ -606,16 +497,6 @@ def unfollow_user(self, user_id: int):
     return response
 
 
-def update_invite_contact_status(self, mobile_number: str):
-    self._check_authorization()
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V1}/invite_contact",
-        params={"mobile_number": mobile_number}
-    )
-    self.logger.info("Invite contact status updated.")
-    return response
-
-
 def update_language(self, language: str):
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
@@ -666,31 +547,6 @@ def update_user(
         }
     )
     self.logger.info("User profile has been updated.")
-    return response
-
-
-def update_user_interests(
-        self,
-        # @Body @NotNull CommonIdsRequest commonIdsRequest,
-        # @NotNull Continuation<? super Unit> continuation
-):
-    pass
-
-
-def upload_contacts_friends(
-        self,
-        # @Body @Nullable UploadContactsRequest uploadContactsRequest
-):
-    pass
-
-
-def upload_twitter_friend_ids(self, twitter_friend_ids: List[str]):
-    self._check_authorization()
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V1}/twitter_friends",
-        payload={"twitter_friend_ids[]": twitter_friend_ids}
-    )
-    self.logger.info("Uploaded Twitter friend ids.")
     return response
 
 

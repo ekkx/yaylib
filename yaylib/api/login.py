@@ -47,14 +47,6 @@ def change_password(
     return response
 
 
-def connect_account_with_sns(self):
-    pass
-
-
-def disconnect_account_with_sns(self):
-    pass
-
-
 def get_token(
         self,
         grant_type: str,
@@ -162,10 +154,6 @@ def login(self, email: str, password: str) -> LoginUserResponse:
     return response
 
 
-def login_with_sns(self):
-    pass
-
-
 def logout(self):
     try:
         self._check_authorization()
@@ -180,14 +168,6 @@ def logout(self):
     except:
         self.logger.error("User is not logged in.")
         return None
-
-
-def migrate_token(self):
-    pass
-
-
-def register_device_token(self):
-    pass
 
 
 def resend_confirm_email(self):

@@ -20,6 +20,11 @@ def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
 
 
 def add_group_highlight_post(self, group_id: int, post_id: int):
+    """
+
+    投稿をグループのまとめに追加します
+
+    """
     self._check_authorization()
     response = self._make_request(
         "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
@@ -540,6 +545,8 @@ def get_following_timeline(self, **params) -> PostsResponse:
 def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
     """
 
+    グループのまとめ投稿を取得します
+
     Parameters:
     ----------
 
@@ -631,7 +638,6 @@ def get_my_posts(self, **params) -> PostsResponse:
 
 
 def get_post(self, post_id: int) -> Post:
-    # @Header("Cache-Control") @Nullable String str);
     return self._make_request(
         "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}",
         data_type=PostResponse
@@ -883,35 +889,6 @@ def update_post(
         }
     )
     self.logger.info("Post has been updated.")
-    return response
-
-
-def update_recommendation_feedback(
-        self, post_id: int, feedback_result: str, *,
-        experiment_num: int, variant_num: int,
-):
-    self._check_authorization()
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V2}/{post_id}/recommendation_feedback",
-        payload={
-            "feedback_result": feedback_result,
-            "experiment_num": experiment_num,
-            "variant_num": variant_num
-        }
-    )
-    self.logger.info("Recommendation feedback has been updated.")
-    return response
-
-
-def validate_post(self, text: str, *, group_id: int = None, thread_id: int = None) -> ValidationPostResponse:
-    self._check_authorization()
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V1}/validate",
-        payload={
-            "text": text, "group_id": group_id, "thread_id": thread_id
-        }, data_type=ValidationPostResponse
-    )
-    self.logger.info("Post has been validated.")
     return response
 
 

@@ -176,14 +176,6 @@ def get_messages(self, chat_room_id: int, **params) -> List[Message]:
     ).messages
 
 
-# def get_chat_room_notification_settings(self, room_id: int) -> Settings:
-#     self._check_authorization()
-#     return self._make_request(
-#         "GET", endpoint=f"{Endpoints.NOTIFICATION_SETTINGS_V2}/chat_rooms/{room_id}",
-#         data_type=AdditionalSettingsResponse
-#     ).settings
-
-
 def get_request_chat_rooms(self, from_timestamp: int = None) -> ChatRoomsResponse:
     self._check_authorization()
     params = {}
@@ -257,43 +249,12 @@ def pin_chat(self, room_id: int):
     return response
 
 
-def read_attachment(
-        self,
-        room_id: int,
-        attachment_msg_ids: List[int]
-):
-    # TODO: check if this works
-    self._check_authorization()
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/attachments_read",
-        payload={
-            "attachment_msg_ids[]": attachment_msg_ids
-        }
-    )
-    self.logger.info("Attachment has been read.")
-    return response
-
-
 def read_message(self, chat_room_id: int, message_id: int):
     self._check_authorization()
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages/{message_id}/read",
     )
     self.logger.info("Message has been read.")
-    return response
-
-
-def read_video_message(
-        self,
-        room_id: int,
-        video_msg_ids: List[int]
-):
-    self._check_authorization()
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/videos_read",
-        payload={"video_msg_ids": video_msg_ids},
-    )
-    self.logger.info("Video message has been read.")
     return response
 
 
@@ -347,15 +308,6 @@ def report_chat_room(
     return response
 
 
-def send_media_screenshot_notification(self, room_id: int):
-    self._check_authorization()
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/screen_captured"
-    )
-    self.logger.info("Media screenshot notification has been sent.")
-    return response
-
-
 def send_message(
         self,
         chat_room_id: int,
@@ -385,15 +337,6 @@ def send_message(
     )
     self.logger.info("Your message has been sent.")
     return response
-
-
-def set_notification_settings(
-        self,
-        chat_room_id: int,
-        notification_chat: int
-) -> Settings:
-    # NotificationSettingResponse
-    pass
 
 
 def unhide_chat(self, chat_room_ids: int):

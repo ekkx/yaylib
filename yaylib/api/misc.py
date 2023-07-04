@@ -88,37 +88,6 @@ def get_old_file_upload_presigned_url(self, video_file_name: str) -> str:
     ).presigned_url
 
 
-def get_policy_agreements(self) -> PolicyAgreementsResponse:
-    return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V1}/policy_agreements",
-        data_type=PolicyAgreementsResponse
-    )
-
-
-def get_promotions(self, **params) -> List[Promotion]:
-    """
-
-    Parameters:
-    ----------
-
-        - page: int - (Optional)
-        - number: int - (Optional)
-
-    """
-    return self._make_request(
-        "GET", endpoint=f"{Endpoints.PROMOTIONS_V1}",
-        params=params, data_type=PromotionsResponse
-    ).promotions
-
-
-def get_vip_game_reward_url(self, device_type: str) -> str:
-    # TODO: device_type
-    return self._make_request(
-        "GET", endpoint=f"{Endpoints.SKYFALL_V1}/url",
-        params={"device_type": device_type}, data_type=VipGameRewardUrlResponse
-    ).url
-
-
 def get_web_socket_token(self, headers: dict = None) -> str:
     self._check_authorization()
     return self._make_request(

@@ -36,6 +36,11 @@ def accept_group_join_request(self, group_id: int, user_id: int):
 
 
 def add_related_groups(self, group_id: int, related_group_id: List[int]):
+    """
+
+    関連サークルを追加する
+
+    """
     self._check_authorization()
     response = self._make_request(
         "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
@@ -210,10 +215,6 @@ def get_group(self, group_id: int) -> GroupResponse:
         "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}",
         data_type=GroupResponse
     )
-
-
-def get_group_notification_settings(self, group_id: int) -> GroupNotificationSettingsResponse:
-    pass
 
 
 def get_groups(self, **params) -> GroupsResponse:
@@ -474,17 +475,6 @@ def send_ownership_offer(self, group_id: int, user_id: int):
     return response
 
 
-def set_group_notification_settings(
-        self,
-        group_id: int,
-        notification_group_post: int = None,
-        notification_group_join: int = None,
-        notification_group_request: int = None,
-        notification_group_message_tag_all: int = None,
-) -> AdditionalSettingsResponse:
-    pass
-
-
 def set_group_title(self, group_id: int, title: str):
     self._check_authorization()
     response = self._make_request(
@@ -571,14 +561,6 @@ def update_group(
         }, data_type=GroupResponse
     )
     self.logger.info("Group details have been updated.")
-    return response
-
-
-def visit_group(self, group_id: int):
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/visit",
-    )
-    self.logger.info("Visited the group.")
     return response
 
 

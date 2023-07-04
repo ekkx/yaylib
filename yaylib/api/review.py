@@ -8,26 +8,6 @@ from ..responses import *
 from ..utils import *
 
 
-# def create_review(self, user_id: int, comment: str):
-#     # TODO: check the update of v3.18
-#     self._check_authorization()
-#     timestamp = int(datetime.now().timestamp())
-#     response = self._make_request(
-#         "POST", endpoint=f"{Endpoints.USERS_V2}/reviews/{user_id}",
-#         payload={
-#             "comment": comment,
-#             "uuid": self.uuid,
-#             "api_key": self.api_key,
-#             "timestamp": timestamp,
-#             "signed_info": signed_info_calculating(
-#                 self.uuid, timestamp, shared_key=True
-#             ),
-#         },
-#     )
-#     self.logger.info("Review has been sent to {user_id}.")
-#     return response
-
-
 def create_review(self, user_id: int, comment: str):
     self._check_authorization()
     response = self._make_request(

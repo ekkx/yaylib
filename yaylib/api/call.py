@@ -174,40 +174,6 @@ def kick_and_ban_from_call(self, call_id: int, user_id: int):
     return response
 
 
-def notify_anonymous_user_leave_agora_channel(self, conference_id: int, agora_uid: str):
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/leave_agora_channel",
-        payload={"conference_id": conference_id, "agora_uid": agora_uid}
-    )
-    self.logger.info("Notified anonymous user left the call.")
-    return response
-
-
-def notify_user_leave_agora_channel(self, conference_id: int, user_id: int):
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.CALLS_V1}/leave_agora_channel",
-        payload={"conference_id": conference_id, "user_id": user_id}
-    )
-    self.logger.info(f"Notified user '{user_id}' left the call.")
-    return response
-
-
-def send_call_screenshot(
-        self,
-        screenshot_filename: str,
-        conference_id: int
-):
-    response = self._make_request(
-        "PUT", endpoint=f"{Endpoints.CALLS_V1}/screenshot",
-        payload={
-            "conference_id": conference_id,
-            "screenshot_filename": screenshot_filename
-        }
-    )
-    self.logger.info("Call screenshot sent.")
-    return response
-
-
 def set_call(
         self,
         call_id: int,
