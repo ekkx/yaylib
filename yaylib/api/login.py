@@ -123,10 +123,7 @@ def is_valid_token(self, access_token: str):
 
 
 def login(self, email: str, password: str) -> LoginUserResponse:
-
-    # 既にローカルに保存されているか確認する
     credentials = load_credentials(self, email)
-    # ローカルに保存されている場合
     if credentials is not None:
         self.session.headers.setdefault(
             "Authorization", f"Bearer {credentials['access_token']}"

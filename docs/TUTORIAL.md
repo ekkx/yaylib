@@ -142,7 +142,10 @@ VS Code は、多くのプログラミング言語に対応しているテキス
 ```python
 import yaylib
 
+
 bot = yaylib.Client()
+
+bot.login(email="メールアドレス", password="パスワード")
 
 
 # タイムラインを取得

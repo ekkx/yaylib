@@ -59,12 +59,6 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>操作の認証に必要なアクセストークン</td>
 	</tr>
     <tr>
-		<td><code>refresh_token</code></td>
-		<td><code>str</code></td>
-		<td><code>None</code></td>
-		<td>アクセストークンの再発行に必要なリフレッシュトークン</td>
-	</tr>
-    <tr>
 		<td><code>proxy</code></td>
 		<td><code>str</code></td>
 		<td><code>None</code></td>
@@ -116,30 +110,24 @@ Client クラスは、API クライアントのメインクラスです。
 
 ### 使用例
 
-① 以下の例を使用して、API クライアントを初期化します。
-
-```python
-import yaylib
-
-api = yaylib.Client(access_token="[アクセストークン]")
-```
-
-② アクセストークンはログイン時に発行されます。
+以下の例を使用して、API クライアントを初期化します。
 
 ```python
 import yaylib
 
 api = yaylib.Client()
-api.login(email="[メールアドレス]", password="[パスワード]")
-
-api.login_data.access_token # アクセストークンを取得
-api.login_data.refresh_token # リフレッシュトークンを取得（アクセストークン再発行時に使用）
+api.login(email="メールアドレス", password="パスワード")
 ```
 
-一定時間内に何度もログインすると、**429 Too Many Requests エラー**が発生します。
-よって、初回実行するときは、② の方法でアクセストークンを取得し、以後は ① のように**アクセストークンを使用してクライアントを初期化すること**をお勧めします。
+アクセストークンを直接設定することも可能です。
 
-※ アクセストークンには有効期限が設けられており、24 時間が経過する前に<a href="#get-token">`get_token()`</a>関数を使用するか、ログインして再発行してください。
+```python
+import yaylib
+
+api = yaylib.Client(access_token="アクセストークン")
+
+api.create_post("こんにちは")
+```
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 

@@ -123,7 +123,7 @@ def get_follow_recommendations(self, **params) -> FollowRecommendationsResponse:
     self._check_authorization()
     return self._make_request(
         "GET", endpoint=f"{Endpoints.FRIENDS_V1}",
-        params=params, data_type=ActiveFollowingsResponse
+        params=params, data_type=FollowRecommendationsResponse
     )
 
 
@@ -200,21 +200,21 @@ def get_hima_users(self, **params) -> List[UserWrapper]:
     ).hima_users
 
 
-def get_initial_recommended_users_to_follow(self, **params) -> UsersResponse:
-    """
+# def get_initial_recommended_users_to_follow(self, **params) -> UsersResponse:
+#     """
 
-    Parameters:
-    ----------
+#     Parameters:
+#     ----------
 
-        - en: int - (Optional)
-        - vn: int - (Optional)
+#         - en: int - (Optional)
+#         - vn: int - (Optional)
 
-    """
-    self._check_authorization()
-    return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V1}/initial_follow_recommended",
-        params=params, data_type=UsersResponse
-    )
+#     """
+#     self._check_authorization()
+#     return self._make_request(
+#         "GET", endpoint=f"{Endpoints.USERS_V1}/initial_follow_recommended",
+#         params=params, data_type=UsersResponse
+#     )
 
 
 def get_user_ranking(self, mode: str) -> RankingUsersResponse:
@@ -248,22 +248,22 @@ def get_user_ranking(self, mode: str) -> RankingUsersResponse:
     )
 
 
-def get_recommended_users_to_follow_for_profile(self, user_id: int, **params) -> UsersResponse:
-    """
+# def get_recommended_users_to_follow_for_profile(self, user_id: int, **params) -> UsersResponse:
+#     """
 
-    Parameters:
-    ----------
+#     Parameters:
+#     ----------
 
-        - user_id: int - (Required)
-        - number: int - (Optional)
-        - page: int - (Optional)
+#         - user_id: int - (Required)
+#         - number: int - (Optional)
+#         - page: int - (Optional)
 
-    """
-    self._check_authorization()
-    return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V1}/{user_id}/follow_recommended",
-        params=params, data_type=UsersResponse
-    )
+#     """
+#     self._check_authorization()
+#     return self._make_request(
+#         "GET", endpoint=f"{Endpoints.USERS_V1}/{user_id}/follow_recommended",
+#         params=params, data_type=UsersResponse
+#     )
 
 
 def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
