@@ -1,11 +1,14 @@
 <div><a id="readme-top"></a></div>
-
-# yaylib - Docs | ドキュメント
-
 <p align="center">
     <img src="https://github.com/qvco/yaylib/assets/77382767/5265b956-55b7-466c-8cdb-cf0f3abed946" alt="Logo" height="300px">
-    <h3 align="center">yaylib</h3>
+    <h3 align="center">yaylib - Docs | ドキュメント</h3>
     <p align="center">
+        <br />
+        <a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">
+            <strong>API reference index »</strong>
+        </a>
+        <br />
+        <br />
         <a href="https://github.com/qvco/yaylib/issues">Report Bug</a>
         ·
         <a href="https://github.com/qvco/yaylib/issues">Request Feature</a>
@@ -20,7 +23,7 @@
         <li><a href="#インストール">インストール</a></li>
         <li><a href="#使用方法">使用方法</a></li>
         <!-- <li><a href="async-client">Async Client</a></li> -->
-        <li><a href="#api-一覧">API 一覧</a></li>
+        <li><a href="#メソッド一覧">メソッド一覧</a></li>
         <li><a href="#モデル">モデル</a></li>
         <li><a href="#レスポンス">レスポンス</a></li>
         <li><a href="#yay-エラーコード一覧">Yay! エラーコード一覧</a></li>
@@ -141,22 +144,22 @@ api.create_post("こんにちは")
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
-## API 一覧
+## メソッド一覧
 
 <ul>
-    <li><a href="#ログイン-api">ログイン</a></li>
-    <li><a href="#ユーザー-api">ユーザー</a></li>
-    <li><a href="#投稿-api">投稿</a></li>
-    <li><a href="#スレッド-api">スレッド</a></li>
-    <li><a href="#レター-api">レター</a></li>
-    <li><a href="#チャット-api">チャット</a></li>
-    <li><a href="#グループ-api">グループ</a></li>
-    <li><a href="#通話-api">通話</a></li>
-    <li><a href="#通知-api">通知</a></li>
-    <li><a href="#その他-api">その他</a></li>
+    <li><a href="#ログイン">ログイン</a></li>
+    <li><a href="#ユーザー">ユーザー</a></li>
+    <li><a href="#投稿">投稿</a></li>
+    <li><a href="#スレッド">スレッド</a></li>
+    <li><a href="#レター">レター</a></li>
+    <li><a href="#チャット">チャット</a></li>
+    <li><a href="#グループ">グループ</a></li>
+    <li><a href="#通話">通話</a></li>
+    <li><a href="#通知">通知</a></li>
+    <li><a href="#その他">その他</a></li>
 </ul>
 
-### ログイン API
+### ログイン
 
 <table>
     <tr>
