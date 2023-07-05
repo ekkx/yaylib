@@ -307,15 +307,6 @@ def get_users(self, user_ids: List[int]) -> UsersResponse:
     )
 
 
-def post_social_shared(self, sns_name: str):
-    response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V2}/social_shared",
-        params={"sns_name": sns_name}
-    )
-    self.logger.info("Posted social shared post.")
-    return response
-
-
 def reduce_kenta_penalty(self, user_id: int):
     self._check_authorization()
     timestamp = int(datetime.now().timestamp())

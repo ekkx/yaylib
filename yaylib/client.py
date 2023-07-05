@@ -1309,7 +1309,7 @@ class Client(API):
     def add_group_highlight_post(self, group_id: int, post_id: int) -> dict:
         """
 
-        投稿をグループハイライトに追加します
+        投稿をグループのまとめに追加します
 
         """
         return add_group_highlight_post(self, group_id, post_id)
@@ -1567,7 +1567,7 @@ class Client(API):
     def delete_all_post(self) -> dict:
         """
 
-        すべての投稿を削除します
+        すべての自分の投稿を削除します
 
         """
         return delete_all_post(self)
@@ -1620,7 +1620,7 @@ class Client(API):
     def get_conversation(self, conversation_id: int, **params) -> PostsResponse:
         """
 
-        会話を取得します
+        リプライを含める投稿の会話を取得します
 
         Parameters
         ----------
@@ -1892,18 +1892,10 @@ class Client(API):
         """
         return get_user_timeline(self, user_id, **params)
 
-    def like_post(self, post_id: int) -> LikePostsResponse:
-        """
-
-        投稿にいいねします
-
-        """
-        return like_posts(self, post_id)
-
     def like_posts(self, post_ids: List[int]) -> LikePostsResponse:
         """
 
-        複数の投稿にいいねします
+        投稿にいいねします
 
         ※ 一度にいいねできる投稿数は最大25個
 
@@ -2303,12 +2295,17 @@ class Client(API):
         return get_footprints(self, **params)
 
     def get_fresh_user(self, user_id: int) -> UserResponse:
+        """
+
+        認証情報などを含んだユーザー情報を取得します
+
+        """
         return get_fresh_user(self, user_id)
 
     def get_hima_users(self, **params) -> List[UserWrapper]:
         """
 
-        暇なユーザーを取得する
+        暇なユーザーを取得します
 
         Parameters
         ----------
@@ -2322,7 +2319,7 @@ class Client(API):
     def get_user_ranking(self, mode: str) -> RankingUsersResponse:
         """
 
-        ユーザーのランキングを取得します
+        ユーザーのフォロワーランキングを取得します
 
         Examples:
         --------
@@ -2356,6 +2353,8 @@ class Client(API):
 
     def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
         """
+
+        SNS共有をしたユーザーを取得します
 
         Parameters
         ----------
@@ -2432,7 +2431,9 @@ class Client(API):
 
     def get_user_without_leaving_footprint(self, user_id: int) -> UserResponse:
         """
-        ユーザーの情報を取得します
+
+        足跡をつけずにユーザーの情報を取得します
+
         """
         return get_user_without_leaving_footprint(self, user_id)
 
@@ -2443,9 +2444,6 @@ class Client(API):
 
         """
         return get_users(self, user_ids)
-
-    def post_social_shared(self, sns_name: str) -> dict:
-        return post_social_shared(self, sns_name)
 
     def reduce_kenta_penalty(self, user_id: int) -> dict:
         """
@@ -2553,6 +2551,11 @@ class Client(API):
     def set_follow_permission_enabled(
             self, nickname: str, is_private: bool = None
     ) -> dict:
+        """
+        
+        フォローを許可制に設定します
+        
+        """
         return set_follow_permission_enabled(self, nickname, is_private)
 
     def take_action_follow_request(self, target_id: int, action: str) -> dict:
@@ -2573,14 +2576,6 @@ class Client(API):
 
         """
         return unfollow_user(self, user_id)
-
-    def update_language(self, language: str) -> dict:
-        """
-
-        言語を更新します
-
-        """
-        return update_language(self, language)
 
     def update_user(
             self,

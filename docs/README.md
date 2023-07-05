@@ -4,7 +4,7 @@
     <h3 align="center">yaylib - Docs | ドキュメント</h3>
     <p align="center">
         <br />
-        <a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">
+        <a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/README.md">
             <strong>API reference index »</strong>
         </a>
         <br />
@@ -30,7 +30,7 @@
     </ol>
 </details>
 
-## インストール
+## インストール / Install
 
 **※ Python 3.11 かそれ以上のバージョンが必要です。**
 
@@ -40,7 +40,7 @@
 pip install yaylib
 ```
 
-開発バージョンをインストールするには、以下の手順を実行します:
+開発バージョンをインストールする場合は、以下の手順を実行します:
 
 ```bash
 git clone https://github.com/qvco/yaylib
@@ -52,7 +52,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## 使用方法
+## 使用方法 / Usage
 
 ### Client クラスについて
 
@@ -146,1212 +146,507 @@ api.create_post("こんにちは")
 
 ## メソッド一覧
 
-<ul>
-    <li><a href="#ログイン">ログイン</a></li>
-    <li><a href="#ユーザー">ユーザー</a></li>
-    <li><a href="#投稿">投稿</a></li>
-    <li><a href="#スレッド">スレッド</a></li>
-    <li><a href="#レター">レター</a></li>
-    <li><a href="#チャット">チャット</a></li>
-    <li><a href="#グループ">グループ</a></li>
-    <li><a href="#通話">通話</a></li>
-    <li><a href="#通知">通知</a></li>
-    <li><a href="#その他">その他</a></li>
-</ul>
+### 投稿
+
+<table>
+    <tr>
+		<th>メソッド</th>
+		<th>概要</th>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/add_bookmark.md">add_bookmark()</a></code></td>
+		<td>ブックマークに追加します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/add_group_highlight_post.md">add_group_highlight_post()</a></code></td>
+		<td>投稿をグループのまとめに追加します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/create_call_post.md">create_call_post()</a></code></td>
+		<td>通話の投稿を作成します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/pin_group_post.md">pin_group_post()</a></code></td>
+		<td>グループの投稿をピンします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/pin_post.md">pin_post()</a></code></td>
+		<td>投稿をピンします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/mention.md">mention()</a></code></td>
+		<td>メンション用文字列を返します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/create_post.md">create_post()</a></code></td>
+		<td>投稿を作成します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/create_repost.md">create_repost()</a></code></td>
+		<td>投稿を(´∀｀∩)↑age↑します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/create_share_post.md">create_share_post()</a></code></td>
+		<td>シェア投稿を作成します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/create_thread_post.md">create_thread_post()</a></code></td>
+		<td>スレッドの投稿を作成します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/delete_all_post.md">delete_all_post()</a></code></td>
+		<td>すべての自分の投稿を削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/unpin_group_post.md">unpin_group_post()</a></code></td>
+		<td>グループのピン投稿を解除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/unpin_post.md">unpin_post()</a></code></td>
+		<td>ピン投稿を削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_bookmark.md">get_bookmark()</a></code></td>
+		<td>ブックマークを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_timeline_calls.md">get_timeline_calls()</a></code></td>
+		<td>誰でも通話を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_conversation.md">get_conversation()</a></code></td>
+		<td>リプライを含める投稿の会話を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_following_call_timeline.md">get_following_call_timeline()</a></code></td>
+		<td>フォロー中の通話を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_following_timeline.md">get_following_timeline()</a></code></td>
+		<td>フォロー中のタイムラインを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_group_highlight_posts.md">get_group_highlight_posts()</a></code></td>
+		<td>グループのハイライト投稿を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_group_timeline_by_keyword.md">get_group_timeline_by_keyword()</a></code></td>
+		<td>グループの投稿をキーワードで検索します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_group_timeline.md">get_group_timeline()</a></code></td>
+		<td>グループのタイムラインを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_timeline_by_hashtag.md">get_timeline_by_hashtag()</a></code></td>
+		<td>ハッシュタグでタイムラインを検索します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_my_posts.md">get_my_posts()</a></code></td>
+		<td>自分の投稿を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_post.md">get_post()</a></code></td>
+		<td>投稿の詳細を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_post_likers.md">get_post_likers()</a></code></td>
+		<td>投稿にいいねしたユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_reposts.md">get_reposts()</a></code></td>
+		<td>投稿の(´∀｀∩)↑age↑を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_posts.md">get_posts()</a></code></td>
+		<td>複数の投稿を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_recommended_post_tags.md">get_recommended_post_tags()</a></code></td>
+		<td>おすすめのタグ候補を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_recommended_posts.md">get_recommended_posts()</a></code></td>
+		<td>おすすめの投稿を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_timeline_by_keyword.md">get_timeline_by_keyword()</a></code></td>
+		<td>キーワードでタイムラインを検索します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_timeline.md">get_timeline()</a></code></td>
+		<td>タイムラインを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_url_metadata.md">get_url_metadata()</a></code></td>
+		<td>URLのメタデータを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_timeline.md">get_user_timeline()</a></code></td>
+		<td>ユーザーのタイムラインを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/like_posts.md">like_posts()</a></code></td>
+		<td>投稿にいいねします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/remove_bookmark.md">remove_bookmark()</a></code></td>
+		<td>ブックマークを削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/remove_group_highlight_post.md">remove_group_highlight_post()</a></code></td>
+		<td>サークルのハイライト投稿を解除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/remove_posts.md">remove_posts()</a></code></td>
+		<td>複数の投稿を削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/report_post.md">report_post()</a></code></td>
+		<td>投稿を通報します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/unlike_post.md">unlike_post()</a></code></td>
+		<td>投稿のいいねを解除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/update_post.md">update_post()</a></code></td>
+		<td>投稿を編集します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/view_video.md">view_video()</a></code></td>
+		<td>動画を視聴します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/vote_survey.md">vote_survey()</a></code></td>
+		<td>アンケートに投票します</td>
+	</tr>
+</table>
+
+### スレッド
+
+<table>
+    <tr>
+		<th>メソッド</th>
+		<th>概要</th>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/add_post_to_thread.md">add_post_to_thread()</a></code></td>
+		<td>投稿をスレッドに追加します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/convert_post_to_thread.md">convert_post_to_thread()</a></code></td>
+		<td>投稿をスレッドに変換します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/create_thread.md">create_thread()</a></code></td>
+		<td>スレッドを作成します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_group_thread_list.md">get_group_thread_list()</a></code></td>
+		<td>グループのスレッド一覧を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_thread_joined_statuses.md">get_thread_joined_statuses()</a></code></td>
+		<td>スレッド参加ステータスを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_thread_posts.md">get_thread_posts()</a></code></td>
+		<td>スレッドの投稿を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/join_thread.md">join_thread()</a></code></td>
+		<td>スレッドに参加します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/leave_thread.md">leave_thread()</a></code></td>
+		<td>スレッドから脱退します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/remove_thread.md">remove_thread()</a></code></td>
+		<td>スレッドを削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/update_thread.md">update_thread()</a></code></td>
+		<td>スレッドを編集します</td>
+	</tr>
+</table>
+
+### ユーザー
+
+<table>
+    <tr>
+		<th>メソッド</th>
+		<th>概要</th>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/delete_footprint.md">delete_footprint()</a></code></td>
+		<td>足跡を削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/destroy_user.md">destroy_user()</a></code></td>
+		<td>アカウントを削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/follow_user.md">follow_user()</a></code></td>
+		<td>ユーザーをフォローします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/follow_users.md">follow_users()</a></code></td>
+		<td>複数のユーザーをフォローします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_active_followings.md">get_active_followings()</a></code></td>
+		<td>アクティブなフォロー中のユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_follow_recommendations.md">get_follow_recommendations()</a></code></td>
+		<td>フォローするのにおすすめのユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_follow_request.md">get_follow_request()</a></code></td>
+		<td>フォローリクエストを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_follow_request_count.md">get_follow_request_count()</a></code></td>
+		<td>フォローリクエストの数を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_following_users_born.md">get_following_users_born()</a></code></td>
+		<td>フォロー中のユーザーの誕生日を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_footprints.md">get_footprints()</a></code></td>
+		<td>足跡を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_fresh_user.md">get_fresh_user()</a></code></td>
+		<td>認証情報などを含んだユーザー情報を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_hima_users.md">get_hima_users()</a></code></td>
+		<td>暇なユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_ranking.md">helget_user_rankinglo()</a></code></td>
+		<td>ユーザーのフォロワーランキングを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_refresh_counter_requests.md">get_refresh_counter_requests()</a></code></td>
+		<td>カウンター更新のリクエストを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_social_shared_users.md">get_social_shared_users()</a></code></td>
+		<td>SNS共有をしたユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_timestamp.md">get_timestamp()</a></code></td>
+		<td>タイムスタンプを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user.md">get_user()</a></code></td>
+		<td>ユーザーの情報を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_email.md">get_user_email()</a></code></td>
+		<td>ユーザーのメールアドレスを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_followers.md">get_user_followers()</a></code></td>
+		<td>ユーザーのフォロワーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_followings.md">get_user_followings()</a></code></td>
+		<td>フォロー中のユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_from_qr.md">get_user_from_qr()</a></code></td>
+		<td>QRコードからユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_without_leaving_footprint.md">get_user_without_leaving_footprint()</a></code></td>
+		<td>足跡をつけずにユーザーの情報を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_users.md">get_users()</a></code></td>
+		<td>複数のユーザーの情報を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/reduce_kenta_penalty.md">reduce_kenta_penalty()</a></code></td>
+		<td>ペナルティーを緩和します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/refresh_counter.md">refresh_counter()</a></code></td>
+		<td>カウンターを更新します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/remove_user_avatar.md">remove_user_avatar()</a></code></td>
+		<td>ユーザーのアイコンを削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/remove_user_cover.md">remove_user_cover()</a></code></td>
+		<td>ユーザーのカバー画像を削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/report_user.md">report_user()</a></code></td>
+		<td>ユーザーを通報します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/reset_password.md">reset_password()</a></code></td>
+		<td>パスワードをリセットします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/search_lobi_users.md">search_lobi_users()</a></code></td>
+		<td>Lobiのユーザーを検索します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/search_users.md">search_users()</a></code></td>
+		<td>ユーザーを検索します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/set_follow_permission_enabled.md">set_follow_permission_enabled()</a></code></td>
+		<td>フォローを許可制に設定します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/take_action_follow_request.md">take_action_follow_request()</a></code></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/turn_on_hima.md">turn_on_hima()</a></code></td>
+		<td>ひまなうします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/unfollow_user.md">unfollow_user()</a></code></td>
+		<td>ユーザーをアンフォローします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/update_user.md">update_user()</a></code></td>
+		<td>プロフィールを更新します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/block_user.md">block_user()</a></code></td>
+		<td>ユーザーをブロックします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_blocked_user_ids.md">get_blocked_user_ids()</a></code></td>
+		<td>あなたをブロックしたユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_blocked_users.md">get_blocked_users()</a></code></td>
+		<td>ブロックしたユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/unblock_user.md">unblock_user()</a></code></td>
+		<td>ユーザーをアンブロックします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_hidden_users_list.md">get_hidden_users_list()</a></code></td>
+		<td>非表示のユーザー一覧を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hide_user.md">hide_user()</a></code></td>
+		<td>ユーザーを非表示にします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/unhide_users.md">unhide_users()</a></code></td>
+		<td>ユーザーの非表示を解除します</td>
+	</tr>
+</table>
+
+### サークル
+
+<table>
+    <tr>
+		<th>メソッド</th>
+		<th>概要</th>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+</table>
+
+### チャット
+
+<table>
+    <tr>
+		<th>メソッド</th>
+		<th>概要</th>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+</table>
+
+### レター
+
+<table>
+    <tr>
+		<th>メソッド</th>
+		<th>概要</th>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+</table>
+
+### 通話
+
+<table>
+    <tr>
+		<th>メソッド</th>
+		<th>概要</th>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+</table>
 
 ### ログイン
 
 <table>
     <tr>
 		<th>メソッド</th>
-		<th>引数</th>
-		<th>型</th>
-		<th>返り値</th>
-		<th>説明</th>
-	</tr>
-    <!-- change_email -->
-    <tr>
-		<td rowspan="3"><code>change_email()</code></td>
-		<td>email</td>
-		<td><code>str</code></td>
-		<td rowspan="3"><code><a href="#loginupdateresponse">LoginUpdateResponse</a></code></td>
-		<td rowspan="3">メールアドレスを変更します</td>
+		<th>概要</th>
 	</tr>
 	<tr>
-		<td>password</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>email_grant_token</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- change_password -->
-    <tr>
-		<td rowspan="2"><code>change_password()</code></td>
-		<td>current_password</td>
-		<td><code>str</code></td>
-		<td rowspan="2"><code><a href="#loginupdateresponse">LoginUpdateResponse</a></code></td>
-		<td rowspan="2">パスワードを変更します</td>
-	</tr>
-	<tr>
-		<td>new_password</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- get_token -->
-	<tr id="get-token">
-		<td rowspan="4"><code>get_token()</code></td>
-		<td>grant_type</td>
-		<td><code>str</code></td>
-        <td rowspan="4"><code><a href="#tokenresponse">TokenResponse</a></code></td>
-		<td rowspan="4">
-        アクセストークンを再発行します。<br>
-        ※ <code>grant_type</code>が"refresh_token"の場合は、emailとpasswordは必要ありません。
-        </td>
-	</tr>
-	<tr>
-		<td>refresh_token</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>email</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>password</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- login -->
-    <tr>
-		<td rowspan="2"><code>login()</code></td>
-		<td>email</td>
-		<td><code>str</code></td>
-		<td rowspan="2"><code><a href="#loginuserresponse">LoginUserResponse</a></code></td>
-		<td rowspan="2">メールアドレスでログインします</td>
-	</tr>
-	<tr>
-		<td>password</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- logout -->
-    <tr>
-		<td><code>logout()</code></td>
-		<td></td>
-		<td></td>
-		<td><code>dict</code></td>
-		<td>ログアウトします</td>
-	</tr>
-    <!-- resend_confirm_email -->
-    <tr>
-		<td><code>resend_confirm_email()</code></td>
-		<td></td>
-		<td></td>
-		<td><code>dict</code></td>
-		<td>確認メールを再送信します</td>
-	</tr>
-    <!-- restore_user -->
-    <tr>
-		<td><code>restore_user()</code></td>
-		<td>user_id</td>
-		<td><code>int</code></td>
-		<td><code><a href="#loginuserresponse">LoginUserResponse</a></code></td>
-		<td>ユーザーを復元します</td>
-	</tr>
-    <!-- revoke_tokens -->
-    <tr>
-		<td><code>revoke_tokens()</code></td>
-		<td></td>
-		<td></td>
-		<td><code>dict</code></td>
-		<td>トークンを無効化します</td>
-	</tr>
-    <!-- save_account_with_email -->
-    <tr>
-		<td rowspan="4"><code>save_account_with_email()</code></td>
-		<td>email</td>
-		<td><code>str</code></td>
-		<td rowspan="4"><code><a href="#loginupdateresponse">LoginUpdateResponse</a></code></td>
-		<td rowspan="4">メールアドレスでアカウントを保存します</td>
-	</tr>
-	<tr>
-		<td>password</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>current_password</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>email_grant_token</td>
-		<td><code>str</code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/change_email.md">change_email()</a></code></td>
+		<td>メールアドレスを変更します。</td>
 	</tr>
 </table>
 
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
-
-### ユーザー API
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
-
-### 投稿 API
+### 通知
 
 <table>
     <tr>
 		<th>メソッド</th>
-		<th>引数</th>
-		<th>型</th>
-		<th>返り値</th>
-		<th>説明</th>
+		<th>概要</th>
 	</tr>
-    <!-- add_bookmark -->
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+</table>
+
+### その他
+
+<table>
     <tr>
-		<td rowspan="2"><code>add_bookmark()</code></td>
-		<td>user_id</td>
-		<td><code>int</code></td>
-		<td rowspan="2"><code><a href="#bookmarkpostresponse">BookmarkPostResponse</a></code></td>
-		<td rowspan="2">ブックマークに追加します</td>
+		<th>メソッド</th>
+		<th>概要</th>
 	</tr>
 	<tr>
-		<td>post_id</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- add_group_highlight_post -->
-    <tr>
-		<td rowspan="2"><code>add_group_highlight_post()</code></td>
-		<td>group_id</td>
-		<td><code>int</code></td>
-		<td rowspan="2"><code>dict</code></td>
-		<td rowspan="2">投稿をグループハイライトに追加します</td>
-	</tr>
-	<tr>
-		<td>post_id</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- create_call_post -->
-	<tr>
-		<td rowspan="18"><code>create_call_post()</code></td>
-		<td>text</td>
-		<td><code>str</code></td>
-        <td rowspan="18"><code><a href="#conferencecall">ConferenceCall</a></code></td>
-		<td rowspan="18">通話の投稿を作成します</td>
-	</tr>
-	<tr>
-		<td>font_size</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>color</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>group_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>call_type</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>category_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>game_title</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>joinable_by</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>message_tags</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_2_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_3_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_4_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_5_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_6_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_7_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_8_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_9_filename</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- pin_group_post -->
-    <tr>
-		<td rowspan="2"><code>pin_group_post()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-		<td rowspan="2"><code>dict</code></td>
-		<td rowspan="2">グループの投稿をピンします</td>
-	</tr>
-	<tr>
-		<td>group_id</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- pin_post -->
-    <tr>
-		<td><code>pin_post()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-		<td><code>dict</code></td>
-		<td>投稿をピンします</td>
-	</tr>
-    <!-- mention -->
-    <tr>
-		<td><code>mention()</code></td>
-		<td>user_id</td>
-		<td><code>int</code></td>
-		<td><code>str</code></td>
-		<td>メンション用文字列を返します</td>
-	</tr>
-    <!-- create_post -->
-	<tr>
-		<td rowspan="19"><code>create_post()</code></td>
-		<td>text</td>
-		<td><code>str</code></td>
-        <td rowspan="19"><code><a href="#post">Post</a></code></td>
-		<td rowspan="19">投稿を作成します</td>
-	</tr>
-	<tr>
-		<td>font_size</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>color</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>in_reply_to</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>group_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>mention_ids</td>
-		<td><code>list of int</code></td>
-	</tr>
-	<tr>
-		<td>choices</td>
-		<td><code>list of str</code></td>
-	</tr>
-	<tr>
-		<td>shared_url</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>message_tags</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_2_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_3_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_4_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_5_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_6_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_7_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_8_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_9_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>video_file_name</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- create_repost -->
-	<tr>
-		<td rowspan="20"><code>create_repost()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-        <td rowspan="20"><code><a href="#post">Post</a></code></td>
-		<td rowspan="20">投稿を(´∀｀∩)↑age↑します</td>
-	</tr>
-	<tr>
-		<td>text</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>font_size</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>color</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>in_reply_to</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>group_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>mention_ids</td>
-		<td><code>list of int</code></td>
-	</tr>
-	<tr>
-		<td>choices</td>
-		<td><code>list of str</code></td>
-	</tr>
-	<tr>
-		<td>shared_url</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>message_tags</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_2_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_3_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_4_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_5_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_6_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_7_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_8_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_9_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>video_file_name</td>
-		<td><code>str</code></td>
-	</tr>
-        <!-- create_share_post -->
-	<tr>
-		<td rowspan="6"><code>create_share_post()</code></td>
-		<td>shareable_type</td>
-		<td><code>str</code></td>
-        <td rowspan="6"><code><a href="#post">Post</a></code></td>
-		<td rowspan="6">シェア投稿を作成します</td>
-	</tr>
-	<tr>
-		<td>shareable_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>text</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>font_size</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>color</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>group_id</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- create_thread_post -->
-	<tr>
-		<td rowspan="20"><code>create_thread_post()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-        <td rowspan="20"><code><a href="#post">Post</a></code></td>
-		<td rowspan="20">スレッドの投稿を作成します</td>
-	</tr>
-	<tr>
-		<td>text</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>font_size</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>color</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>in_reply_to</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>group_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>mention_ids</td>
-		<td><code>list of int</code></td>
-	</tr>
-	<tr>
-		<td>choices</td>
-		<td><code>list of str</code></td>
-	</tr>
-	<tr>
-		<td>shared_url</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>message_tags</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_2_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_3_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_4_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_5_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_6_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_7_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_8_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>attachment_9_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>video_file_name</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- delete_all_post -->
-    <tr>
-		<td><code>delete_all_post()</code></td>
-		<td></td>
-		<td></td>
-		<td><code>dict</code></td>
-		<td>すべての投稿を削除します</td>
-	</tr>
-    <!-- unpin_group_post -->
-    <tr>
-		<td><code>unpin_group_post()</code></td>
-		<td>group_id</td>
-		<td><code>int</code></td>
-		<td><code>dict</code></td>
-		<td>グループのピン投稿を解除します</td>
-	</tr>
-    <!-- unpin_post -->
-    <tr>
-		<td><code>unpin_post()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-		<td><code>dict</code></td>
-		<td>ピン投稿を削除します</td>
-	</tr>
-    <!-- get_bookmark -->
-    <tr>
-		<td rowspan="2"><code>get_bookmark()</code></td>
-		<td>user_id</td>
-		<td><code>int</code></td>
-		<td rowspan="2"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="2">ブックマークを取得します</td>
-	</tr>
-	<tr>
-		<td>from_str</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- get_timeline_calls -->
-    <tr>
-		<td rowspan="9"><code>get_timeline_calls()</code></td>
-		<td>group_id</td>
-		<td><code>int</code></td>
-		<td rowspan="9"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="9">誰でも通話を取得します</td>
-	</tr>
-	<tr>
-		<td>from_timestamp</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>category_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>call_type</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>include_circle_call</td>
-		<td><code>bool</code></td>
-	</tr>
-	<tr>
-		<td>cross_generation</td>
-		<td><code>bool</code></td>
-	</tr>
-	<tr>
-		<td>exclude_recent_gomimushi</td>
-		<td><code>bool</code></td>
-	</tr>
-	<tr>
-		<td>shared_interest_categories</td>
-		<td><code>bool</code></td>
-	</tr>
-    <!-- get_conversation -->
-    <tr>
-		<td rowspan="6"><code>get_conversation()</code></td>
-		<td>conversation_id</td>
-		<td><code>int</code></td>
-		<td rowspan="6"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="6">会話を取得します</td>
-	</tr>
-	<tr>
-		<td>group_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>thread_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>from_post_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>reverse</td>
-		<td><code>bool</code></td>
-	</tr>
-    <!-- get_conversation_root_posts -->
-    <tr>
-		<td><code>get_conversation_root_posts()</code></td>
-		<td>post_ids</td>
-		<td><code>list of int</code></td>
-		<td><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td>会話の原点の投稿を取得します</td>
-	</tr>
-    <!-- get_following_call_timeline -->
-    <tr>
-		<td rowspan="6"><code>get_following_call_timeline()</code></td>
-		<td>from_timestamp</td>
-		<td><code>int</code></td>
-		<td rowspan="6"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="6">フォロー中の通話を取得します</td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>category_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>call_type</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>include_circle_call</td>
-		<td><code>bool</code></td>
-	</tr>
-	<tr>
-		<td>exclude_recent_gomimushi</td>
-		<td><code>bool</code></td>
-	</tr>
-    <!-- get_following_timeline -->
-    <tr>
-		<td rowspan="7"><code>get_following_timeline()</code></td>
-		<td>from_str</td>
-		<td><code>str</code></td>
-		<td rowspan="7"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="7">フォロー中のタイムラインを取得します</td>
-	</tr>
-	<tr>
-		<td>only_root</td>
-		<td><code>bool</code></td>
-	</tr>
-	<tr>
-		<td>order_by</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>mxn</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>reduce_selfie</td>
-		<td><code>bool</code></td>
-	</tr>
-	<tr>
-		<td>custom_generation_range</td>
-		<td><code>bool</code></td>
-	</tr>
-    <!-- get_group_highlight_posts -->
-    <tr>
-		<td rowspan="3"><code>get_group_highlight_posts()</code></td>
-		<td>group_id</td>
-		<td><code>int</code></td>
-		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="3">グループのハイライト投稿を取得します</td>
-	</tr>
-	<tr>
-		<td>from_post</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- get_group_timeline_by_keyword -->
-    <tr>
-		<td rowspan="5"><code>get_group_timeline_by_keyword()</code></td>
-		<td>group_id</td>
-		<td><code>int</code></td>
-		<td rowspan="5"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="5">グループの投稿をキーワードで検索します</td>
-	</tr>
-	<tr>
-		<td>keyword</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>from_post_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>only_thread_posts</td>
-		<td><code>bool</code></td>
-	</tr>
-    <!-- get_group_timeline -->
-    <tr>
-		<td rowspan="6"><code>get_group_timeline()</code></td>
-		<td>group_id</td>
-		<td><code>int</code></td>
-		<td rowspan="6"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="6">グループのタイムラインを取得します</td>
-	</tr>
-	<tr>
-		<td>from_post_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>reverse</td>
-		<td><code>bool</code></td>
-	</tr>
-	<tr>
-		<td>post_type</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>only_root</td>
-		<td><code>bool</code></td>
-	</tr>
-    <!-- get_timeline -->
-    <tr>
-		<td rowspan="11"><code>get_timeline()</code></td>
-		<td>noreply_mode</td>
-		<td><code>bool</code></td>
-		<td rowspan="11"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="11">タイムラインを取得します</td>
-	</tr>
-	<tr>
-		<td>from_post_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>order_by</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>experiment_older_age_rules</td>
-		<td><code>bool</code></td>
-	</tr>
-	<tr>
-		<td>shared_interest_categories</td>
-		<td><code>bool</code></td>
-	</tr>
-	<tr>
-		<td>mxn</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>en</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>vn</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>reduce_selfie</td>
-		<td><code>bool</code></td>
-	</tr>
-	<tr>
-		<td>custom_generation_range</td>
-		<td><code>bool</code></td>
-	</tr>
-    <!-- get_timeline_by_hashtag -->
-    <tr>
-		<td rowspan="3"><code>get_timeline_by_hashtag()</code></td>
-		<td>hashtag</td>
-		<td><code>str</code></td>
-		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="3">ハッシュタグでタイムラインを検索します</td>
-	</tr>
-	<tr>
-		<td>from_post_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- get_timeline_by_keyword -->
-    <tr>
-		<td rowspan="3"><code>get_timeline_by_keyword()</code></td>
-		<td>keyword</td>
-		<td><code>str</code></td>
-		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="3">キーワードでタイムラインを検索します</td>
-	</tr>
-	<tr>
-		<td>from_post_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- get_user_timeline -->
-    <tr>
-		<td rowspan="3"><code>get_user_timeline()</code></td>
-		<td>from_post_id</td>
-		<td><code>int</code></td>
-		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="3">ユーザーのタイムラインを取得します</td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-    <tr>
-		<td>post_type</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- get_my_posts -->
-    <tr>
-		<td rowspan="3"><code>get_my_posts()</code></td>
-		<td>from_post_id</td>
-		<td><code>int</code></td>
-		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="3">自分の投稿を取得します</td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>include_group_post</td>
-		<td><code>bool</code></td>
-	</tr>
-    <!-- get_post -->
-    <tr>
-		<td><code>get_post()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-		<td><code><a href="#post">Post</a></code></td>
-		<td>投稿の詳細を取得します</td>
-	</tr>
-    <!-- get_posts -->
-    <tr>
-		<td><code>get_posts()</code></td>
-		<td>post_ids</td>
-		<td><code>list of int</code></td>
-		<td><code><a href="#postspesponse">PostsResponse</a></code></td>
-		<td>複数の投稿を取得します</td>
-	</tr>
-    <!-- get_post_likers -->
-    <tr>
-		<td rowspan="2"><code>get_post_likers()</code></td>
-		<td>from_id</td>
-		<td><code>int</code></td>
-		<td rowspan="2"><code><a href="#postlikersresponse">PostLikersResponse</a></code></td>
-		<td rowspan="2">投稿にいいねしたユーザーを取得します</td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- get_reposts -->
-    <tr>
-		<td rowspan="3"><code>get_reposts()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="3">投稿の(´∀｀∩)↑age↑を取得します</td>
-	</tr>
-	<tr>
-		<td>from_post_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- get_recommended_post_tags -->
-    <tr>
-		<td rowspan="2"><code>get_recommended_post_tags()</code></td>
-		<td>tag</td>
-		<td><code>str</code></td>
-		<td rowspan="2"><code><a href="#posttagsresponse">PostTagsResponse</a></code></td>
-		<td rowspan="2">おすすめのタグ候補を取得します</td>
-	</tr>
-	<tr>
-		<td>save_recent_search</td>
-		<td><code>bool</code></td>
-	</tr>
-    <!-- get_recommended_posts -->
-    <tr>
-		<td rowspan="3"><code>get_recommended_posts()</code></td>
-		<td>experiment_num</td>
-		<td><code>int</code></td>
-		<td rowspan="3"><code><a href="#postsresponse">PostsResponse</a></code></td>
-		<td rowspan="3">おすすめの投稿を取得します</td>
-	</tr>
-	<tr>
-		<td>variant_num</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>number</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- get_url_metadata -->
-    <tr>
-		<td><code>get_url_metadata()</code></td>
-		<td>url</td>
-		<td><code>str</code></td>
-		<td><code><a href="#sharedurl">SharedUrl</a></code></td>
-		<td>URLのメタデータを取得します</td>
-	</tr>
-    <!-- like_posts -->
-    <tr>
-		<td><code>like_posts()</code></td>
-		<td>post_ids</td>
-		<td><code>list of int</code></td>
-		<td><code><a href="#likepostsresponse">LikePostsResponse</a></code></td>
-		<td>投稿にいいねします</td>
-	</tr>
-    <!-- unlike_post -->
-    <tr>
-		<td><code>unlike_post()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-		<td><code>dict</code></td>
-		<td>投稿のいいねを解除します</td>
-	</tr>
-    <!-- remove_bookmark -->
-    <tr>
-		<td rowspan="2"><code>remove_bookmark()</code></td>
-		<td>user_id</td>
-		<td><code>int</code></td>
-		<td rowspan="2"><code>dict</code></td>
-		<td rowspan="2">ブックマークを削除します</td>
-	</tr>
-	<tr>
-		<td>post_id</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- remove_group_highlight_post -->
-    <tr>
-		<td rowspan="2"><code>remove_group_highlight_post()</code></td>
-		<td>group_id</td>
-		<td><code>int</code></td>
-		<td rowspan="2"><code>dict</code></td>
-		<td rowspan="2">サークルのハイライト投稿を解除します</td>
-	</tr>
-	<tr>
-		<td>post_id</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- remove_posts -->
-    <tr>
-		<td><code>remove_posts()</code></td>
-		<td>post_ids</td>
-		<td><code>list of int</code></td>
-		<td><code>dict</code></td>
-		<td>複数の投稿を削除します</td>
-	</tr>
-    <!-- report_post -->
-    <tr>
-		<td rowspan="8"><code>report_post()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-		<td rowspan="8"><code>dict</code></td>
-		<td rowspan="8">投稿を通報します</td>
-	</tr>
-	<tr>
-		<td>opponent_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>category_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>reason</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>screenshot_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>screenshot_2_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>screenshot_3_filename</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>screenshot_4_filename</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- update_post -->
-    <tr>
-		<td rowspan="5"><code>update_post()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-		<td rowspan="5"><code><a href="#post">Post</a></code></td>
-		<td rowspan="5">投稿を編集します</td>
-	</tr>
-	<tr>
-		<td>text</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>font_size</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>color</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>message_tags</td>
-		<td><code>str</code></td>
-	</tr>
-    <!-- update_recommendation_feedback -->
-    <tr>
-		<td rowspan="4"><code>update_recommendation_feedback()</code></td>
-		<td>post_id</td>
-		<td><code>int</code></td>
-		<td rowspan="4"><code>dict</code></td>
-		<td rowspan="4">おすすめのフィードバックを更新します</td>
-	</tr>
-	<tr>
-		<td>feedback_result</td>
-		<td><code>str</code></td>
-	</tr>
-	<tr>
-		<td>experiment_num</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>variant_num</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- validate_post -->
-    <tr>
-		<td rowspan="3"><code>validate_post()</code></td>
-		<td>text</td>
-		<td><code>str</code></td>
-		<td rowspan="3"><code><a href="#validationpostresponse">ValidationPostResponse</a></code></td>
-		<td rowspan="3">与えられたテキストが有効な投稿であるかどうかを検証します</td>
-	</tr>
-	<tr>
-		<td>group_id</td>
-		<td><code>int</code></td>
-	</tr>
-	<tr>
-		<td>thread_id</td>
-		<td><code>int</code></td>
-	</tr>
-    <!-- view_video -->
-    <tr>
-		<td><code>view_video()</code></td>
-		<td>video_id</td>
-		<td><code>int</code></td>
-		<td><code>dict</code></td>
-		<td>動画を視聴します</td>
-	</tr>
-    <!-- vote_survey -->
-    <tr>
-		<td rowspan="2"><code>vote_survey()</code></td>
-		<td>survey_id</td>
-		<td><code>int</code></td>
-		<td rowspan="2"><code><a href="#survey">Survey</a></code></td>
-		<td rowspan="2">アンケートに投票します</td>
-	</tr>
-	<tr>
-		<td>choice_id</td>
-		<td><code>int</code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td>説明文</td>
 	</tr>
 </table>
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
-### スレッド API
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
-
-### レター API
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
-
-### チャット API
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
-
-### グループ API
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
-
-### 通話 API
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
-
-### 通知 API
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
-
-### その他 API
-
-<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
-
 ## モデル
-
-<ul>
-    <li><a href="#activity">Activity</a></li>
-    <li><a href="#banword">BanWord</a></li>
-    <li><a href="#bgm">Bgm</a></li>
-    <li><a href="#callgifthistory">CallGiftHistory</a></li>
-    <li><a href="#chatroom">ChatRoom</a></li>
-    <li><a href="#chatroomdraft">ChatRoomDraft</a></li>
-    <li><a href="#choice">Choice</a></li>
-    <li><a href="#coinamount">CoinAmount</a></li>
-    <li><a href="#coinexpiration">CoinExpiration</a></li>
-    <li><a href="#coinproduct">CoinProduct</a></li>
-    <li><a href="#coinproductquota">CoinProductQuota</a></li>
-    <li><a href="#conferencecall">ConferenceCall</a></li>
-    <li><a href="#conferencecalluserrole">ConferenceCallUserRole</a></li>
-    <li><a href="#contactstatus">ContactStatus</a></li>
-</ul>
 
 ### Activity
 
