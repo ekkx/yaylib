@@ -4,8 +4,6 @@ from typing import Dict, List
 import os
 import json
 
-from cryptography.fernet import Fernet
-
 from ..config import *
 from ..errors import *
 from ..models import *
@@ -80,16 +78,14 @@ def is_valid_token(self, access_token: str):
 def save_credentials(self, secret_key, access_token, refresh_token, user_id, email=None):
     credentials = load_credentials(self)
     updated_credentials = {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
+        "access_token": encrypt(secret_key, access_token),
+        "refresh_token": encrypt(secret_key, refresh_token),
         "user_id": user_id,
         "email": email
     }
     if email is None:
         updated_credentials["email"] = credentials.get("email")
-    updated_credentials = encrypt_credentials(
-        self, secret_key, updated_credentials
-    )
+
     with open(self.base_path + "credentials.json", "w") as f:
         json.dump(updated_credentials, f)
 
@@ -119,11 +115,6 @@ def load_credentials(self, check_email: str = None):
     return credentials
 
 
-def encrypt_credentials(self, secret_key, updated_credentials):
-    # TODO: encrypt_credentials
-    return updated_credentials
-
-
 def decrypt_credentials(self, secret_key, credentials):
     # TODO: decrypt_credentials
     return credentials
@@ -133,8 +124,10 @@ def login_with_email(self, email: str, password: str, secret_key: str = None) ->
     credentials = load_credentials(self, email)
     if credentials is not None:
         if secret_key is None:
+            # TODO: if secret key is None, just login with email and save credentials
             message = "The 'secret_key' must be provided to decrypt the credentials."
             raise ValueError(message)
+
         credentials = decrypt_credentials(self, secret_key, credentials)
         self.session.headers.setdefault(
             "Authorization", f"Bearer {credentials['access_token']}"
@@ -165,7 +158,7 @@ def login_with_email(self, email: str, password: str, secret_key: str = None) ->
         f"Successfully logged in as '{response.user_id}'"
     )
 
-    secret_key = Fernet.generate_key()
+    secret_key = generate_key()
 
     print(f"\nYour secret_key for {email} is: {secret_key}")
     print("Please copy and securely store this key in a safe location.")
