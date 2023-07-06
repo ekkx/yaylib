@@ -331,43 +331,43 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/add_post_to_thread.md">add_post_to_thread()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/thread/add_post_to_thread.md">add_post_to_thread()</a></code></td>
 		<td>投稿をスレッドに追加します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/convert_post_to_thread.md">convert_post_to_thread()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/thread/convert_post_to_thread.md">convert_post_to_thread()</a></code></td>
 		<td>投稿をスレッドに変換します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/create_thread.md">create_thread()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/thread/create_thread.md">create_thread()</a></code></td>
 		<td>スレッドを作成します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_group_thread_list.md">get_group_thread_list()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/thread/get_group_thread_list.md">get_group_thread_list()</a></code></td>
 		<td>グループのスレッド一覧を取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_thread_joined_statuses.md">get_thread_joined_statuses()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/thread/get_thread_joined_statuses.md">get_thread_joined_statuses()</a></code></td>
 		<td>スレッド参加ステータスを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_thread_posts.md">get_thread_posts()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/thread/get_thread_posts.md">get_thread_posts()</a></code></td>
 		<td>スレッドの投稿を取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/join_thread.md">join_thread()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/thread/join_thread.md">join_thread()</a></code></td>
 		<td>スレッドに参加します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/leave_thread.md">leave_thread()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/thread/leave_thread.md">leave_thread()</a></code></td>
 		<td>スレッドから脱退します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/remove_thread.md">remove_thread()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/thread/remove_thread.md">remove_thread()</a></code></td>
 		<td>スレッドを削除します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/update_thread.md">update_thread()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/thread/update_thread.md">update_thread()</a></code></td>
 		<td>スレッドを編集します</td>
 	</tr>
 </table>
@@ -380,175 +380,175 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/delete_footprint.md">delete_footprint()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/delete_footprint.md">delete_footprint()</a></code></td>
 		<td>足跡を削除します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/destroy_user.md">destroy_user()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/destroy_user.md">destroy_user()</a></code></td>
 		<td>アカウントを削除します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/follow_user.md">follow_user()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/follow_user.md">follow_user()</a></code></td>
 		<td>ユーザーをフォローします</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/follow_users.md">follow_users()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/follow_users.md">follow_users()</a></code></td>
 		<td>複数のユーザーをフォローします</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_active_followings.md">get_active_followings()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_active_followings.md">get_active_followings()</a></code></td>
 		<td>アクティブなフォロー中のユーザーを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_follow_recommendations.md">get_follow_recommendations()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_follow_recommendations.md">get_follow_recommendations()</a></code></td>
 		<td>フォローするのにおすすめのユーザーを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_follow_request.md">get_follow_request()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_follow_request.md">get_follow_request()</a></code></td>
 		<td>フォローリクエストを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_follow_request_count.md">get_follow_request_count()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_follow_request_count.md">get_follow_request_count()</a></code></td>
 		<td>フォローリクエストの数を取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_following_users_born.md">get_following_users_born()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_following_users_born.md">get_following_users_born()</a></code></td>
 		<td>フォロー中のユーザーの誕生日を取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_footprints.md">get_footprints()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_footprints.md">get_footprints()</a></code></td>
 		<td>足跡を取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_fresh_user.md">get_fresh_user()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_fresh_user.md">get_fresh_user()</a></code></td>
 		<td>認証情報などを含んだユーザー情報を取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_hima_users.md">get_hima_users()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_hima_users.md">get_hima_users()</a></code></td>
 		<td>暇なユーザーを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_ranking.md">helget_user_rankinglo()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_user_ranking.md">helget_user_rankinglo()</a></code></td>
 		<td>ユーザーのフォロワーランキングを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_refresh_counter_requests.md">get_refresh_counter_requests()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_refresh_counter_requests.md">get_refresh_counter_requests()</a></code></td>
 		<td>カウンター更新のリクエストを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_social_shared_users.md">get_social_shared_users()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_social_shared_users.md">get_social_shared_users()</a></code></td>
 		<td>SNS共有をしたユーザーを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_timestamp.md">get_timestamp()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_timestamp.md">get_timestamp()</a></code></td>
 		<td>タイムスタンプを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user.md">get_user()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_user.md">get_user()</a></code></td>
 		<td>ユーザーの情報を取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_email.md">get_user_email()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_user_email.md">get_user_email()</a></code></td>
 		<td>ユーザーのメールアドレスを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_followers.md">get_user_followers()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_user_followers.md">get_user_followers()</a></code></td>
 		<td>ユーザーのフォロワーを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_followings.md">get_user_followings()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_user_followings.md">get_user_followings()</a></code></td>
 		<td>フォロー中のユーザーを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_from_qr.md">get_user_from_qr()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_user_from_qr.md">get_user_from_qr()</a></code></td>
 		<td>QRコードからユーザーを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_user_without_leaving_footprint.md">get_user_without_leaving_footprint()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_user_without_leaving_footprint.md">get_user_without_leaving_footprint()</a></code></td>
 		<td>足跡をつけずにユーザーの情報を取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_users.md">get_users()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_users.md">get_users()</a></code></td>
 		<td>複数のユーザーの情報を取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/reduce_kenta_penalty.md">reduce_kenta_penalty()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/reduce_kenta_penalty.md">reduce_kenta_penalty()</a></code></td>
 		<td>ペナルティーを緩和します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/refresh_counter.md">refresh_counter()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/refresh_counter.md">refresh_counter()</a></code></td>
 		<td>カウンターを更新します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/remove_user_avatar.md">remove_user_avatar()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/remove_user_avatar.md">remove_user_avatar()</a></code></td>
 		<td>ユーザーのアイコンを削除します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/remove_user_cover.md">remove_user_cover()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/remove_user_cover.md">remove_user_cover()</a></code></td>
 		<td>ユーザーのカバー画像を削除します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/report_user.md">report_user()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/report_user.md">report_user()</a></code></td>
 		<td>ユーザーを通報します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/reset_password.md">reset_password()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/reset_password.md">reset_password()</a></code></td>
 		<td>パスワードをリセットします</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/search_lobi_users.md">search_lobi_users()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/search_lobi_users.md">search_lobi_users()</a></code></td>
 		<td>Lobiのユーザーを検索します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/search_users.md">search_users()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/search_users.md">search_users()</a></code></td>
 		<td>ユーザーを検索します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/set_follow_permission_enabled.md">set_follow_permission_enabled()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/set_follow_permission_enabled.md">set_follow_permission_enabled()</a></code></td>
 		<td>フォローを許可制に設定します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/take_action_follow_request.md">take_action_follow_request()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/take_action_follow_request.md">take_action_follow_request()</a></code></td>
 		<td></td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/turn_on_hima.md">turn_on_hima()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/turn_on_hima.md">turn_on_hima()</a></code></td>
 		<td>ひまなうします</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/unfollow_user.md">unfollow_user()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/unfollow_user.md">unfollow_user()</a></code></td>
 		<td>ユーザーをアンフォローします</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/update_user.md">update_user()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/update_user.md">update_user()</a></code></td>
 		<td>プロフィールを更新します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/block_user.md">block_user()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/block_user.md">block_user()</a></code></td>
 		<td>ユーザーをブロックします</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_blocked_user_ids.md">get_blocked_user_ids()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_blocked_user_ids.md">get_blocked_user_ids()</a></code></td>
 		<td>あなたをブロックしたユーザーを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_blocked_users.md">get_blocked_users()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_blocked_users.md">get_blocked_users()</a></code></td>
 		<td>ブロックしたユーザーを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/unblock_user.md">unblock_user()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/unblock_user.md">unblock_user()</a></code></td>
 		<td>ユーザーをアンブロックします</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/get_hidden_users_list.md">get_hidden_users_list()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/get_hidden_users_list.md">get_hidden_users_list()</a></code></td>
 		<td>非表示のユーザー一覧を取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hide_user.md">hide_user()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/hide_user.md">hide_user()</a></code></td>
 		<td>ユーザーを非表示にします</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/unhide_users.md">unhide_users()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/user/unhide_users.md">unhide_users()</a></code></td>
 		<td>ユーザーの非表示を解除します</td>
 	</tr>
 </table>
@@ -561,8 +561,164 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/accept_moderator_offer.md">accept_moderator_offer()</a></code></td>
+		<td>サークル副管理人の権限オファーを引き受けます</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/accept_ownership_offer.md">accept_ownership_offer()</a></code></td>
+		<td>サークル管理人の権限オファーを引き受けます</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/accept_group_join_request.md">accept_group_join_request()</a></code></td>
+		<td>サークル参加リクエストを承認します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/add_related_groups.md">add_related_groups()</a></code></td>
+		<td>関連サークルを追加します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/ban_group_user.md">ban_group_user()</a></code></td>
+		<td>サークルからユーザーを追放します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/check_unread_status.md">check_unread_status()</a></code></td>
+		<td>サークルの未読ステータスを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/create_group.md">create_group()</a></code></td>
+		<td>サークルを作成します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/pin_group.md">pin_group()</a></code></td>
+		<td>サークルをピンします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/decline_moderator_offer.md">decline_moderator_offer()</a></code></td>
+		<td>サークル副管理人の権限オファーを断ります</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/decline_ownership_offer.md">decline_ownership_offer()</a></code></td>
+		<td>サークル管理人の権限オファーを断ります</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/decline_group_join_request.md">decline_group_join_request()</a></code></td>
+		<td>サークル参加リクエストを断ります</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/unpin_group.md">unpin_group()</a></code></td>
+		<td>サークルのピン止めを解除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_banned_group_members.md">get_banned_group_members()</a></code></td>
+		<td>追放されたサークルメンバーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_group_categories.md">get_group_categories()</a></code></td>
+		<td>サークルのカテゴリーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_create_group_quota.md">get_create_group_quota()</a></code></td>
+		<td>サークル作成可能な割当量を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_group.md">get_group()</a></code></td>
+		<td>サークルの詳細を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_groups.md">get_groups()</a></code></td>
+		<td>複数のサークルの詳細を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_invitable_users.md">get_invitable_users()</a></code></td>
+		<td>サークルに招待可能なユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_joined_statuses.md">get_joined_statuses()</a></code></td>
+		<td>サークルの参加ステータスを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_group_member.md">get_group_member()</a></code></td>
+		<td>特定のサークルメンバーの情報を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_group_members.md">get_group_members()</a></code></td>
+		<td>サークルメンバーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_my_groups.md">get_my_groups()</a></code></td>
+		<td>自分のサークルを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_relatable_groups.md">get_relatable_groups()</a></code></td>
+		<td>関連がある可能性があるサークルを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_related_groups.md">get_related_groups()</a></code></td>
+		<td>関連があるサークルを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/get_user_groups.md">get_user_groups()</a></code></td>
+		<td>特定のユーザーが参加しているサークルを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/invite_users_to_group.md">invite_users_to_group()</a></code></td>
+		<td>サークルにユーザーを招待します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/join_group.md">join_group()</a></code></td>
+		<td>サークルに参加します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/leave_group.md">leave_group()</a></code></td>
+		<td>サークルから脱退します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/post_gruop_social_shared.md">post_gruop_social_shared()</a></code></td>
+		<td>サークルのソーシャルシェアを投稿します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/remove_group_cover.md">remove_group_cover()</a></code></td>
+		<td>サークルのカバー画像を削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/remove_moderator.md">remove_moderator()</a></code></td>
+		<td>サークルの副管理人を削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/report_group.md">report_group()</a></code></td>
+		<td>サークルを通報します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/send_moderator_offers.md">send_moderator_offers()</a></code></td>
+		<td>複数人にサークル副管理人のオファーを送信します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/send_ownership_offer.md">send_ownership_offer()</a></code></td>
+		<td>サークル管理人権限のオファーを送信します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/set_group_title.md">set_group_title()</a></code></td>
+		<td>サークルのタイトルを設定します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/take_over_group_ownership.md">take_over_group_ownership()</a></code></td>
+		<td>サークル管理人の権限を引き継ぎます</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/unban_group_member.md">unban_group_member()</a></code></td>
+		<td>特定のサークルメンバーの追放を解除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/update_group.md">update_group()</a></code></td>
+		<td>サークルを編集します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/withdraw_moderator_offer.md">withdraw_moderator_offer()</a></code></td>
+		<td>サークル副管理人のオファーを取り消します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/group/withdraw_ownership_offer.md">withdraw_ownership_offer()</a></code></td>
+		<td>サークル管理人のオファーを取り消します</td>
 	</tr>
 </table>
 
@@ -574,7 +730,7 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/hello.md">hello()</a></code></td>
 		<td>説明文</td>
 	</tr>
 </table>
@@ -587,7 +743,7 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
 		<td>説明文</td>
 	</tr>
 </table>
@@ -600,7 +756,7 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/hello.md">hello()</a></code></td>
 		<td>説明文</td>
 	</tr>
 </table>
@@ -626,7 +782,7 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/cassandra/hello.md">hello()</a></code></td>
 		<td>説明文</td>
 	</tr>
 </table>
@@ -639,7 +795,7 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/post/hello.md">hello()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/misc/hello.md">hello()</a></code></td>
 		<td>説明文</td>
 	</tr>
 </table>

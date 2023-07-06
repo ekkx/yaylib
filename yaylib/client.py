@@ -730,10 +730,10 @@ class Client(API):
             guidelines
         )
 
-    def create_pin_group(self, group_id: int) -> dict:
+    def pin_group(self, group_id: int) -> dict:
         """
 
-        サークルの投稿をピンします
+        サークルをピンします
 
         """
         return create_pin_group(self, group_id)
@@ -762,10 +762,10 @@ class Client(API):
         """
         return decline_ownership_offer(self, group_id, user_id)
 
-    def delete_pin_group(self, group_id: int) -> dict:
+    def unpin_group(self, group_id: int) -> dict:
         """
 
-        サークルのピン投稿を解除します
+        サークルのピン止めを解除します
 
         """
         return delete_pin_group(self, group_id)
