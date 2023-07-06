@@ -1006,8 +1006,16 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/cassandra/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/cassandra/get_activities.md">get_activities()</a></code></td>
+		<td>通知を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/cassandra/get_merged_activities.md">get_merged_activities()</a></code></td>
+		<td>全種類の通知を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/cassandra/received_notification.md">received_notification()</a></code></td>
+		<td>謎です。</td>
 	</tr>
 </table>
 
