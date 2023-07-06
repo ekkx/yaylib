@@ -7,6 +7,19 @@ from datetime import datetime
 from .config import Configs
 
 
+class colors:
+
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 def generate_uuid() -> tuple:
     generated_uuid = str(uuid.uuid4())
     url_uuid = generated_uuid.replace("-", "")

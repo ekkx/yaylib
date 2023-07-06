@@ -171,7 +171,8 @@ def login_with_email(self, email: str, password: str, secret_key: str = None) ->
     secret_key = Fernet.generate_key()
     fernet = Fernet(secret_key)
 
-    print(f"\nYour secret_key for {email} is: {secret_key.decode()}")
+    display_header = f"\nYour secret_key for {colors.BOLD + 'pettapgod@instaddr.uk' + colors.RESET} is: {colors.OKGREEN + secret_key.decode() + colors.RESET}"
+    print(display_header)
     print("Please copy and securely store this key in a safe location.")
     print("For more information, visit: https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/login.md\n")
 
