@@ -851,68 +851,32 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/create_review.md">create_review()</a></code></td>
+		<td>レターを送信します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/create_reviews.md">create_reviews()</a></code></td>
+		<td>複数人にレターを送信します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/delete_reviews.md">delete_reviews()</a></code></td>
+		<td>レターを削除します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/get_my_reviews.md">get_my_reviews()</a></code></td>
+		<td>送信したレターを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/get_reviews.md">get_reviews()</a></code></td>
+		<td>ユーザーが受け取ったレターを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/pin_review.md">pin_review()</a></code></td>
+		<td>レターをピンします</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
-	</tr>
-	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
-	</tr>
-	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
-	</tr>
-	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
-	</tr>
-	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
-	</tr>
-	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
-	</tr>
-	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
-	</tr>
-	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
-	</tr>
-	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
-	</tr>
-	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/unpin_review.md">unpin_review()</a></code></td>
+		<td>レターのピン止めを解除します</td>
 	</tr>
 </table>
 

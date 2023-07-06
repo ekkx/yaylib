@@ -2038,7 +2038,7 @@ class Client(API):
     def get_reviews(self, user_id: int, **params) -> ReviewsResponse:
         """
 
-        受け取ったレターを取得します
+        ユーザーが受け取ったレターを取得します
 
         Parameters
         ----------
@@ -2061,7 +2061,7 @@ class Client(API):
     def unpin_review(self, review_id: int) -> dict:
         """
 
-        レターのピンを解除します
+        レターのピン止めを解除します
 
         """
         return unpin_review(self, review_id)
