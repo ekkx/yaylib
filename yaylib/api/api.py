@@ -27,7 +27,7 @@ class API:
             max_retries=3,
             backoff_factor=1.0,
             timeout=30,
-            lang="ja",
+            err_lang="ja",
             base_path=current_path + "/config/",
             loglevel_stream=logging.INFO,
             host=Configs.YAY_PRODUCTION_HOST,
@@ -44,7 +44,7 @@ class API:
         self.retry_statuses = [500, 502, 503, 504]
         self.backoff_factor = backoff_factor
         self.timeout = timeout
-        self.lang = lang
+        self.err_lang = err_lang
         self.base_path = base_path
         self.host = "https://" + host
 
@@ -208,7 +208,7 @@ class API:
         return json_response
 
     def translate_error_message(self, response):
-        if self.lang == "ja":
+        if self.err_lang == "ja":
             try:
                 error_code = response.get("error_code", None)
                 if error_code is not None:

@@ -133,7 +133,7 @@ def convert_mention_format(self, text) -> tuple:
             formatted_text += segment
             continue
         user_id, text = segment.split(":end:")
-        username = self.get_user(user_id).nickname
+        username = self.get_user_without_leaving_footprint(user_id).user.nickname
         formatted_text += "@" + username + " " + text
         user_ids.append(user_id)
 

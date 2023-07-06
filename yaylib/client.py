@@ -44,7 +44,7 @@ class Client(API):
         - max_retries: int - (optional)
         - backoff_factor: float - (optional)
         - timeout: int - (optional)
-        - lang: str - (optional)
+        - err_lang: str - (optional)
         - base_path: str - (optional)
         - loglevel_stream: int - (optional)
         - host: str - (optional)

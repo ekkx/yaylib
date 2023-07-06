@@ -20,8 +20,8 @@
 <details open>
     <summary>目録</summary>
     <ol>
-        <li><a href="#インストール">インストール</a></li>
-        <li><a href="#使用方法">使用方法</a></li>
+        <li><a href="#インストール--install">インストール</a></li>
+        <li><a href="#使用方法--usage">使用方法</a></li>
         <!-- <li><a href="async-client">Async Client</a></li> -->
         <li><a href="#メソッド一覧">メソッド一覧</a></li>
         <li><a href="#オブジェクトモデル一覧">オブジェクトモデル一覧</a></li>
@@ -39,7 +39,7 @@
 pip install yaylib
 ```
 
-開発バージョンをインストールする場合は、以下の手順を実行します:
+※ 開発バージョンをインストールする場合は、以下の手順を実行します:
 
 ```bash
 git clone https://github.com/qvco/yaylib
@@ -101,10 +101,10 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>ベースパス</td>
 	</tr>
     <tr>
-		<td><code>lang</code></td>
+		<td><code>err_lang</code></td>
 		<td><code>str</code></td>
 		<td><code>ja</code></td>
-		<td>エラー出力言語（ja もしくは、en）</td>
+		<td>エラー出力言語（ja もしくは en）</td>
 	</tr>
     <tr>
 		<td><code>loglevel_stream</code></td>
