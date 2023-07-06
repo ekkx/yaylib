@@ -730,8 +730,116 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/accept_chat_request.md">accept_chat_request()</a></code></td>
+		<td>チャットリクエストを承認します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/check_unread_status.md">check_unread_status()</a></code></td>
+		<td>チャットの未読ステータスを確認します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/create_group_chat.md">create_group_chat()</a></code></td>
+		<td>グループチャットを作成します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/create_private_chat.md">create_private_chat()</a></code></td>
+		<td>個人チャットを作成します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/delete_background.md">delete_background()</a></code></td>
+		<td>チャットの背景画像を削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/delete_message.md">delete_message()</a></code></td>
+		<td>メッセージを削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/edit_chat_room.md">edit_chat_room()</a></code></td>
+		<td>チャットルームを編集します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/get_chatable_users.md">get_chatable_users()</a></code></td>
+		<td>チャット可能なユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/get_gifs_data.md">get_gifs_data()</a></code></td>
+		<td>チャットルームのGIFデータを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/get_hidden_chat_rooms.md">get_hidden_chat_rooms()</a></code></td>
+		<td>非表示のチャットルームを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/get_main_chat_rooms.md">get_main_chat_rooms()</a></code></td>
+		<td>メインのチャットルームを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/get_messages.md">get_messages()</a></code></td>
+		<td>メッセージを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/get_request_chat_rooms.md">get_request_chat_rooms()</a></code></td>
+		<td>チャットリクエストを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/get_chat_room.md">get_chat_room()</a></code></td>
+		<td>チャットルームの詳細を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/get_sticker_packs.md">get_sticker_packs()</a></code></td>
+		<td>スタンプを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/get_chat_requests_count.md">get_chat_requests_count()</a></code></td>
+		<td>チャットリクエストの数を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/hide_chat.md">hide_chat()</a></code></td>
+		<td>チャットルームを非表示にします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/invite_to_chat.md">invite_to_chat()</a></code></td>
+		<td>チャットルームにユーザーを招待します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/kick_users_from_chat.md">kick_users_from_chat()</a></code></td>
+		<td>チャットルームからユーザーを追放します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/kick_users_from_chat.md">kick_users_from_chat()</a></code></td>
+		<td>チャットルームからユーザーを追放します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/pin_chat.md">pin_chat()</a></code></td>
+		<td>チャットルームをピン止めします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/read_message.md">read_message()</a></code></td>
+		<td>メッセージを既読にします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/refresh_chat_rooms.md">refresh_chat_rooms()</a></code></td>
+		<td>チャットルームを更新します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/remove_chat_rooms.md">remove_chat_rooms()</a></code></td>
+		<td>チャットルームを削除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/report_chat_room.md">report_chat_room()</a></code></td>
+		<td>チャットルームを通報します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/send_message.md">send_message()</a></code></td>
+		<td>チャットルームにメッセージを送信します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/unhide_chat.md">unhide_chat()</a></code></td>
+		<td>チャットの非表示を解除します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/chat/unpin_chat.md">unpin_chat()</a></code></td>
+		<td>チャットルームのピン止めを解除します</td>
 	</tr>
 </table>
 
@@ -741,6 +849,66 @@ api.create_post("こんにちは")
     <tr>
 		<th>メソッド</th>
 		<th>概要</th>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
+		<td>説明文</td>
 	</tr>
 	<tr>
 		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/review/hello.md">hello()</a></code></td>
