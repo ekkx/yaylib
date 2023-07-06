@@ -210,7 +210,7 @@ def set_user_role(
 def start_call(
         self,
         conference_id: int,
-        call_sid: str
+        call_sid: str = None
 ) -> ConferenceCall:
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.CALLS_V1}/start_conference_call",
@@ -224,7 +224,7 @@ def start_call(
 def stop_call(
         self,
         conference_id: int,
-        call_sid: str
+        call_sid: str = None
 ):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.CALLS_V1}/leave_conference_call",

@@ -888,8 +888,68 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/get_user_active_call.md">get_user_active_call()</a></code></td>
+		<td>ユーザーが参加中の通話を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/get_bgms.md">get_bgms()</a></code></td>
+		<td>通話のBGMを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/get_call.md">get_call()</a></code></td>
+		<td>通話の詳細を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/get_call_invitable_users.md">get_call_invitable_users()</a></code></td>
+		<td>通話に招待可能なユーザーを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/get_call_status.md">get_call_status()</a></code></td>
+		<td>通話の状態を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/get_games.md">get_games()</a></code></td>
+		<td>ゲームを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/get_genres.md">get_genres()</a></code></td>
+		<td>通話のジャンルを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/get_group_calls.md">get_group_calls()</a></code></td>
+		<td>サークルの通話を取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/invite_online_followings_to_call.md">invite_online_followings_to_call()</a></code></td>
+		<td>オンラインの友達をまとめて通話に招待します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/invite_users_to_call.md">invite_users_to_call()</a></code></td>
+		<td>ユーザーを通話に招待します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/invite_users_to_chat_call.md">invite_users_to_chat_call()</a></code></td>
+		<td>チャット通話にユーザーを招待します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/kick_user_from_call.md">kick_user_from_call()</a></code></td>
+		<td>ユーザーを通話からキックします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/set_call.md">set_call()</a></code></td>
+		<td>通話を開始します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/set_user_role.md">set_user_role()</a></code></td>
+		<td>通話に参加中ののユーザーに役職を与えます</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/join_call.md">join_call()</a></code></td>
+		<td>通話に参加します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/call/leave_call.md">leave_call()</a></code></td>
+		<td>通話から退出します</td>
 	</tr>
 </table>
 

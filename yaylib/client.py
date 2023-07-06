@@ -119,7 +119,7 @@ class Client(API):
     def get_genres(self, **params) -> GenresResponse:
         """
 
-        ジャンルを取得します
+        通話のジャンルを取得します
 
         Parameters
         ----------
@@ -231,10 +231,10 @@ class Client(API):
         """
         return set_user_role(self, call_id, user_id, role)
 
-    def start_call(
+    def join_call(
             self,
             conference_id: int,
-            call_sid: str
+            call_sid: str = None
     ) -> ConferenceCall:
         """
 
@@ -243,10 +243,10 @@ class Client(API):
         """
         return start_call(self, conference_id, call_sid)
 
-    def stop_call(
+    def leave_call(
             self,
             conference_id: int,
-            call_sid: str
+            call_sid: str = None
     ) -> dict:
         """
 
@@ -2552,9 +2552,9 @@ class Client(API):
             self, nickname: str, is_private: bool = None
     ) -> dict:
         """
-        
+
         フォローを許可制に設定します
-        
+
         """
         return set_follow_permission_enabled(self, nickname, is_private)
 
