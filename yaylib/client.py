@@ -1128,19 +1128,6 @@ class Client(API):
         """
         return is_valid_token(self, access_token)
 
-    def change_email(
-            self,
-            email: str,
-            password: str,
-            email_grant_token: str = None
-    ) -> LoginUpdateResponse:
-        """
-
-        メールアドレスを変更します
-
-        """
-        return change_email(self, email, password, email_grant_token)
-
     def change_password(
             self,
             current_password: str,
@@ -1162,7 +1149,7 @@ class Client(API):
     ) -> TokenResponse:
         """
 
-        アクセストークンを再発行します
+        トークンを再発行します
 
         """
         return get_token(
@@ -1179,7 +1166,7 @@ class Client(API):
         メールアドレスでログインします
 
         """
-        return login(self, email, password)
+        return login_with_email(self, email, password)
 
     def logout(self) -> dict:
         """
@@ -1238,7 +1225,7 @@ class Client(API):
     def get_email_grant_token(self, code: int, email: str) -> str:
         """
 
-        email_grant_token を取得します
+        email_grant_tokenを取得します
 
         """
         return get_email_grant_token(self, code, email)
@@ -1278,7 +1265,7 @@ class Client(API):
     def get_web_socket_token(self, headers: dict = None) -> str:
         """
 
-        Web Socket Token を取得します
+        Web Socket Tokenを取得します
 
         """
         return get_web_socket_token(self, headers)

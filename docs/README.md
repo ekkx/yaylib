@@ -961,8 +961,40 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/change_email.md">change_email()</a></code></td>
-		<td>メールアドレスを変更します。</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/is_valid_token.md">is_valid_token()</a></code></td>
+		<td>アクセストークンが有効か検証します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/change_password.md">change_password()</a></code></td>
+		<td>パスワードを変更します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/get_token.md">get_token()</a></code></td>
+		<td>トークンを再発行します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/login.md">login()</a></code></td>
+		<td>メールアドレスでログインします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/logout.md">logout()</a></code></td>
+		<td>ログアウトします</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/resend_confirm_email.md">resend_confirm_email()</a></code></td>
+		<td>確認メールを再送信します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/restore_user.md">restore_user()</a></code></td>
+		<td>ユーザーを復元します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/revoke_tokens.md">revoke_tokens()</a></code></td>
+		<td>トークンを無効化します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/save_account_with_email.md">save_account_with_email()</a></code></td>
+		<td>メールアドレスでアカウントを保存します</td>
 	</tr>
 </table>
 
@@ -987,8 +1019,28 @@ api.create_post("こんにちは")
 		<th>概要</th>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/misc/hello.md">hello()</a></code></td>
-		<td>説明文</td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/misc/get_email_grant_token.md">get_email_grant_token()</a></code></td>
+		<td>email_grant_tokenを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/misc/get_email_verification_presigned_url.md">get_email_verification_presigned_url()</a></code></td>
+		<td>メールアドレス確認用の署名付きURLを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/misc/get_file_upload_presigned_urls.md">get_file_upload_presigned_urls()</a></code></td>
+		<td>ファイルアップロード用の署名付きURLを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/misc/get_old_file_upload_presigned_url.md">get_old_file_upload_presigned_url()</a></code></td>
+		<td>動画ファイルアップロード用の署名付きURLを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/misc/get_web_socket_token.md">get_web_socket_token()</a></code></td>
+		<td>Web Socket Tokenを取得します</td>
+	</tr>
+	<tr>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/main/docs/API-Reference/misc/upload_image.md">upload_image()</a></code></td>
+		<td>画像をアップロードしてattachment_filenameを返します。</td>
 	</tr>
 </table>
 

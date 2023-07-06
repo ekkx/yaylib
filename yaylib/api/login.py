@@ -114,7 +114,7 @@ def is_valid_token(self, access_token: str):
         return False
 
 
-def login(self, email: str, password: str) -> LoginUserResponse:
+def login_with_email(self, email: str, password: str) -> LoginUserResponse:
     credentials = load_credentials(self, email)
     if credentials is not None:
         self.session.headers.setdefault(
