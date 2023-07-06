@@ -92,7 +92,7 @@ class Client(API):
         通話に招待可能なユーザーを取得します
 
         """
-        return UsersByTimestampResponse(self, call_id, from_timestamp)
+        return get_call_invitable_users(self, call_id, from_timestamp)
 
     def get_call_status(self, opponent_id: int) -> CallStatusResponse:
         """
