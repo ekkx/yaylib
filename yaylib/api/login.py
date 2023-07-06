@@ -4,6 +4,8 @@ from typing import Dict, List
 import os
 import json
 
+from cryptography.fernet import Fernet
+
 from ..config import *
 from ..errors import *
 from ..models import *
@@ -75,29 +77,24 @@ def is_valid_token(self, access_token: str):
         return False
 
 
-def save_credentials(self, secret_key, access_token, refresh_token, user_id, email=None):
+def save_credentials(self, fernet, access_token, refresh_token, user_id, email=None):
     credentials = load_credentials(self)
     updated_credentials = {
-        "access_token": encrypt(secret_key, access_token),
-        "refresh_token": encrypt(secret_key, refresh_token),
+        "access_token": access_token,
+        "refresh_token": refresh_token,
         "user_id": user_id,
         "email": email
     }
     if email is None:
         updated_credentials["email"] = credentials.get("email")
 
+    updated_credentials = encrypt(self, fernet, updated_credentials)
+
     with open(self.base_path + "credentials.json", "w") as f:
         json.dump(updated_credentials, f)
 
 
 def load_credentials(self, check_email: str = None):
-    """
-
-    ローカルの認証情報が欠けているか存在しない場合はNoneを返す
-
-    check_emailとローカルのメールアドレスが違う場合はNoneを返す
-
-    """
     if not os.path.exists(self.base_path + "credentials.json"):
         return None
 
@@ -115,8 +112,19 @@ def load_credentials(self, check_email: str = None):
     return credentials
 
 
-def decrypt_credentials(self, secret_key, credentials):
-    # TODO: decrypt_credentials
+def encrypt(self, fernet, credentials: dict):
+    credentials.update({
+        "access_token": fernet.encrypt(credentials.get("access_token").encode()).decode(),
+        "refresh_token": fernet.encrypt(credentials.get("refresh_token").encode()).decode(),
+    })
+    return credentials
+
+
+def decrypt(self, fernet, credentials: dict):
+    credentials.update({
+        "access_token": fernet.decrypt(credentials.get("access_token")).decode(),
+        "refresh_token": fernet.decrypt(credentials.get("refresh_token")).decode(),
+    })
     return credentials
 
 
@@ -128,7 +136,9 @@ def login_with_email(self, email: str, password: str, secret_key: str = None) ->
             message = "The 'secret_key' must be provided to decrypt the credentials."
             raise ValueError(message)
 
-        credentials = decrypt_credentials(self, secret_key, credentials)
+        fernet = Fernet(secret_key)
+        credentials = decrypt(self, fernet, credentials)
+
         self.session.headers.setdefault(
             "Authorization", f"Bearer {credentials['access_token']}"
         )
@@ -158,15 +168,16 @@ def login_with_email(self, email: str, password: str, secret_key: str = None) ->
         f"Successfully logged in as '{response.user_id}'"
     )
 
-    secret_key = generate_key()
+    secret_key = Fernet.generate_key()
+    fernet = Fernet(secret_key)
 
-    print(f"\nYour secret_key for {email} is: {secret_key}")
+    print(f"\nYour secret_key for {email} is: {secret_key.decode()}")
     print("Please copy and securely store this key in a safe location.")
     print("For more information, visit: https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/login.md\n")
 
     save_credentials(
         self,
-        secret_key=secret_key,
+        fernet=fernet,
         access_token=response.access_token,
         refresh_token=response.refresh_token,
         user_id=response.user_id,

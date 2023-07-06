@@ -19,19 +19,6 @@ def parse_datetime(timestamp: int) -> str:
     return timestamp
 
 
-def generate_key():
-    # TODO: generate secrete_key
-    pass
-
-
-def encrypt(key: str, credential: str):
-    pass
-
-
-def decrypt(key: str, credential: str):
-    pass
-
-
 def signed_info_calculating(uuid: str, timestamp: int, shared_key: bool = False) -> str:
     """
     Pass the device_uuid when shared_key is False.
