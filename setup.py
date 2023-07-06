@@ -14,6 +14,7 @@ keywords = [
     "yaylib",
     "api",
     "bot",
+    "client",
     "library",
     "wrapper",
     "ボット",
@@ -22,7 +23,8 @@ keywords = [
 
 install_requires = [
     "httpx>=0.17.1",
-    "Pillow>=9.3.0"
+    "Pillow>=9.3.0",
+    "cryptography>=41.0.1",
 ]
 
 classifiers = [
