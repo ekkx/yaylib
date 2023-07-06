@@ -4,6 +4,8 @@ from typing import Dict, List
 import os
 import json
 
+from cryptography.fernet import Fernet
+
 from ..config import *
 from ..errors import *
 from ..models import *
@@ -65,7 +67,17 @@ def get_token(
     )
 
 
-def save_credentials(self, access_token, refresh_token, user_id, email=None):
+def is_valid_token(self, access_token: str):
+    headers = self.session.headers
+    headers.setdefault("Authorization", f"Bearer {access_token}")
+    try:
+        self.get_web_socket_token(headers)
+        return True
+    except AuthenticationError:
+        return False
+
+
+def save_credentials(self, secret_key, access_token, refresh_token, user_id, email=None):
     credentials = load_credentials(self)
     updated_credentials = {
         "access_token": access_token,
@@ -75,6 +87,9 @@ def save_credentials(self, access_token, refresh_token, user_id, email=None):
     }
     if email is None:
         updated_credentials["email"] = credentials.get("email")
+    updated_credentials = encrypt_credentials(
+        self, secret_key, updated_credentials
+    )
     with open(self.base_path + "credentials.json", "w") as f:
         json.dump(updated_credentials, f)
 
@@ -104,19 +119,23 @@ def load_credentials(self, check_email: str = None):
     return credentials
 
 
-def is_valid_token(self, access_token: str):
-    headers = self.session.headers
-    headers.setdefault("Authorization", f"Bearer {access_token}")
-    try:
-        self.get_web_socket_token(headers)
-        return True
-    except AuthenticationError:
-        return False
+def encrypt_credentials(self, secret_key, updated_credentials):
+    # TODO: encrypt_credentials
+    return updated_credentials
 
 
-def login_with_email(self, email: str, password: str) -> LoginUserResponse:
+def decrypt_credentials(self, secret_key, credentials):
+    # TODO: decrypt_credentials
+    return credentials
+
+
+def login_with_email(self, email: str, password: str, secret_key: str = None) -> LoginUserResponse:
     credentials = load_credentials(self, email)
     if credentials is not None:
+        if secret_key is None:
+            message = "The 'secret_key' must be provided to decrypt the credentials."
+            raise ValueError(message)
+        credentials = decrypt_credentials(self, secret_key, credentials)
         self.session.headers.setdefault(
             "Authorization", f"Bearer {credentials['access_token']}"
         )
@@ -134,6 +153,7 @@ def login_with_email(self, email: str, password: str) -> LoginUserResponse:
             "uuid": self.uuid
         }, data_type=LoginUserResponse
     )
+
     message = "Invalid email or password."
     if response.access_token is None:
         raise ForbiddenError(message)
@@ -144,8 +164,16 @@ def login_with_email(self, email: str, password: str) -> LoginUserResponse:
     self.logger.info(
         f"Successfully logged in as '{response.user_id}'"
     )
+
+    secret_key = Fernet.generate_key()
+
+    print(f"\nYour secret_key for {email} is: {secret_key}")
+    print("Please copy and securely store this key in a safe location.")
+    print("For more information, visit: https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/login.md\n")
+
     save_credentials(
         self,
+        secret_key=secret_key,
         access_token=response.access_token,
         refresh_token=response.refresh_token,
         user_id=response.user_id,

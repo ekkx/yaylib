@@ -1160,13 +1160,13 @@ class Client(API):
             password
         )
 
-    def login(self, email: str, password: str) -> LoginUserResponse:
+    def login(self, email: str, password: str, secret_key: str = None) -> LoginUserResponse:
         """
 
         メールアドレスでログインします
 
         """
-        return login_with_email(self, email, password)
+        return login_with_email(self, email, password, secret_key)
 
     def logout(self) -> dict:
         """
