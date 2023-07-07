@@ -37,7 +37,7 @@
 
 ### Returns
 
-#### <a href="https://github.com/qvco/yaylib/blob/main/docs/Object-Models/LoginUserResponse.md">LoginUserResponse</a>
+#### <a href="https://github.com/qvco/yaylib/blob/master/docs/Object-Models/LoginUserResponse.md">LoginUserResponse</a>
 
 ### Examples
 

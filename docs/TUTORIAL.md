@@ -1,6 +1,6 @@
 # yaylib へようこそ！
 
-<image src="https://github.com/qvco/yaylib/assets/77382767/96f5795d-1ba5-4ec6-b00c-ffd245968dc3" width="550px">
+<image src="https://github.com/qvco/yaylib/assets/77382767/1416c3de-d62d-483b-9a24-61a0e82fd272" width="550px">
 
 ここでは「yaylib」のインストール方法から基本的な使い方を紹介します。
 
@@ -85,11 +85,11 @@ Python 3.11 のインストール方法については、以下の記事を参�
 pip install yaylib
 ```
 
-<image src="https://github.com/qvco/yaylib/assets/77382767/63c75259-b7de-47ba-a115-d1f14f34864a" alt="コマンドプロンプト<pip install yaylibの画像>">
+<image src="https://github.com/qvco/yaylib/assets/77382767/472e0b8b-07b9-4b47-a3e3-56d4bc9f28d5" alt="コマンドプロンプト<pip install yaylibの画像>">
 
 すぐに「yaylib」のダウンロードがはじまります。そして続けて、インストールが始まります。
 
-<image src="https://github.com/qvco/yaylib/assets/77382767/2751de59-96ac-4b89-9113-48cbbf8bf9d7" alt="コマンドプロンプト<yaylibインストール完了画像>">
+<image src="https://github.com/qvco/yaylib/assets/77382767/bb55a638-f50e-4f5d-88c0-db05183d3f34" alt="コマンドプロンプト<yaylibインストール完了画像>">
 
 「**Successfully installed yaylib**」と表示されていれば、「yaylib」のインストールは完了です。
 
@@ -117,13 +117,13 @@ VS Code は、多くのプログラミング言語に対応しているテキス
 
 フォルダー名は「my_bot」にでもしておきましょう。
 
-<image src="https://github.com/qvco/yaylib/assets/77382767/56fa9a2d-b9d4-446b-b937-d0f8d22a99c4" alt="フォルダ作成のgif">
+<image src="https://github.com/qvco/yaylib/assets/77382767/7727c425-fd30-470e-9889-c5ed770fd6aa" alt="フォルダ作成のgif">
 
 次に、作成したフォルダーを VS Code で開き、Python ファイルを作成します。
 
 ファイル名はなんでも構いませんが拡張子を必ず「.py」にしましょう。
 
-<image src="https://github.com/qvco/yaylib/assets/77382767/a798d90b-2ae4-428f-8653-ad420082edde" alt="bot.pyの作成gif" width="800px">
+<image src="https://github.com/qvco/yaylib/assets/77382767/c6a74d6e-9cde-4640-b9bd-262bb09f5e2d" alt="bot.pyの作成gif" width="800px">
 
 ### タイムラインの取得
 
@@ -230,7 +230,7 @@ bot.create_post(text="投稿したい内容", attachment_filename=filename)
 
 詳しい情報は<a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">ドキュメントを参照</a>するか、コードエディターのドット入力補完を使用してください。
 
-<image src="https://github.com/qvco/yaylib/assets/77382767/666e6eb9-bfeb-4b4c-8f6c-033555436fc3" alt="ドット補完の画像">
+<image src="https://github.com/qvco/yaylib/assets/77382767/63858768-4328-4fcb-bb37-3c6e3a9f90d4" alt="ドット補完の画像">
 
 <!-- さらに詳しい機能の種類や詳細についてはこちらを確認してください。 -->
 
