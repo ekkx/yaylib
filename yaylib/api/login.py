@@ -132,6 +132,7 @@ def login_with_email(self, email: str, password: str, secret_key: str = None) ->
     credentials = load_credentials(self, email)
     if credentials is not None:
         if secret_key is not None:
+            self.secret_key = secret_key
             fernet = Fernet(secret_key)
             credentials = decrypt(self, fernet, credentials)
             self.session.headers.setdefault(
@@ -165,6 +166,7 @@ def login_with_email(self, email: str, password: str, secret_key: str = None) ->
     self.logger.info(f"Successfully logged in as '{response.user_id}'")
 
     secret_key = Fernet.generate_key()
+    self.secret_key = secret_key
     fernet = Fernet(secret_key)
 
     console_print(

@@ -35,6 +35,7 @@ class API:
         self.yaylib_version = Configs.YAYLIB_VERSION
         self.api_version = Configs.YAY_API_VERSION
         self.api_key = Configs.YAY_API_KEY
+        self.secret_key = None
 
         self.proxy = {}
         if proxy is not None:
