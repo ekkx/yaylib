@@ -131,20 +131,19 @@ def decrypt(self, fernet, credentials: dict):
 def login_with_email(self, email: str, password: str, secret_key: str = None) -> LoginUserResponse:
     credentials = load_credentials(self, email)
     if credentials is not None:
-        if secret_key is None:
-            message = "Credential file found. The 'secret_key' must be provided to decrypt the credentials."
-            raise ValueError(message)
-
-        fernet = Fernet(secret_key)
-        credentials = decrypt(self, fernet, credentials)
-
-        self.session.headers.setdefault(
-            "Authorization", f"Bearer {credentials['access_token']}"
-        )
-        self.logger.info(
-            f"Successfully logged in as '{credentials['user_id']}'"
-        )
-        return credentials
+        if secret_key is not None:
+            fernet = Fernet(secret_key)
+            credentials = decrypt(self, fernet, credentials)
+            self.session.headers.setdefault(
+                "Authorization", f"Bearer {credentials['access_token']}"
+            )
+            self.logger.info(
+                f"Successfully logged in as '{credentials['user_id']}'"
+            )
+            return credentials
+        else:
+            message = f"{colors.WARNING}Credential file found. The 'secret_key' must be provided to decrypt the credentials.{colors.RESET}"
+            console_print(message)
 
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V3}/login_with_email",
@@ -163,17 +162,16 @@ def login_with_email(self, email: str, password: str, secret_key: str = None) ->
     self.session.headers.setdefault(
         "Authorization", f"Bearer {response.access_token}"
     )
-    self.logger.info(
-        f"Successfully logged in as '{response.user_id}'"
-    )
+    self.logger.info(f"Successfully logged in as '{response.user_id}'")
 
     secret_key = Fernet.generate_key()
     fernet = Fernet(secret_key)
 
-    display_header = f"\nYour 'secret_key' for {colors.BOLD + email + colors.RESET} is: {colors.OKGREEN + secret_key.decode() + colors.RESET}"
-    print(display_header)
-    print("Please copy and securely store this key in a safe location.")
-    print("For more information, visit: https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/login.md\n")
+    console_print(
+        f"Your 'secret_key' for {colors.BOLD + email + colors.RESET} is: {colors.OKGREEN + secret_key.decode() + colors.RESET}",
+        "Please copy and securely store this key in a safe location.",
+        "For more information, visit: https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/login.md"
+    )
 
     save_credentials(
         self,

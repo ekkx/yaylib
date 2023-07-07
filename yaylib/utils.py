@@ -20,6 +20,13 @@ class colors:
     UNDERLINE = '\033[4m'
 
 
+def console_print(*args):
+    print("\n")
+    for arg in args:
+        print(arg)
+    print("\n")
+
+
 def generate_uuid() -> tuple:
     generated_uuid = str(uuid.uuid4())
     url_uuid = generated_uuid.replace("-", "")
