@@ -123,17 +123,17 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
     <tbody>
         <tr>
             <td align="center">
-                <img src="https://github.com/qvco/yaylib/assets/77382767/472febe4-4c5f-490c-8417-de0d5dbbbc72" width="200px">
+                <img src="https://github.com/qvco/yaylib/assets/77382767/cc41ce3c-0e11-4ec5-be99-ff7090a95667" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
             </td>
             <td align="center">
-                <img src="https://github.com/qvco/yaylib/assets/77382767/2324e518-b2c8-43cd-95e5-90ee2383aec1" width="200px">
+                <img src="https://github.com/qvco/yaylib/assets/77382767/cbffdc25-7873-4242-b065-e6a686bade54" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/93923">めんぶれ天然水。</a></p>
             </td>
             <td align="center">
-                <img src="https://github.com/qvco/yaylib/assets/77382767/60925c41-36db-4dff-b918-27c29fd3f66f" width="200px">
+                <img src="https://github.com/qvco/yaylib/assets/77382767/65fcb885-4fbe-4170-9378-6f8d9af61ff8" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/1298298">ぺゅー</a></p>
             </td>
