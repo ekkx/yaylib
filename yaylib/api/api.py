@@ -186,8 +186,8 @@ class API:
 
     def _check_authorization(self) -> None:
         if self.session.headers.get("Authorization") is None:
-            raise AuthenticationError(
-                "Authorization is not present in the header.")
+            message = "Authorization is not present in the header."
+            raise AuthenticationError(message)
 
     def _handle_response(self, response, json_response):
         translated_response = self.translate_error_message(json_response)

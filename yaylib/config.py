@@ -3,7 +3,7 @@ from enum import Enum
 
 class Configs:
 
-    YAYLIB_VERSION = "0.1.3"
+    YAYLIB_VERSION = "0.1.5"
     YAY_API_VERSION = "3.16"
     YAY_VERSION_NAME = "3.16.1"
     YAY_API_VERSION_KEY = "e83a1d2588918c2061280427c88e6f56"

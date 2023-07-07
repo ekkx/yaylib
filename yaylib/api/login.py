@@ -132,8 +132,7 @@ def login_with_email(self, email: str, password: str, secret_key: str = None) ->
     credentials = load_credentials(self, email)
     if credentials is not None:
         if secret_key is None:
-            # TODO: if secret key is None, just login with email and save credentials
-            message = "The 'secret_key' must be provided to decrypt the credentials."
+            message = "Credential file found. The 'secret_key' must be provided to decrypt the credentials."
             raise ValueError(message)
 
         fernet = Fernet(secret_key)
