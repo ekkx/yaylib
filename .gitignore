@@ -1,0 +1,14 @@
+Pipfile
+.idea
+
+yaylib.egg-info/
+cassettes/
+nanameue/
+config/
+
+.py
+agora.py
+
+credentials.json
+config.json
+.json

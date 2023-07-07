@@ -1,176 +1,169 @@
+<div><a id="readme-top"></a></div>
+<div align="center">
+    <img src="https://img.shields.io/github/stars/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue" />
+    <img src="https://img.shields.io/github/forks/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue" />
+    <img src="https://img.shields.io/github/issues/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational" />
+    <img src="https://img.shields.io/github/issues-pr/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational" />
+</div>
+<br />
 <p align="center">
-  <a href="https://github.com/qvco/yaylib">
-    <img src="https://github.com/qvco/yaybot/assets/77382767/ea451824-43c1-478c-b7d0-7d34ef587c2e" alt="Logo">
-  </a>
-  <p align="center">
-    <img src="https://img.shields.io/github/release/qualia-5w4/yaybot">
-    <img src="https://img.shields.io/badge/python-3.11-blue.svg">
-    <img src="https://img.shields.io/badge/License-MIT-blue.svg">
-  </p>
-
-  <h3 align="center">Yay! - 非公式ライブラリ</h3>
-
-  <p align="center">
-    汎用的な機能を備えた、SNS「Yay!」の非公式APIです。<br />
-    とてもシンプルな記述で実装できます。<br />
-    <br />
-    <a href="https://github.com/qvco/yaylib"><strong>※ 改良版のライブラリはこちらから >></strong></a>
-    <br />
-    <br />
-    <a href="#handshake-共同開発について">開発に参加する</a>
-    ·
-    <a href="https://yay.space/user/3851771">Yay!アカウント</a>
-      ·
-    <a href="mailto:nikola.desuga@gmail.com">メールアドレス</a>
-  </p>
+    <a href="https://github.com/othneildrew/Best-README-Template">
+        <img src="https://github.com/qvco/yaylib/assets/77382767/5265b956-55b7-466c-8cdb-cf0f3abed946" alt="Logo" height="300px">
+    </a>
+    <h3 align="center">yaylib</h3>
+    <p align="center">
+        「<strong>yaylib</strong>」は同世代でつながるチャットアプリ、Yay!（イェイ）の API クライアントです。<br />
+        このライブラリを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
+        <br />
+        <br />
+        <a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">
+            <strong>詳しい機能の詳細や使い方はこちらから »</strong>
+        </a>
+        <br />
+        <br />
+        <a href="https://github.com/qvco/yaylib/issues">Report Bug</a>
+        ·
+        <a href="https://github.com/qvco/yaylib/issues">Request Feature</a>
+        ·
+        <a href="https://discord.gg/MEuBfNtqRN">Join the discord</a>
+    </p>
 </p>
 
-<details open>
-  <summary>- - - 目次 - - -</summary>
+<!-- TABLE OF CONTENTS -->
+
+<details>
+  <summary>Table of Contents</summary>
   <ol>
-    <li>
-      <a href="#このライブラリについて">このライブラリについて</a>
-      <ul>
-        <li><a href="#改良版ライブラリyaylibへ">改良版ライブラリ「yaylib」へ</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#-使用方法">使用方法</a>
-      <ul>
-        <li><a href="#-ダウンロード">ダウンロード</a></li>
-        <li><a href="#%EF%B8%8F-始め方">始め方</a></li>
-      </ul>
-    </li>
-    <li><a href="#trophy-機能--特徴">機能 & 特徴</a></li>
-    <li><a href="#handshake-共同開発について">共同開発について</a></li>
-    <li><a href="#scroll-ライセンス--免責事項">ライセンス & 免責事項</a></li>
+    <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
+    <li><a href="#インストール">インストール</a></li>
+    <li><a href="#使用例">使用例</a></li>
+    <li><a href="#yaylib-で誕生したロボットたち">yaylib で誕生したロボットたち</a></li>
+    <li><a href="#共同開発について">共同開発について</a></li>
+    <li><a href="#免責事項">免責事項</a></li>
+    <li><a href="#利用許諾">利用許諾</a></li>
   </ol>
 </details>
 
-## このライブラリについて
+<!-- Buy me a coffee -->
 
-このライブラリは現在開発やメンテナンスを行っていません。代わりに、改良版のプロジェクト「**yaylib**」にて開発を進めています。yaylibでは、以下のような改善が行われています。
+## Buy me a coffee
 
-- 機能の追加・改善
-- パフォーマンスの向上
-- 複数人での共同開発
+もしこのライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">ぜひスターをお願いします</a> ⭐️  
+また、Buy Me a Coffee からご支援いただけますと幸いです。
 
-### 改良版ライブラリ「yaylib」へ
+<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
-改良バージョンのライブラリはこちらになります。ぜひご利用ください。
+<!-- インストール -->
 
-https://github.com/qvco/yaylib
+## インストール
 
-プロジェクトの貢献については<a href="https://github.com/qvco/yaylib/blob/main/CONTRIBUTING.md">こちら</a>をご覧ください。
+**※ Python 3.11 かそれ以上のバージョンが必要です。**
 
-## ☕ 使用方法
-
-### 💻 ダウンロード
-
-次のコマンドをターミナル上で実行してください:
+ライブラリをインストールするには、以下のコマンドを実行します:
 
 ```bash
-git clone https://github.com/qvco/yaybot
+pip install yaylib
+```
 
-cd yaybot
+開発バージョンをインストールするには、以下の手順を実行します:
+
+```bash
+git clone https://github.com/qvco/yaylib
+
+cd yaylib
 
 pip install -r requirements.txt
 
 pip install -e .
 ```
 
-### 🖥️ 始め方
+「yaylib」の始め方については、[こちら](https://github.com/qvco/yaylib/blob/main/docs/TUTORIAL.md) を確認してください。
 
-1. `from yaybot import Yay` でインポートします。
-2. ログインは任意ですが、一部の機能が制限されます。
+<!-- 使用例 -->
 
-```python
-from yaybot import Yay
+## 使用例
 
-yay = Yay()
-
-yay.login(email='abcd@example.com', password='pw%?123')
-
-print('access_token: ' + yay.access_token)
-print('api_key: ' + yay.api_key)
-print('logged_in_as: ' + yay.logged_in_as)
-
->>> 'access_token: 3270a4ad5djf8eb...'
->>> 'api_key: 928164ea82e4ebc...'
->>> 'logged_in_as: 3851771'
-```
-
-3. `yay = Yay(access_token='トークン')` でアクセストークンを使用します。
+メールアドレスとパスワードを使用してログインしたあと、タイムラインをキーワードで検索して「いいね」するコードです。
 
 ```python
-from yaybot import Yay
+import yaylib
 
-yay = Yay(access_token='アクセストークン')
 
-post_ids = ['73628', '73646', '73682']
+api = yaylib.Client()
+api.login(email="メールアドレス", password="パスワード")
 
-yay.like_posts(post_ids)
+timeline = api.get_timeline_by_keyword(
+    keyword="プログラミング",
+    number=15
+)
 
->>> '{"result": "success", "liked_ids": [73628, 73646, 73682]}'
+for post in timeline.posts:
+    response = api.like_post(post.id)
+    print(post.id, response.data) # 実行結果を出力
 ```
 
-4. 属性名を指定して目的のデータを取得します。
+より詳しい使用例については、[こちら](https://github.com/qvco/yaylib/blob/main/examples) を参照してください。
 
-```python
-from yaybot import Yay
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
-yay = Yay()
+<!-- yaylib で誕生したボットの一覧 -->
 
-user = yay.get_user('123')
-print('ユーザー名: ' + user.username)
-print('自己紹介: ' + user.bio)
+## yaylib で誕生したロボットたち
 
->>> 'ユーザー名: たろう'
->>> '自己紹介: 今日も一日ねむい'
-```
+yaylib を用いて開発したロボットがある場合は、ぜひ教えてください！
 
-5. フォロワーを全員フォローする場合の例
+<table align="center">
+    <thead>
+        <tr>
+            <th><a href="https://yay.space/user/5855987">MindReader AI</a></th>
+            <th><a href="https://yay.space/user/7293290">香ばしいボット</a></th>
+            <th><a href="https://yay.space/user/7406336">GIGAZINE</a></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td align="center">
+                <img src="https://github.com/qvco/yaylib/assets/77382767/472febe4-4c5f-490c-8417-de0d5dbbbc72" width="200px">
+                <br />
+                <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
+            </td>
+            <td align="center">
+                <img src="https://github.com/qvco/yaylib/assets/77382767/2324e518-b2c8-43cd-95e5-90ee2383aec1" width="200px">
+                <br />
+                <p>開発者: <a href="https://yay.space/user/93923">めんぶれ天然水。</a></p>
+            </td>
+            <td align="center">
+                <img src="https://github.com/qvco/yaylib/assets/77382767/60925c41-36db-4dff-b918-27c29fd3f66f" width="200px">
+                <br />
+                <p>開発者: <a href="https://yay.space/user/1298298">ぺゅー</a></p>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
-```python
-from yaybot import Yay
+<!-- 共同開発について -->
 
-yay = Yay()
-yay.login()
+## 共同開発について
 
-followers = yay.get_user_followers('123')
+私たちと開発することに興味を持っていただけているなら、ぜひ参加してください！
 
-for follower in followers:
-    yay.follow_user(follower.id)
+- <a href="https://github.com/qvco/yaylib/pulls">プルリクエストを送信する</a>
+- <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com</a> にメールを送信する
+- <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
 
->>> '{"result": "success"}, ...'
-```
+のいずれかの方法でコンタクトしてください。詳しくは[こちら](https://github.com/qvco/yaylib/blob/main/CONTRIBUTING.md)から！
 
-他にもたくさん機能があるので<strong><a href="https://github.com/qualia-5w4/yaybot/tree/master/examples">詳細はこちら</a></strong>を参照してください。
+<!-- 免責事項 -->
 
----
+## 免責事項
 
-## :trophy: 機能 & 特徴
+yaylib は、API の公式なサポートやメンテナンスを提供するものではありません。このクライアントを使用する場合、利用者は**リスクや責任を自己負担**できるものとします。このクライアントによって提供される情報やデータの正確性、信頼性、完全性、適時性について、いかなる保証も行いません。また、このクライアントの使用によって生じた損害や不利益について、一切の責任を負いかねます。利用者は自己の責任において、このクライアントを使用し、API にアクセスするものとします。なお、この免責事項は予告なく変更される場合があります。
 
-- シンプルな記述で実装可能
-- 汎用的な機能
-- プロキシをサポート: http/s
+<!-- 利用許諾 -->
 
----
+## 利用許諾
 
-## :handshake: 共同開発について
+フルライセンスは [こちら](https://github.com/qvco/yaylib/blob/main/LICENSE) からご確認いただけます。  
+このプロジェクトは、 **【MIT ライセンス】** の条件の下でライセンスされています。
 
-こちらのレポジトリは個人で作成したライブラリです。  
-改良版のライブラリとして、現在「<strong><a href="https://github.com/qvco/yaylib">yaylib</a></strong>」の共同開発を行っています。  
-開発に参加する場合は、https://github.com/qvco/yaylib にプルリクエストを送信するか、nikola.desuga@gmail.com までご連絡ください。
-  
-いつでも大歓迎です<33
-
----
-
-## :scroll: ライセンス & 免責事項
-
-このコードは株式会社ナナメウエ、またはその関連会社といかなる関係も持っていません。これは独立した非公式 API です。**自己責任で使用してください。**
-
-This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Nanameue inc. or any of its affiliates or subsidiaries. This is an independent and unofficial API. **USE IT AT YOUR OWN RISK.**
-
-Licensed under the [MIT License](LICENSE)
+<p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
