@@ -8,7 +8,7 @@
 <br />
 <p align="center">
     <a href="https://github.com/othneildrew/Best-README-Template">
-        <img src="https://github.com/qvco/yaylib/assets/77382767/5265b956-55b7-466c-8cdb-cf0f3abed946" alt="Logo" height="300px">
+        <img src="https://github.com/qvco/yaylib/assets/77382767/45c45b21-d812-4cad-8f27-315ffef53201" alt="Logo" height="300px">
     </a>
     <h3 align="center">yaylib</h3>
     <p align="center">
@@ -16,7 +16,7 @@
         このライブラリを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
         <br />
         <br />
-        <a href="https://github.com/qvco/yaylib/blob/main/docs/README.md">
+        <a href="https://github.com/qvco/yaylib/blob/master/docs/README.md">
             <strong>詳しい機能の詳細や使い方はこちらから »</strong>
         </a>
         <br />
@@ -77,7 +77,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-「yaylib」の始め方については、[こちら](https://github.com/qvco/yaylib/blob/main/docs/TUTORIAL.md) を確認してください。
+「yaylib」の始め方については、[こちら](https://github.com/qvco/yaylib/blob/master/docs/TUTORIAL.md) を確認してください。
 
 <!-- 使用例 -->
 
@@ -102,7 +102,7 @@ for post in timeline.posts:
     print(post.id, response.data) # 実行結果を出力
 ```
 
-より詳しい使用例については、[こちら](https://github.com/qvco/yaylib/blob/main/examples) を参照してください。
+より詳しい使用例については、[こちら](https://github.com/qvco/yaylib/blob/master/examples) を参照してください。
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
@@ -151,7 +151,7 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
 - <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com</a> にメールを送信する
 - <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
 
-のいずれかの方法でコンタクトしてください。詳しくは[こちら](https://github.com/qvco/yaylib/blob/main/CONTRIBUTING.md)から！
+のいずれかの方法でコンタクトしてください。詳しくは[こちら](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)から！
 
 <!-- 免責事項 -->
 
@@ -163,7 +163,7 @@ yaylib は、API の公式なサポートやメンテナンスを提供するも
 
 ## 利用許諾
 
-フルライセンスは [こちら](https://github.com/qvco/yaylib/blob/main/LICENSE) からご確認いただけます。  
+フルライセンスは [こちら](https://github.com/qvco/yaylib/blob/master/LICENSE) からご確認いただけます。  
 このプロジェクトは、 **【MIT ライセンス】** の条件の下でライセンスされています。
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
