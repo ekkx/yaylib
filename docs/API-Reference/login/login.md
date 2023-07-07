@@ -2,7 +2,7 @@
 
 ログインするメソッドです。戻り値として認証情報が渡されます。
 
-認証情報はローカルに暗号化された状態で保存され、次回のログイン処理を省略します。
+認証情報はローカルストレージに暗号化された状態で保存され、次回のログイン処理を省略します。
 
 認証情報を復号化するには、初回ログイン時に生成される`secret_key`を引数に設定します。
 
@@ -52,7 +52,7 @@ api.login(email, password)
 >>> Your 'secret_key' for hello@example.com is: wFTwqRSddPzcfs_U2D1NIxFueWwPToVxjA3woDopKWk=
 ```
 
-それ以降は`secret_key`を引数に設定します。
+以降は`secret_key`を引数に設定します。
 
 ```python
 email = "hello@example.com"
