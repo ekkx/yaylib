@@ -85,7 +85,9 @@ class Client(API):
         """
         return get_call(self, call_id)
 
-    def get_call_invitable_users(self, call_id: int, from_timestamp: int = None) -> UsersByTimestampResponse:
+    def get_call_invitable_users(
+        self, call_id: int, from_timestamp: int = None
+    ) -> UsersByTimestampResponse:
         # @Nullable @Query("user[nickname]")
         """
 
@@ -144,7 +146,9 @@ class Client(API):
         """
         return get_group_calls(self, **params)
 
-    def invite_online_followings_to_call(self, call_id: int, group_id: int = None) -> dict:
+    def invite_online_followings_to_call(
+        self, call_id: int, group_id: int = None
+    ) -> dict:
         """
 
         オンラインの友達をまとめて通話に招待します
@@ -171,10 +175,7 @@ class Client(API):
         return invite_users_to_call(self, call_id, user_ids)
 
     def invite_users_to_chat_call(
-            self,
-            chat_room_id: int,
-            room_id: int,
-            room_url: str
+        self, chat_room_id: int, room_id: int, room_url: str
     ) -> dict:
         """
 
@@ -205,11 +206,11 @@ class Client(API):
         return kick_and_ban_from_call(self, call_id, user_id)
 
     def set_call(
-            self,
-            call_id: int,
-            joinable_by: str,
-            game_title: str = None,
-            category_id: str = None
+        self,
+        call_id: int,
+        joinable_by: str,
+        game_title: str = None,
+        category_id: str = None,
     ) -> dict:
         """
 
@@ -218,12 +219,7 @@ class Client(API):
         """
         return set_call(self, call_id, joinable_by, game_title, category_id)
 
-    def set_user_role(
-            self,
-            call_id: int,
-            user_id: int,
-            role: str
-    ) -> dict:
+    def set_user_role(self, call_id: int, user_id: int, role: str) -> dict:
         """
 
         通話に参加中ののユーザーに役職を与えます
@@ -231,11 +227,7 @@ class Client(API):
         """
         return set_user_role(self, call_id, user_id, role)
 
-    def join_call(
-            self,
-            conference_id: int,
-            call_sid: str = None
-    ) -> ConferenceCall:
+    def join_call(self, conference_id: int, call_sid: str = None) -> ConferenceCall:
         """
 
         通話に参加します
@@ -243,11 +235,7 @@ class Client(API):
         """
         return start_call(self, conference_id, call_sid)
 
-    def leave_call(
-            self,
-            conference_id: int,
-            call_sid: str = None
-    ) -> dict:
+    def leave_call(self, conference_id: int, call_sid: str = None) -> dict:
         """
 
         通話から退出します
@@ -312,11 +300,11 @@ class Client(API):
         return check_unread_status(self, from_time)
 
     def create_group_chat(
-            self,
-            name: str,
-            with_user_ids: List[int],
-            icon_filename: str = None,
-            background_filename: str = None
+        self,
+        name: str,
+        with_user_ids: List[int],
+        icon_filename: str = None,
+        background_filename: str = None,
     ) -> CreateChatRoomResponse:
         """
 
@@ -332,18 +320,11 @@ class Client(API):
 
         """
         return create_group_chat(
-            self,
-            name,
-            with_user_ids,
-            icon_filename,
-            background_filename
+            self, name, with_user_ids, icon_filename, background_filename
         )
 
     def create_private_chat(
-            self,
-            with_user_id: int,
-            matching_id: int = None,
-            hima_chat: bool = False
+        self, with_user_id: int, matching_id: int = None, hima_chat: bool = False
     ) -> CreateChatRoomResponse:
         """
 
@@ -357,12 +338,7 @@ class Client(API):
             - hima_chat: bool - (optional)
 
         """
-        return create_private_chat(
-            self,
-            with_user_id,
-            matching_id,
-            hima_chat
-        )
+        return create_private_chat(self, with_user_id, matching_id, hima_chat)
 
     def delete_background(self, room_id: int) -> dict:
         """
@@ -392,11 +368,11 @@ class Client(API):
         return delete_message(self, room_id, message_id)
 
     def edit_chat_room(
-            self,
-            chat_room_id: int,
-            name: str,
-            icon_filename: str = None,
-            background_filename: str = None
+        self,
+        chat_room_id: int,
+        name: str,
+        icon_filename: str = None,
+        background_filename: str = None,
     ) -> dict:
         """
 
@@ -404,18 +380,14 @@ class Client(API):
 
         """
         return edit_chat_room(
-            self,
-            chat_room_id,
-            name,
-            icon_filename,
-            background_filename
+            self, chat_room_id, name, icon_filename, background_filename
         )
 
     def get_chatable_users(
-            self,
-            from_follow_id: int = None,
-            from_timestamp: int = None,
-            order_by: str = None
+        self,
+        from_follow_id: int = None,
+        from_timestamp: int = None,
+        order_by: str = None,
     ) -> FollowUsersResponse:
         """
 
@@ -564,7 +536,7 @@ class Client(API):
         screenshot_filename: str = None,
         screenshot_2_filename: str = None,
         screenshot_3_filename: str = None,
-        screenshot_4_filename: str = None
+        screenshot_4_filename: str = None,
     ) -> dict:
         """
 
@@ -580,20 +552,20 @@ class Client(API):
             screenshot_filename,
             screenshot_2_filename,
             screenshot_3_filename,
-            screenshot_4_filename
+            screenshot_4_filename,
         )
 
     def send_message(
-            self,
-            chat_room_id: int,
-            message_type: str,
-            call_type: str = None,
-            text: str = None,
-            font_size: int = None,
-            gif_image_id: int = None,
-            attachment_file_name: str = None,
-            sticker_pack_id: int = None,
-            video_file_name: str = None
+        self,
+        chat_room_id: int,
+        message_type: str,
+        call_type: str = None,
+        text: str = None,
+        font_size: int = None,
+        gif_image_id: int = None,
+        attachment_file_name: str = None,
+        sticker_pack_id: int = None,
+        video_file_name: str = None,
     ) -> MessageResponse:
         """
 
@@ -610,7 +582,7 @@ class Client(API):
             gif_image_id,
             attachment_file_name,
             sticker_pack_id,
-            video_file_name
+            video_file_name,
         )
 
     def unhide_chat(self, chat_room_ids: int) -> dict:
@@ -680,27 +652,27 @@ class Client(API):
         return check_unread_status(self, from_time)
 
     def create_group(
-            self,
-            topic: str,
-            description: str = None,
-            secret: bool = None,
-            hide_reported_posts: bool = None,
-            hide_conference_call: bool = None,
-            is_private: bool = None,
-            only_verified_age: bool = None,
-            only_mobile_verified: bool = None,
-            call_timeline_display: bool = None,
-            allow_ownership_transfer: bool = None,
-            allow_thread_creation_by: str = None,
-            gender: int = None,
-            generation_groups_limit: int = None,
-            group_category_id: int = None,
-            cover_image_filename: str = None,
-            sub_category_id: str = None,
-            hide_from_game_eight: bool = None,
-            allow_members_to_post_media: bool = None,
-            allow_members_to_post_url: bool = None,
-            guidelines: str = None,
+        self,
+        topic: str,
+        description: str = None,
+        secret: bool = None,
+        hide_reported_posts: bool = None,
+        hide_conference_call: bool = None,
+        is_private: bool = None,
+        only_verified_age: bool = None,
+        only_mobile_verified: bool = None,
+        call_timeline_display: bool = None,
+        allow_ownership_transfer: bool = None,
+        allow_thread_creation_by: str = None,
+        gender: int = None,
+        generation_groups_limit: int = None,
+        group_category_id: int = None,
+        cover_image_filename: str = None,
+        sub_category_id: str = None,
+        hide_from_game_eight: bool = None,
+        allow_members_to_post_media: bool = None,
+        allow_members_to_post_url: bool = None,
+        guidelines: str = None,
     ) -> CreateGroupResponse:
         """
 
@@ -720,14 +692,15 @@ class Client(API):
             call_timeline_display,
             allow_ownership_transfer,
             allow_thread_creation_by,
-            gender, generation_groups_limit,
+            gender,
+            generation_groups_limit,
             group_category_id,
             cover_image_filename,
             sub_category_id,
             hide_from_game_eight,
             allow_members_to_post_media,
             allow_members_to_post_url,
-            guidelines
+            guidelines,
         )
 
     def pin_group(self, group_id: int) -> dict:
@@ -770,7 +743,9 @@ class Client(API):
         """
         return delete_pin_group(self, group_id)
 
-    def get_banned_group_members(self, group_id: int, page: int = None) -> UsersResponse:
+    def get_banned_group_members(
+        self, group_id: int, page: int = None
+    ) -> UsersResponse:
         """
 
         追放されたサークルメンバーを取得します
@@ -973,7 +948,9 @@ class Client(API):
         """
         return remove_moderator(self, group_id, user_id)
 
-    def remove_related_groups(self, group_id: int, related_group_ids: List[int]) -> dict:
+    def remove_related_groups(
+        self, group_id: int, related_group_ids: List[int]
+    ) -> dict:
         """
 
         関連のあるサークルを削除します
@@ -982,15 +959,15 @@ class Client(API):
         return remove_related_groups(self, group_id, related_group_ids)
 
     def report_group(
-            self,
-            group_id: int,
-            category_id: int,
-            reason: str = None,
-            opponent_id: int = None,
-            screenshot_filename: str = None,
-            screenshot_2_filename: str = None,
-            screenshot_3_filename: str = None,
-            screenshot_4_filename: str = None,
+        self,
+        group_id: int,
+        category_id: int,
+        reason: str = None,
+        opponent_id: int = None,
+        screenshot_filename: str = None,
+        screenshot_2_filename: str = None,
+        screenshot_3_filename: str = None,
+        screenshot_4_filename: str = None,
     ) -> dict:
         """
 
@@ -1006,7 +983,7 @@ class Client(API):
             screenshot_filename,
             screenshot_2_filename,
             screenshot_3_filename,
-            screenshot_4_filename
+            screenshot_4_filename,
         )
 
     def send_moderator_offers(self, group_id: int, user_ids: List[int]) -> dict:
@@ -1050,28 +1027,28 @@ class Client(API):
         return unban_group_member(self, group_id, user_id)
 
     def update_group(
-            self,
-            group_id: int,
-            topic: str,
-            description: str = None,
-            secret: bool = None,
-            hide_reported_posts: bool = None,
-            hide_conference_call: bool = None,
-            is_private: bool = None,
-            only_verified_age: bool = None,
-            only_mobile_verified: bool = None,
-            call_timeline_display: bool = None,
-            allow_ownership_transfer: bool = None,
-            allow_thread_creation_by: str = None,
-            gender: int = None,
-            generation_groups_limit: int = None,
-            group_category_id: int = None,
-            cover_image_filename: str = None,
-            sub_category_id: str = None,
-            hide_from_game_eight: bool = None,
-            allow_members_to_post_media: bool = None,
-            allow_members_to_post_url: bool = None,
-            guidelines: str = None,
+        self,
+        group_id: int,
+        topic: str,
+        description: str = None,
+        secret: bool = None,
+        hide_reported_posts: bool = None,
+        hide_conference_call: bool = None,
+        is_private: bool = None,
+        only_verified_age: bool = None,
+        only_mobile_verified: bool = None,
+        call_timeline_display: bool = None,
+        allow_ownership_transfer: bool = None,
+        allow_thread_creation_by: str = None,
+        gender: int = None,
+        generation_groups_limit: int = None,
+        group_category_id: int = None,
+        cover_image_filename: str = None,
+        sub_category_id: str = None,
+        hide_from_game_eight: bool = None,
+        allow_members_to_post_media: bool = None,
+        allow_members_to_post_url: bool = None,
+        guidelines: str = None,
     ) -> GroupResponse:
         """
 
@@ -1129,9 +1106,7 @@ class Client(API):
         return is_valid_token(self, access_token)
 
     def change_password(
-            self,
-            current_password: str,
-            new_password: str
+        self, current_password: str, new_password: str
     ) -> LoginUpdateResponse:
         """
 
@@ -1141,26 +1116,22 @@ class Client(API):
         return change_password(self, current_password, new_password)
 
     def get_token(
-            self,
-            grant_type: str,
-            refresh_token: str = None,
-            email: str = None,
-            password: str = None
+        self,
+        grant_type: str,
+        refresh_token: str = None,
+        email: str = None,
+        password: str = None,
     ) -> TokenResponse:
         """
 
         トークンを再発行します
 
         """
-        return get_token(
-            self,
-            grant_type,
-            refresh_token,
-            email,
-            password
-        )
+        return get_token(self, grant_type, refresh_token, email, password)
 
-    def login(self, email: str, password: str, secret_key: str = None) -> LoginUserResponse:
+    def login(
+        self, email: str, password: str, secret_key: str = None
+    ) -> LoginUserResponse:
         """
 
         メールアドレスでログインします
@@ -1201,11 +1172,11 @@ class Client(API):
         return revoke_tokens(self)
 
     def save_account_with_email(
-            self,
-            email: str,
-            password: str = None,
-            current_password: str = None,
-            email_grant_token: str = None
+        self,
+        email: str,
+        password: str = None,
+        current_password: str = None,
+        email_grant_token: str = None,
     ) -> LoginUpdateResponse:
         """
 
@@ -1230,7 +1201,9 @@ class Client(API):
         """
         return get_email_grant_token(self, code, email)
 
-    def get_email_verification_presigned_url(self, email: str, locale: str, intent: str = None) -> str:
+    def get_email_verification_presigned_url(
+        self, email: str, locale: str, intent: str = None
+    ) -> str:
         """
 
         メールアドレス確認用の署名付きURLを取得します
@@ -1238,7 +1211,9 @@ class Client(API):
         """
         return get_email_verification_presigned_url(self, email, locale, intent)
 
-    def get_file_upload_presigned_urls(self, file_names: List[str]) -> List[PresignedUrl]:
+    def get_file_upload_presigned_urls(
+        self, file_names: List[str]
+    ) -> List[PresignedUrl]:
         """
 
         ファイルアップロード用の署名付きURLを取得します
@@ -1302,25 +1277,25 @@ class Client(API):
         return add_group_highlight_post(self, group_id, post_id)
 
     def create_call_post(
-            self,
-            text: str = None,
-            font_size: int = None,
-            color: int = None,
-            group_id: int = None,
-            call_type: str = None,
-            category_id: int = None,
-            game_title: str = None,
-            joinable_by: str = None,
-            message_tags: str = "[]",
-            attachment_filename: str = None,
-            attachment_2_filename: str = None,
-            attachment_3_filename: str = None,
-            attachment_4_filename: str = None,
-            attachment_5_filename: str = None,
-            attachment_6_filename: str = None,
-            attachment_7_filename: str = None,
-            attachment_8_filename: str = None,
-            attachment_9_filename: str = None,
+        self,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        group_id: int = None,
+        call_type: str = None,
+        category_id: int = None,
+        game_title: str = None,
+        joinable_by: str = None,
+        message_tags: str = "[]",
+        attachment_filename: str = None,
+        attachment_2_filename: str = None,
+        attachment_3_filename: str = None,
+        attachment_4_filename: str = None,
+        attachment_5_filename: str = None,
+        attachment_6_filename: str = None,
+        attachment_7_filename: str = None,
+        attachment_8_filename: str = None,
+        attachment_9_filename: str = None,
     ) -> ConferenceCall:
         """
 
@@ -1346,7 +1321,7 @@ class Client(API):
             attachment_6_filename,
             attachment_7_filename,
             attachment_8_filename,
-            attachment_9_filename
+            attachment_9_filename,
         )
 
     def pin_group_post(self, post_id: int, group_id: int) -> dict:
@@ -1374,26 +1349,26 @@ class Client(API):
         return mention(self, user_id)
 
     def create_post(
-            self,
-            text: str = None,
-            font_size: int = 0,
-            color: int = 0,
-            in_reply_to: int = None,
-            group_id: int = None,
-            mention_ids: List[int] = None,
-            choices: List[str] = None,
-            shared_url: str = None,
-            message_tags: str = "[]",
-            attachment_filename: str = None,
-            attachment_2_filename: str = None,
-            attachment_3_filename: str = None,
-            attachment_4_filename: str = None,
-            attachment_5_filename: str = None,
-            attachment_6_filename: str = None,
-            attachment_7_filename: str = None,
-            attachment_8_filename: str = None,
-            attachment_9_filename: str = None,
-            video_file_name: str = None,
+        self,
+        text: str = None,
+        font_size: int = 0,
+        color: int = 0,
+        in_reply_to: int = None,
+        group_id: int = None,
+        mention_ids: List[int] = None,
+        choices: List[str] = None,
+        shared_url: str = None,
+        message_tags: str = "[]",
+        attachment_filename: str = None,
+        attachment_2_filename: str = None,
+        attachment_3_filename: str = None,
+        attachment_4_filename: str = None,
+        attachment_5_filename: str = None,
+        attachment_6_filename: str = None,
+        attachment_7_filename: str = None,
+        attachment_8_filename: str = None,
+        attachment_9_filename: str = None,
+        video_file_name: str = None,
     ) -> Post:
         """
 
@@ -1420,31 +1395,31 @@ class Client(API):
             attachment_7_filename,
             attachment_8_filename,
             attachment_9_filename,
-            video_file_name
+            video_file_name,
         )
 
     def create_repost(
-            self,
-            post_id: int,
-            text: str = None,
-            font_size: int = None,
-            color: int = None,
-            in_reply_to: int = None,
-            group_id: int = None,
-            mention_ids: List[int] = None,
-            choices: List[str] = None,
-            shared_url: Dict[str, Union[str, int]] = None,
-            message_tags: str = "[]",
-            attachment_filename: str = None,
-            attachment_2_filename: str = None,
-            attachment_3_filename: str = None,
-            attachment_4_filename: str = None,
-            attachment_5_filename: str = None,
-            attachment_6_filename: str = None,
-            attachment_7_filename: str = None,
-            attachment_8_filename: str = None,
-            attachment_9_filename: str = None,
-            video_file_name: str = None,
+        self,
+        post_id: int,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        in_reply_to: int = None,
+        group_id: int = None,
+        mention_ids: List[int] = None,
+        choices: List[str] = None,
+        shared_url: Dict[str, Union[str, int]] = None,
+        message_tags: str = "[]",
+        attachment_filename: str = None,
+        attachment_2_filename: str = None,
+        attachment_3_filename: str = None,
+        attachment_4_filename: str = None,
+        attachment_5_filename: str = None,
+        attachment_6_filename: str = None,
+        attachment_7_filename: str = None,
+        attachment_8_filename: str = None,
+        attachment_9_filename: str = None,
+        video_file_name: str = None,
     ) -> Post:
         """
 
@@ -1476,13 +1451,13 @@ class Client(API):
         )
 
     def create_share_post(
-            self,
-            shareable_type: str,
-            shareable_id: int,
-            text: str = None,
-            font_size: int = None,
-            color: int = None,
-            group_id: int = None,
+        self,
+        shareable_type: str,
+        shareable_id: int,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        group_id: int = None,
     ) -> Post:
         """
 
@@ -1490,37 +1465,31 @@ class Client(API):
 
         """
         return create_share_post(
-            self,
-            shareable_type,
-            shareable_id,
-            text,
-            font_size,
-            color,
-            group_id
+            self, shareable_type, shareable_id, text, font_size, color, group_id
         )
 
     def create_thread_post(
-            self,
-            post_id: int,
-            text: str = None,
-            font_size: int = None,
-            color: int = None,
-            in_reply_to: int = None,
-            group_id: int = None,
-            mention_ids: List[int] = None,
-            choices: List[str] = None,
-            shared_url: Dict[str, Union[str, int]] = None,
-            message_tags: str = "[]",
-            attachment_filename: str = None,
-            attachment_2_filename: str = None,
-            attachment_3_filename: str = None,
-            attachment_4_filename: str = None,
-            attachment_5_filename: str = None,
-            attachment_6_filename: str = None,
-            attachment_7_filename: str = None,
-            attachment_8_filename: str = None,
-            attachment_9_filename: str = None,
-            video_file_name: str = None,
+        self,
+        post_id: int,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        in_reply_to: int = None,
+        group_id: int = None,
+        mention_ids: List[int] = None,
+        choices: List[str] = None,
+        shared_url: Dict[str, Union[str, int]] = None,
+        message_tags: str = "[]",
+        attachment_filename: str = None,
+        attachment_2_filename: str = None,
+        attachment_3_filename: str = None,
+        attachment_4_filename: str = None,
+        attachment_5_filename: str = None,
+        attachment_6_filename: str = None,
+        attachment_7_filename: str = None,
+        attachment_8_filename: str = None,
+        attachment_9_filename: str = None,
+        video_file_name: str = None,
     ) -> Post:
         """
 
@@ -1682,7 +1651,9 @@ class Client(API):
         """
         return get_group_highlight_posts(self, group_id, **params)
 
-    def get_group_timeline_by_keyword(self, group_id: int, keyword: str, **params) -> PostsResponse:
+    def get_group_timeline_by_keyword(
+        self, group_id: int, keyword: str, **params
+    ) -> PostsResponse:
         """
 
         グループの投稿をキーワードで検索します
@@ -1914,15 +1885,15 @@ class Client(API):
         return remove_posts(self, post_ids)
 
     def report_post(
-            self,
-            post_id: int,
-            opponent_id: int,
-            category_id: int,
-            reason: str = None,
-            screenshot_filename: str = None,
-            screenshot_2_filename: str = None,
-            screenshot_3_filename: str = None,
-            screenshot_4_filename: str = None
+        self,
+        post_id: int,
+        opponent_id: int,
+        category_id: int,
+        reason: str = None,
+        screenshot_filename: str = None,
+        screenshot_2_filename: str = None,
+        screenshot_3_filename: str = None,
+        screenshot_4_filename: str = None,
     ) -> dict:
         """
 
@@ -1938,7 +1909,7 @@ class Client(API):
             screenshot_filename,
             screenshot_2_filename,
             screenshot_3_filename,
-            screenshot_4_filename
+            screenshot_4_filename,
         )
 
     def unlike_post(self, post_id: int) -> dict:
@@ -1950,21 +1921,19 @@ class Client(API):
         return unlike_post(self, post_id)
 
     def update_post(
-            self,
-            post_id: int,
-            text: str = None,
-            font_size: int = None,
-            color: int = None,
-            message_tags: str = "[]",
+        self,
+        post_id: int,
+        text: str = None,
+        font_size: int = None,
+        color: int = None,
+        message_tags: str = "[]",
     ) -> Post:
         """
 
         投稿を編集します
 
         """
-        return update_post(
-            self, post_id, text, font_size, color, message_tags
-        )
+        return update_post(self, post_id, text, font_size, color, message_tags)
 
     def view_video(self, video_id: int) -> dict:
         """
@@ -2064,42 +2033,28 @@ class Client(API):
         return add_post_to_thread(self, post_id, thread_id)
 
     def convert_post_to_thread(
-            self,
-            post_id: int,
-            title: str = None,
-            thread_icon_filename: str = None
+        self, post_id: int, title: str = None, thread_icon_filename: str = None
     ) -> ThreadInfo:
         """
 
         投稿をスレッドに変換します
 
         """
-        return convert_post_to_thread(
-            self,
-            post_id,
-            title,
-            thread_icon_filename
-        )
+        return convert_post_to_thread(self, post_id, title, thread_icon_filename)
 
     def create_thread(
-            self,
-            group_id: int,
-            title: str,
-            thread_icon_filename: str
+        self, group_id: int, title: str, thread_icon_filename: str
     ) -> ThreadInfo:
         """
 
         スレッドを作成します
 
         """
-        return create_thread(
-            self,
-            group_id,
-            title,
-            thread_icon_filename
-        )
+        return create_thread(self, group_id, title, thread_icon_filename)
 
-    def get_group_thread_list(self, group_id: int, from_str: str = None, **params) -> GroupThreadListResponse:
+    def get_group_thread_list(
+        self, group_id: int, from_str: str = None, **params
+    ) -> GroupThreadListResponse:
         """
 
         グループのスレッド一覧を取得します
@@ -2122,7 +2077,9 @@ class Client(API):
         """
         return get_thread_joined_statuses(self, ids)
 
-    def get_thread_posts(self, thread_id: int, from_str: str = None, **params) -> PostsResponse:
+    def get_thread_posts(
+        self, thread_id: int, from_str: str = None, **params
+    ) -> PostsResponse:
         """
 
         スレッドの投稿を取得します
@@ -2162,22 +2119,14 @@ class Client(API):
         return remove_thread(self, thread_id)
 
     def update_thread(
-            self,
-            thread_id: int,
-            title: str,
-            thread_icon_filename: str
+        self, thread_id: int, title: str, thread_icon_filename: str
     ) -> dict:
         """
 
         スレッドを編集します
 
         """
-        return update_thread(
-            self,
-            thread_id,
-            title,
-            thread_icon_filename
-        )
+        return update_thread(self, thread_id, title, thread_icon_filename)
 
     # -USER
 
@@ -2242,7 +2191,9 @@ class Client(API):
         """
         return get_follow_recommendations(self, **params)
 
-    def get_follow_request(self, from_timestamp: int = None) -> UsersByTimestampResponse:
+    def get_follow_request(
+        self, from_timestamp: int = None
+    ) -> UsersByTimestampResponse:
         """
 
         フォローリクエストを取得します
@@ -2465,14 +2416,14 @@ class Client(API):
         return remove_user_cover(self)
 
     def report_user(
-            self,
-            user_id: int,
-            category_id: int,
-            reason: str = None,
-            screenshot_filename: str = None,
-            screenshot_2_filename: str = None,
-            screenshot_3_filename: str = None,
-            screenshot_4_filename: str = None
+        self,
+        user_id: int,
+        category_id: int,
+        reason: str = None,
+        screenshot_filename: str = None,
+        screenshot_2_filename: str = None,
+        screenshot_3_filename: str = None,
+        screenshot_4_filename: str = None,
     ) -> dict:
         """
 
@@ -2487,7 +2438,7 @@ class Client(API):
             screenshot_filename,
             screenshot_2_filename,
             screenshot_3_filename,
-            screenshot_4_filename
+            screenshot_4_filename,
         )
 
     def reset_password(self, email: str, email_grant_token: str, password: str) -> dict:
@@ -2511,7 +2462,7 @@ class Client(API):
             - from_str: str = None
 
         """
-        return search_lobi_users(self ** params)
+        return search_lobi_users(self**params)
 
     def search_users(self, **params) -> UsersResponse:
         """
@@ -2536,7 +2487,7 @@ class Client(API):
         return search_users(self, **params)
 
     def set_follow_permission_enabled(
-            self, nickname: str, is_private: bool = None
+        self, nickname: str, is_private: bool = None
     ) -> dict:
         """
 
@@ -2565,15 +2516,15 @@ class Client(API):
         return unfollow_user(self, user_id)
 
     def update_user(
-            self,
-            nickname: str,
-            biography: str = None,
-            prefecture: str = None,
-            gender: int = None,
-            country_code: str = None,
-            profile_icon_filename: str = None,
-            cover_image_filename: str = None,
-            username: str = None,
+        self,
+        nickname: str,
+        biography: str = None,
+        prefecture: str = None,
+        gender: int = None,
+        country_code: str = None,
+        profile_icon_filename: str = None,
+        cover_image_filename: str = None,
+        username: str = None,
     ) -> dict:
         """
 
@@ -2581,8 +2532,15 @@ class Client(API):
 
         """
         return update_user(
-            self, nickname, biography, prefecture, gender, country_code,
-            profile_icon_filename, cover_image_filename, username
+            self,
+            nickname,
+            biography,
+            prefecture,
+            gender,
+            country_code,
+            profile_icon_filename,
+            cover_image_filename,
+            username,
         )
 
     def block_user(self, user_id: int) -> dict:

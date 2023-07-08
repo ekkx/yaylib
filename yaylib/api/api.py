@@ -11,7 +11,7 @@ from .login import *
 
 from ..config import *
 from ..errors import *
-from ..responses import LoginUserResponse
+from ..responses import *
 from ..utils import *
 
 
@@ -19,18 +19,17 @@ current_path = os.path.abspath(os.getcwd())
 
 
 class API:
-
     def __init__(
-            self,
-            access_token: str = None,
-            proxy: str = None,
-            max_retries=3,
-            backoff_factor=1.0,
-            timeout=30,
-            err_lang="ja",
-            base_path=current_path + "/config/",
-            loglevel_stream=logging.INFO,
-            host=Configs.YAY_PRODUCTION_HOST,
+        self,
+        access_token: str = None,
+        proxy: str = None,
+        max_retries=3,
+        backoff_factor=1.0,
+        timeout=30,
+        err_lang="ja",
+        base_path=current_path + "/config/",
+        loglevel_stream=logging.INFO,
+        host=Configs.YAY_PRODUCTION_HOST,
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
         self.api_version = Configs.YAY_API_VERSION
@@ -54,22 +53,16 @@ class API:
         self.session.headers.update(Configs.REQUEST_HEADERS)
         self.session.headers.update({"X-Device-Uuid": self.device_uuid})
         if access_token:
-            self.session.headers.setdefault(
-                "Authorization", f"Bearer {access_token}"
-            )
+            self.session.headers.setdefault("Authorization", f"Bearer {access_token}")
 
-        self.logger = logging.getLogger(
-            "yaylib version: " + self.yaylib_version
-        )
+        self.logger = logging.getLogger("yaylib version: " + self.yaylib_version)
 
         if not os.path.exists(base_path):
             os.makedirs(base_path)
 
         ch = logging.StreamHandler()
         ch.setLevel(loglevel_stream)
-        ch.setFormatter(logging.Formatter(
-            "%(asctime)s - %(levelname)s - %(message)s"
-        ))
+        ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
         handler_existed = False
         for handler in self.logger.handlers:
@@ -82,7 +75,9 @@ class API:
 
         self.logger.info("yaylib version: " + self.yaylib_version + " started")
 
-    def request(self, method, endpoint, params=None, payload=None, user_auth=True, headers=None):
+    def request(
+        self, method, endpoint, params=None, payload=None, user_auth=True, headers=None
+    ):
         headers = headers or self.session.headers
 
         if not user_auth:
@@ -109,7 +104,6 @@ class API:
             )
 
             if response.status_code == 401:
-
                 if "/api/v1/oauth/token" in endpoint:
                     os.remove(self.base_path + "credentials.json")
                     message = "Refresh token expired. Try logging in again."
@@ -124,17 +118,26 @@ class API:
                     if credentials is not None:
                         refresh_token = credentials["refresh_token"]
                         response = get_token(
-                            self, grant_type="refresh_token", refresh_token=refresh_token
+                            self,
+                            grant_type="refresh_token",
+                            refresh_token=refresh_token,
                         )
                         save_credentials(
-                            self, response.access_token, response.refresh_token, response.user_id
+                            self,
+                            response.access_token,
+                            response.refresh_token,
+                            response.user_id,
                         )
-                        self.session.headers["Authorization"] = f"Bearer {response.access_token}"
+                        self.session.headers[
+                            "Authorization"
+                        ] = f"Bearer {response.access_token}"
                         continue
 
                 else:
                     os.remove(self.base_path + "credentials.json")
-                    message = "Maximum authentication retries exceeded. Try logging in again."
+                    message = (
+                        "Maximum authentication retries exceeded. Try logging in again."
+                    )
                     raise AuthenticationError(message)
 
             if response.status_code not in self.retry_statuses:
@@ -143,11 +146,12 @@ class API:
             if response is not None:
                 self.logger.error(
                     f"Request failed with status code {response.status_code}. Retrying...",
-                    exc_info=True
+                    exc_info=True,
                 )
             else:
                 self.logger.error("Request failed. Retrying...")
-            backoff_duration = self.backoff_factor * (2 ** i)
+
+            backoff_duration = self.backoff_factor * (2**i)
 
         if response is None:
             return None
@@ -167,12 +171,16 @@ class API:
         return self._handle_response(response, json_response)
 
     def _make_request(
-            self, method: str, endpoint: str, params: dict = None,
-            payload: dict = None, data_type=None, user_auth=True, headers=None
+        self,
+        method: str,
+        endpoint: str,
+        params: dict = None,
+        payload: dict = None,
+        data_type=None,
+        user_auth=True,
+        headers=None,
     ):
-        response = self.request(
-            method, endpoint, params, payload, user_auth, headers
-        )
+        response = self.request(method, endpoint, params, payload, user_auth, headers)
         if data_type:
             return self._construct_response(response, data_type)
         return response
