@@ -2,7 +2,6 @@ from enum import Enum
 
 
 class Configs:
-
     YAYLIB_VERSION = "0.1.5"
     YAY_API_VERSION = "3.16"
     YAY_VERSION_NAME = "3.16.1"
@@ -28,12 +27,11 @@ class Configs:
         "X-Device-Uuid": "",
         "X-Connection-Type": "wifi",
         "Accept-Language": "ja",
-        "Content-Type": "application/json;charset=UTF-8"
+        "Content-Type": "application/json;charset=UTF-8",
     }
 
 
 class Endpoints:
-
     # api v1 endpoints
     USERS_V1 = Configs.YAY_API_URL + "/v1/users"
     PAYMENTS_V1 = Configs.YAY_API_URL + "/v1/payments"
@@ -119,12 +117,14 @@ class Endpoints:
     WEB_V3 = Configs.YAY_API_URL + "/v3/web"
 
     # misc
-    GET_EMAIL_GRANT_TOKEN = "https://" + Configs.ID_CARD_CHECK_HOST_PRODUCTION + \
-        "/apis/v1/apps/yay/email_grant_tokens"
+    GET_EMAIL_GRANT_TOKEN = (
+        "https://"
+        + Configs.ID_CARD_CHECK_HOST_PRODUCTION
+        + "/apis/v1/apps/yay/email_grant_tokens"
+    )
 
 
 class ErrorType(Enum):
-
     Unknown = "unknown"
     InvalidParameter = -1
     RegisteredUser = -2
@@ -226,7 +226,6 @@ class ErrorType(Enum):
 
 
 class ErrorMessage(Enum):
-
     Unknown = "原因不明"
     # InvalidParameter = "引数が不正です"
     RegisteredUser = "このアカウントはすでに登録されています"
@@ -288,7 +287,9 @@ class ErrorMessage(Enum):
     RequirePhoneVerificationToChat = "チャットをするには電話番号認証が必要です"
     NotPostOwner = "編集は投稿の作成者のみ可能です"
     GroupGenerationNotMatched = "特定の年齢層のみ参加が許可されているサークルです"
-    PhoneNumberCheckVerificationCodeSubmitQuotaExceeded = "認証コードの送信回数が上限を越えました。1時間ほど時間をおいて再度お試しください"
+    PhoneNumberCheckVerificationCodeSubmitQuotaExceeded = (
+        "認証コードの送信回数が上限を越えました。1時間ほど時間をおいて再度お試しください"
+    )
     PhoneNumberCheckVerificationCodeRequestQuotaExceeded = "チャットをするには電話番号認証が必要です"
     GroupOfferHasBeenAccepted = "サークルの招待は承諾されています"
     GroupOfferHasBeenWithdrawn = "サークルの招待は拒否されています"

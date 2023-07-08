@@ -31,8 +31,7 @@ def generate_sns_thumbnail(self, **params):
 
     """
     response = self._make_request(
-        "GET", endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate",
-        params=params
+        "GET", endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate", params=params
     )
     self.logger.info("SNS thumbnail generated.")
     return response
@@ -40,78 +39,84 @@ def generate_sns_thumbnail(self, **params):
 
 def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenResponse:
     return self._make_request(
-        "POST", endpoint=f"{Endpoints.GET_EMAIL_GRANT_TOKEN}",
+        "POST",
+        endpoint=f"{Endpoints.GET_EMAIL_GRANT_TOKEN}",
         payload={"code": code, "email": email},
-        data_type=EmailGrantTokenResponse
+        data_type=EmailGrantTokenResponse,
     ).email_grant_token
 
 
-def get_email_verification_presigned_url(self, email: str, locale: str, intent: str = None) -> str:
+def get_email_verification_presigned_url(
+    self, email: str, locale: str, intent: str = None
+) -> str:
     return self._make_request(
-        "POST", endpoint=f"{Endpoints.EMAIL_VERIFICATION_URL_V1}",
+        "POST",
+        endpoint=f"{Endpoints.EMAIL_VERIFICATION_URL_V1}",
         payload={
             "device_uuid": self.device_uuid,
             "email": email,
             "locale": locale,
-            "intent": intent
-        }, data_type=EmailVerificationPresignedUrlResponse
+            "intent": intent,
+        },
+        data_type=EmailVerificationPresignedUrlResponse,
     ).url
 
 
 def get_file_upload_presigned_urls(self, file_names: List[str]) -> List[PresignedUrl]:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.BUCKETS_V1}/presigned_urls",
-        params={"file_names[]": file_names}, data_type=PresignedUrlsResponse
+        "GET",
+        endpoint=f"{Endpoints.BUCKETS_V1}/presigned_urls",
+        params={"file_names[]": file_names},
+        data_type=PresignedUrlsResponse,
     ).presigned_urls
 
 
-def get_id_checker_presigned_url(
-        self,
-        model: str,
-        action: str,
-        **params
-) -> str:
+def get_id_checker_presigned_url(self, model: str, action: str, **params) -> str:
     # TODO: @QueryMap @NotNull Map<String, String> map
     """
     Meow..
     """
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.ID_CHECK_V1}/{model}/{action}",
-        params=params, data_type=IdCheckerPresignedUrlResponse
+        "GET",
+        endpoint=f"{Endpoints.ID_CHECK_V1}/{model}/{action}",
+        params=params,
+        data_type=IdCheckerPresignedUrlResponse,
     ).presigned_url
 
 
 def get_old_file_upload_presigned_url(self, video_file_name: str) -> str:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V1}/presigned_url",
-        params={"video_file_name": video_file_name}, data_type=PresignedUrlResponse
+        "GET",
+        endpoint=f"{Endpoints.USERS_V1}/presigned_url",
+        params={"video_file_name": video_file_name},
+        data_type=PresignedUrlResponse,
     ).presigned_url
 
 
 def get_web_socket_token(self, headers: dict = None) -> str:
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V1}/ws_token",
-        data_type=WebSocketTokenResponse, headers=headers
+        "GET",
+        endpoint=f"{Endpoints.USERS_V1}/ws_token",
+        data_type=WebSocketTokenResponse,
+        headers=headers,
     ).token
 
 
 def verify_device(
-        self,
-        app_version: str,
-        device_uuid: str,
-        platform: str,
-        verification_string: str
+    self, app_version: str, device_uuid: str, platform: str, verification_string: str
 ) -> VerifyDeviceResponse:
     # TODO: check platform, verification_string
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.GENUINE_DEVICES_V1}/verify",
+        "POST",
+        endpoint=f"{Endpoints.GENUINE_DEVICES_V1}/verify",
         payload={
             "app_version": app_version,
             "device_uuid": device_uuid,
             "platform": platform,
             "verification_string": verification_string,
-        }, data_type=VerifyDeviceResponse
+        },
+        data_type=VerifyDeviceResponse,
     )
     self.logger.info("Device has been verified.")
     return response
@@ -145,9 +150,7 @@ def upload_image(self, image_type: str, image_path: str) -> str:
     original_url = f"{base_url}/{mid_url}{width}x{height}{ext}"
     thumb_url = f"{base_url}/thumb_{mid_url}{width}x{height}{ext}"
 
-    presigned_urls = get_file_upload_presigned_urls(
-        self, [original_url, thumb_url]
-    )
+    presigned_urls = get_file_upload_presigned_urls(self, [original_url, thumb_url])
 
     with open(image_path, "rb") as f:
         response = httpx.put(presigned_urls[0].url, data=f.read())

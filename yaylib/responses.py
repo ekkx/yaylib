@@ -2,7 +2,6 @@ from .models import *
 
 
 class ActiveFollowingsResponse:
-
     __slots__ = ("data", "last_loggedin_at", "users")
 
     def __init__(self, data):
@@ -11,27 +10,21 @@ class ActiveFollowingsResponse:
 
         self.users = data.get("users")
         if self.users is not None:
-            self.users = [
-                User(user) for user in self.users
-            ]
+            self.users = [User(user) for user in self.users]
 
     def __repr__(self):
         return f"ActiveFollowingsResponse(data={self.data})"
 
 
 class ActivitiesResponse:
-
-    __slots__ = ("data", "activities", "last_timestamp",
-                 "parsed_last_timestamp")
+    __slots__ = ("data", "activities", "last_timestamp", "parsed_last_timestamp")
 
     def __init__(self, data):
         self.data = data
 
         self.activities = data.get("activities")
         if self.activities is not None:
-            self.activities = [
-                Activity(activity) for activity in self.activities
-            ]
+            self.activities = [Activity(activity) for activity in self.activities]
 
         self.last_timestamp = data.get("last_timestamp")
         self.parsed_last_timestamp = parse_datetime(data.get("last_timestamp"))
@@ -41,7 +34,6 @@ class ActivitiesResponse:
 
 
 class AdditionalSettingsResponse:
-
     __slots__ = ("data", "settings")
 
     def __init__(self, data):
@@ -56,7 +48,6 @@ class AdditionalSettingsResponse:
 
 
 class AppReviewStatusResponse:
-
     __slots__ = ("data", "is_app_reviewed")
 
     def __init__(self, data):
@@ -68,7 +59,6 @@ class AppReviewStatusResponse:
 
 
 class BgmsResponse:
-
     __slots__ = ("data", "bgm")
 
     def __init__(self, data):
@@ -76,16 +66,13 @@ class BgmsResponse:
 
         self.bgm = data.get("bgm")
         if self.bgm is not None:
-            self.bgm = [
-                Bgm(bgm) for bgm in self.bgm
-            ]
+            self.bgm = [Bgm(bgm) for bgm in self.bgm]
 
     def __repr__(self):
         return f"BgmsResponse(data={self.data})"
 
 
 class BlockedUserIdsResponse:
-
     __slots__ = ("data", "block_ids")
 
     def __init__(self, data):
@@ -98,7 +85,6 @@ class BlockedUserIdsResponse:
 
 
 class BlockedUsersResponse:
-
     __slots__ = ("data", "blocked_count", "last_id", "users")
 
     def __init__(self, data):
@@ -108,16 +94,13 @@ class BlockedUsersResponse:
 
         self.users = data.get("users")
         if self.users is not None:
-            self.users = [
-                User(user) for user in self.users
-            ]
+            self.users = [User(user) for user in self.users]
 
     def __repr__(self):
         return f"BlockedUsersResponse(data={self.data})"
 
 
 class BookmarkPostResponse:
-
     __slots__ = ("data", "is_bookmarked")
 
     def __init__(self, data):
@@ -129,7 +112,6 @@ class BookmarkPostResponse:
 
 
 class CallStatusResponse:
-
     __slots__ = ("data", "phone_status", "video_status", "room_url")
 
     def __init__(self, data):
@@ -143,7 +125,6 @@ class CallStatusResponse:
 
 
 class ChatRoomResponse:
-
     __slots__ = ("data", "chat")
 
     def __init__(self, data):
@@ -158,7 +139,6 @@ class ChatRoomResponse:
 
 
 class ChatRoomsResponse:
-
     __slots__ = ("data", "pinned_chat_rooms", "chat_rooms", "next_page_value")
 
     def __init__(self, data):
@@ -167,14 +147,13 @@ class ChatRoomsResponse:
         self.pinned_chat_rooms = data.get("pinned_chat_rooms")
         if self.pinned_chat_rooms is not None:
             self.pinned_chat_rooms = [
-                ChatRoom(pinned_chat_room) for pinned_chat_room in self.pinned_chat_rooms
+                ChatRoom(pinned_chat_room)
+                for pinned_chat_room in self.pinned_chat_rooms
             ]
 
         self.chat_rooms = data.get("chat_rooms")
         if self.chat_rooms is not None:
-            self.chat_rooms = [
-                ChatRoom(chat_room) for chat_room in self.chat_rooms
-            ]
+            self.chat_rooms = [ChatRoom(chat_room) for chat_room in self.chat_rooms]
 
         self.next_page_value = data.get("next_page_value")
 
@@ -183,7 +162,6 @@ class ChatRoomsResponse:
 
 
 class TotalChatRequestResponse:
-
     __slots__ = ("data", "total")
 
     def __init__(self, data):
@@ -195,7 +173,6 @@ class TotalChatRequestResponse:
 
 
 class ConferenceCallResponse:
-
     __slots__ = ("data", "conference_call")
 
     def __init__(self, data):
@@ -210,7 +187,6 @@ class ConferenceCallResponse:
 
 
 class ContactStatusResponse:
-
     __slots__ = ("data", "contacts")
 
     def __init__(self, data):
@@ -222,7 +198,6 @@ class ContactStatusResponse:
 
 
 class CreateGroupResponse:
-
     __slots__ = ("data", "group_id")
 
     def __init__(self, data):
@@ -234,7 +209,6 @@ class CreateGroupResponse:
 
 
 class CreateQuotaResponse:
-
     __slots__ = ("data", "create")
 
     def __init__(self, data):
@@ -249,7 +223,6 @@ class CreateQuotaResponse:
 
 
 class CreateChatRoomResponse:
-
     __slots__ = ("data", "room_id")
 
     def __init__(self, data):
@@ -261,7 +234,6 @@ class CreateChatRoomResponse:
 
 
 class CreatePostResponse:
-
     __slots__ = ("data", "conference_call", "post")
 
     def __init__(self, data):
@@ -280,7 +252,6 @@ class CreatePostResponse:
 
 
 class CreateUserResponse:
-
     __slots__ = ("data", "id", "access_token", "refresh_token", "expires_in")
 
     def __init__(self, data):
@@ -295,7 +266,6 @@ class CreateUserResponse:
 
 
 class EmailGrantTokenResponse:
-
     __slots__ = ("data", "email_grant_token")
 
     def __init__(self, data):
@@ -307,7 +277,6 @@ class EmailGrantTokenResponse:
 
 
 class EmailVerificationPresignedUrlResponse:
-
     __slots__ = ("data", "url")
 
     def __init__(self, data):
@@ -319,7 +288,6 @@ class EmailVerificationPresignedUrlResponse:
 
 
 class PresignedUrlResponse:
-
     __slots__ = ("data", "presigned_url")
 
     def __init__(self, data):
@@ -331,7 +299,6 @@ class PresignedUrlResponse:
 
 
 class PresignedUrlsResponse:
-
     __slots__ = ("data", "presigned_urls")
 
     def __init__(self, data):
@@ -348,7 +315,6 @@ class PresignedUrlsResponse:
 
 
 class IdCheckerPresignedUrlResponse:
-
     __slots__ = ("data", "presigned_url")
 
     def __init__(self, data):
@@ -360,7 +326,6 @@ class IdCheckerPresignedUrlResponse:
 
 
 class DefaultSettingsResponse:
-
     __slots__ = ("data", "timeline_settings")
 
     def __init__(self, data):
@@ -375,7 +340,6 @@ class DefaultSettingsResponse:
 
 
 class FollowRecommendationsResponse:
-
     __slots__ = ("data", "total", "users", "next")
 
     def __init__(self, data):
@@ -384,9 +348,7 @@ class FollowRecommendationsResponse:
 
         self.users = data.get("users")
         if self.users is not None:
-            self.users = [
-                User(user) for user in self.users
-            ]
+            self.users = [User(user) for user in self.users]
 
         self.next = data.get("next")
 
@@ -395,7 +357,6 @@ class FollowRecommendationsResponse:
 
 
 class FollowRequestCountResponse:
-
     __slots__ = ("data", "users_count")
 
     def __init__(self, data):
@@ -407,7 +368,6 @@ class FollowRequestCountResponse:
 
 
 class FollowUsersResponse:
-
     __slots__ = ("data", "last_follow_id", "users")
 
     def __init__(self, data):
@@ -416,16 +376,13 @@ class FollowUsersResponse:
 
         self.users = data.get("users")
         if self.users is not None:
-            self.users = [
-                User(user) for user in self.users
-            ]
+            self.users = [User(user) for user in self.users]
 
     def __repr__(self):
         return f"FollowUsersResponse(data={self.data})"
 
 
 class FootprintsResponse:
-
     __slots__ = ("data", "footprints")
 
     def __init__(self, data):
@@ -433,16 +390,13 @@ class FootprintsResponse:
 
         self.footprints = data.get("footprints")
         if self.footprints is not None:
-            self.footprints = [
-                Footprint(footprint) for footprint in self.footprints
-            ]
+            self.footprints = [Footprint(footprint) for footprint in self.footprints]
 
     def __repr__(self):
         return f"FootprintsResponse(data={self.data})"
 
 
 class GamesResponse:
-
     __slots__ = ("data", "games", "from_id")
 
     def __init__(self, data):
@@ -450,9 +404,7 @@ class GamesResponse:
 
         self.games = data.get("games")
         if self.games is not None:
-            self.games = [
-                Game(game) for game in self.games
-            ]
+            self.games = [Game(game) for game in self.games]
 
         self.from_id = data.get("from_id")
 
@@ -461,7 +413,6 @@ class GamesResponse:
 
 
 class GenresResponse:
-
     __slots__ = ("data", "genres", "next_page_value")
 
     def __init__(self, data):
@@ -469,9 +420,7 @@ class GenresResponse:
 
         self.genres = data.get("genres")
         if self.genres is not None:
-            self.genres = [
-                Genre(genre) for genre in self.genres
-            ]
+            self.genres = [Genre(genre) for genre in self.genres]
 
         self.next_page_value = data.get("next_page_value")
 
@@ -480,7 +429,6 @@ class GenresResponse:
 
 
 class GroupCategoriesResponse:
-
     __slots__ = ("data", "group_categories")
 
     def __init__(self, data):
@@ -489,7 +437,8 @@ class GroupCategoriesResponse:
         self.group_categories = data.get("group_categories")
         if self.group_categories is not None:
             self.group_categories = [
-                GroupCategory(group_categorie) for group_categorie in self.group_categories
+                GroupCategory(group_categorie)
+                for group_categorie in self.group_categories
             ]
 
     def __repr__(self):
@@ -497,7 +446,6 @@ class GroupCategoriesResponse:
 
 
 class GroupGiftHistoryResponse:
-
     __slots__ = ("data", "gift_history", "next_page_value")
 
     def __init__(self, data):
@@ -516,7 +464,6 @@ class GroupGiftHistoryResponse:
 
 
 class GroupNotificationSettingsResponse:
-
     __slots__ = ("data", "setting")
 
     def __init__(self, data):
@@ -531,7 +478,6 @@ class GroupNotificationSettingsResponse:
 
 
 class GroupResponse:
-
     __slots__ = ("data", "group")
 
     def __init__(self, data):
@@ -546,7 +492,6 @@ class GroupResponse:
 
 
 class GroupsRelatedResponse:
-
     __slots__ = ("data", "groups", "next_page_value")
 
     def __init__(self, data):
@@ -554,9 +499,7 @@ class GroupsRelatedResponse:
 
         self.groups = data.get("groups")
         if self.groups is not None:
-            self.groups = [
-                Group(group) for group in self.groups
-            ]
+            self.groups = [Group(group) for group in self.groups]
 
         self.next_page_value = data.get("next_page_value")
 
@@ -565,7 +508,6 @@ class GroupsRelatedResponse:
 
 
 class GroupsResponse:
-
     __slots__ = ("data", "pinned_groups", "groups")
 
     def __init__(self, data):
@@ -579,16 +521,13 @@ class GroupsResponse:
 
         self.groups = data.get("groups")
         if self.groups is not None:
-            self.groups = [
-                Group(group) for group in self.groups
-            ]
+            self.groups = [Group(group) for group in self.groups]
 
     def __repr__(self):
         return f"GroupsResponse(data={self.data})"
 
 
 class GroupThreadListResponse:
-
     __slots__ = ("data", "threads", "next_page_value")
 
     def __init__(self, data):
@@ -596,9 +535,7 @@ class GroupThreadListResponse:
 
         self.threads = data.get("threads")
         if self.threads is not None:
-            self.threads = [
-                ThreadInfo(thread) for thread in self.threads
-            ]
+            self.threads = [ThreadInfo(thread) for thread in self.threads]
 
         self.next_page_value = data.get("next_page_value")
 
@@ -607,7 +544,6 @@ class GroupThreadListResponse:
 
 
 class GroupUserResponse:
-
     __slots__ = ("data", "group_user")
 
     def __init__(self, data):
@@ -622,7 +558,6 @@ class GroupUserResponse:
 
 
 class GroupUsersResponse:
-
     __slots__ = ("data", "group_users")
 
     def __init__(self, data):
@@ -639,7 +574,6 @@ class GroupUsersResponse:
 
 
 class GifsDataResponse:
-
     __slots__ = ("data", "gif_categories")
 
     def __init__(self, data):
@@ -656,20 +590,14 @@ class GifsDataResponse:
 
 
 class HiddenResponse:
-
-    __slots__ = (
-        "data", "hidden_users", "next_page_value", "total_count",
-        "limit"
-    )
+    __slots__ = ("data", "hidden_users", "next_page_value", "total_count", "limit")
 
     def __init__(self, data):
         self.data = data
 
         self.hidden_users = data.get("hidden_users")
         if self.hidden_users is not None:
-            self.hidden_users = [
-                User(hidden_user) for hidden_user in self.hidden_users
-            ]
+            self.hidden_users = [User(hidden_user) for hidden_user in self.hidden_users]
 
         self.next_page_value = data.get("next_page_value")
         self.total_count = data.get("total_count")
@@ -680,10 +608,15 @@ class HiddenResponse:
 
 
 class LoginUserResponse:
-
     __slots__ = (
-        "data", "user_id", "username", "is_new", "sns_info",
-        "access_token", "refresh_token", "expires_in"
+        "data",
+        "user_id",
+        "username",
+        "is_new",
+        "sns_info",
+        "access_token",
+        "refresh_token",
+        "expires_in",
     )
 
     def __init__(self, data):
@@ -705,10 +638,13 @@ class LoginUserResponse:
 
 
 class LoginUpdateResponse:
-
     __slots__ = (
-        "data", "user_id", "username",  "access_token",
-        "refresh_token", "expires_in"
+        "data",
+        "user_id",
+        "username",
+        "access_token",
+        "refresh_token",
+        "expires_in",
     )
 
     def __init__(self, data):
@@ -724,7 +660,6 @@ class LoginUpdateResponse:
 
 
 class MessageResponse:
-
     __slots__ = ("data", "id", "conference_call")
 
     def __init__(self, data):
@@ -740,7 +675,6 @@ class MessageResponse:
 
 
 class MessagesResponse:
-
     __slots__ = ("data", "messages")
 
     def __init__(self, data):
@@ -748,32 +682,25 @@ class MessagesResponse:
 
         self.messages = data.get("messages")
         if self.messages is not None:
-            self.messages = [
-                Message(message) for message in self.messages
-            ]
+            self.messages = [Message(message) for message in self.messages]
 
     def __repr__(self):
         return f"MessagesResponse(data={self.data})"
 
 
 class PolicyAgreementsResponse:
-
-    __slots__ = ("data", "latest_privacy_policy_agreed",
-                 "latest_terms_of_use_agreed")
+    __slots__ = ("data", "latest_privacy_policy_agreed", "latest_terms_of_use_agreed")
 
     def __init__(self, data):
         self.data = data
-        self.latest_privacy_policy_agreed = data.get(
-            "latest_privacy_policy_agreed")
-        self.latest_terms_of_use_agreed = data.get(
-            "latest_terms_of_use_agreed")
+        self.latest_privacy_policy_agreed = data.get("latest_privacy_policy_agreed")
+        self.latest_terms_of_use_agreed = data.get("latest_terms_of_use_agreed")
 
     def __repr__(self):
         return f"PolicyAgreementsResponse(data={self.data})"
 
 
 class PostResponse:
-
     __slots__ = ("data", "post")
 
     def __init__(self, data):
@@ -788,7 +715,6 @@ class PostResponse:
 
 
 class PostsResponse:
-
     __slots__ = ("data", "next_page_value", "posts", "pinned_posts")
 
     def __init__(self, data):
@@ -797,22 +723,17 @@ class PostsResponse:
 
         self.posts = data.get("posts")
         if self.posts is not None:
-            self.posts = [
-                Post(post) for post in self.posts
-            ]
+            self.posts = [Post(post) for post in self.posts]
 
         self.pinned_posts = data.get("pinned_posts")
         if self.pinned_posts is not None:
-            self.pinned_posts = [
-                Post(pinned_post) for pinned_post in self.pinned_posts
-            ]
+            self.pinned_posts = [Post(pinned_post) for pinned_post in self.pinned_posts]
 
     def __repr__(self):
         return f"PostsResponse(data={self.data})"
 
 
 class PostLikersResponse:
-
     __slots__ = ("data", "last_id", "users")
 
     def __init__(self, data):
@@ -821,16 +742,13 @@ class PostLikersResponse:
 
         self.users = data.get("users")
         if self.users is not None:
-            self.users = [
-                User(user) for user in self.users
-            ]
+            self.users = [User(user) for user in self.users]
 
     def __repr__(self):
         return f"PostLikersResponse(data={self.data})"
 
 
 class PostTagsResponse:
-
     __slots__ = ("data", "tags")
 
     def __init__(self, data):
@@ -838,16 +756,13 @@ class PostTagsResponse:
 
         self.tags = data.get("tags")
         if self.tags is not None:
-            self.tags = [
-                PostTag(tag) for tag in self.tags
-            ]
+            self.tags = [PostTag(tag) for tag in self.tags]
 
     def __repr__(self):
         return f"PostTagsResponse(data={self.data})"
 
 
 class PromotionsResponse:
-
     __slots__ = ("data", "promotions")
 
     def __init__(self, data):
@@ -855,16 +770,13 @@ class PromotionsResponse:
 
         self.promotions = data.get("promotions")
         if self.promotions is not None:
-            self.promotions = [
-                Promotion(promotion) for promotion in self.promotions
-            ]
+            self.promotions = [Promotion(promotion) for promotion in self.promotions]
 
     def __repr__(self):
         return f"PromotionsResponse(data={self.data})"
 
 
 class LikePostsResponse:
-
     __slots__ = ("data", "like_ids")
 
     def __init__(self, data):
@@ -876,7 +788,6 @@ class LikePostsResponse:
 
 
 class ValidationPostResponse:
-
     __slots__ = ("data", "is_allow_to_post")
 
     def __init__(self, data):
@@ -888,7 +799,6 @@ class ValidationPostResponse:
 
 
 class RefreshCounterRequestsResponse:
-
     __slots__ = ("data", "reset_counter_requests")
 
     def __init__(self, data):
@@ -897,7 +807,8 @@ class RefreshCounterRequestsResponse:
         self.reset_counter_requests = data.get("reset_counter_requests")
         if self.reset_counter_requests is not None:
             self.reset_counter_requests = [
-                RefreshCounterRequest(reset_counter_request) for reset_counter_request in self.reset_counter_requests
+                RefreshCounterRequest(reset_counter_request)
+                for reset_counter_request in self.reset_counter_requests
             ]
 
     def __repr__(self):
@@ -905,7 +816,6 @@ class RefreshCounterRequestsResponse:
 
 
 class ReviewsResponse:
-
     __slots__ = ("data", "reviews", "pinned_reviews")
 
     def __init__(self, data):
@@ -913,9 +823,7 @@ class ReviewsResponse:
 
         self.reviews = data.get("reviews")
         if self.reviews is not None:
-            self.reviews = [
-                Review(review) for review in self.reviews
-            ]
+            self.reviews = [Review(review) for review in self.reviews]
 
         self.pinned_reviews = data.get("pinned_reviews")
         if self.pinned_reviews is not None:
@@ -928,7 +836,6 @@ class ReviewsResponse:
 
 
 class SocialShareUsersResponse:
-
     __slots__ = ("data", "social_shared_users")
 
     def __init__(self, data):
@@ -937,7 +844,8 @@ class SocialShareUsersResponse:
         self.social_shared_users = data.get("social_shared_users")
         if self.social_shared_users is not None:
             self.social_shared_users = [
-                UserWrapper(social_shared_user) for social_shared_user in self.social_shared_users
+                UserWrapper(social_shared_user)
+                for social_shared_user in self.social_shared_users
             ]
 
     def __repr__(self):
@@ -945,7 +853,6 @@ class SocialShareUsersResponse:
 
 
 class StickerPacksResponse:
-
     __slots__ = ("data", "sticker_packs")
 
     def __init__(self, data):
@@ -962,9 +869,13 @@ class StickerPacksResponse:
 
 
 class TokenResponse:
-
     __slots__ = (
-        "data", "user_id", "created_at", "access_token", "refresh_token", "expires_in"
+        "data",
+        "user_id",
+        "created_at",
+        "access_token",
+        "refresh_token",
+        "expires_in",
     )
 
     def __init__(self, data):
@@ -980,7 +891,6 @@ class TokenResponse:
 
 
 class VerifyDeviceResponse:
-
     __slots__ = ("data", "verified", "verified_at")
 
     def __init__(self, data):
@@ -993,7 +903,6 @@ class VerifyDeviceResponse:
 
 
 class VipGameRewardUrlResponse:
-
     __slots__ = ("data", "url")
 
     def __init__(self, data):
@@ -1005,7 +914,6 @@ class VipGameRewardUrlResponse:
 
 
 class VoteSurveyResponse:
-
     __slots__ = ("data", "survey")
 
     def __init__(self, data):
@@ -1020,7 +928,6 @@ class VoteSurveyResponse:
 
 
 class UnreadStatusResponse:
-
     __slots__ = ("data", "is_unread")
 
     def __init__(self, data):
@@ -1032,12 +939,25 @@ class UnreadStatusResponse:
 
 
 class UserResponse:
-
     __slots__ = (
-        "data", "user", "masked_email", "twitter_id", "is_line_connected",
-        "is_facebook_connected", "is_lobi_connected", "is_push_notification_on",
-        "is_call_on", "is_video_on", "is_group_call_on", "is_group_video_on", "vip_until",
-        "is_email_confirmed", "blocking_limit", "uuid", "birthdate", "gifting_ability"
+        "data",
+        "user",
+        "masked_email",
+        "twitter_id",
+        "is_line_connected",
+        "is_facebook_connected",
+        "is_lobi_connected",
+        "is_push_notification_on",
+        "is_call_on",
+        "is_video_on",
+        "is_group_call_on",
+        "is_group_video_on",
+        "vip_until",
+        "is_email_confirmed",
+        "blocking_limit",
+        "uuid",
+        "birthdate",
+        "gifting_ability",
     )
 
     def __init__(self, data):
@@ -1072,7 +992,6 @@ class UserResponse:
 
 
 class UsersResponse:
-
     __slots__ = ("data", "users", "next_page_value")
 
     def __init__(self, data):
@@ -1080,9 +999,7 @@ class UsersResponse:
 
         self.users = data.get("users")
         if self.users is not None:
-            self.users = [
-                User(user) for user in self.users
-            ]
+            self.users = [User(user) for user in self.users]
 
         self.next_page_value = data.get("next_page_value")
 
@@ -1091,7 +1008,6 @@ class UsersResponse:
 
 
 class RankingUsersResponse:
-
     __slots__ = ("data", "users")
 
     def __init__(self, data):
@@ -1099,19 +1015,21 @@ class RankingUsersResponse:
 
         self.users = data.get("users")
         if self.users is not None:
-            self.users = [
-                User(user) for user in self.users
-            ]
+            self.users = [User(user) for user in self.users]
 
     def __repr__(self):
         return f"RankingUsersResponse(data={self.data})"
 
 
 class UserCustomDefinitionsResponse:
-
     __slots__ = (
-        "age", "followers_count", "followings_count", "created_at",
-        "last_loggedin_at", "status", "reported_count"
+        "age",
+        "followers_count",
+        "followings_count",
+        "created_at",
+        "last_loggedin_at",
+        "status",
+        "reported_count",
     )
 
     def __init__(self, data):
@@ -1129,8 +1047,7 @@ class UserCustomDefinitionsResponse:
 
 
 class UserEmailResponse:
-
-    __slots__ = ("email")
+    __slots__ = "email"
 
     def __init__(self, data):
         self.data = data
@@ -1141,7 +1058,6 @@ class UserEmailResponse:
 
 
 class HimaUsersResponse:
-
     __slots__ = ("data", "hima_users")
 
     def __init__(self, data):
@@ -1149,16 +1065,13 @@ class HimaUsersResponse:
 
         self.hima_users = data.get("hima_users")
         if self.hima_users is not None:
-            self.hima_users = [
-                UserWrapper(hima_user) for hima_user in self.hima_users
-            ]
+            self.hima_users = [UserWrapper(hima_user) for hima_user in self.hima_users]
 
     def __repr__(self):
         return f"HimaUsersResponse(data={self.data})"
 
 
 class UsersByTimestampResponse:
-
     __slots__ = ("data", "last_timestamp", "users")
 
     def __init__(self, data):
@@ -1167,16 +1080,13 @@ class UsersByTimestampResponse:
 
         self.users = data.get("users")
         if self.users is not None:
-            self.users = [
-                User(user) for user in self.users
-            ]
+            self.users = [User(user) for user in self.users]
 
     def __repr__(self):
         return f"UsersByTimestampResponse(data={self.data})"
 
 
 class UserTimestampResponse:
-
     __slots__ = ("data", "time", "ip_address", "country")
 
     def __init__(self, data):
@@ -1190,7 +1100,6 @@ class UserTimestampResponse:
 
 
 class WebSocketTokenResponse:
-
     __slots__ = ("data", "token")
 
     def __init__(self, data):

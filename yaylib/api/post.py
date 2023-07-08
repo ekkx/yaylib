@@ -12,8 +12,9 @@ from ..utils import *
 def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
     self._check_authorization()
     response = self._make_request(
-        "PUT", endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
-        data_type=BookmarkPostResponse
+        "PUT",
+        endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
+        data_type=BookmarkPostResponse,
     )
     self.logger.info("Post has been added to the bookmarks.")
     return response
@@ -27,32 +28,33 @@ def add_group_highlight_post(self, group_id: int, post_id: int):
     """
     self._check_authorization()
     response = self._make_request(
-        "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+        "PUT",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
     )
     self.logger.info("Post has been added to the group highlight.")
     return response
 
 
 def create_call_post(
-        self,
-        text: str = None,
-        font_size: int = None,
-        color: int = None,
-        group_id: int = None,
-        call_type: str = None,
-        category_id: int = None,
-        game_title: str = None,
-        joinable_by: str = None,
-        message_tags: str = "[]",
-        attachment_filename: str = None,
-        attachment_2_filename: str = None,
-        attachment_3_filename: str = None,
-        attachment_4_filename: str = None,
-        attachment_5_filename: str = None,
-        attachment_6_filename: str = None,
-        attachment_7_filename: str = None,
-        attachment_8_filename: str = None,
-        attachment_9_filename: str = None,
+    self,
+    text: str = None,
+    font_size: int = None,
+    color: int = None,
+    group_id: int = None,
+    call_type: str = None,
+    category_id: int = None,
+    game_title: str = None,
+    joinable_by: str = None,
+    message_tags: str = "[]",
+    attachment_filename: str = None,
+    attachment_2_filename: str = None,
+    attachment_3_filename: str = None,
+    attachment_4_filename: str = None,
+    attachment_5_filename: str = None,
+    attachment_6_filename: str = None,
+    attachment_7_filename: str = None,
+    attachment_8_filename: str = None,
+    attachment_9_filename: str = None,
 ) -> ConferenceCall:
     self._check_authorization()
 
@@ -63,7 +65,8 @@ def create_call_post(
     timestamp = int(datetime.now().timestamp())
 
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
+        "POST",
+        endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
         payload={
             "text": text,
             "font_size": font_size,
@@ -73,9 +76,7 @@ def create_call_post(
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(
-                self.device_uuid, timestamp
-            ),
+            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
             "category_id": category_id,
             "game_title": game_title,
             "joinable_by": joinable_by,
@@ -89,7 +90,8 @@ def create_call_post(
             "attachment_7_filename": attachment_7_filename,
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
-        }, data_type=CreatePostResponse
+        },
+        data_type=CreatePostResponse,
     ).conference_call
     self.logger.info("Call post has been created.")
     return response
@@ -98,8 +100,9 @@ def create_call_post(
 def create_group_pin_post(self, post_id: int, group_id: int):
     self._check_authorization()
     response = self._make_request(
-        "PUT", endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
-        payload={"post_id": post_id, "group_id": group_id}
+        "PUT",
+        endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
+        payload={"post_id": post_id, "group_id": group_id},
     )
     self.logger.info("Pinned the post in the group.")
     return response
@@ -108,8 +111,7 @@ def create_group_pin_post(self, post_id: int, group_id: int):
 def create_pin_post(self, post_id: int):
     self._check_authorization()
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.PINNED_V1}/posts",
-        payload={"id": post_id}
+        "POST", endpoint=f"{Endpoints.PINNED_V1}/posts", payload={"id": post_id}
     )
     self.logger.info("Pinned post.")
     return response
@@ -118,7 +120,8 @@ def create_pin_post(self, post_id: int):
 def mention(self, user_id: int) -> str:
     if not (isinstance(user_id, int) or str(user_id).isdigit()):
         raise ValueError(
-            "The value of 'user_id' must be an integer or a string containing only digits.")
+            "The value of 'user_id' must be an integer or a string containing only digits."
+        )
     return "@:start:" + str(user_id) + ":end:"
 
 
@@ -155,39 +158,41 @@ def parse_mention_format(self, text) -> tuple:
         end = text.find(" ", start)
         if end == -1:
             end = len(text)
-        username = text[start+1:end]
-        message_tags.append({
-            "type": "user",
-            "user_id": int(user_id),
-            "offset": start,
-            "length": len(username)+1
-        })
+        username = text[start + 1 : end]
+        message_tags.append(
+            {
+                "type": "user",
+                "user_id": int(user_id),
+                "offset": start,
+                "length": len(username) + 1,
+            }
+        )
         offset = end
 
     return text, json.dumps(message_tags)
 
 
 def create_post(
-        self,
-        text: str = None,
-        font_size: int = 0,
-        color: int = 0,
-        in_reply_to: int = None,
-        group_id: int = None,
-        mention_ids: List[int] = None,
-        choices: List[str] = None,
-        shared_url: str = None,
-        message_tags: str = "[]",
-        attachment_filename: str = None,
-        attachment_2_filename: str = None,
-        attachment_3_filename: str = None,
-        attachment_4_filename: str = None,
-        attachment_5_filename: str = None,
-        attachment_6_filename: str = None,
-        attachment_7_filename: str = None,
-        attachment_8_filename: str = None,
-        attachment_9_filename: str = None,
-        video_file_name: str = None,
+    self,
+    text: str = None,
+    font_size: int = 0,
+    color: int = 0,
+    in_reply_to: int = None,
+    group_id: int = None,
+    mention_ids: List[int] = None,
+    choices: List[str] = None,
+    shared_url: str = None,
+    message_tags: str = "[]",
+    attachment_filename: str = None,
+    attachment_2_filename: str = None,
+    attachment_3_filename: str = None,
+    attachment_4_filename: str = None,
+    attachment_5_filename: str = None,
+    attachment_6_filename: str = None,
+    attachment_7_filename: str = None,
+    attachment_8_filename: str = None,
+    attachment_9_filename: str = None,
+    video_file_name: str = None,
 ) -> Post:
     self._check_authorization()
     headers = self.session.headers
@@ -197,7 +202,17 @@ def create_post(
         if "@:start:" in text and ":end:" in text:
             text, message_tags = parse_mention_format(self, text)
 
-    post_type = "survey" if choices else "shareable_url" if shared_url else "video" if video_file_name else "image" if attachment_filename else "text"
+    post_type = (
+        "survey"
+        if choices
+        else "shareable_url"
+        if shared_url
+        else "video"
+        if video_file_name
+        else "image"
+        if attachment_filename
+        else "text"
+    )
 
     if shared_url is not None:
         try:
@@ -207,7 +222,8 @@ def create_post(
             shared_url = None
 
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V3}/new",
+        "POST",
+        endpoint=f"{Endpoints.POSTS_V3}/new",
         payload={
             "text": text,
             "font_size": font_size,
@@ -229,34 +245,36 @@ def create_post(
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
             "video_file_name": video_file_name,
-        }, data_type=Post, headers=headers
+        },
+        data_type=Post,
+        headers=headers,
     )
     self.logger.info("Post has been created.")
     return response
 
 
 def create_repost(
-        self,
-        post_id: int,
-        text: str = None,
-        font_size: int = None,
-        color: int = None,
-        in_reply_to: int = None,
-        group_id: int = None,
-        mention_ids: List[int] = None,
-        choices: List[str] = None,
-        shared_url: Dict[str, Union[str, int]] = None,
-        message_tags: str = "[]",
-        attachment_filename: str = None,
-        attachment_2_filename: str = None,
-        attachment_3_filename: str = None,
-        attachment_4_filename: str = None,
-        attachment_5_filename: str = None,
-        attachment_6_filename: str = None,
-        attachment_7_filename: str = None,
-        attachment_8_filename: str = None,
-        attachment_9_filename: str = None,
-        video_file_name: str = None,
+    self,
+    post_id: int,
+    text: str = None,
+    font_size: int = None,
+    color: int = None,
+    in_reply_to: int = None,
+    group_id: int = None,
+    mention_ids: List[int] = None,
+    choices: List[str] = None,
+    shared_url: Dict[str, Union[str, int]] = None,
+    message_tags: str = "[]",
+    attachment_filename: str = None,
+    attachment_2_filename: str = None,
+    attachment_3_filename: str = None,
+    attachment_4_filename: str = None,
+    attachment_5_filename: str = None,
+    attachment_6_filename: str = None,
+    attachment_7_filename: str = None,
+    attachment_8_filename: str = None,
+    attachment_9_filename: str = None,
+    video_file_name: str = None,
 ) -> Post:
     self._check_authorization()
     headers = self.session.headers
@@ -266,7 +284,17 @@ def create_repost(
         if "@:start:" in text and ":end:" in text:
             text, message_tags = parse_mention_format(self, text)
 
-    post_type = "survey" if choices else "shareable_url" if shared_url else "video" if video_file_name else "image" if attachment_filename else "text"
+    post_type = (
+        "survey"
+        if choices
+        else "shareable_url"
+        if shared_url
+        else "video"
+        if video_file_name
+        else "image"
+        if attachment_filename
+        else "text"
+    )
 
     if shared_url is not None:
         try:
@@ -276,7 +304,8 @@ def create_repost(
             shared_url = None
 
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V3}/repost",
+        "POST",
+        endpoint=f"{Endpoints.POSTS_V3}/repost",
         payload={
             "post_id": post_id,
             "text": text,
@@ -299,25 +328,28 @@ def create_repost(
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
             "video_file_name": video_file_name,
-        }, data_type=CreatePostResponse, headers=headers
+        },
+        data_type=CreatePostResponse,
+        headers=headers,
     ).post
     self.logger.info("Repost has been created.")
     return response
 
 
 def create_share_post(
-        self,
-        shareable_type: str,
-        shareable_id: int,
-        text: str = None,
-        font_size: int = None,
-        color: int = None,
-        group_id: int = None,
+    self,
+    shareable_type: str,
+    shareable_id: int,
+    text: str = None,
+    font_size: int = None,
+    color: int = None,
+    group_id: int = None,
 ) -> Post:
     self._check_authorization()
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
+        "POST",
+        endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
         payload={
             "shareable_type": shareable_type,
             "shareable_id": shareable_id,
@@ -328,37 +360,36 @@ def create_share_post(
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(
-                self.device_uuid, timestamp
-            ),
-        }, data_type=Post
+            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+        },
+        data_type=Post,
     )
     self.logger.info("Share post has been created.")
     return response
 
 
 def create_thread_post(
-        self,
-        post_id: int,
-        text: str = None,
-        font_size: int = None,
-        color: int = None,
-        in_reply_to: int = None,
-        group_id: int = None,
-        mention_ids: List[int] = None,
-        choices: List[str] = None,
-        shared_url: Dict[str, Union[str, int]] = None,
-        message_tags: str = "[]",
-        attachment_filename: str = None,
-        attachment_2_filename: str = None,
-        attachment_3_filename: str = None,
-        attachment_4_filename: str = None,
-        attachment_5_filename: str = None,
-        attachment_6_filename: str = None,
-        attachment_7_filename: str = None,
-        attachment_8_filename: str = None,
-        attachment_9_filename: str = None,
-        video_file_name: str = None,
+    self,
+    post_id: int,
+    text: str = None,
+    font_size: int = None,
+    color: int = None,
+    in_reply_to: int = None,
+    group_id: int = None,
+    mention_ids: List[int] = None,
+    choices: List[str] = None,
+    shared_url: Dict[str, Union[str, int]] = None,
+    message_tags: str = "[]",
+    attachment_filename: str = None,
+    attachment_2_filename: str = None,
+    attachment_3_filename: str = None,
+    attachment_4_filename: str = None,
+    attachment_5_filename: str = None,
+    attachment_6_filename: str = None,
+    attachment_7_filename: str = None,
+    attachment_8_filename: str = None,
+    attachment_9_filename: str = None,
+    video_file_name: str = None,
 ) -> Post:
     self._check_authorization()
     headers = self.session.headers
@@ -368,7 +399,17 @@ def create_thread_post(
         if "@:start:" in text and ":end:" in text:
             text, message_tags = parse_mention_format(self, text)
 
-    post_type = "survey" if choices else "shareable_url" if shared_url else "video" if video_file_name else "image" if attachment_filename else "text"
+    post_type = (
+        "survey"
+        if choices
+        else "shareable_url"
+        if shared_url
+        else "video"
+        if video_file_name
+        else "image"
+        if attachment_filename
+        else "text"
+    )
 
     if shared_url is not None:
         try:
@@ -378,7 +419,8 @@ def create_thread_post(
             shared_url = None
 
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.THREADS_V1}/{post_id}/posts",
+        "POST",
+        endpoint=f"{Endpoints.THREADS_V1}/{post_id}/posts",
         payload={
             "id": post_id,
             "text": text,
@@ -401,7 +443,9 @@ def create_thread_post(
             "attachment_8_filename": attachment_8_filename,
             "attachment_9_filename": attachment_9_filename,
             "video_file_name": video_file_name,
-        }, data_type=Post, headers=headers
+        },
+        data_type=Post,
+        headers=headers,
     )
     self.logger.info("Thread post has been created.")
     return response
@@ -411,7 +455,8 @@ def delete_all_post(self):
     self._check_authorization()
     try:
         response = self._make_request(
-            "POST", endpoint=f"{Endpoints.POSTS_V1}/delete_all_post",
+            "POST",
+            endpoint=f"{Endpoints.POSTS_V1}/delete_all_post",
         )
         self.logger.info("Post deletion request has been sent.")
         return response
@@ -422,8 +467,9 @@ def delete_all_post(self):
 def delete_group_pin_post(self, group_id: int):
     self._check_authorization()
     response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
-        payload={"group_id": group_id}
+        "DELETE",
+        endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
+        payload={"group_id": group_id},
     )
     self.logger.info("Unpinned post in the group.")
     return response
@@ -444,8 +490,10 @@ def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
     if from_str:
         params = {"from": from_str}
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
@@ -467,8 +515,10 @@ def get_timeline_calls(self, **params) -> PostsResponse:
 
     """
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/call_timeline",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/call_timeline",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
@@ -487,15 +537,19 @@ def get_conversation(self, conversation_id: int, **params) -> PostsResponse:
 
     """
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
 def get_conversation_root_posts(self, post_ids: List[int]) -> PostsResponse:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.CONVERSATIONS_V2}/root_posts",
-        params={"ids[]": post_ids}, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.CONVERSATIONS_V2}/root_posts",
+        params={"ids[]": post_ids},
+        data_type=PostsResponse,
     )
 
 
@@ -515,8 +569,10 @@ def get_following_call_timeline(self, **params) -> PostsResponse:
     """
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/call_followers_timeline",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/call_followers_timeline",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
@@ -537,8 +593,10 @@ def get_following_timeline(self, **params) -> PostsResponse:
     """
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/following_timeline",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/following_timeline",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
@@ -556,12 +614,16 @@ def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
 
     """
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
-def get_group_timeline_by_keyword(self, group_id: int, keyword: str, **params) -> PostsResponse:
+def get_group_timeline_by_keyword(
+    self, group_id: int, keyword: str, **params
+) -> PostsResponse:
     """
 
     Parameters:
@@ -576,8 +638,10 @@ def get_group_timeline_by_keyword(self, group_id: int, keyword: str, **params) -
     """
     params["keyword"] = keyword
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/posts/search",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/posts/search",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
@@ -597,8 +661,10 @@ def get_group_timeline(self, group_id: int, **params) -> PostsResponse:
     """
     params["group_id"] = group_id
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/group_timeline",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/group_timeline",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
@@ -614,8 +680,10 @@ def get_timeline_by_hashtag(self, hashtag: str, **params) -> PostsResponse:
 
     """
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/tags/{hashtag}",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/tags/{hashtag}",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
@@ -632,15 +700,16 @@ def get_my_posts(self, **params) -> PostsResponse:
     """
     self._check_authorization()
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/mine",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/mine",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
 def get_post(self, post_id: int) -> Post:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}",
-        data_type=PostResponse
+        "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}", data_type=PostResponse
     ).post
 
 
@@ -655,8 +724,10 @@ def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
 
     """
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V1}/{post_id}/likers",
-        params=params, data_type=PostLikersResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V1}/{post_id}/likers",
+        params=params,
+        data_type=PostLikersResponse,
     )
 
 
@@ -672,25 +743,30 @@ def get_post_reposts(self, post_id: int, **params: int) -> PostsResponse:
 
     """
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}/reposts",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/{post_id}/reposts",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
 def get_posts(self, post_ids: List[int]) -> PostsResponse:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/multiple",
-        params={"post_ids[]": post_ids}, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/multiple",
+        params={"post_ids[]": post_ids},
+        data_type=PostsResponse,
     )
 
 
 def get_recommended_post_tags(
-        self, tag: str = None, save_recent_search: bool = False
+    self, tag: str = None, save_recent_search: bool = False
 ) -> PostTagsResponse:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V1}/recommended_tag",
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V1}/recommended_tag",
         payload={"tag": tag, "save_recent_search": save_recent_search},
-        data_type=PostTagsResponse
+        data_type=PostTagsResponse,
     )
 
 
@@ -706,8 +782,10 @@ def get_recommended_posts(self, **params) -> PostsResponse:
 
     """
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/recommended_timeline",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/recommended_timeline",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
@@ -724,8 +802,10 @@ def get_timeline_by_keyword(self, keyword: str = None, **params) -> PostsRespons
     """
     params["keyword"] = keyword
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/search",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/search",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
@@ -754,15 +834,16 @@ def get_timeline(self, **params: int | str | bool) -> PostsResponse:
         self._check_authorization()
         endpoint = f"{Endpoints.POSTS_V2}/noreply_timeline"
     return self._make_request(
-        "GET", endpoint=endpoint,
-        params=params, data_type=PostsResponse
+        "GET", endpoint=endpoint, params=params, data_type=PostsResponse
     )
 
 
 def get_url_metadata(self, url: str) -> SharedUrl:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/url_metadata",
-        params={"url": url}, data_type=SharedUrl
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/url_metadata",
+        params={"url": url},
+        data_type=SharedUrl,
     )
 
 
@@ -779,16 +860,20 @@ def get_user_timeline(self, user_id: int, **params) -> PostsResponse:
     """
     params["user_id"] = user_id
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/user_timeline",
-        params=params, data_type=PostsResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/user_timeline",
+        params=params,
+        data_type=PostsResponse,
     )
 
 
 def like_posts(self, post_ids: List[int]) -> LikePostsResponse:
     self._check_authorization()
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V2}/like",
-        payload={"post_ids": post_ids}, data_type=LikePostsResponse
+        "POST",
+        endpoint=f"{Endpoints.POSTS_V2}/like",
+        payload={"post_ids": post_ids},
+        data_type=LikePostsResponse,
     )
     self.logger.info("Posts have been liked.")
     return response
@@ -797,7 +882,8 @@ def like_posts(self, post_ids: List[int]) -> LikePostsResponse:
 def remove_bookmark(self, user_id: int, post_id: int):
     self._check_authorization()
     response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
+        "DELETE",
+        endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
     )
     self.logger.info("Bookmark has been removed.")
     return response
@@ -806,7 +892,8 @@ def remove_bookmark(self, user_id: int, post_id: int):
 def remove_group_highlight_post(self, group_id: int, post_id: int):
     self._check_authorization()
     response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+        "DELETE",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
     )
     self.logger.info("Group hightlight post removed.")
     return response
@@ -815,27 +902,29 @@ def remove_group_highlight_post(self, group_id: int, post_id: int):
 def remove_posts(self, post_ids: List[int]):
     self._check_authorization()
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V2}/mass_destroy",
-        payload={"posts_ids": post_ids}
+        "POST",
+        endpoint=f"{Endpoints.POSTS_V2}/mass_destroy",
+        payload={"posts_ids": post_ids},
     )
     self.logger.info("Posts have been removed.")
     return response
 
 
 def report_post(
-        self,
-        post_id: int,
-        opponent_id: int,
-        category_id: int,
-        reason: str = None,
-        screenshot_filename: str = None,
-        screenshot_2_filename: str = None,
-        screenshot_3_filename: str = None,
-        screenshot_4_filename: str = None
+    self,
+    post_id: int,
+    opponent_id: int,
+    category_id: int,
+    reason: str = None,
+    screenshot_filename: str = None,
+    screenshot_2_filename: str = None,
+    screenshot_3_filename: str = None,
+    screenshot_4_filename: str = None,
 ):
     self._check_authorization()
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V3}/{post_id}/report",
+        "POST",
+        endpoint=f"{Endpoints.POSTS_V3}/{post_id}/report",
         payload={
             "opponent_id": opponent_id,
             "category_id": category_id,
@@ -844,7 +933,7 @@ def report_post(
             "screenshot_2_filename": screenshot_2_filename,
             "screenshot_3_filename": screenshot_3_filename,
             "screenshot_4_filename": screenshot_4_filename,
-        }
+        },
     )
     self.logger.info("Post has been reported.")
     return response
@@ -853,19 +942,20 @@ def report_post(
 def unlike_post(self, post_id: int):
     self._check_authorization()
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V1}/{post_id}/unlike",
+        "POST",
+        endpoint=f"{Endpoints.POSTS_V1}/{post_id}/unlike",
     )
     self.logger.info("Post has been unliked.")
     return response
 
 
 def update_post(
-        self,
-        post_id: int,
-        text: str = None,
-        font_size: int = None,
-        color: int = None,
-        message_tags: str = "[]",
+    self,
+    post_id: int,
+    text: str = None,
+    font_size: int = None,
+    color: int = None,
+    message_tags: str = "[]",
 ) -> Post:
     self._check_authorization()
 
@@ -875,7 +965,8 @@ def update_post(
     timestamp = int(datetime.now().timestamp())
 
     response = self._make_request(
-        "PUT", endpoint=f"{Endpoints.POSTS_V3}/{post_id}",
+        "PUT",
+        endpoint=f"{Endpoints.POSTS_V3}/{post_id}",
         payload={
             "text": text,
             "font_size": font_size,
@@ -883,10 +974,8 @@ def update_post(
             "message_tags": str(message_tags),
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(
-                self.device_uuid, timestamp
-            ),
-        }
+            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+        },
     )
     self.logger.info("Post has been updated.")
     return response
@@ -903,8 +992,10 @@ def view_video(self, video_id: int):
 def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
     self._check_authorization()
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",
-        payload={"choice_id": choice_id}, data_type=ValidationPostResponse
+        "POST",
+        endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",
+        payload={"choice_id": choice_id},
+        data_type=ValidationPostResponse,
     ).survey
     self.logger.info("Voted.")
     return response

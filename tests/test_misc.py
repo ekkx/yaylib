@@ -9,9 +9,8 @@ from config import (
 
 
 class YaylibMiscTests(YaylibTestCase):
-
     path = "./misc/"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

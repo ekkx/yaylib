@@ -9,7 +9,6 @@ from config import (
 
 
 class YaylibReviewTests(YaylibTestCase):
-
     path = "./review/"
 
     @tape.use_cassette(path + "reviews.yaml")
@@ -34,5 +33,5 @@ class YaylibReviewTests(YaylibTestCase):
         self.api.delete_reviews([review_id])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

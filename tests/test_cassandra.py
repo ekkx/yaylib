@@ -9,7 +9,6 @@ from config import (
 
 
 class YaylibCassandraTests(YaylibTestCase):
-
     path = "./cassandra/"
 
     @tape.use_cassette(path + "test_get_user_activities.yaml")
@@ -29,5 +28,5 @@ class YaylibCassandraTests(YaylibTestCase):
     #     self.api.received_notification(pid, type)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

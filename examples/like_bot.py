@@ -3,7 +3,6 @@ import yaylib
 
 
 class LikeBot:
-
     def __init__(self, email=None, password=None, token=None):
         self.api = yaylib.Client(token)
         if token is None:
@@ -15,15 +14,12 @@ class LikeBot:
         liked = 0
 
         while liked < amount:
-
             ids = []
 
             try:
-
                 self.api.logger.info("投稿を取得しています...")
 
                 while len(ids) < min_collect:
-
                     timeline = self.api.get_timeline(number=min_collect)
                     new_ids = [post.id for post in timeline.posts if not post.liked]
 
@@ -50,7 +46,6 @@ class LikeBot:
 
 
 if __name__ == "__main__":
-
     email = "メールアドレス"
     password = "パスワード"
 

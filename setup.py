@@ -18,7 +18,7 @@ keywords = [
     "library",
     "wrapper",
     "ボット",
-    "ライブラリ"
+    "ライブラリ",
 ]
 
 install_requires = [

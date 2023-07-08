@@ -9,9 +9,8 @@ from config import (
 
 
 class YaylibCallTests(YaylibTestCase):
-
     path = "./call/"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

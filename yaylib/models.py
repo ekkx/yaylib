@@ -2,10 +2,19 @@ from .utils import parse_datetime
 
 
 class Activity:
-
     __slots__ = (
-        "data", "id", "created_at", "created_at_parsed", "type", "user", "from_post",
-        "to_post", "group", "followers", "from_post_ids", "vip_reward",
+        "data",
+        "id",
+        "created_at",
+        "created_at_parsed",
+        "type",
+        "user",
+        "from_post",
+        "to_post",
+        "group",
+        "followers",
+        "from_post_ids",
+        "vip_reward",
         "is_bulk_invitation",
     )
 
@@ -34,9 +43,7 @@ class Activity:
 
         self.followers = data.get("followers")
         if self.followers is not None:
-            self.followers = [
-                User(follower) for follower in self.followers
-            ]
+            self.followers = [User(follower) for follower in self.followers]
 
         self.from_post_ids = data.get("from_post_ids")
         self.vip_reward = data.get("vip_reward")
@@ -47,7 +54,6 @@ class Activity:
 
 
 class BanWord:
-
     __slots__ = ("data", "id", "type", "word")
 
     def __init__(self, data):
@@ -61,7 +67,6 @@ class BanWord:
 
 
 class Bgm:
-
     __slots__ = ("data", "id", "title", "music_url", "order")
 
     def __init__(self, data):
@@ -76,7 +81,6 @@ class Bgm:
 
 
 class CallGiftHistory:
-
     __slots__ = ("data", "gifts_count", "sent_at", "sent_at_parsed", "sender")
 
     def __init__(self, data):
@@ -100,10 +104,20 @@ class CallGiftHistory:
 
 
 class ChatRoom:
-
     __slots__ = (
-        "data", "id", "unread_count", "updated_at", "updated_at_parsed", "members",
-        "background", "last_message", "name", "is_group", "owner", "is_request", "user_setting"
+        "data",
+        "id",
+        "unread_count",
+        "updated_at",
+        "updated_at_parsed",
+        "members",
+        "background",
+        "last_message",
+        "name",
+        "is_group",
+        "owner",
+        "is_request",
+        "user_setting",
     )
 
     def __init__(self, data):
@@ -115,9 +129,7 @@ class ChatRoom:
 
         self.members = data.get("members")
         if self.members is not None:
-            self.members = [
-                User(member) for member in self.members
-            ]
+            self.members = [User(member) for member in self.members]
 
         self.background = data.get("background")
 
@@ -143,7 +155,6 @@ class ChatRoom:
 
 
 class ChatRoomDraft:
-
     __slots__ = ("data", "id", "text")
 
     def __init__(self, data):
@@ -156,7 +167,6 @@ class ChatRoomDraft:
 
 
 class Choice:
-
     __slots__ = ("data", "id", "label", "votes_count")
 
     def __init__(self, data):
@@ -170,7 +180,6 @@ class Choice:
 
 
 class CoinAmount:
-
     __slots__ = ("data", "paid", "free", "total")
 
     def __init__(self, data):
@@ -184,7 +193,6 @@ class CoinAmount:
 
 
 class CoinExpiration:
-
     __slots__ = ("data", "expired_at", "amount")
 
     def __init__(self, data):
@@ -197,7 +205,6 @@ class CoinExpiration:
 
 
 class CoinProduct:
-
     __slots__ = ("data", "id", "purchasable", "amount")
 
     def __init__(self, data):
@@ -211,7 +218,6 @@ class CoinProduct:
 
 
 class CoinProductQuota:
-
     __slots__ = ("data", "bought", "limit")
 
     def __init__(self, data):
@@ -224,12 +230,24 @@ class CoinProductQuota:
 
 
 class ConferenceCall:
-
     __slots__ = (
-        "data", "id", "post_id", "group_id", "is_active",
-        "anonymous_call_users_count", "agora_channel", "agora_token", "call_type",
-        "joinable_by", "game", "genre", "duration_seconds", "max_participants",
-        "conference_call_users", "bump_params", "conference_call_users_role"
+        "data",
+        "id",
+        "post_id",
+        "group_id",
+        "is_active",
+        "anonymous_call_users_count",
+        "agora_channel",
+        "agora_token",
+        "call_type",
+        "joinable_by",
+        "game",
+        "genre",
+        "duration_seconds",
+        "max_participants",
+        "conference_call_users",
+        "bump_params",
+        "conference_call_users_role",
     )
 
     def __init__(self, data):
@@ -238,8 +256,7 @@ class ConferenceCall:
         self.post_id = data.get("post_id")
         self.group_id = data.get("group_id")
         self.is_active = data.get("is_active")
-        self.anonymous_call_users_count = data.get(
-            "anonymous_call_users_count")
+        self.anonymous_call_users_count = data.get("anonymous_call_users_count")
         self.agora_channel = data.get("agora_channel")
         self.agora_token = data.get("agora_token")
         self.call_type = data.get("call_type")
@@ -259,7 +276,8 @@ class ConferenceCall:
         self.conference_call_users = data.get("conference_call_users")
         if self.conference_call_users is not None:
             self.conference_call_users = [
-                User(conference_call_user) for conference_call_user in self.conference_call_users
+                User(conference_call_user)
+                for conference_call_user in self.conference_call_users
             ]
 
         self.bump_params = data.get("bump_params")
@@ -269,7 +287,8 @@ class ConferenceCall:
         self.conference_call_users_role = data.get("conference_call_usersRole")
         if self.conference_call_users_role is not None:
             self.conference_call_users_role = [
-                ConferenceCallUserRole(conference_call_user_role) for conference_call_user_role in self.conference_call_users_role
+                ConferenceCallUserRole(conference_call_user_role)
+                for conference_call_user_role in self.conference_call_users_role
             ]
 
     def __repr__(self):
@@ -277,7 +296,6 @@ class ConferenceCall:
 
 
 class ConferenceCallUserRole:
-
     __slots__ = ("data", "id", "role")
 
     def __init__(self, data):
@@ -290,7 +308,6 @@ class ConferenceCallUserRole:
 
 
 class ContactStatus:
-
     __slots__ = ("data", "status", "user_id")
 
     def __init__(self, data):
@@ -303,7 +320,6 @@ class ContactStatus:
 
 
 class CreateGroupQuota:
-
     __slots__ = ("data", "used_quota", "remaining_quota")
 
     def __init__(self, data):
@@ -316,19 +332,19 @@ class CreateGroupQuota:
 
 
 class TimelineSettings:
-
     __slots__ = (
-        "data", "hide_hot_post", "hide_reply_public_timeline",
-        "hide_reply_following_timeline", "faves_filter"
+        "data",
+        "hide_hot_post",
+        "hide_reply_public_timeline",
+        "hide_reply_following_timeline",
+        "faves_filter",
     )
 
     def __init__(self, data):
         self.data = data
         self.hide_hot_post = data.get("hide_hot_post")
-        self.hide_reply_public_timeline = data.get(
-            "hide_reply_public_timeline")
-        self.hide_reply_following_timeline = data.get(
-            "hide_reply_following_timeline")
+        self.hide_reply_public_timeline = data.get("hide_reply_public_timeline")
+        self.hide_reply_following_timeline = data.get("hide_reply_following_timeline")
         self.faves_filter = data.get("faves_filter")
 
     def __repr__(self):
@@ -336,7 +352,6 @@ class TimelineSettings:
 
 
 class Error:
-
     __slots__ = ("data", "throwable", "type", "action")
 
     def __init__(self, data):
@@ -350,7 +365,6 @@ class Error:
 
 
 class Footprint:
-
     __slots__ = ("data", "user", "visited_at", "visited_at_parsed", "id")
 
     def __init__(self, data):
@@ -369,7 +383,6 @@ class Footprint:
 
 
 class Game:
-
     __slots__ = ("data", "id", "type", "title", "icon_url", "platform_details")
 
     def __init__(self, data):
@@ -388,7 +401,6 @@ class Game:
 
 
 class Genre:
-
     __slots__ = ("data", "id", "type", "title", "icon_url")
 
     def __init__(self, data):
@@ -403,7 +415,6 @@ class Genre:
 
 
 class GifImage:
-
     __slots__ = ("data", "id", "url", "width", "height")
 
     def __init__(self, data):
@@ -418,7 +429,6 @@ class GifImage:
 
 
 class GifImageCategory:
-
     __slots__ = ("data", "id", "name", "language", "gifs")
 
     def __init__(self, data):
@@ -429,16 +439,13 @@ class GifImageCategory:
 
         self.gifs = data.get("gifs")
         if self.gifs is not None:
-            self.gifs = [
-                GifImage(gif) for gif in self.gifs
-            ]
+            self.gifs = [GifImage(gif) for gif in self.gifs]
 
     def __repr__(self):
         return f"GifImageCategory(data={self.data})"
 
 
 class Gift:
-
     __slots__ = ("data", "id", "title", "icon", "iconThumbnail", "price")
 
     def __init__(self, data):
@@ -454,7 +461,6 @@ class Gift:
 
 
 class GiftCount:
-
     __slots__ = ("data", "id", "quantity")
 
     def __init__(self, data):
@@ -467,7 +473,6 @@ class GiftCount:
 
 
 class GiftHistory:
-
     __slots__ = ("data", "transaction_at_seconds", "user", "gifts")
 
     def __init__(self, data):
@@ -480,16 +485,13 @@ class GiftHistory:
 
         self.gifts = data.get("gifts")
         if self.gifts is not None:
-            self.gifts = [
-                ReceivedGift(gift) for gift in self.gifts
-            ]
+            self.gifts = [ReceivedGift(gift) for gift in self.gifts]
 
     def __repr__(self):
         return f"GiftHistory(data={self.data})"
 
 
 class GiftingAbility:
-
     __slots__ = ("data", "user_id", "enabled", "can_send", "can_receive")
 
     def __init__(self, data):
@@ -504,22 +506,55 @@ class GiftingAbility:
 
 
 class Group:
-
     __slots__ = (
-        "data", "id", "topic", "description", "user_id", "groups_users_count",
-        "posts_count", "threads_count", "highlighted_count", "views_count",
-        "related_count", "secret", "gender", "hide_reported_posts",
-        "hide_conference_call", "is_private", "only_verified_age",
-        "only_mobile_verified", "call_timeline_display", "updated_at", "updated_at_parsed",
-        "cover_image", "cover_image_thumbnail", "generation_groups_limit",
-        "owner", "is_joined", "is_pending", "group_category_id",
-        "unread_counts", "moderator_ids", "seizable", "seizable_before",
-        "pending_count", "pending_transfer_id", "pending_deputize_ids",
-        "safe_mode", "is_related", "allow_ownership_transfer",
-        "sub_category_id", "title", "allow_thread_creation_by",
-        "hide_from_game_eight", "walkthrough_requested",
-        "unread_threads_count", "allow_members_to_post_image_and_video",
-        "allow_members_to_post_url", "guidelines", "invited_to_join"
+        "data",
+        "id",
+        "topic",
+        "description",
+        "user_id",
+        "groups_users_count",
+        "posts_count",
+        "threads_count",
+        "highlighted_count",
+        "views_count",
+        "related_count",
+        "secret",
+        "gender",
+        "hide_reported_posts",
+        "hide_conference_call",
+        "is_private",
+        "only_verified_age",
+        "only_mobile_verified",
+        "call_timeline_display",
+        "updated_at",
+        "updated_at_parsed",
+        "cover_image",
+        "cover_image_thumbnail",
+        "generation_groups_limit",
+        "owner",
+        "is_joined",
+        "is_pending",
+        "group_category_id",
+        "unread_counts",
+        "moderator_ids",
+        "seizable",
+        "seizable_before",
+        "pending_count",
+        "pending_transfer_id",
+        "pending_deputize_ids",
+        "safe_mode",
+        "is_related",
+        "allow_ownership_transfer",
+        "sub_category_id",
+        "title",
+        "allow_thread_creation_by",
+        "hide_from_game_eight",
+        "walkthrough_requested",
+        "unread_threads_count",
+        "allow_members_to_post_image_and_video",
+        "allow_members_to_post_url",
+        "guidelines",
+        "invited_to_join",
     )
 
     def __init__(self, data):
@@ -572,7 +607,8 @@ class Group:
         self.walkthrough_requested = data.get("walkthrough_requested")
         self.unread_threads_count = data.get("unread_threads_count")
         self.allow_members_to_post_image_and_video = data.get(
-            "allow_members_to_post_image_and_video")
+            "allow_members_to_post_image_and_video"
+        )
         self.allow_members_to_post_url = data.get("allow_members_to_post_url")
         self.guidelines = data.get("guidelines")
         self.invited_to_join = data.get("invited_to_join")
@@ -582,7 +618,6 @@ class Group:
 
 
 class GroupCategory:
-
     __slots__ = ("data", "id", "name", "icon", "rank")
 
     def __init__(self, data):
@@ -597,7 +632,6 @@ class GroupCategory:
 
 
 class GroupGiftHistory:
-
     __slots__ = ("data", "gifts_count", "received_date", "user")
 
     def __init__(self, data):
@@ -620,9 +654,13 @@ class GroupGiftHistory:
 
 
 class GroupUser:
-
     __slots__ = (
-        "data", "user", "is_moderator", "pending_transfer", "pending_deputize", "title"
+        "data",
+        "user",
+        "is_moderator",
+        "pending_transfer",
+        "pending_deputize",
+        "title",
     )
 
     def __init__(self, data):
@@ -642,7 +680,6 @@ class GroupUser:
 
 
 class HiddenRecommendedPost:
-
     __slots__ = ("data", "post")
 
     def __init__(self, data):
@@ -656,7 +693,6 @@ class HiddenRecommendedPost:
 
 
 class Interest:
-
     __slots__ = ("data", "id", "name", "icon", "selected")
 
     def __init__(self, data):
@@ -671,7 +707,6 @@ class Interest:
 
 
 class Message:
-
     __slots__ = ("data", "id", "user_id", "type", "text", "conference_call")
 
     def __init__(self, data):
@@ -690,7 +725,6 @@ class Message:
 
 
 class MessageTag:
-
     __slots__ = ("data", "user_id", "offset", "length", "type")
 
     def __init__(self, data):
@@ -705,7 +739,6 @@ class MessageTag:
 
 
 class MuteKeyword:
-
     __slots__ = ("data", "id", "word", "context")
 
     def __init__(self, data):
@@ -719,7 +752,6 @@ class MuteKeyword:
 
 
 class PlatformDetails:
-
     __slots__ = ("data", "package_id", "affiliate_url")
 
     def __init__(self, data):
@@ -732,7 +764,6 @@ class PlatformDetails:
 
 
 class PopularWord:
-
     __slots__ = ("data", "id", "word", "type")
 
     def __init__(self, data):
@@ -746,22 +777,63 @@ class PopularWord:
 
 
 class Post:
-
     __slots__ = (
-        "data", "id", "text", "post_type", "group_id", "font_size", "color",
-        "likes_count", "created_at", "updated_at", "updated_at_parsed", "edited_at",
-        "edited_at_parsed", "liked", "tag", "reposts_count", "reposted",
-        "repostable", "reported_count", "conversation_id", "in_reply_to",
-        "in_reply_to_post", "in_reply_to_post_count", "user", "mentions",
-        "group", "conference_call", "attachment", "attachment_thumbnail",
-        "attachment_2", "attachment_2_thumbnail", "attachment_3",
-        "attachment_3_thumbnail", "attachment_4", "attachment_4_thumbnail",
-        "attachment_5", "attachment_5_thumbnail", "attachment_6",
-        "attachment_6_thumbnail", "attachment_7", "attachment_7_thumbnail",
-        "attachment_8", "attachment_8_thumbnail", "attachment_9",
-        "attachment_9_thumbnail", "shareable", "shared_url", "survey", "videos",
-        "gifts_count", "shared_thread", "thread_id", "thread", "highlighted",
-        "message_tags", "is_fail_to_send"
+        "data",
+        "id",
+        "text",
+        "post_type",
+        "group_id",
+        "font_size",
+        "color",
+        "likes_count",
+        "created_at",
+        "updated_at",
+        "updated_at_parsed",
+        "edited_at",
+        "edited_at_parsed",
+        "liked",
+        "tag",
+        "reposts_count",
+        "reposted",
+        "repostable",
+        "reported_count",
+        "conversation_id",
+        "in_reply_to",
+        "in_reply_to_post",
+        "in_reply_to_post_count",
+        "user",
+        "mentions",
+        "group",
+        "conference_call",
+        "attachment",
+        "attachment_thumbnail",
+        "attachment_2",
+        "attachment_2_thumbnail",
+        "attachment_3",
+        "attachment_3_thumbnail",
+        "attachment_4",
+        "attachment_4_thumbnail",
+        "attachment_5",
+        "attachment_5_thumbnail",
+        "attachment_6",
+        "attachment_6_thumbnail",
+        "attachment_7",
+        "attachment_7_thumbnail",
+        "attachment_8",
+        "attachment_8_thumbnail",
+        "attachment_9",
+        "attachment_9_thumbnail",
+        "shareable",
+        "shared_url",
+        "survey",
+        "videos",
+        "gifts_count",
+        "shared_thread",
+        "thread_id",
+        "thread",
+        "highlighted",
+        "message_tags",
+        "is_fail_to_send",
     )
 
     def __init__(self, data):
@@ -795,9 +867,7 @@ class Post:
 
         self.mentions = data.get("mentions")
         if self.mentions is not None:
-            self.mentions = [
-                User(mention) for mention in self.mentions
-            ]
+            self.mentions = [User(mention) for mention in self.mentions]
 
         self.group = data.get("group")
         if self.group is not None:
@@ -837,9 +907,7 @@ class Post:
 
         self.videos = data.get("videos")
         if self.videos is not None:
-            self.videos = [
-                Video(video) for video in self.videos
-            ]
+            self.videos = [Video(video) for video in self.videos]
 
         self.gifts_count = data.get("gifts_count")
         if self.gifts_count is not None:
@@ -857,9 +925,7 @@ class Post:
 
         self.thread = data.get("thread")
         if self.thread is not None:
-            self.thread = [
-                ThreadInfo(thread) for thread in self.thread
-            ]
+            self.thread = [ThreadInfo(thread) for thread in self.thread]
 
         self.highlighted = data.get("highlighted")
 
@@ -876,7 +942,6 @@ class Post:
 
 
 class PostGift:
-
     __slots__ = ("data", "count", "gift")
 
     def __init__(self, data):
@@ -892,7 +957,6 @@ class PostGift:
 
 
 class PostTag:
-
     __slots__ = ("data", "id", "tag", "post_hashtags_count")
 
     def __init__(self, data):
@@ -906,7 +970,6 @@ class PostTag:
 
 
 class PresignedUrl:
-
     __slots__ = ("data", "filename", "url")
 
     def __init__(self, data):
@@ -919,7 +982,6 @@ class PresignedUrl:
 
 
 class Promotion:
-
     __slots__ = ("data", "id", "title", "image_url", "promotion_url", "order")
 
     def __init__(self, data):
@@ -935,9 +997,7 @@ class Promotion:
 
 
 class ReceivedGift:
-
-    __slots__ = ("data", "gift", "received_count",
-                 "senders", "total_senders_count")
+    __slots__ = ("data", "gift", "received_count", "senders", "total_senders_count")
 
     def __init__(self, data):
         self.data = data
@@ -950,9 +1010,7 @@ class ReceivedGift:
 
         self.senders = data.get("senders")
         if self.senders is not None:
-            self.senders = [
-                User(sender) for sender in self.senders
-            ]
+            self.senders = [User(sender) for sender in self.senders]
 
         self.total_senders_count = data.get("total_senders_count")
 
@@ -961,7 +1019,6 @@ class ReceivedGift:
 
 
 class RecentSearch:
-
     __slots__ = ("data", "id", "type", "user", "hashtag", "keyword")
 
     def __init__(self, data):
@@ -984,7 +1041,6 @@ class RecentSearch:
 
 
 class RefreshCounterRequest:
-
     __slots__ = ("data", "counter", "status", "last_requested_at")
 
     def __init__(self, data):
@@ -998,10 +1054,16 @@ class RefreshCounterRequest:
 
 
 class Review:
-
     __slots__ = (
-        "data", "id", "comment", "reported_count", "user", "reviewer",
-        "created_at", "created_at_parsed", "mutual_review",
+        "data",
+        "id",
+        "comment",
+        "reported_count",
+        "user",
+        "reviewer",
+        "created_at",
+        "created_at_parsed",
+        "mutual_review",
     )
 
     def __init__(self, data):
@@ -1024,10 +1086,7 @@ class Review:
 
 
 class SearchCriteria:
-
-    __slots__ = (
-        "data", "nickname", "username", "biography", "prefecture", "gender"
-    )
+    __slots__ = ("data", "nickname", "username", "biography", "prefecture", "gender")
 
     def __init__(self, data):
         self.data = data
@@ -1042,54 +1101,85 @@ class SearchCriteria:
 
 
 class Setting:
-
     __slots__ = (
-        "data", "notification_group_request", "notification_group_join",
-        "notification_group_post", "notification_group_message_tag_all"
+        "data",
+        "notification_group_request",
+        "notification_group_join",
+        "notification_group_post",
+        "notification_group_message_tag_all",
     )
 
     def __init__(self, data):
         self.data = data
-        self.notification_group_request = data.get(
-            "notification_group_request")
+        self.notification_group_request = data.get("notification_group_request")
         self.notification_group_join = data.get("notification_group_join")
         self.notification_group_post = data.get("notification_group_post")
         self.notification_group_message_tag_all = data.get(
-            "notification_group_message_tag_all")
+            "notification_group_message_tag_all"
+        )
 
     def __repr__(self):
         return f"Setting(data={self.data})"
 
 
 class Settings:
-
     __slots__ = (
-        "data", "notification_like", "notification_reply",
-        "notification_repost", "notification_follow", "notification_chat",
-        "notification_chat_delete", "notification_follow_request",
-        "notification_message_tag", "notification_follow_accept",
-        "notification_group_request", "notification_group_accept",
-        "notification_group_join", "notification_group_post",
-        "notification_group_invite", "notification_group_message_tag_all",
-        "notification_profile_screenshot", "notification_following_birthdate_on",
+        "data",
+        "notification_like",
+        "notification_reply",
+        "notification_repost",
+        "notification_follow",
+        "notification_chat",
+        "notification_chat_delete",
+        "notification_follow_request",
+        "notification_message_tag",
+        "notification_follow_accept",
+        "notification_group_request",
+        "notification_group_accept",
+        "notification_group_join",
+        "notification_group_post",
+        "notification_group_invite",
+        "notification_group_message_tag_all",
+        "notification_profile_screenshot",
+        "notification_following_birthdate_on",
         "notification_follower_create_group",
         "notification_follower_conference_call",
-        "notification_group_conference_call", "notification_review",
-        "notification_call_invite", "notification_bulk_call_invite",
-        "notification_group_moderator", "notification_daily_summary",
-        "notification_footprint", "notification_latest_news",
-        "notification_popular_post", "notification_following_post_after_break",
-        "notification_hima_now", "notification_birthday_to_followers",
-        "notification_twitter_friend", "notification_contact_friend",
-        "notification_security_warning", "notification_followings_in_call",
-        "hide_active_call", "privacy_mode", "private_post", "private_user_timeline",
-        "vip_invisible_footprint_mode", "allow_reposts", "invisible_on_user_search",
-        "age_restricted_on_review", "hide_online_status",
-        "following_restricted_on_review", "visible_on_sns_friend_recommendation",
-        "following_only_call_invite", "following_only_group_invite",
-        "caution_user_chat", "hide_vip", "hide_on_invitable", "hide_hot_post",
-        "no_reply_public_timeline", "no_reply_following_timeline",
-        "no_reply_group_timeline"
+        "notification_group_conference_call",
+        "notification_review",
+        "notification_call_invite",
+        "notification_bulk_call_invite",
+        "notification_group_moderator",
+        "notification_daily_summary",
+        "notification_footprint",
+        "notification_latest_news",
+        "notification_popular_post",
+        "notification_following_post_after_break",
+        "notification_hima_now",
+        "notification_birthday_to_followers",
+        "notification_twitter_friend",
+        "notification_contact_friend",
+        "notification_security_warning",
+        "notification_followings_in_call",
+        "hide_active_call",
+        "privacy_mode",
+        "private_post",
+        "private_user_timeline",
+        "vip_invisible_footprint_mode",
+        "allow_reposts",
+        "invisible_on_user_search",
+        "age_restricted_on_review",
+        "hide_online_status",
+        "following_restricted_on_review",
+        "visible_on_sns_friend_recommendation",
+        "following_only_call_invite",
+        "following_only_group_invite",
+        "caution_user_chat",
+        "hide_vip",
+        "hide_on_invitable",
+        "hide_hot_post",
+        "no_reply_public_timeline",
+        "no_reply_following_timeline",
+        "no_reply_group_timeline",
     )
 
     def __init__(self, data):
@@ -1100,78 +1190,74 @@ class Settings:
         self.notification_follow = data.get("notification_follow")
         self.notification_chat = data.get("notification_chat")
         self.notification_chat_delete = data.get("notification_chat_delete")
-        self.notification_follow_request = data.get(
-            "notification_follow_request")
+        self.notification_follow_request = data.get("notification_follow_request")
         self.notification_message_tag = data.get("notification_message_tag")
-        self.notification_follow_accept = data.get(
-            "notification_follow_accept")
-        self.notification_group_request = data.get(
-            "notification_group_request")
+        self.notification_follow_accept = data.get("notification_follow_accept")
+        self.notification_group_request = data.get("notification_group_request")
         self.notification_group_accept = data.get("notification_group_accept")
         self.notification_group_join = data.get("notification_group_join")
         self.notification_group_post = data.get("notification_group_post")
         self.notification_group_invite = data.get("notification_group_invite")
         self.notification_group_message_tag_all = data.get(
-            "notification_group_message_tag_all")
+            "notification_group_message_tag_all"
+        )
         self.notification_profile_screenshot = data.get(
-            "notification_profile_screenshot")
+            "notification_profile_screenshot"
+        )
         self.notification_following_birthdate_on = data.get(
-            "notification_following_birthdate_on")
+            "notification_following_birthdate_on"
+        )
         self.notification_follower_create_group = data.get(
-            "notification_follower_create_group")
+            "notification_follower_create_group"
+        )
         self.notification_follower_conference_call = data.get(
-            "notification_follower_conference_call")
+            "notification_follower_conference_call"
+        )
         self.notification_group_conference_call = data.get(
-            "notification_group_conference_call")
+            "notification_group_conference_call"
+        )
         self.notification_review = data.get("notification_review")
         self.notification_call_invite = data.get("notification_call_invite")
-        self.notification_bulk_call_invite = data.get(
-            "notification_bulk_call_invite")
-        self.notification_group_moderator = data.get(
-            "notification_group_moderator")
-        self.notification_daily_summary = data.get(
-            "notification_daily_summary")
+        self.notification_bulk_call_invite = data.get("notification_bulk_call_invite")
+        self.notification_group_moderator = data.get("notification_group_moderator")
+        self.notification_daily_summary = data.get("notification_daily_summary")
         self.notification_footprint = data.get("notification_footprint")
         self.notification_latest_news = data.get("notification_latest_news")
         self.notification_popular_post = data.get("notification_popular_post")
         self.notification_following_post_after_break = data.get(
-            "notification_following_post_after_break")
+            "notification_following_post_after_break"
+        )
         self.notification_hima_now = data.get("notification_hima_now")
         self.notification_birthday_to_followers = data.get(
-            "notification_birthday_to_followers")
-        self.notification_twitter_friend = data.get(
-            "notification_twitter_friend")
-        self.notification_contact_friend = data.get(
-            "notification_contact_friend")
-        self.notification_security_warning = data.get(
-            "notification_security_warning")
+            "notification_birthday_to_followers"
+        )
+        self.notification_twitter_friend = data.get("notification_twitter_friend")
+        self.notification_contact_friend = data.get("notification_contact_friend")
+        self.notification_security_warning = data.get("notification_security_warning")
         self.notification_followings_in_call = data.get(
-            "notification_followings_in_call")
+            "notification_followings_in_call"
+        )
         self.hide_active_call = data.get("hide_active_call")
         self.privacy_mode = data.get("privacy_mode")
         self.private_post = data.get("private_post")
         self.private_user_timeline = data.get("private_user_timeline")
-        self.vip_invisible_footprint_mode = data.get(
-            "vip_invisible_footprint_mode")
+        self.vip_invisible_footprint_mode = data.get("vip_invisible_footprint_mode")
         self.allow_reposts = data.get("allow_reposts")
         self.invisible_on_user_search = data.get("invisible_on_user_search")
         self.age_restricted_on_review = data.get("age_restricted_on_review")
         self.hide_online_status = data.get("hide_online_status")
-        self.following_restricted_on_review = data.get(
-            "following_restricted_on_review")
+        self.following_restricted_on_review = data.get("following_restricted_on_review")
         self.visible_on_sns_friend_recommendation = data.get(
-            "visible_on_sns_friend_recommendation")
-        self.following_only_call_invite = data.get(
-            "following_only_call_invite")
-        self.following_only_group_invite = data.get(
-            "following_only_group_invite")
+            "visible_on_sns_friend_recommendation"
+        )
+        self.following_only_call_invite = data.get("following_only_call_invite")
+        self.following_only_group_invite = data.get("following_only_group_invite")
         self.caution_user_chat = data.get("caution_user_chat")
         self.hide_vip = data.get("hide_vip")
         self.hide_on_invitable = data.get("hide_on_invitable")
         self.hide_hot_post = data.get("hide_hot_post")
         self.no_reply_public_timeline = data.get("no_reply_public_timeline")
-        self.no_reply_following_timeline = data.get(
-            "no_reply_following_timeline")
+        self.no_reply_following_timeline = data.get("no_reply_following_timeline")
         self.no_reply_group_timeline = data.get("no_reply_group_timeline")
 
     def __repr__(self):
@@ -1179,7 +1265,6 @@ class Settings:
 
 
 class Shareable:
-
     __slots__ = ("data", "post", "group", "thread")
 
     def __init__(self, data):
@@ -1202,7 +1287,6 @@ class Shareable:
 
 
 class SharedUrl:
-
     __slots__ = ("data", "url", "title", "description", "image_url")
 
     def __init__(self, data):
@@ -1217,9 +1301,14 @@ class SharedUrl:
 
 
 class SnsInfo:
-
     __slots__ = (
-        "data", "type", "uid", "nickname", "biography", "profile_image", "gender"
+        "data",
+        "type",
+        "uid",
+        "nickname",
+        "biography",
+        "profile_image",
+        "gender",
     )
 
     def __init__(self, data):
@@ -1236,10 +1325,7 @@ class SnsInfo:
 
 
 class Sticker:
-
-    __slots__ = (
-        "data", "id", "sticker_pack_id", "width", "height", "url", "extension"
-    )
+    __slots__ = ("data", "id", "sticker_pack_id", "width", "height", "url", "extension")
 
     def __init__(self, data):
         self.data = data
@@ -1255,10 +1341,7 @@ class Sticker:
 
 
 class StickerPack:
-
-    __slots__ = (
-        "data", "id", "name", "description", "cover", "stickers", "order"
-    )
+    __slots__ = ("data", "id", "name", "description", "cover", "stickers", "order")
 
     def __init__(self, data):
         self.data = data
@@ -1269,9 +1352,7 @@ class StickerPack:
 
         self.stickers = data.get("stickers")
         if self.stickers is not None:
-            self.stickers = [
-                Sticker(sticker) for sticker in self.stickers
-            ]
+            self.stickers = [Sticker(sticker) for sticker in self.stickers]
 
         self.order = data.get("order")
 
@@ -1280,7 +1361,6 @@ class StickerPack:
 
 
 class Survey:
-
     __slots__ = ("data", "id", "votes_count", "choices", "voted")
 
     def __init__(self, data):
@@ -1290,9 +1370,7 @@ class Survey:
 
         self.choices = data.get("choices")
         if self.choices is not None:
-            self.choices = [
-                Choice(choice) for choice in self.choices
-            ]
+            self.choices = [Choice(choice) for choice in self.choices]
 
         self.voted = data.get("voted")
 
@@ -1301,11 +1379,21 @@ class Survey:
 
 
 class ThreadInfo:
-
     __slots__ = (
-        "data", "id", "title", "owner", "last_post", "unread_count", "posts_count",
-        "created_at", "created_at_parsed", "updated_at", "updated_at_parsed",
-        "thread_icon", "is_joined", "new_updates"
+        "data",
+        "id",
+        "title",
+        "owner",
+        "last_post",
+        "unread_count",
+        "posts_count",
+        "created_at",
+        "created_at_parsed",
+        "updated_at",
+        "updated_at_parsed",
+        "thread_icon",
+        "is_joined",
+        "new_updates",
     )
 
     def __init__(self, data):
@@ -1336,22 +1424,54 @@ class ThreadInfo:
 
 
 class User:
-
     # TODO: last_logged_in_at, created_at, updated_time_millis 確かめる
 
     __slots__ = (
-        "data", "id", "nickname", "prefecture", "biography", "gender", "generation",
-        "last_logged_in_at", "last_logged_in_at_parsed", "created_at",
-        "created_at_parsed", "badge", "followers_count", "followings_count",
-        "posts_count", "groups_users_count", "reviews_count", "login_streak_count",
-        "profile_icon", "profile_icon_thumbnail", "cover_image",
-        "cover_image_thumbnail", "is_private", "is_vip", "is_vip_hidden",
-        "is_chat_request_on", "mobile_number", "is_age_verified", "is_new_user",
-        "online_status", "country_code", "is_recently_banned", "is_dangerous_user",
-        "is_trusted_different_generation", "is_selected_interests", "group_user",
-        "restricted_review_by", "is_following", "is_followed_by",
-        "is_follow_pending", "is_hidden", "connected_by", "contact_phones",
-        "updated_time_millis", "updated_time_millis_parsed"
+        "data",
+        "id",
+        "nickname",
+        "prefecture",
+        "biography",
+        "gender",
+        "generation",
+        "last_logged_in_at",
+        "last_logged_in_at_parsed",
+        "created_at",
+        "created_at_parsed",
+        "badge",
+        "followers_count",
+        "followings_count",
+        "posts_count",
+        "groups_users_count",
+        "reviews_count",
+        "login_streak_count",
+        "profile_icon",
+        "profile_icon_thumbnail",
+        "cover_image",
+        "cover_image_thumbnail",
+        "is_private",
+        "is_vip",
+        "is_vip_hidden",
+        "is_chat_request_on",
+        "mobile_number",
+        "is_age_verified",
+        "is_new_user",
+        "online_status",
+        "country_code",
+        "is_recently_banned",
+        "is_dangerous_user",
+        "is_trusted_different_generation",
+        "is_selected_interests",
+        "group_user",
+        "restricted_review_by",
+        "is_following",
+        "is_followed_by",
+        "is_follow_pending",
+        "is_hidden",
+        "connected_by",
+        "contact_phones",
+        "updated_time_millis",
+        "updated_time_millis_parsed",
     )
 
     def __init__(self, data):
@@ -1363,8 +1483,7 @@ class User:
         self.gender = data.get("gender")
         self.generation = data.get("generation")
         self.last_logged_in_at = data.get("last_logged_in_at")
-        self.last_logged_in_at_parsed = parse_datetime(
-            data.get("last_logged_in_at"))
+        self.last_logged_in_at_parsed = parse_datetime(data.get("last_logged_in_at"))
         self.created_at = data.get("created_at")
         self.created_at_parsed = parse_datetime(data.get("created_at"))
         self.badge = data.get("title")
@@ -1390,7 +1509,8 @@ class User:
         self.is_recently_banned = data.get("recently_kenta")
         self.is_dangerous_user = data.get("dangerous_user")
         self.is_trusted_different_generation = data.get(
-            "from_different_generation_and_trusted")
+            "from_different_generation_and_trusted"
+        )
         self.is_selected_interests = data.get("interests_selected")
 
         self.group_user = data.get("group_user")
@@ -1406,16 +1526,15 @@ class User:
         self.contact_phones = data.get("contact_phones")
         self.updated_time_millis = data.get("updated_time_millis")
         self.updated_time_millis_parsed = parse_datetime(
-            data.get("updated_time_millis"))
+            data.get("updated_time_millis")
+        )
 
     def __repr__(self):
         return f"User(data={self.data})"
 
 
 class UserAuth:
-
-    __slots__ = ("data", "user_id", "access_token",
-                 "refresh_token", "expires_in")
+    __slots__ = ("data", "user_id", "access_token", "refresh_token", "expires_in")
 
     def __init__(self, data):
         self.data = data
@@ -1433,7 +1552,6 @@ class UserAuth:
 
 
 class UserWrapper:
-
     __slots__ = ("data", "id", "user")
 
     def __init__(self, data):
@@ -1449,10 +1567,17 @@ class UserWrapper:
 
 
 class Video:
-
     __slots__ = (
-        "data", "id", "completed", "width", "height", "bitrate",
-        "views_count", "video_url", "thumbnail_url", "thumbnail_big_url"
+        "data",
+        "id",
+        "completed",
+        "width",
+        "height",
+        "bitrate",
+        "views_count",
+        "video_url",
+        "thumbnail_url",
+        "thumbnail_big_url",
     )
 
     def __init__(self, data):
@@ -1472,7 +1597,6 @@ class Video:
 
 
 class Walkthrough:
-
     __slots__ = ("data", "title", "url")
 
     def __init__(self, data):
@@ -1485,7 +1609,6 @@ class Walkthrough:
 
 
 class WalletTransaction:
-
     __slots__ = ("data", "id", "created_at", "description", "amount", "coins")
 
     def __init__(self, data):

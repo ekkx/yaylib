@@ -39,9 +39,7 @@ tape = vcr.VCR(
 
 
 class YaylibTestCase(unittest.TestCase):
-
     def setUp(self):
-
         if access_token:
             self.api = yaylib.Client(
                 access_token=access_token,
