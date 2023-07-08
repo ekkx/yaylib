@@ -12,8 +12,8 @@
     </a>
     <h3 align="center">yaylib</h3>
     <p align="center">
-        「<strong>yaylib</strong>」は同世代でつながるチャットアプリ、Yay!（イェイ）の API クライアントです。<br />
-        このライブラリを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
+        「<strong>yaylib</strong>」は同世代でつながるチャットアプリ、Yay!（イェイ）の API ラッパーです。<br />
+        このクライアントを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
         <br />
         <br />
         <a href="https://github.com/qvco/yaylib/blob/master/docs/README.md">
@@ -59,7 +59,7 @@
 
 **※ Python 3.11 かそれ以上のバージョンが必要です。**
 
-ライブラリをインストールするには、以下のコマンドを実行します:
+「yaylib」をインストールするには、以下のコマンドを実行します:
 
 ```bash
 pip install yaylib
@@ -110,7 +110,7 @@ for post in timeline.posts:
 
 ## yaylib で誕生したロボットたち
 
-yaylib を用いて開発したロボットがある場合は、ぜひ教えてください！
+「yaylib」を用いて開発したロボットがある場合は、ぜひ教えてください！
 
 <table align="center">
     <thead>
@@ -151,7 +151,7 @@ yaylib を用いて開発したロボットがある場合は、ぜひ教えて�
 - <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com</a> にメールを送信する
 - <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
 
-のいずれかの方法でコンタクトしてください。詳しくは[こちら](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)から！
+のいずれかの方法でコンタクトしてください。詳しくは[こちらから](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)！
 
 <!-- 免責事項 -->
 
