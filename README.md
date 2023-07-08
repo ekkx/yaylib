@@ -13,7 +13,7 @@
     <h3 align="center">yaylib</h3>
     <p align="center">
         「<strong>yaylib</strong>」は同世代でつながるチャットアプリ、Yay!（イェイ）の API ラッパーです。<br />
-        このクライアントを使用することで、あらゆる操作の自動化や、ボットの開発が可能です。
+        あらゆる操作の自動化や、ボットの開発が可能です。
         <br />
         <br />
         <a href="https://github.com/qvco/yaylib/blob/master/docs/README.md">
@@ -48,7 +48,7 @@
 
 ## Buy me a coffee
 
-もしこのライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">ぜひスターをお願いします</a> ⭐️  
+このライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">スターをお願いします</a> ⭐️  
 また、Buy Me a Coffee からご支援いただけますと幸いです。
 
 <a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
