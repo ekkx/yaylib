@@ -5,6 +5,8 @@ yaylib.egg-info/
 cassettes/
 nanameue/
 config/
+build/
+dist/
 
 .py
 agora.py
