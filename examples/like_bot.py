@@ -3,10 +3,9 @@ import yaylib
 
 
 class LikeBot:
-    def __init__(self, email=None, password=None, token=None):
-        self.api = yaylib.Client(token)
-        if token is None:
-            self.api.login(email, password)
+    def __init__(self, email=None, password=None, secret_token=None):
+        self.api = yaylib.Client()
+        self.api.login(email, password, secret_token)
 
     def run(self, amount=None):
         min_collect = 30 if amount is None else amount
@@ -48,6 +47,7 @@ class LikeBot:
 if __name__ == "__main__":
     email = "メールアドレス"
     password = "パスワード"
+    secret_token = None
 
-    bot = LikeBot()
+    bot = LikeBot(email, password, secret_token)
     bot.run()
