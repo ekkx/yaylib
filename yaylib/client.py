@@ -44,7 +44,15 @@ from .api.chat import (
     get_total_chat_requests,
     hide_chat,
     invite_to_chat,
-    
+    kick_users_from_chat,
+    pin_chat,
+    read_message,
+    refresh_chat_rooms,
+    remove_chat_rooms,
+    report_chat_room,
+    send_message,
+    unhide_chat,
+    unpin_chat,
 )
 from .api.group import *
 from .api.login import *
