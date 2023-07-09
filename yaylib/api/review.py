@@ -1,11 +1,9 @@
 from datetime import datetime
 from typing import List
 
-from ..config import *
-from ..errors import *
-from ..models import *
-from ..responses import *
-from ..utils import *
+from ..config import Endpoints
+from ..responses import ReviewsResponse
+from ..utils import signed_info_calculating
 
 
 def create_review(self, user_id: int, comment: str):

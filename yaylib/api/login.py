@@ -5,11 +5,10 @@ import json
 
 from cryptography.fernet import Fernet
 
-from ..config import *
-from ..errors import *
-from ..models import *
-from ..responses import *
-from ..utils import *
+from ..config import Endpoints
+from ..errors import AuthenticationError, ForbiddenError
+from ..responses import LoginUserResponse, LoginUpdateResponse, TokenResponse
+from ..utils import colors, console_print, signed_info_calculating
 
 
 def change_email(

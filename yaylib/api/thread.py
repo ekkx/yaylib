@@ -1,11 +1,8 @@
-from datetime import datetime
 from typing import List
 
-from ..config import *
-from ..errors import *
-from ..models import *
-from ..responses import *
-from ..utils import *
+from ..config import Endpoints
+from ..models import ThreadInfo
+from ..responses import GroupThreadListResponse, PostsResponse
 
 
 def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:

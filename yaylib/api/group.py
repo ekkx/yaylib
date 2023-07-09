@@ -1,11 +1,21 @@
 from datetime import datetime
-from typing import Union, List
+from typing import List
 
-from ..config import *
-from ..errors import *
-from ..models import *
-from ..responses import *
-from ..utils import *
+from ..config import Endpoints
+from ..models import CreateGroupQuota
+from ..responses import (
+    CreateGroupResponse,
+    GroupCategoriesResponse,
+    GroupResponse,
+    GroupsRelatedResponse,
+    GroupsResponse,
+    GroupUserResponse,
+    GroupUsersResponse,
+    UnreadStatusResponse,
+    UsersResponse,
+    UsersByTimestampResponse,
+)
+from ..utils import signed_info_calculating
 
 
 def accept_moderator_offer(self, group_id: int):

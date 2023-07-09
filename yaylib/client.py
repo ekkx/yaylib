@@ -371,7 +371,7 @@ from .responses import (
     HimaUsersResponse,
     UsersByTimestampResponse,
     UserTimestampResponse,
-    WebSocketTokenResponse
+    WebSocketTokenResponse,
 )
 
 

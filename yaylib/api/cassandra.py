@@ -1,8 +1,5 @@
-from ..config import *
-from ..errors import *
-from ..models import *
-from ..responses import *
-from ..utils import *
+from ..config import Configs
+from ..responses import ActivitiesResponse
 
 
 def get_user_activities(self, **params) -> ActivitiesResponse:
