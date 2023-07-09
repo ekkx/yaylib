@@ -1,3 +1,15 @@
+"""
+
+Yay! (nanameue, Inc.) API Client
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+An API wrapper for Yay! (yay.space) written in Python.
+
+:copyright: (c) 2023-present Qvco, Konn
+:license: MIT, see LICENSE for more details.
+
+"""
+
 from .client import *
 from .config import *
 from .errors import *
