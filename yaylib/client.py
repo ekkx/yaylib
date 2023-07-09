@@ -20,8 +20,32 @@ from .api.call import (
     start_call,
     stop_call,
 )
-from .api.cassandra import *
-from .api.chat import *
+from .api.cassandra import (
+    get_user_activities,
+    get_user_merged_activities,
+    received_notification,
+)
+from .api.chat import (
+    accept_chat_request,
+    check_unread_status,
+    create_group_chat,
+    create_private_chat,
+    delete_background,
+    delete_message,
+    edit_chat_room,
+    get_chatable_users,
+    get_gifs_data,
+    get_hidden_chat_rooms,
+    get_main_chat_rooms,
+    get_messages,
+    get_request_chat_rooms,
+    get_chat_room,
+    get_sticker_packs,
+    get_total_chat_requests,
+    hide_chat,
+    invite_to_chat,
+    
+)
 from .api.group import *
 from .api.login import *
 from .api.misc import *
