@@ -167,8 +167,27 @@ from .api.post import (
     view_video,
     vote_survey,
 )
-from .api.review import *
-from .api.thread import *
+from .api.review import (
+    create_review,
+    create_reviews,
+    delete_reviews,
+    get_my_reviews,
+    get_reviews,
+    pin_review,
+    unpin_review,
+)
+from .api.thread import (
+    add_post_to_thread,
+    convert_post_to_thread,
+    create_thread,
+    get_group_thread_list,
+    get_thread_joined_statuses,
+    get_thread_posts,
+    join_thread,
+    leave_thread,
+    remove_thread,
+    update_thread,
+)
 from .api.user import *
 from .config import *
 from .errors import (
