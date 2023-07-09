@@ -3,7 +3,7 @@ import httpx
 
 from PIL import Image
 from datetime import datetime
-from typing import Dict, List
+from typing import List
 
 from ..config import *
 from ..errors import *
