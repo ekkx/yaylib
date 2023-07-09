@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Union, Dict, List
+from typing import Union, List
 
 from ..config import *
 from ..errors import *
