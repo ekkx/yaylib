@@ -1105,7 +1105,7 @@ class Client(API):
         サークル参加リクエストを断ります
 
         """
-        return decline_ownership_offer(self, group_id, user_id)
+        return decline_group_join_request(self, group_id, user_id)
 
     def unpin_group(self, group_id: int) -> dict:
         """
