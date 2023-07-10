@@ -36,7 +36,6 @@ from ..responses import (
     PostsResponse,
     UsersByTimestampResponse,
 )
-from ..utils import *
 
 
 def bump_call(self, call_id: int, participant_limit: int = None):
