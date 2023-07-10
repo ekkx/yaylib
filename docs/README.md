@@ -33,13 +33,13 @@
 
 **※ Python 3.11 かそれ以上のバージョンが必要です。**
 
-ライブラリをインストールするには、以下のコマンドを実行します:
+「yaylib」をインストールするには、以下のコマンドを実行します:
 
 ```bash
 pip install yaylib
 ```
 
-※ 開発バージョンをインストールする場合は、以下の手順を実行します:
+開発バージョンをインストールする場合は、以下の手順を実行します:
 
 ```bash
 git clone https://github.com/qvco/yaylib
@@ -52,6 +52,50 @@ pip install -e .
 ```
 
 ## 使用方法 / Usage
+
+以下の例は、簡単なクライアントの初期化方法です。
+
+```python
+import yaylib
+
+email = "メールアドレス"
+password = "パスワード"
+
+api = yaylib.Client()
+api.login(email, password)
+```
+
+「yaylib」ではログインのレート制限を回避するために、ローカルストレージに保存された認証情報を再利用します。
+
+その時に必要になるのが、認証情報を復号化するための`secret_key`という鍵です。
+
+```python
+import yaylib
+
+email = "メールアドレス"
+password = "パスワード"
+secret_key = "wFTwqRSddPzcfs_U2D1NIxFueWwPToVxjA3woDopKWk="
+
+api = yaylib.Client()
+api.login(email, password, secret_key)
+```
+
+`secret_key`は初回ログイン時にターミナルに表示されます。
+
+また、Clientクラスのsecret_keyフィールドにアクセスすることで取得できます。
+
+```python
+import yaylib
+
+email = "メールアドレス"
+password = "パスワード"
+
+api = yaylib.Client()
+api.login(email, password)
+
+api.secret_key # ログインした後にsecret_keyを取得
+>>> wFTwqRSddPzcfs_U2D1NIxFueWwPToVxjA3woDopKWk=
+```
 
 ### Client クラスについて
 
@@ -119,27 +163,6 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>yay.spaceのプロダクションホスト</td>
 	</tr>
 </table>
-
-### 使用例
-
-以下の例を使用して、API クライアントを初期化します。
-
-```python
-import yaylib
-
-api = yaylib.Client()
-api.login(email="メールアドレス", password="パスワード")
-```
-
-アクセストークンを直接設定することも可能です。
-
-```python
-import yaylib
-
-api = yaylib.Client(access_token="アクセストークン")
-
-api.create_post("こんにちは")
-```
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
