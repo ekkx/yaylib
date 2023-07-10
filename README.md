@@ -17,7 +17,7 @@
         <br />
         <br />
         <a href="https://github.com/qvco/yaylib/blob/master/docs/README.md">
-            <strong>詳しい機能の詳細や使い方はこちらから »</strong>
+            <strong>ドキュメントはこちらから »</strong>
         </a>
         <br />
         <br />
