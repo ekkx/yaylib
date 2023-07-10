@@ -204,7 +204,7 @@ def login_with_email(
     console_print(
         f"Your 'secret_key' for {colors.BOLD + email + colors.RESET} is: {colors.OKGREEN + secret_key.decode() + colors.RESET}",
         "Please copy and securely store this key in a safe location.",
-        "For more information, visit: https://github.com/qvco/yaylib/blob/main/docs/API-Reference/login/login.md",
+        "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
     )
 
     save_credentials(
