@@ -34,24 +34,15 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
     <li><a href="#インストール">インストール</a></li>
     <li><a href="#使用例">使用例</a></li>
     <li><a href="#yaylib-で誕生したロボットたち">yaylib で誕生したロボットたち</a></li>
+    <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
     <li><a href="#共同開発について">共同開発について</a></li>
     <li><a href="#免責事項">免責事項</a></li>
     <li><a href="#利用許諾">利用許諾</a></li>
   </ol>
 </details>
-
-<!-- Buy me a coffee -->
-
-## Buy me a coffee
-
-このライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">スターをお願いします</a> ⭐️  
-また、Buy Me a Coffee からご支援いただけますと幸いです。
-
-<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 <!-- インストール -->
 
@@ -140,6 +131,15 @@ for post in timeline.posts:
         </tr>
     </tbody>
 </table>
+
+<!-- Buy me a coffee -->
+
+## Buy me a coffee
+
+このライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">スターをお願いします</a> ⭐️  
+また、Buy Me a Coffee からご支援いただけますと幸いです。
+
+<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 <!-- 共同開発について -->
 
