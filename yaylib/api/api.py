@@ -28,6 +28,7 @@ import logging
 from json import JSONDecodeError
 
 import httpx
+from cryptography.fernet import Fernet
 
 from .login import load_credentials, save_credentials, get_token
 
@@ -145,6 +146,7 @@ class API:
                     credentials = load_credentials(self)
 
                     if credentials is not None:
+                        fernet = Fernet(self.secret_key)
                         refresh_token = credentials["refresh_token"]
                         response = get_token(
                             self,
@@ -153,9 +155,10 @@ class API:
                         )
                         save_credentials(
                             self,
-                            response.access_token,
-                            response.refresh_token,
-                            response.user_id,
+                            fernet=fernet,
+                            access_token=response.access_token,
+                            refresh_token=response.refresh_token,
+                            user_id=response.user_id,
                         )
                         self.session.headers[
                             "Authorization"
