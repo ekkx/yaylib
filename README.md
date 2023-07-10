@@ -56,7 +56,7 @@
 pip install yaylib
 ```
 
-開発バージョンをインストールするには、以下の手順を実行します:
+開発バージョンをインストールする場合は、以下の手順を実行します:
 
 ```bash
 git clone https://github.com/qvco/yaylib
@@ -136,7 +136,7 @@ for post in timeline.posts:
 
 ## Buy me a coffee
 
-このライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">スターをお願いします</a> ⭐️  
+このライブラリが気に入っていただけたら、リポジトリに<a href="https://github.com/qvco/yaylib/">スターをお願いします</a> ⭐️  
 また、Buy Me a Coffee からご支援いただけますと幸いです。
 
 <a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
@@ -145,13 +145,13 @@ for post in timeline.posts:
 
 ## 共同開発について
 
-私たちと開発することに興味を持っていただけているなら、ぜひ参加してください！
+私たちと開発することに興味を持っていただけているなら、ぜひ参加して頂きたいです！
 
 - <a href="https://github.com/qvco/yaylib/pulls">プルリクエストを送信する</a>
-- <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com</a> にメールを送信する
 - <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
+- <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.comにメールを送信する</a>
 
-のいずれかの方法でコンタクトしてください。詳しくは[こちらから](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)！
+のいずれかの方法で繋がりましょう。詳しくは[こちらから](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)！
 
 <!-- 免責事項 -->
 
