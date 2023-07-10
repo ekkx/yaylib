@@ -136,7 +136,7 @@ for post in timeline.posts:
 
 ## Buy me a coffee
 
-このライブラリが気に入っていただけたら、リポジトリに<a href="https://github.com/qvco/yaylib/">スターをお願いします</a> ⭐️  
+このライブラリが気に入っていただけたら、**リポジトリに<a href="https://github.com/qvco/yaylib/">スターをお願いします</a>(⭐)**  
 また、Buy Me a Coffee からご支援いただけますと幸いです。
 
 <a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
@@ -149,7 +149,7 @@ for post in timeline.posts:
 
 - <a href="https://github.com/qvco/yaylib/pulls">プルリクエストを送信する</a>
 - <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
-- <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.comにメールを送信する</a>
+- <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com にメールを送信する</a>
 
 のいずれかの方法で繋がりましょう。詳しくは[こちらから](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)！
 
@@ -159,9 +159,19 @@ for post in timeline.posts:
 
 yaylib は、API の公式なサポートやメンテナンスを提供するものではありません。このクライアントを使用する場合、利用者は**リスクや責任を自己負担**できるものとします。このクライアントによって提供される情報やデータの正確性、信頼性、完全性、適時性について、いかなる保証も行いません。また、このクライアントの使用によって生じた損害や不利益について、一切の責任を負いかねます。利用者は自己の責任において、このクライアントを使用し、API にアクセスするものとします。なお、この免責事項は予告なく変更される場合があります。
 
-<!-- 利用許諾 -->
+<!-- ライセンス -->
 
-## 利用許諾
+## ライセンス
+
+<p align="center">
+  <a href="https://github.com/qvco">
+    <img src="https://github.com/qvco/yaylib/assets/77382767/5d6aef18-5d98-4c9b-9f54-791308b393af" width="256" height="256">
+  </a>
+</p>
+
+<p align="center">
+  <strong>MIT © <a href="https://github.com/qvco">Qvco</a> & <a href="https://github.com/konn-koko">Konn</a></strong>
+</p>
 
 フルライセンスは [こちら](https://github.com/qvco/yaylib/blob/master/LICENSE) からご確認いただけます。  
 このプロジェクトは、 **【MIT ライセンス】** の条件の下でライセンスされています。
