@@ -78,7 +78,7 @@ class API:
         self.base_path = base_path
         self.host = "https://" + host
 
-        self.generate_all_uuids()
+        self._generate_all_uuids()
         self.session = httpx.Client(proxies=self.proxy, timeout=self.timeout)
         self.session.headers.update(Configs.REQUEST_HEADERS)
         self.session.headers.update({"X-Device-Uuid": self.device_uuid})
@@ -105,7 +105,7 @@ class API:
 
         self.logger.info("yaylib version: " + self.yaylib_version + " started")
 
-    def request(
+    def _request(
         self, method, endpoint, params=None, payload=None, user_auth=True, headers=None
     ):
         headers = headers or self.session.headers
@@ -212,12 +212,13 @@ class API:
         user_auth=True,
         headers=None,
     ):
-        response = self.request(method, endpoint, params, payload, user_auth, headers)
+        response = self._request(method, endpoint, params, payload, user_auth, headers)
         if data_type:
             return self._construct_response(response, data_type)
         return response
 
-    def _construct_response(self, data, data_type):
+    @staticmethod
+    def _construct_response(data, data_type):
         if data_type is not None:
             if isinstance(data, list):
                 data = [data_type(result) for result in data]
@@ -231,7 +232,7 @@ class API:
             raise AuthenticationError(message)
 
     def _handle_response(self, response, json_response):
-        translated_response = self.translate_error_message(json_response)
+        translated_response = self._translate_error_message(json_response)
         if response.status_code == 400:
             raise BadRequestError(translated_response)
         if response.status_code == 401:
@@ -248,7 +249,7 @@ class API:
             raise HTTPError(translated_response)
         return json_response
 
-    def translate_error_message(self, response):
+    def _translate_error_message(self, response):
         if self.err_lang == "ja":
             try:
                 error_code = response.get("error_code", None)
@@ -263,6 +264,6 @@ class API:
         else:
             return response
 
-    def generate_all_uuids(self):
+    def _generate_all_uuids(self):
         self.device_uuid = generate_uuid()[0]
         self.uuid, self.url_uuid = generate_uuid()
