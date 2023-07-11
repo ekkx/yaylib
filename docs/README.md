@@ -308,7 +308,7 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>ユーザーのタイムラインを取得します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/master/docs/API-Reference/post/like_posts.md">like_posts()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/master/docs/API-Reference/post/like.md">like()</a></code></td>
 		<td>投稿にいいねします</td>
 	</tr>
 	<tr>
@@ -328,7 +328,7 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>投稿を通報します</td>
 	</tr>
 	<tr>
-		<td><code><a href="https://github.com/qvco/yaylib/blob/master/docs/API-Reference/post/unlike_post.md">unlike_post()</a></code></td>
+		<td><code><a href="https://github.com/qvco/yaylib/blob/master/docs/API-Reference/post/unlike.md">unlike()</a></code></td>
 		<td>投稿のいいねを解除します</td>
 	</tr>
 	<tr>
