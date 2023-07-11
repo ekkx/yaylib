@@ -2141,7 +2141,7 @@ class Client(API):
         """
         return get_user_timeline(self, user_id, **params)
 
-    def like_posts(self, post_ids: List[int]) -> LikePostsResponse:
+    def like(self, post_ids: List[int]) -> LikePostsResponse:
         """
 
         投稿にいいねします
@@ -2203,7 +2203,7 @@ class Client(API):
             screenshot_4_filename,
         )
 
-    def unlike_post(self, post_id: int) -> dict:
+    def unlike(self, post_id: int) -> dict:
         """
 
         投稿のいいねを解除します
