@@ -34,11 +34,11 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#インストール">インストール</a></li>
-    <li><a href="#使用例">使用例</a></li>
-    <li><a href="#yaylib-で誕生したロボットたち">yaylib で誕生したロボットたち</a></li>
+    <li><a href="#-installation">インストール</a></li>
+    <li><a href="#-quick-example">使用例</a></li>
+    <li><a href="#crown-yaylib-で誕生したロボットたち">yaylib で誕生したロボットたち</a></li>
     <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
-    <li><a href="#共同開発について">共同開発について</a></li>
+    <li><a href="#handshake-共同開発について">共同開発について</a></li>
     <li><a href="#免責事項">免責事項</a></li>
     <li><a href="#利用許諾">利用許諾</a></li>
   </ol>
@@ -46,7 +46,7 @@
 
 <!-- インストール -->
 
-## インストール
+## [<img src="https://github.com/qvco/yaylib/assets/77382767/2f632349-0cbc-4c81-bc19-11d24c8c142b" width="30" height="30" />](https://github.com/qvco) Installation
 
 **※ Python 3.11 かそれ以上のバージョンが必要です。**
 
@@ -72,13 +72,82 @@ pip install -e .
 
 <!-- 使用例 -->
 
-## 使用例
+## [<img src="https://github.com/qvco/yaylib/assets/77382767/dc7dcea0-c581-4039-8fc2-3994884d2ba3" width="30" height="30" />](https://github.com/qvco) Quick Example
 
-メールアドレスとパスワードを使用してログインしたあと、タイムラインをキーワードで検索して「いいね」するコードです。
+#### ✨ 投稿を作成する
 
 ```python
 import yaylib
 
+api = yaylib.Client()
+api.login(email="メールアドレス", password="パスワード")
+
+api.create_post("Hello with yaylib!")
+```
+
+#### ✨ 埋め込みリンクの投稿を作成する
+
+```python
+import yaylib
+
+api = yaylib.Client()
+api.login(email="メールアドレス", password="パスワード")
+
+api.create_post("Hello with yaylib!", shared_url="https://github.com/qvco/yaylib")
+```
+
+<p align="center">
+    <img src="https://github.com/qvco/yaylib/assets/77382767/44aa5df8-4654-4f8d-a73f-79d530b8a0e1" alt="Writing Text Threads" width="400px" />
+</p>
+
+#### ✨ 画像と一緒に投稿を作成する
+
+```python
+import yaylib
+
+api = yaylib.Client()
+api.login(email="メールアドレス", password="パスワード")
+
+filename = api.upload_image(
+    image_type="post", # 画像の使い道を指定
+    image_path="./path/to/image" # ローカルにある画像のパス
+)
+
+api.create_post("Hello with yaylib!", attachment_filename=filename)
+```
+
+#### ✨ 投稿に返信する
+
+```python
+import yaylib
+
+api = yaylib.Client()
+api.login(email="メールアドレス", password="パスワード")
+
+api.create_post("Hello with yaylib!", in_reply_to=373189088)
+```
+
+#### ✨ タイムラインを100件取得する
+
+```python
+import yaylib
+
+api = yaylib.Client()
+
+timeline = api.get_timeline(number=100)
+
+for post in timeline.posts:
+    print(post.user.nickname)  # 投稿者
+    print(post.text)  # 本文
+    print(post.likes_count)  # いいね数
+    print(post.reposts_count)  # (´∀｀∩)↑age↑の数
+    print(post.in_reply_to_post_count)  # 返信の数
+```
+
+#### ✨ タイムラインをキーワードで検索して「いいね」する
+
+```python
+import yaylib
 
 api = yaylib.Client()
 api.login(email="メールアドレス", password="パスワード")
@@ -93,13 +162,27 @@ for post in timeline.posts:
     print(post.id, response.data) # 実行結果を出力
 ```
 
+#### ✨ タイムラインのユーザーをフォローする
+
+```python
+import yaylib
+
+api = yaylib.Client()
+api.login(email="メールアドレス", password="パスワード")
+
+timeline = api.get_timeline(number=15)
+
+for post in timeline.posts:
+    api.follow_user(post.user.id)
+```
+
 より詳しい使用例については、[こちら](https://github.com/qvco/yaylib/blob/master/examples) を参照してください。
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
 <!-- yaylib で誕生したボットの一覧 -->
 
-## yaylib で誕生したロボットたち
+## :crown: yaylib で誕生したロボットたち
 
 「yaylib」を用いて開発したロボットがある場合は、ぜひ教えてください！
 
@@ -143,7 +226,7 @@ for post in timeline.posts:
 
 <!-- 共同開発について -->
 
-## 共同開発について
+## :handshake: 共同開発について
 
 私たちと開発することに興味を持っていただけているなら、ぜひ参加して頂きたいです！
 
