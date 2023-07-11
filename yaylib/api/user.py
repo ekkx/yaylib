@@ -84,7 +84,7 @@ def follow_user(self, user_id: int):
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/follow"
     )
-    self.logger.info("Followed the user '{user_id}'.")
+    self.logger.info(f"Followed the user '{user_id}'.")
     return response
 
 
