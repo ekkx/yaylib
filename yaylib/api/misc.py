@@ -67,6 +67,16 @@ def generate_sns_thumbnail(self, **params):
     return response
 
 
+def send_verification_code(self, email: str):
+    response = self._make_request(
+        "POST",
+        endpoint=self.get_email_verification_presigned_url(email=email, locale="ja"),
+        payload={"locale": "ja", "email": email},
+    )
+    self.logger.info(f"Verification code successfully sent to '{email}'.")
+    return response
+
+
 def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenResponse:
     return self._make_request(
         "POST",

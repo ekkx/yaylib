@@ -136,6 +136,7 @@ from .api.login import (
 from .api.misc import (
     accept_policy_agreement,
     generate_sns_thumbnail,
+    send_verification_code,
     get_email_grant_token,
     get_email_verification_presigned_url,
     get_file_upload_presigned_urls,
@@ -238,6 +239,7 @@ from .api.user import (
     get_users,
     reduce_kenta_penalty,
     refresh_counter,
+    register_user,
     remove_user_avatar,
     remove_user_cover,
     report_user,
@@ -1484,6 +1486,14 @@ class Client(API):
 
     # -MISC
 
+    def send_verification_code(self, email: str):
+        """
+
+        認証コードを送信します
+
+        """
+        return send_verification_code(self, email)
+
     def get_email_grant_token(self, code: int, email: str) -> str:
         """
 
@@ -2689,6 +2699,45 @@ class Client(API):
 
         """
         return refresh_counter(self, counter)
+
+    def register_user(
+        self,
+        email: str,
+        email_grant_token: str,
+        password: str,
+        nickname: str,
+        birth_date: str,
+        gender: int = -1,
+        country_code: str = "JP",
+        biography: str = None,
+        prefecture: str = None,
+        profile_icon_filename: str = None,
+        cover_image_filename: str = None,
+        # @Nullable @Part("sns_info") SignUpSnsInfoRequest signUpSnsInfoRequest,
+        en: int = None,
+        vn: int = None,
+    ):
+        """
+
+        Register user
+
+        """
+        return register_user(
+            self,
+            email,
+            email_grant_token,
+            password,
+            nickname,
+            birth_date,
+            gender,
+            country_code,
+            biography,
+            prefecture,
+            profile_icon_filename,
+            cover_image_filename,
+            en,
+            vn,
+        )
 
     def remove_user_avatar(self) -> dict:
         """

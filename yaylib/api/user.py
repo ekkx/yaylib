@@ -32,6 +32,7 @@ from ..responses import (
     BlockedUserIdsResponse,
     BlockedUsersResponse,
     CreatePostResponse,
+    CreateUserResponse,
     FollowRecommendationsResponse,
     FollowRequestCountResponse,
     FollowUsersResponse,
@@ -395,6 +396,54 @@ def refresh_counter(self, counter: str):
         payload={"counter": counter},
     )
     self.logger.info("Requested counter refresh.")
+    return response
+
+
+def register_user(
+    self,
+    email: str,
+    email_grant_token: str,
+    password: str,
+    nickname: str,
+    birth_date: str,
+    gender: int = -1,
+    country_code: str = "JP",
+    biography: str = None,
+    prefecture: str = None,
+    profile_icon_filename: str = None,
+    cover_image_filename: str = None,
+    # @Nullable @Part("sns_info") SignUpSnsInfoRequest signUpSnsInfoRequest,
+    en: int = None,
+    vn: int = None,
+) -> CreateUserResponse:
+    timestamp = int(datetime.now().timestamp())
+    response = self._make_request(
+        "POST",
+        endpoint=f"{Endpoints.USERS_V3}/register",
+        payload={
+            "app_version": self.api_version,
+            "timestamp": timestamp,
+            "api_key": self.api_key,
+            "signed_version": signed_version_calculating(),
+            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+            "uuid": self.uuid,
+            "nickname": nickname,
+            "birth_date": birth_date,
+            "gender": gender,
+            "country_code": country_code,
+            "biography": biography,
+            "prefecture": prefecture,
+            "profile_icon_filename": profile_icon_filename,
+            "cover_image_filename": cover_image_filename,
+            "email": email,
+            "password": password,
+            "email_grant_token": email_grant_token,
+            "en": en,
+            "vn": vn,
+        },
+        data_type=CreateUserResponse,
+    )
+    self.logger.info(f"A new user has been registered. (USER ID: {response.id})")
     return response
 
 
