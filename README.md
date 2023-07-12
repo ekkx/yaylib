@@ -215,15 +215,6 @@ for post in timeline.posts:
     </tbody>
 </table>
 
-<!-- Buy me a coffee -->
-
-## Buy me a coffee
-
-このライブラリが気に入っていただけたら、**リポジトリに<a href="https://github.com/qvco/yaylib/">スターをお願いします</a>(⭐)**  
-また、Buy Me a Coffee からご支援いただけますと幸いです。
-
-<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
-
 <!-- 共同開発について -->
 
 ## :handshake: 共同開発について
@@ -235,6 +226,15 @@ for post in timeline.posts:
 - <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com にメールを送信する</a>
 
 のいずれかの方法で繋がりましょう。詳しくは[こちらから](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)！
+
+<!-- Buy me a coffee -->
+
+## Buy me a coffee
+
+このライブラリが気に入っていただけたら、**リポジトリに<a href="https://github.com/qvco/yaylib/">スターをお願いします</a>(⭐)**  
+また、Buy Me a Coffee からご支援いただけますと幸いです。
+
+<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 <!-- 免責事項 -->
 
