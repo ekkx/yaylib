@@ -30,7 +30,7 @@ from json import JSONDecodeError
 import httpx
 from cryptography.fernet import Fernet
 
-from .login import load_credentials, save_credentials, get_token
+from .login import load_credentials, save_credentials, decrypt, get_token
 
 from ..config import ErrorType, ErrorMessage
 from ..errors import (
@@ -147,6 +147,7 @@ class API:
 
                     if credentials is not None:
                         fernet = Fernet(self.secret_key)
+                        credentials = decrypt(self, fernet, credentials)
                         refresh_token = credentials["refresh_token"]
                         response = get_token(
                             self,
