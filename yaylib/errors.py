@@ -22,33 +22,71 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+
 class YayError(Exception):
+    """Base exception for yaylib"""
+
     pass
 
 
 class HTTPError(YayError):
+    """HTTPError()
+
+    Exception raised when an HTTP request fails
+    """
+
     pass
 
 
 class BadRequestError(HTTPError):
+    """BadRequestError()
+
+    Exception raised for a 400 HTTP status code
+    """
+
     pass
 
 
 class AuthenticationError(HTTPError):
+    """AuthenticationError()
+
+    Exception raised for a 401 HTTP status code
+    """
+
     pass
 
 
 class ForbiddenError(HTTPError):
+    """ForbiddenError()
+
+    Exception raised for a 403 HTTP status code
+    """
+
     pass
 
 
 class NotFoundError(HTTPError):
+    """NotFoundError()
+
+    Exception raised for a 404 HTTP status code
+    """
+
     pass
 
 
 class RateLimitError(HTTPError):
+    """RateLimitError()
+
+    Exception raised for a 429 HTTP status code
+    """
+
     pass
 
 
 class YayServerError(HTTPError):
+    """YayServerError()
+
+    Exception raised for a 5xx HTTP status code
+    """
+
     pass
