@@ -147,7 +147,7 @@ class API:
 
                     if credentials is not None:
                         fernet = Fernet(self.secret_key)
-                        credentials = decrypt(self, fernet, credentials)
+                        credentials = decrypt(fernet, credentials)
                         refresh_token = credentials["refresh_token"]
                         response = get_token(
                             self,

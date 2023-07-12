@@ -111,7 +111,7 @@ def save_credentials(self, fernet, access_token, refresh_token, user_id, email=N
     if email is None:
         updated_credentials["email"] = credentials.get("email")
 
-    updated_credentials = encrypt(self, fernet, updated_credentials)
+    updated_credentials = encrypt(fernet, updated_credentials)
 
     with open(self.base_path + "credentials.json", "w") as f:
         json.dump(updated_credentials, f)
@@ -136,7 +136,7 @@ def load_credentials(self, check_email: str = None):
     return credentials
 
 
-def encrypt(self, fernet, credentials: dict):
+def encrypt(fernet, credentials: dict):
     credentials.update(
         {
             "access_token": fernet.encrypt(
@@ -150,7 +150,7 @@ def encrypt(self, fernet, credentials: dict):
     return credentials
 
 
-def decrypt(self, fernet, credentials: dict):
+def decrypt(fernet, credentials: dict):
     credentials.update(
         {
             "access_token": fernet.decrypt(credentials.get("access_token")).decode(),
@@ -168,7 +168,7 @@ def login_with_email(
         if secret_key is not None:
             self.secret_key = secret_key
             fernet = Fernet(secret_key)
-            credentials = decrypt(self, fernet, credentials)
+            credentials = decrypt(fernet, credentials)
             self.session.headers.setdefault(
                 "Authorization", f"Bearer {credentials['access_token']}"
             )
