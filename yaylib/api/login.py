@@ -32,7 +32,7 @@ from cryptography.fernet import Fernet
 from ..config import Endpoints
 from ..errors import AuthenticationError, ForbiddenError
 from ..responses import LoginUserResponse, LoginUpdateResponse, TokenResponse
-from ..utils import colors, console_print, signed_info_calculating
+from ..utils import Colors, console_print, signed_info_calculating
 
 
 def change_email(
@@ -175,7 +175,7 @@ def login_with_email(
             self.logger.info(f"Successfully logged in as '{credentials['user_id']}'")
             return credentials
         else:
-            message = f"{colors.WARNING}Credential file found. The 'secret_key' must be provided to decrypt the credentials.{colors.RESET}"
+            message = f"{Colors.WARNING}Credential file found. The 'secret_key' must be provided to decrypt the credentials.{Colors.RESET}"
             console_print(message)
 
     response = self._make_request(
@@ -202,7 +202,7 @@ def login_with_email(
     fernet = Fernet(secret_key)
 
     console_print(
-        f"Your 'secret_key' for {colors.BOLD + email + colors.RESET} is: {colors.OKGREEN + secret_key.decode() + colors.RESET}",
+        f"Your 'secret_key' for {Colors.BOLD + email + Colors.RESET} is: {Colors.OKGREEN + secret_key.decode() + Colors.RESET}",
         "Please copy and securely store this key in a safe location.",
         "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
     )
