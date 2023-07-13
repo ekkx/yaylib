@@ -39,7 +39,11 @@ from ..utils import (
 
 
 def change_email(
-    self, email: str, password: str, email_grant_token: str = None
+    self,
+    email: str,
+    password: str,
+    email_grant_token: str = None,
+    access_token: str = None,
 ) -> LoginUpdateResponse:
     response = self._make_request(
         "PUT",
@@ -51,13 +55,14 @@ def change_email(
             "email_grant_token": email_grant_token,
         },
         data_type=LoginUpdateResponse,
+        access_token=access_token,
     )
     self.logger.info(self, fname="Your email has been changed.")
     return response
 
 
 def change_password(
-    self, current_password: str, new_password: str
+    self, current_password: str, new_password: str, access_token: str = None
 ) -> LoginUpdateResponse:
     response = self._make_request(
         "PUT",
@@ -68,6 +73,7 @@ def change_password(
             "password": new_password,
         },
         data_type=LoginUpdateResponse,
+        access_token=access_token,
     )
     self.logger.info(self, fname="Your password has been changed..")
     return response
@@ -79,6 +85,7 @@ def get_token(
     refresh_token: str = None,
     email: str = None,
     password: str = None,
+    access_token: str = None,
 ) -> TokenResponse:
     return self._make_request(
         "POST",
@@ -90,6 +97,7 @@ def get_token(
             "refresh_token": refresh_token,
         },
         data_type=TokenResponse,
+        access_token=access_token,
     )
 
 
@@ -161,11 +169,14 @@ def login_with_email(
     return response
 
 
-def logout(self):
+def logout(self, access_token: str = None):
     try:
         self._check_authorization(access_token)
         response = self._make_request(
-            "POST", endpoint=f"{Endpoints.USERS_V1}/logout", payload={"uuid": self.uuid}
+            "POST",
+            endpoint=f"{Endpoints.USERS_V1}/logout",
+            payload={"uuid": self.uuid},
+            access_token=access_token,
         )
         self.session.headers.pop("Authorization", None)
         self.logger.info("User has logged out.")
@@ -176,13 +187,15 @@ def logout(self):
         return None
 
 
-def resend_confirm_email(self):
+def resend_confirm_email(self, access_token: str = None):
     return self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V2}/resend_confirm_email"
+        "POST",
+        endpoint=f"{Endpoints.USERS_V2}/resend_confirm_email",
+        access_token=access_token,
     )
 
 
-def restore_user(self, user_id: int) -> LoginUserResponse:
+def restore_user(self, user_id: int, access_token: str = None) -> LoginUserResponse:
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -194,14 +207,17 @@ def restore_user(self, user_id: int) -> LoginUserResponse:
             "timestamp": timestamp,
             "signed_info": signed_info_calculating(self.device_uuid, timestamp),
         },
+        access_token=access_token,
     )
     self.logger.info("User has been restored.")
     return response
 
 
-def revoke_tokens(self):
+def revoke_tokens(self, access_token: str = None):
     response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.USERS_V1}/device_tokens"
+        "DELETE",
+        endpoint=f"{Endpoints.USERS_V1}/device_tokens",
+        access_token=access_token,
     )
     self.logger.info("Token has been revoked.")
     return response
@@ -213,6 +229,7 @@ def save_account_with_email(
     password: str = None,
     current_password: str = None,
     email_grant_token: str = None,
+    access_token: str = None,
 ) -> LoginUpdateResponse:
     response = self._make_request(
         "POST",
@@ -225,6 +242,7 @@ def save_account_with_email(
             "email_grant_token": email_grant_token,
         },
         data_type=LoginUpdateResponse,
+        access_token=access_token,
     )
     self.logger.info("Account has been save with email.")
     return response
