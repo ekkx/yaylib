@@ -297,7 +297,6 @@ def create_post(
         data_type=Post,
         headers=headers,
         access_token=access_token,
-        access_token=access_token,
     )
     self.logger.info("Post has been created.")
     return response
