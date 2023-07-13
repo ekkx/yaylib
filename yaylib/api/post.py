@@ -42,18 +42,23 @@ from ..responses import (
 from ..utils import signed_info_calculating
 
 
-def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
+def add_bookmark(
+    self, user_id: int, post_id: int, access_token: str = None
+) -> BookmarkPostResponse:
     self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
         data_type=BookmarkPostResponse,
+        access_token=access_token,
     )
     self.logger.info("Post has been added to the bookmarks.")
     return response
 
 
-def add_group_highlight_post(self, group_id: int, post_id: int):
+def add_group_highlight_post(
+    self, group_id: int, post_id: int, access_token: str = None
+):
     """
 
     投稿をグループのまとめに追加します
@@ -63,6 +68,7 @@ def add_group_highlight_post(self, group_id: int, post_id: int):
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+        access_token=access_token,
     )
     self.logger.info("Post has been added to the group highlight.")
     return response
@@ -88,6 +94,7 @@ def create_call_post(
     attachment_7_filename: str = None,
     attachment_8_filename: str = None,
     attachment_9_filename: str = None,
+    access_token: str = None,
 ) -> ConferenceCall:
     self._check_authorization(access_token)
 
@@ -125,26 +132,31 @@ def create_call_post(
             "attachment_9_filename": attachment_9_filename,
         },
         data_type=CreatePostResponse,
+        access_token=access_token,
     ).conference_call
     self.logger.info("Call post has been created.")
     return response
 
 
-def create_group_pin_post(self, post_id: int, group_id: int):
+def create_group_pin_post(self, post_id: int, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
         payload={"post_id": post_id, "group_id": group_id},
+        access_token=access_token,
     )
     self.logger.info("Pinned the post in the group.")
     return response
 
 
-def create_pin_post(self, post_id: int):
+def create_pin_post(self, post_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.PINNED_V1}/posts", payload={"id": post_id}
+        "POST",
+        endpoint=f"{Endpoints.PINNED_V1}/posts",
+        payload={"id": post_id},
+        access_token=access_token,
     )
     self.logger.info("Pinned post.")
     return response
@@ -250,7 +262,9 @@ def create_post(
 
     if shared_url is not None:
         try:
-            shared_url = self.get_url_metadata(url=shared_url).data
+            shared_url = self.get_url_metadata(
+                url=shared_url, access_token=access_token
+            ).data
         except ForbiddenError:
             self.logger.error("Unable to get the URL metadata")
             shared_url = None
@@ -283,6 +297,7 @@ def create_post(
         data_type=Post,
         headers=headers,
         access_token=access_token,
+        access_token=access_token,
     )
     self.logger.info("Post has been created.")
     return response
@@ -310,10 +325,11 @@ def create_repost(
     attachment_8_filename: str = None,
     attachment_9_filename: str = None,
     video_file_name: str = None,
+    access_token: str = None,
 ) -> Post:
     self._check_authorization(access_token)
     headers = self.session.headers
-    headers["X-Jwt"] = self.get_web_socket_token()
+    headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
 
     if text is not None:
         if "@:start:" in text and ":end:" in text:
@@ -333,7 +349,9 @@ def create_repost(
 
     if shared_url is not None:
         try:
-            shared_url = self.get_url_metadata(url=shared_url).data
+            shared_url = self.get_url_metadata(
+                url=shared_url, access_token=access_token
+            ).data
         except ForbiddenError:
             self.logger.error("Unable to get the URL metadata")
             shared_url = None
@@ -366,6 +384,7 @@ def create_repost(
         },
         data_type=CreatePostResponse,
         headers=headers,
+        access_token=access_token,
     ).post
     self.logger.info("Repost has been created.")
     return response
@@ -379,6 +398,7 @@ def create_share_post(
     font_size: int = None,
     color: int = None,
     group_id: int = None,
+    access_token: str = None,
 ) -> Post:
     self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
@@ -398,6 +418,7 @@ def create_share_post(
             "signed_info": signed_info_calculating(self.device_uuid, timestamp),
         },
         data_type=Post,
+        access_token=access_token,
     )
     self.logger.info("Share post has been created.")
     return response
@@ -425,10 +446,11 @@ def create_thread_post(
     attachment_8_filename: str = None,
     attachment_9_filename: str = None,
     video_file_name: str = None,
+    access_token: str = None,
 ) -> Post:
     self._check_authorization(access_token)
     headers = self.session.headers
-    headers["X-Jwt"] = self.get_web_socket_token()
+    headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
 
     if text is not None:
         if "@:start:" in text and ":end:" in text:
@@ -448,7 +470,9 @@ def create_thread_post(
 
     if shared_url is not None:
         try:
-            shared_url = self.get_url_metadata(url=shared_url).data
+            shared_url = self.get_url_metadata(
+                url=shared_url, access_token=access_token
+            ).data
         except ForbiddenError:
             self.logger.error("Unable to get the URL metadata")
             shared_url = None
@@ -481,17 +505,19 @@ def create_thread_post(
         },
         data_type=Post,
         headers=headers,
+        access_token=access_token,
     )
     self.logger.info("Thread post has been created.")
     return response
 
 
-def delete_all_post(self):
+def delete_all_post(self, access_token: str = None):
     self._check_authorization(access_token)
     try:
         response = self._make_request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V1}/delete_all_post",
+            access_token=access_token,
         )
         self.logger.info("Post deletion request has been sent.")
         return response
@@ -499,27 +525,32 @@ def delete_all_post(self):
         self.logger.info("Post not found. Skipping...")
 
 
-def delete_group_pin_post(self, group_id: int):
+def delete_group_pin_post(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
         payload={"group_id": group_id},
+        access_token=access_token,
     )
     self.logger.info("Unpinned post in the group.")
     return response
 
 
-def delete_pin_post(self, post_id: int):
+def delete_pin_post(self, post_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.PINNED_V1}/posts/{post_id}"
+        "DELETE",
+        endpoint=f"{Endpoints.PINNED_V1}/posts/{post_id}",
+        access_token=access_token,
     )
     self.logger.info("Unpinned post.")
     return response
 
 
-def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
+def get_bookmark(
+    self, user_id: int, from_str: str = None, access_token: str = None
+) -> PostsResponse:
     self._check_authorization(access_token)
     params = {}
     if from_str:
@@ -529,10 +560,11 @@ def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_timeline_calls(self, **params) -> PostsResponse:
+def get_timeline_calls(self, access_token: str = None, **params) -> PostsResponse:
     """
 
     Parameters:
@@ -554,10 +586,13 @@ def get_timeline_calls(self, **params) -> PostsResponse:
         endpoint=f"{Endpoints.POSTS_V2}/call_timeline",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_conversation(self, conversation_id: int, **params) -> PostsResponse:
+def get_conversation(
+    self, conversation_id: int, access_token: str = None, **params
+) -> PostsResponse:
     """
 
     Parameters:
@@ -576,19 +611,25 @@ def get_conversation(self, conversation_id: int, **params) -> PostsResponse:
         endpoint=f"{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_conversation_root_posts(self, post_ids: List[int]) -> PostsResponse:
+def get_conversation_root_posts(
+    self, post_ids: List[int], access_token: str = None
+) -> PostsResponse:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.CONVERSATIONS_V2}/root_posts",
         params={"ids[]": post_ids},
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_following_call_timeline(self, **params) -> PostsResponse:
+def get_following_call_timeline(
+    self, access_token: str = None, **params
+) -> PostsResponse:
     """
 
     Parameters:
@@ -608,10 +649,11 @@ def get_following_call_timeline(self, **params) -> PostsResponse:
         endpoint=f"{Endpoints.POSTS_V2}/call_followers_timeline",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_following_timeline(self, **params) -> PostsResponse:
+def get_following_timeline(self, access_token: str = None, **params) -> PostsResponse:
     """
 
     Parameters:
@@ -632,10 +674,13 @@ def get_following_timeline(self, **params) -> PostsResponse:
         endpoint=f"{Endpoints.POSTS_V2}/following_timeline",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
+def get_group_highlight_posts(
+    self, group_id: int, access_token: str = None, **params
+) -> PostsResponse:
     """
 
     グループのまとめ投稿を取得します
@@ -653,11 +698,12 @@ def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
 def get_group_timeline_by_keyword(
-    self, group_id: int, keyword: str, **params
+    self, group_id: int, keyword: str, access_token: str = None, **params
 ) -> PostsResponse:
     """
 
@@ -677,10 +723,13 @@ def get_group_timeline_by_keyword(
         endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/posts/search",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_group_timeline(self, group_id: int, **params) -> PostsResponse:
+def get_group_timeline(
+    self, group_id: int, access_token: str = None, **params
+) -> PostsResponse:
     """
 
     Parameters:
@@ -700,10 +749,13 @@ def get_group_timeline(self, group_id: int, **params) -> PostsResponse:
         endpoint=f"{Endpoints.POSTS_V2}/group_timeline",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_timeline_by_hashtag(self, hashtag: str, **params) -> PostsResponse:
+def get_timeline_by_hashtag(
+    self, hashtag: str, access_token: str = None, **params
+) -> PostsResponse:
     """
 
     Parameters:
@@ -719,10 +771,11 @@ def get_timeline_by_hashtag(self, hashtag: str, **params) -> PostsResponse:
         endpoint=f"{Endpoints.POSTS_V2}/tags/{hashtag}",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_my_posts(self, **params) -> PostsResponse:
+def get_my_posts(self, access_token: str = None, **params) -> PostsResponse:
     """
 
     Parameters:
@@ -739,16 +792,22 @@ def get_my_posts(self, **params) -> PostsResponse:
         endpoint=f"{Endpoints.POSTS_V2}/mine",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_post(self, post_id: int) -> Post:
+def get_post(self, post_id: int, access_token: str = None) -> Post:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}", data_type=PostResponse
+        "GET",
+        endpoint=f"{Endpoints.POSTS_V2}/{post_id}",
+        data_type=PostResponse,
+        access_token=access_token,
     ).post
 
 
-def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
+def get_post_likers(
+    self, post_id: int, access_token: str = None, **params
+) -> PostLikersResponse:
     """
 
     Parameters:
@@ -763,10 +822,13 @@ def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
         endpoint=f"{Endpoints.POSTS_V1}/{post_id}/likers",
         params=params,
         data_type=PostLikersResponse,
+        access_token=access_token,
     )
 
 
-def get_post_reposts(self, post_id: int, **params: int) -> PostsResponse:
+def get_post_reposts(
+    self, post_id: int, access_token: str = None, **params: int
+) -> PostsResponse:
     """
 
     Parameters:
@@ -782,30 +844,33 @@ def get_post_reposts(self, post_id: int, **params: int) -> PostsResponse:
         endpoint=f"{Endpoints.POSTS_V2}/{post_id}/reposts",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_posts(self, post_ids: List[int]) -> PostsResponse:
+def get_posts(self, post_ids: List[int], access_token: str = None) -> PostsResponse:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.POSTS_V2}/multiple",
         params={"post_ids[]": post_ids},
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
 def get_recommended_post_tags(
-    self, tag: str = None, save_recent_search: bool = False
+    self, tag: str = None, save_recent_search: bool = False, access_token: str = None
 ) -> PostTagsResponse:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.POSTS_V1}/recommended_tag",
         payload={"tag": tag, "save_recent_search": save_recent_search},
         data_type=PostTagsResponse,
+        access_token=access_token,
     )
 
 
-def get_recommended_posts(self, **params) -> PostsResponse:
+def get_recommended_posts(self, access_token: str = None, **params) -> PostsResponse:
     """
 
     Parameters:
@@ -821,10 +886,13 @@ def get_recommended_posts(self, **params) -> PostsResponse:
         endpoint=f"{Endpoints.POSTS_V2}/recommended_timeline",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_timeline_by_keyword(self, keyword: str = None, **params) -> PostsResponse:
+def get_timeline_by_keyword(
+    self, keyword: str = None, access_token: str = None, **params
+) -> PostsResponse:
     """
 
     Parameters:
@@ -841,10 +909,13 @@ def get_timeline_by_keyword(self, keyword: str = None, **params) -> PostsRespons
         endpoint=f"{Endpoints.POSTS_V2}/search",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_timeline(self, **params: int | str | bool) -> PostsResponse:
+def get_timeline(
+    self, access_token: str = None, **params: int | str | bool
+) -> PostsResponse:
     # - from: str - (optional)
     """
 
@@ -869,20 +940,27 @@ def get_timeline(self, **params: int | str | bool) -> PostsResponse:
         self._check_authorization(access_token)
         endpoint = f"{Endpoints.POSTS_V2}/noreply_timeline"
     return self._make_request(
-        "GET", endpoint=endpoint, params=params, data_type=PostsResponse
+        "GET",
+        endpoint=endpoint,
+        params=params,
+        data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def get_url_metadata(self, url: str) -> SharedUrl:
+def get_url_metadata(self, url: str, access_token: str = None) -> SharedUrl:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.POSTS_V2}/url_metadata",
         params={"url": url},
         data_type=SharedUrl,
+        access_token=access_token,
     )
 
 
-def get_user_timeline(self, user_id: int, **params) -> PostsResponse:
+def get_user_timeline(
+    self, user_id: int, access_token: str = None, **params
+) -> PostsResponse:
     """
 
     Parameters:
@@ -899,47 +977,56 @@ def get_user_timeline(self, user_id: int, **params) -> PostsResponse:
         endpoint=f"{Endpoints.POSTS_V2}/user_timeline",
         params=params,
         data_type=PostsResponse,
+        access_token=access_token,
     )
 
 
-def like_posts(self, post_ids: List[int]) -> LikePostsResponse:
+def like_posts(
+    self, post_ids: List[int], access_token: str = None
+) -> LikePostsResponse:
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V2}/like",
         payload={"post_ids": post_ids},
         data_type=LikePostsResponse,
+        access_token=access_token,
     )
     self.logger.info("Posts have been liked.")
     return response
 
 
-def remove_bookmark(self, user_id: int, post_id: int):
+def remove_bookmark(self, user_id: int, post_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
+        access_token=access_token,
     )
     self.logger.info("Bookmark has been removed.")
     return response
 
 
-def remove_group_highlight_post(self, group_id: int, post_id: int):
+def remove_group_highlight_post(
+    self, group_id: int, post_id: int, access_token: str = None
+):
     self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+        access_token=access_token,
     )
     self.logger.info("Group hightlight post removed.")
     return response
 
 
-def remove_posts(self, post_ids: List[int]):
+def remove_posts(self, post_ids: List[int], access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V2}/mass_destroy",
         payload={"posts_ids": post_ids},
+        access_token=access_token,
     )
     self.logger.info("Posts have been removed.")
     return response
@@ -955,6 +1042,7 @@ def report_post(
     screenshot_2_filename: str = None,
     screenshot_3_filename: str = None,
     screenshot_4_filename: str = None,
+    access_token: str = None,
 ):
     self._check_authorization(access_token)
     response = self._make_request(
@@ -969,16 +1057,18 @@ def report_post(
             "screenshot_3_filename": screenshot_3_filename,
             "screenshot_4_filename": screenshot_4_filename,
         },
+        access_token=access_token,
     )
     self.logger.info("Post has been reported.")
     return response
 
 
-def unlike_post(self, post_id: int):
+def unlike_post(self, post_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V1}/{post_id}/unlike",
+        access_token=access_token,
     )
     self.logger.info("Post has been unliked.")
     return response
@@ -991,6 +1081,7 @@ def update_post(
     font_size: int = None,
     color: int = None,
     message_tags: str = "[]",
+    access_token: str = None,
 ) -> Post:
     self._check_authorization(access_token)
 
@@ -1011,26 +1102,32 @@ def update_post(
             "timestamp": timestamp,
             "signed_info": signed_info_calculating(self.device_uuid, timestamp),
         },
+        access_token=access_token,
     )
     self.logger.info("Post has been updated.")
     return response
 
 
-def view_video(self, video_id: int):
+def view_video(self, video_id: int, access_token: str = None):
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.POSTS_V1}/videos/{video_id}/view"
+        "POST",
+        endpoint=f"{Endpoints.POSTS_V1}/videos/{video_id}/view",
+        access_token=access_token,
     )
     self.logger.info("Viewed the video.")
     return response
 
 
-def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
+def vote_survey(
+    self, survey_id: int, choice_id: int, access_token: str = None
+) -> Survey:
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",
         payload={"choice_id": choice_id},
         data_type=ValidationPostResponse,
+        access_token=access_token,
     ).survey
     self.logger.info("Voted.")
     return response
