@@ -42,34 +42,44 @@ from ..responses import (
 from ..utils import signed_info_calculating
 
 
-def accept_moderator_offer(self, group_id: int):
+def accept_moderator_offer(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize"
+        "PUT",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize",
+        access_token=access_token,
     )
     self.logger.info("Accepted the group moderator offer.")
     return response
 
 
-def accept_ownership_offer(self, group_id: int):
+def accept_ownership_offer(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer"
+        "PUT",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer",
+        access_token=access_token,
     )
     self.logger.info("Accepted the group ownership offer.")
     return response
 
 
-def accept_group_join_request(self, group_id: int, user_id: int):
+def accept_group_join_request(
+    self, group_id: int, user_id: int, access_token: str = None
+):
     self._check_authorization(access_token)
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/accept/{user_id}"
+        "POST",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/accept/{user_id}",
+        access_token=access_token,
     )
     self.logger.info("Accepted the group join request.")
     return response
 
 
-def add_related_groups(self, group_id: int, related_group_id: List[int]):
+def add_related_groups(
+    self, group_id: int, related_group_id: List[int], access_token: str = None
+):
     """
 
     関連サークルを追加する
@@ -80,21 +90,26 @@ def add_related_groups(self, group_id: int, related_group_id: List[int]):
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
         params={"related_group_id[]": related_group_id},
+        access_token=access_token,
     )
     self.logger.info("Group has been added to the related groups")
     return response
 
 
-def ban_group_user(self, group_id: int, user_id: int):
+def ban_group_user(self, group_id: int, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban/{user_id}"
+        "POST",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban/{user_id}",
+        access_token=access_token,
     )
     self.logger.info(f"User '{user_id}' has been banned from the group.")
     return response
 
 
-def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
+def check_unread_status(
+    self, from_time: int = None, access_token: str = None
+) -> UnreadStatusResponse:
     self._check_authorization(access_token)
     params = {}
     if from_time:
@@ -104,6 +119,7 @@ def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
         endpoint=f"{Endpoints.GROUPS_V1}/unread_status",
         params=params,
         data_type=UnreadStatusResponse,
+        access_token=access_token,
     )
 
 
@@ -129,6 +145,7 @@ def create_group(
     allow_members_to_post_media: bool = None,
     allow_members_to_post_url: bool = None,
     guidelines: str = None,
+    access_token: str = None,
 ) -> CreateGroupResponse:
     self._check_authorization(access_token)
     response = self._make_request(
@@ -163,67 +180,88 @@ def create_group(
             "guidelines": guidelines,
         },
         data_type=CreateGroupResponse,
+        access_token=access_token,
     )
     self.logger.info("Group has been created.")
     return response
 
 
-def create_pin_group(self, group_id: int):
+def create_pin_group(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.PINNED_V1}/groups", payload={"id": group_id}
+        "POST",
+        endpoint=f"{Endpoints.PINNED_V1}/groups",
+        payload={"id": group_id},
+        access_token=access_token,
     )
     self.logger.info("Pinned the group.")
     return response
 
 
-def decline_moderator_offer(self, group_id: int):
+def decline_moderator_offer(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize"
+        "DELETE",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize",
+        access_token=access_token,
     )
     self.logger.info("Declined the moderator offer.")
     return response
 
 
-def decline_ownership_offer(self, group_id: int):
+def decline_ownership_offer(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer"
+        "DELETE",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer",
+        access_token=access_token,
     )
     self.logger.info("Declined the ownership offer.")
     return response
 
 
-def decline_group_join_request(self, group_id: int, user_id: int):
+def decline_group_join_request(
+    self, group_id: int, user_id: int, access_token: str = None
+):
     self._check_authorization(access_token)
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/decline/{user_id}"
+        "POST",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/decline/{user_id}",
+        access_token=access_token,
     )
     self.logger.info("Declined the group join request.")
     return response
 
 
-def delete_pin_group(self, group_id: int):
+def delete_pin_group(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.PINNED_V1}/groups/{group_id}"
+        "DELETE",
+        endpoint=f"{Endpoints.PINNED_V1}/groups/{group_id}",
+        access_token=access_token,
     )
     self.logger.info("Unpinned the group.")
     return response
 
 
-def get_banned_group_members(self, group_id: int, page: int = None) -> UsersResponse:
+def get_banned_group_members(
+    self, group_id: int, page: int = None, access_token: str = None
+) -> UsersResponse:
     self._check_authorization(access_token)
     params = {}
     if page:
         params["page"] = page
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban_list", params=params
+        "GET",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban_list",
+        params=params,
+        access_token=access_token,
     )
 
 
-def get_group_categories(self, **params) -> GroupCategoriesResponse:
+def get_group_categories(
+    self, access_token: str = None, **params
+) -> GroupCategoriesResponse:
     """
 
     Parameters:
@@ -238,24 +276,29 @@ def get_group_categories(self, **params) -> GroupCategoriesResponse:
         endpoint=f"{Endpoints.GROUPS_V1}/categories",
         params=params,
         data_type=GroupCategoriesResponse,
+        access_token=access_token,
     )
 
 
-def get_create_group_quota(self) -> CreateGroupQuota:
+def get_create_group_quota(self, access_token: str = None) -> CreateGroupQuota:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.GROUPS_V1}/created_quota",
         data_type=CreateGroupQuota,
+        access_token=access_token,
     ).create
 
 
-def get_group(self, group_id: int) -> GroupResponse:
+def get_group(self, group_id: int, access_token: str = None) -> GroupResponse:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}", data_type=GroupResponse
+        "GET",
+        endpoint=f"{Endpoints.GROUPS_V1}/{group_id}",
+        data_type=GroupResponse,
+        access_token=access_token,
     )
 
 
-def get_groups(self, **params) -> GroupsResponse:
+def get_groups(self, access_token: str = None, **params) -> GroupsResponse:
     """
 
     Parameters:
@@ -272,10 +315,13 @@ def get_groups(self, **params) -> GroupsResponse:
         endpoint=f"{Endpoints.GROUPS_V2}",
         params=params,
         data_type=GroupsResponse,
+        access_token=access_token,
     )
 
 
-def get_invitable_users(self, group_id: int, **params) -> UsersByTimestampResponse:
+def get_invitable_users(
+    self, group_id: int, access_token: str = None, **params
+) -> UsersByTimestampResponse:
     """
 
     Parameters:
@@ -290,24 +336,33 @@ def get_invitable_users(self, group_id: int, **params) -> UsersByTimestampRespon
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/users/invitable",
         params=params,
         data_type=UsersByTimestampResponse,
+        access_token=access_token,
     )
 
 
-def get_joined_statuses(self, ids: List[int]) -> dict:
+def get_joined_statuses(self, ids: List[int], access_token: str = None) -> dict:
     self._check_authorization(access_token)
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.GROUPS_V1}/joined_statuses", params={"ids[]": ids}
+        "GET",
+        endpoint=f"{Endpoints.GROUPS_V1}/joined_statuses",
+        params={"ids[]": ids},
+        access_token=access_token,
     )
 
 
-def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
+def get_group_member(
+    self, group_id: int, user_id: int, access_token: str = None
+) -> GroupUserResponse:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/members/{user_id}",
+        access_token=access_token,
     )
 
 
-def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
+def get_group_members(
+    self, group_id: int, access_token: str = None, **params
+) -> GroupUsersResponse:
     """
 
     Parameters:
@@ -327,10 +382,13 @@ def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
         endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/members",
         params=params,
         data_type=GroupUsersResponse,
+        access_token=access_token,
     )
 
 
-def get_my_groups(self, from_timestamp: None) -> GroupsResponse:
+def get_my_groups(
+    self, from_timestamp: None, access_token: str = None
+) -> GroupsResponse:
     self._check_authorization(access_token)
     params = {}
     if from_timestamp:
@@ -340,10 +398,13 @@ def get_my_groups(self, from_timestamp: None) -> GroupsResponse:
         endpoint=f"{Endpoints.GROUPS_V2}/mine",
         params=params,
         data_type=GroupsResponse,
+        access_token=access_token,
     )
 
 
-def get_relatable_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
+def get_relatable_groups(
+    self, group_id: int, access_token: str = None, **params
+) -> GroupsRelatedResponse:
     """
 
     Parameters:
@@ -359,10 +420,13 @@ def get_relatable_groups(self, group_id: int, **params) -> GroupsRelatedResponse
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/relatable",
         params=params,
         data_type=GroupsRelatedResponse,
+        access_token=access_token,
     )
 
 
-def get_related_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
+def get_related_groups(
+    self, group_id: int, access_token: str = None, **params
+) -> GroupsRelatedResponse:
     """
 
     Parameters:
@@ -378,10 +442,11 @@ def get_related_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
         params=params,
         data_type=GroupsRelatedResponse,
+        access_token=access_token,
     )
 
 
-def get_user_groups(self, **params) -> GroupsResponse:
+def get_user_groups(self, access_token: str = None, **params) -> GroupsResponse:
     """
 
     Parameters:
@@ -396,77 +461,91 @@ def get_user_groups(self, **params) -> GroupsResponse:
         endpoint=f"{Endpoints.GROUPS_V1}/user_group_list",
         params=params,
         data_type=GroupsResponse,
+        access_token=access_token,
     )
 
 
-def invite_users_to_group(self, group_id: int, user_ids: List[int]):
+def invite_users_to_group(
+    self, group_id: int, user_ids: List[int], access_token: str = None
+):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/invite",
         payload={"user_ids[]": user_ids},
+        access_token=access_token,
     )
     self.logger.info("Invited users to the group.")
     return response
 
 
-def join_group(self, group_id: int):
+def join_group(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/join",
+        access_token=access_token,
     )
     self.logger.info("You are now one of the members of the group.")
     return response
 
 
-def leave_group(self, group_id: int):
+def leave_group(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/leave",
+        access_token=access_token,
     )
     self.logger.info("Left the group.")
     return response
 
 
-def post_gruop_social_shared(self, group_id: int, sns_name: str):
+def post_gruop_social_shared(
+    self, group_id: int, sns_name: str, access_token: str = None
+):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/social_shared",
         params={"sns_name": sns_name},
+        access_token=access_token,
     )
     self.logger.info("Group social shared has been posted.")
     return response
 
 
-def remove_group_cover(self, group_id: int):
+def remove_group_cover(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/remove_cover",
+        access_token=access_token,
     )
     self.logger.info("Group cover image has been removed.")
     return response
 
 
-def remove_moderator(self, group_id: int, user_id: int):
+def remove_moderator(self, group_id: int, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/fire/{user_id}",
+        access_token=access_token,
     )
     self.logger.info(f"Group moderator '{user_id}' has been removed.")
     return response
 
 
-def remove_related_groups(self, group_id: int, related_group_ids: List[int]):
+def remove_related_groups(
+    self, group_id: int, related_group_ids: List[int], access_token: str = None
+):
     self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
         params={"related_group_id[]": related_group_ids},
+        access_token=access_token,
     )
     self.logger.info("Related groups have been removed.")
     return response
@@ -482,6 +561,7 @@ def report_group(
     screenshot_2_filename: str = None,
     screenshot_3_filename: str = None,
     screenshot_4_filename: str = None,
+    access_token: str = None,
 ):
     self._check_authorization(access_token)
     response = self._make_request(
@@ -496,12 +576,15 @@ def report_group(
             "screenshot_3_filename": screenshot_3_filename,
             "screenshot_4_filename": screenshot_4_filename,
         },
+        access_token=access_token,
     )
     self.logger.info("Group has been reported.")
     return response
 
 
-def send_moderator_offers(self, group_id: int, user_ids: List[int]):
+def send_moderator_offers(
+    self, group_id: int, user_ids: List[int], access_token: str = None
+):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
@@ -515,12 +598,13 @@ def send_moderator_offers(self, group_id: int, user_ids: List[int]):
                 self.api_key, self.device_uuid, int(datetime.now().timestamp())
             ),
         },
+        access_token=access_token,
     )
     self.logger.info("Offered users to become a group moderator.")
     return response
 
 
-def send_ownership_offer(self, group_id: int, user_id: int):
+def send_ownership_offer(self, group_id: int, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
@@ -534,37 +618,41 @@ def send_ownership_offer(self, group_id: int, user_id: int):
                 self.api_key, self.device_uuid, int(datetime.now().timestamp())
             ),
         },
+        access_token=access_token,
     )
     self.logger.info("Offered user to become a group owner.")
     return response
 
 
-def set_group_title(self, group_id: int, title: str):
+def set_group_title(self, group_id: int, title: str, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/set_title",
         payload={"title": title},
+        access_token=access_token,
     )
     self.logger.info("Group tittle has been set.")
     return response
 
 
-def take_over_group_ownership(self, group_id: int):
+def take_over_group_ownership(self, group_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/take_over",
+        access_token=access_token,
     )
     self.logger.info(f"Took over the group ownership of {group_id}")
     return response
 
 
-def unban_group_member(self, group_id: int, user_id: int):
+def unban_group_member(self, group_id: int, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/unban/{user_id}",
+        access_token=access_token,
     )
     self.logger.info("User has been banned from the group.")
     return response
@@ -593,6 +681,7 @@ def update_group(
     allow_members_to_post_media: bool = None,
     allow_members_to_post_url: bool = None,
     guidelines: str = None,
+    access_token: str = None,
 ) -> GroupResponse:
     self._check_authorization(access_token)
     response = self._make_request(
@@ -627,27 +716,34 @@ def update_group(
             "guidelines": guidelines,
         },
         data_type=GroupResponse,
+        access_token=access_token,
     )
     self.logger.info("Group details have been updated.")
     return response
 
 
-def withdraw_moderator_offer(self, group_id: int, user_id: int):
+def withdraw_moderator_offer(
+    self, group_id: int, user_id: int, access_token: str = None
+):
     self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize/{user_id}/withdraw",
+        access_token=access_token,
     )
     self.logger.info("Group moderator offer has been withdrawn")
     return response
 
 
-def withdraw_ownership_offer(self, group_id: int, user_id: int):
+def withdraw_ownership_offer(
+    self, group_id: int, user_id: int, access_token: str = None
+):
     self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer/withdraw",
         payload={"user_id": user_id},
+        access_token=access_token,
     )
     self.logger.info("Group ownership offer has been withdrawn")
     return response
