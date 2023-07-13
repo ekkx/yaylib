@@ -22,9 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import hmac
-import hashlib
 import base64
+import hashlib
+import hmac
+import json
+import os
 import uuid
 
 from datetime import datetime
@@ -60,6 +62,68 @@ def parse_datetime(timestamp: int) -> str:
     if timestamp is not None:
         return str(datetime.fromtimestamp(timestamp))
     return timestamp
+
+
+def encrypt(fernet, credentials: dict):
+    credentials.update(
+        {
+            "access_token": fernet.encrypt(
+                credentials.get("access_token").encode()
+            ).decode(),
+            "refresh_token": fernet.encrypt(
+                credentials.get("refresh_token").encode()
+            ).decode(),
+        }
+    )
+    return credentials
+
+
+def decrypt(fernet, credentials: dict):
+    credentials.update(
+        {
+            "access_token": fernet.decrypt(credentials.get("access_token")).decode(),
+            "refresh_token": fernet.decrypt(credentials.get("refresh_token")).decode(),
+        }
+    )
+    return credentials
+
+
+def save_credentials(
+    fernet, base_path, access_token, refresh_token, user_id, email=None
+):
+    credentials = load_credentials(base_path=base_path)
+    updated_credentials = {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "user_id": user_id,
+        "email": email,
+    }
+    if email is None:
+        updated_credentials["email"] = credentials.get("email")
+
+    updated_credentials = encrypt(fernet, updated_credentials)
+
+    with open(base_path + "credentials.json", "w") as f:
+        json.dump(updated_credentials, f)
+
+
+def load_credentials(base_path: str, check_email: str = None):
+    if not os.path.exists(base_path + "credentials.json"):
+        return None
+
+    with open(base_path + "credentials.json", "r") as f:
+        credentials = json.load(f)
+
+    result = all(
+        key in credentials
+        for key in ("access_token", "refresh_token", "user_id", "email")
+    )
+    credentials = None if result is False else credentials
+
+    if check_email is not None:
+        credentials = None if check_email != credentials["email"] else credentials
+
+    return credentials
 
 
 def signed_info_calculating(uuid: str, timestamp: int, shared_key: bool = False) -> str:
