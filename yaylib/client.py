@@ -354,32 +354,32 @@ class Client(API):
 
     # -CALL
 
-    def get_user_active_call(self, user_id: int) -> Post:
+    def get_user_active_call(self, user_id: int, access_token: str = None) -> Post:
         """
 
         ユーザーが参加中の通話を取得します
 
         """
-        return get_user_active_call(self, user_id)
+        return get_user_active_call(self, user_id, access_token)
 
-    def get_bgms(self) -> List[Bgm]:
+    def get_bgms(self, access_token: str = None) -> List[Bgm]:
         """
 
         通話のBGMを取得します
 
         """
-        return get_bgms(self)
+        return get_bgms(self, access_token)
 
-    def get_call(self, call_id: int) -> ConferenceCall:
+    def get_call(self, call_id: int, access_token: str = None) -> ConferenceCall:
         """
 
         通話の詳細を取得します
 
         """
-        return get_call(self, call_id)
+        return get_call(self, call_id, access_token)
 
     def get_call_invitable_users(
-        self, call_id: int, from_timestamp: int = None
+        self, call_id: int, from_timestamp: int = None, access_token: str = None
     ) -> UsersByTimestampResponse:
         # @Nullable @Query("user[nickname]")
         """
@@ -387,17 +387,19 @@ class Client(API):
         通話に招待可能なユーザーを取得します
 
         """
-        return get_call_invitable_users(self, call_id, from_timestamp)
+        return get_call_invitable_users(self, call_id, from_timestamp, access_token)
 
-    def get_call_status(self, opponent_id: int) -> CallStatusResponse:
+    def get_call_status(
+        self, opponent_id: int, access_token: str = None
+    ) -> CallStatusResponse:
         """
 
         通話の状態を取得します
 
         """
-        return get_call_status(self, opponent_id)
+        return get_call_status(self, opponent_id, access_token)
 
-    def get_games(self, **params) -> GamesResponse:
+    def get_games(self, access_token: str = None, **params) -> GamesResponse:
         """
 
         ゲームを取得します
@@ -409,9 +411,9 @@ class Client(API):
             - from_id: int - (optional)
 
         """
-        return get_games(self, **params)
+        return get_games(self, access_token, **params)
 
-    def get_genres(self, **params) -> GenresResponse:
+    def get_genres(self, access_token: str = None, **params) -> GenresResponse:
         """
 
         通話のジャンルを取得します
@@ -422,9 +424,9 @@ class Client(API):
             - from: int - (optional)
 
         """
-        return get_genres(self, **params)
+        return get_genres(self, access_token, **params)
 
-    def get_group_calls(self, **params) -> PostsResponse:
+    def get_group_calls(self, access_token: str = None, **params) -> PostsResponse:
         """
 
         サークルの通話を取得します
@@ -437,10 +439,10 @@ class Client(API):
             - scope: str - (optional)
 
         """
-        return get_group_calls(self, **params)
+        return get_group_calls(self, access_token, **params)
 
     def invite_online_followings_to_call(
-        self, call_id: int, group_id: int = None
+        self, call_id: int, group_id: int = None, access_token: str = None
     ) -> dict:
         """
 
@@ -452,9 +454,11 @@ class Client(API):
             - group_id: int - (optional)
 
         """
-        return invite_to_call_bulk(self, call_id, group_id)
+        return invite_to_call_bulk(self, call_id, group_id, access_token)
 
-    def invite_users_to_call(self, call_id: int, user_ids: List[int]) -> dict:
+    def invite_users_to_call(
+        self, call_id: int, user_ids: List[int], access_token: str = None
+    ) -> dict:
         """
 
         ユーザーを通話に招待します
@@ -465,10 +469,10 @@ class Client(API):
             - user_ids: List[int] - (required)
 
         """
-        return invite_users_to_call(self, call_id, user_ids)
+        return invite_users_to_call(self, call_id, user_ids, access_token)
 
     def invite_users_to_chat_call(
-        self, chat_room_id: int, room_id: int, room_url: str
+        self, chat_room_id: int, room_id: int, room_url: str, access_token: str = None
     ) -> dict:
         """
 
@@ -482,9 +486,13 @@ class Client(API):
             - room_url: int - (required)
 
         """
-        return invite_users_to_chat_call(self, chat_room_id, room_id, room_url)
+        return invite_users_to_chat_call(
+            self, chat_room_id, room_id, room_url, access_token
+        )
 
-    def kick_user_from_call(self, call_id: int, user_id: int) -> dict:
+    def kick_user_from_call(
+        self, call_id: int, user_id: int, access_token: str = None
+    ) -> dict:
         """
 
         ユーザーを通話からキックします
@@ -496,7 +504,7 @@ class Client(API):
             - user_id: int - (required)
 
         """
-        return kick_and_ban_from_call(self, call_id, user_id)
+        return kick_and_ban_from_call(self, call_id, user_id, access_token)
 
     def set_call(
         self,
@@ -504,41 +512,50 @@ class Client(API):
         joinable_by: str,
         game_title: str = None,
         category_id: str = None,
+        access_token: str = None,
     ) -> dict:
         """
 
         通話を開始します
 
         """
-        return set_call(self, call_id, joinable_by, game_title, category_id)
+        return set_call(
+            self, call_id, joinable_by, game_title, category_id, access_token
+        )
 
-    def set_user_role(self, call_id: int, user_id: int, role: str) -> dict:
+    def set_user_role(
+        self, call_id: int, user_id: int, role: str, access_token: str = None
+    ) -> dict:
         """
 
         通話に参加中ののユーザーに役職を与えます
 
         """
-        return set_user_role(self, call_id, user_id, role)
+        return set_user_role(self, call_id, user_id, role, access_token)
 
-    def join_call(self, conference_id: int, call_sid: str = None) -> ConferenceCall:
+    def join_call(
+        self, conference_id: int, call_sid: str = None, access_token: str = None
+    ) -> ConferenceCall:
         """
 
         通話に参加します
 
         """
-        return start_call(self, conference_id, call_sid)
+        return start_call(self, conference_id, call_sid, access_token)
 
-    def leave_call(self, conference_id: int, call_sid: str = None) -> dict:
+    def leave_call(
+        self, conference_id: int, call_sid: str = None, access_token: str = None
+    ) -> dict:
         """
 
         通話から退出します
 
         """
-        return stop_call(self, conference_id, call_sid)
+        return stop_call(self, conference_id, call_sid, access_token)
 
     # -CASSANDRA
 
-    def get_activities(self, **params) -> ActivitiesResponse:
+    def get_activities(self, access_token: str = None, **params) -> ActivitiesResponse:
         """
 
         通知を取得します
@@ -550,9 +567,11 @@ class Client(API):
             - number: int - (optional)
 
         """
-        return get_user_activities(self, **params)
+        return get_user_activities(self, access_token, **params)
 
-    def get_merged_activities(self, **params) -> ActivitiesResponse:
+    def get_merged_activities(
+        self, access_token: str = None, **params
+    ) -> ActivitiesResponse:
         """
 
         全種類の通知を取得します
@@ -564,14 +583,18 @@ class Client(API):
             - number: int - (optional)
 
         """
-        return get_user_merged_activities(self, **params)
+        return get_user_merged_activities(self, access_token, **params)
 
-    def received_notification(self, pid: str, type: str, opened_at: int = None) -> dict:
-        return received_notification(self, pid, type, opened_at)
+    def received_notification(
+        self, pid: str, type: str, opened_at: int = None, access_token: str = None
+    ) -> dict:
+        return received_notification(self, pid, type, opened_at, access_token)
 
     # -CHAT
 
-    def accept_chat_request(self, chat_room_ids: List[int]) -> dict:
+    def accept_chat_request(
+        self, chat_room_ids: List[int], access_token: str = None
+    ) -> dict:
         """
 
         チャットリクエストを承認します
@@ -582,15 +605,17 @@ class Client(API):
             - chat_room_ids: List[int] - (required)
 
         """
-        return accept_chat_request(self, chat_room_ids)
+        return accept_chat_request(self, chat_room_ids, access_token)
 
-    def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
+    def check_unread_status(
+        self, from_time: int, access_token: str = None
+    ) -> UnreadStatusResponse:
         """
 
         チャットの未読ステータスを確認します
 
         """
-        return check_unread_status(self, from_time)
+        return check_unread_status(self, from_time, access_token)
 
     def create_group_chat(
         self,
@@ -598,6 +623,7 @@ class Client(API):
         with_user_ids: List[int],
         icon_filename: str = None,
         background_filename: str = None,
+        access_token: str = None,
     ) -> CreateChatRoomResponse:
         """
 
@@ -613,11 +639,15 @@ class Client(API):
 
         """
         return create_group_chat(
-            self, name, with_user_ids, icon_filename, background_filename
+            self, name, with_user_ids, icon_filename, background_filename, access_token
         )
 
     def create_private_chat(
-        self, with_user_id: int, matching_id: int = None, hima_chat: bool = False
+        self,
+        with_user_id: int,
+        matching_id: int = None,
+        hima_chat: bool = False,
+        access_token: str = None,
     ) -> CreateChatRoomResponse:
         """
 
@@ -631,9 +661,11 @@ class Client(API):
             - hima_chat: bool - (optional)
 
         """
-        return create_private_chat(self, with_user_id, matching_id, hima_chat)
+        return create_private_chat(
+            self, with_user_id, matching_id, hima_chat, access_token
+        )
 
-    def delete_background(self, room_id: int) -> dict:
+    def delete_background(self, room_id: int, access_token: str = None) -> dict:
         """
 
         チャットの背景画像を削除します
@@ -644,9 +676,11 @@ class Client(API):
             - room_id: int - (required)
 
         """
-        return delete_background(self, room_id)
+        return delete_background(self, room_id, access_token)
 
-    def delete_message(self, room_id: int, message_id: int) -> dict:
+    def delete_message(
+        self, room_id: int, message_id: int, access_token: str = None
+    ) -> dict:
         """
 
         メッセージを削除します
@@ -658,7 +692,7 @@ class Client(API):
             - message_id: int - (required)
 
         """
-        return delete_message(self, room_id, message_id)
+        return delete_message(self, room_id, message_id, access_token)
 
     def edit_chat_room(
         self,
@@ -666,6 +700,7 @@ class Client(API):
         name: str,
         icon_filename: str = None,
         background_filename: str = None,
+        access_token: str = None,
     ) -> dict:
         """
 
@@ -673,7 +708,7 @@ class Client(API):
 
         """
         return edit_chat_room(
-            self, chat_room_id, name, icon_filename, background_filename
+            self, chat_room_id, name, icon_filename, background_filename, access_token
         )
 
     def get_chatable_users(
@@ -681,23 +716,28 @@ class Client(API):
         from_follow_id: int = None,
         from_timestamp: int = None,
         order_by: str = None,
+        access_token: str = None,
     ) -> FollowUsersResponse:
         """
 
         チャット可能なユーザーを取得します
 
         """
-        return get_chatable_users(from_follow_id, from_timestamp, order_by)
+        return get_chatable_users(
+            from_follow_id, from_timestamp, order_by, access_token
+        )
 
-    def get_gifs_data(self) -> List[GifImageCategory]:
+    def get_gifs_data(self, access_token: str = None) -> List[GifImageCategory]:
         """
 
         チャットルームのGIFデータを取得します
 
         """
-        return get_gifs_data(self)
+        return get_gifs_data(self, access_token)
 
-    def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
+    def get_hidden_chat_rooms(
+        self, access_token: str = None, **params
+    ) -> ChatRoomsResponse:
         """
 
         非表示のチャットルームを取得します
@@ -709,17 +749,21 @@ class Client(API):
             - number: int - (optional)
 
         """
-        return get_hidden_chat_rooms(self, **params)
+        return get_hidden_chat_rooms(self, access_token, **params)
 
-    def get_main_chat_rooms(self, from_timestamp: int = None) -> ChatRoomsResponse:
+    def get_main_chat_rooms(
+        self, from_timestamp: int = None, access_token: str = None
+    ) -> ChatRoomsResponse:
         """
 
         メインのチャットルームを取得します
 
         """
-        return get_main_chat_rooms(self, from_timestamp)
+        return get_main_chat_rooms(self, from_timestamp, access_token)
 
-    def get_messages(self, chat_room_id: int, **params) -> List[Message]:
+    def get_messages(
+        self, chat_room_id: int, access_token: str = None, **params
+    ) -> List[Message]:
         """
 
         メッセージを取得します
@@ -730,7 +774,7 @@ class Client(API):
             - to_message_id: int - (optional)
 
         """
-        return get_messages(self, chat_room_id, **params)
+        return get_messages(self, chat_room_id, access_token, **params)
 
     def get_request_chat_rooms(self, from_timestamp: int = None) -> ChatRoomsResponse:
         """
