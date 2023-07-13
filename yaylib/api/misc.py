@@ -42,15 +42,17 @@ from ..responses import (
 )
 
 
-def accept_policy_agreement(self, type: str):
+def accept_policy_agreement(self, type: str, access_token: str = None):
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V1}/policy_agreements/{type}"
+        "POST",
+        endpoint=f"{Endpoints.USERS_V1}/policy_agreements/{type}",
+        access_token=access_token,
     )
     self.logger.info("Accepted to policy agreement.")
     return response
 
 
-def generate_sns_thumbnail(self, **params):
+def generate_sns_thumbnail(self, access_token: str = None, **params):
     """
 
     Parameters:
@@ -61,7 +63,10 @@ def generate_sns_thumbnail(self, **params):
 
     """
     response = self._make_request(
-        "GET", endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate", params=params
+        "GET",
+        endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate",
+        params=params,
+        access_token=access_token,
     )
     self.logger.info("SNS thumbnail generated.")
     return response
@@ -87,7 +92,7 @@ def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenRespons
 
 
 def get_email_verification_presigned_url(
-    self, email: str, locale: str, intent: str = None
+    self, email: str, locale: str, intent: str = None, access_token: str = None
 ) -> str:
     return self._make_request(
         "POST",
@@ -99,19 +104,25 @@ def get_email_verification_presigned_url(
             "intent": intent,
         },
         data_type=EmailVerificationPresignedUrlResponse,
+        access_token=access_token,
     ).url
 
 
-def get_file_upload_presigned_urls(self, file_names: List[str]) -> List[PresignedUrl]:
+def get_file_upload_presigned_urls(
+    self, file_names: List[str], access_token: str = None
+) -> List[PresignedUrl]:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.BUCKETS_V1}/presigned_urls",
         params={"file_names[]": file_names},
         data_type=PresignedUrlsResponse,
+        access_token=access_token,
     ).presigned_urls
 
 
-def get_id_checker_presigned_url(self, model: str, action: str, **params) -> str:
+def get_id_checker_presigned_url(
+    self, model: str, action: str, access_token: str = None, **params
+) -> str:
     # TODO: @QueryMap @NotNull Map<String, String> map
     """
     Meow..
@@ -121,15 +132,19 @@ def get_id_checker_presigned_url(self, model: str, action: str, **params) -> str
         endpoint=f"{Endpoints.ID_CHECK_V1}/{model}/{action}",
         params=params,
         data_type=IdCheckerPresignedUrlResponse,
+        access_token=access_token,
     ).presigned_url
 
 
-def get_old_file_upload_presigned_url(self, video_file_name: str) -> str:
+def get_old_file_upload_presigned_url(
+    self, video_file_name: str, access_token: str = None
+) -> str:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/presigned_url",
         params={"video_file_name": video_file_name},
         data_type=PresignedUrlResponse,
+        access_token=access_token,
     ).presigned_url
 
 
@@ -145,7 +160,12 @@ def get_web_socket_token(self, headers: dict = None, access_token: str = None) -
 
 
 def verify_device(
-    self, app_version: str, device_uuid: str, platform: str, verification_string: str
+    self,
+    app_version: str,
+    device_uuid: str,
+    platform: str,
+    verification_string: str,
+    access_token: str = None,
 ) -> VerifyDeviceResponse:
     # TODO: check platform, verification_string
     response = self._make_request(
@@ -158,12 +178,15 @@ def verify_device(
             "verification_string": verification_string,
         },
         data_type=VerifyDeviceResponse,
+        access_token=access_token,
     )
     self.logger.info("Device has been verified.")
     return response
 
 
-def upload_image(self, image_type: str, image_path: str) -> str:
+def upload_image(
+    self, image_type: str, image_path: str, access_token: str = None
+) -> str:
     """
 
     画像をアップロードしてattachment_filenameを返します。
@@ -191,7 +214,9 @@ def upload_image(self, image_type: str, image_path: str) -> str:
     original_url = f"{base_url}/{mid_url}{width}x{height}{ext}"
     thumb_url = f"{base_url}/thumb_{mid_url}{width}x{height}{ext}"
 
-    presigned_urls = get_file_upload_presigned_urls(self, [original_url, thumb_url])
+    presigned_urls = get_file_upload_presigned_urls(
+        self, [original_url, thumb_url], access_token=access_token
+    )
 
     with open(image_path, "rb") as f:
         response = httpx.put(presigned_urls[0].url, data=f.read())
@@ -206,5 +231,5 @@ def upload_image(self, image_type: str, image_path: str) -> str:
     return presigned_urls[0].filename
 
 
-def upload_video(self, video_path: str):
+def upload_video(self, video_path: str, access_token: str = None):
     pass
