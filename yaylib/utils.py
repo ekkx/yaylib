@@ -89,7 +89,12 @@ def decrypt(fernet, credentials: dict):
 
 
 def save_credentials(
-    fernet, base_path, access_token, refresh_token, user_id, email=None
+    base_path: str,
+    fernet,
+    access_token: str,
+    refresh_token: str,
+    user_id: int,
+    email: str = None,
 ):
     credentials = load_credentials(base_path=base_path)
     updated_credentials = {
@@ -107,7 +112,7 @@ def save_credentials(
         json.dump(updated_credentials, f)
 
 
-def load_credentials(base_path: str, check_email: str = None):
+def load_credentials(base_path: str, fernet=None, check_email: str = None):
     if not os.path.exists(base_path + "credentials.json"):
         return None
 
@@ -120,8 +125,11 @@ def load_credentials(base_path: str, check_email: str = None):
     )
     credentials = None if result is False else credentials
 
-    if check_email is not None:
+    if check_email is not None and credentials is not None:
         credentials = None if check_email != credentials["email"] else credentials
+
+    if fernet is not None and credentials is not None:
+        credentials = decrypt(fernet, credentials)
 
     return credentials
 

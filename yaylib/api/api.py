@@ -30,7 +30,12 @@ from json import JSONDecodeError
 import httpx
 from cryptography.fernet import Fernet
 
-from .login import load_credentials, save_credentials, decrypt, get_token
+from .login import (
+    # load_credentials,
+    # save_credentials,
+    # decrypt,
+    get_token,
+)
 
 from ..config import ErrorType, ErrorMessage
 from ..errors import (
@@ -42,7 +47,7 @@ from ..errors import (
     RateLimitError,
     YayServerError,
 )
-from ..utils import Configs, generate_uuid
+from ..utils import Configs, generate_uuid, load_credentials, save_credentials, decrypt
 
 
 current_path = os.path.abspath(os.getcwd())
@@ -143,7 +148,7 @@ class API:
                 self.logger.debug("Access token expired. Refreshing tokens...")
 
                 if auth_retry_count < max_auth_retries:
-                    credentials = load_credentials(self)
+                    credentials = load_credentials(base_path=self.base_path)
 
                     if credentials is not None:
                         fernet = Fernet(self.secret_key)
@@ -155,7 +160,7 @@ class API:
                             refresh_token=refresh_token,
                         )
                         save_credentials(
-                            self,
+                            base_path=self.base_path,
                             fernet=fernet,
                             access_token=response.access_token,
                             refresh_token=response.refresh_token,
