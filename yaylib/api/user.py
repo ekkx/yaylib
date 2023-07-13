@@ -51,16 +51,18 @@ from ..responses import (
 from ..utils import signed_info_calculating, signed_version_calculating
 
 
-def delete_footprint(self, user_id: int, footprint_id: int):
+def delete_footprint(self, user_id: int, footprint_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.USERS_V2}/{user_id}/footprints/{footprint_id}"
+        "DELETE",
+        endpoint=f"{Endpoints.USERS_V2}/{user_id}/footprints/{footprint_id}",
+        access_token=access_token,
     )
     self.logger.info("Footprint has been deleted.")
     return response
 
 
-def destroy_user(self):
+def destroy_user(self, access_token: str = None):
     self._check_authorization(access_token)
     answer = input("Are you sure you want to delete your account? Y/N")
     if answer.lower() != "y":
@@ -75,30 +77,38 @@ def destroy_user(self):
             "timestamp": timestamp,
             "signed_info": signed_info_calculating(self.device_uuid, timestamp),
         },
+        access_token=access_token,
     )
     self.logger.info("User has been deleted.")
     return response
 
 
-def follow_user(self, user_id: int):
+def follow_user(self, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/follow"
+        "POST",
+        endpoint=f"{Endpoints.USERS_V2}/{user_id}/follow",
+        access_token=access_token,
     )
     self.logger.info(f"Followed the user '{user_id}'.")
     return response
 
 
-def follow_users(self, user_ids: List[int]):
+def follow_users(self, user_ids: List[int], access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V2}/follow", params={"user_ids[]": user_ids}
+        "POST",
+        endpoint=f"{Endpoints.USERS_V2}/follow",
+        params={"user_ids[]": user_ids},
+        access_token=access_token,
     )
     self.logger.info("Followed multiple users.")
     return response
 
 
-def get_active_followings(self, **params) -> ActiveFollowingsResponse:
+def get_active_followings(
+    self, access_token: str = None, **params
+) -> ActiveFollowingsResponse:
     """
 
     Parameters:
@@ -114,10 +124,13 @@ def get_active_followings(self, **params) -> ActiveFollowingsResponse:
         endpoint=f"{Endpoints.USERS_V1}/active_followings",
         params=params,
         data_type=ActiveFollowingsResponse,
+        access_token=access_token,
     )
 
 
-def get_follow_recommendations(self, **params) -> FollowRecommendationsResponse:
+def get_follow_recommendations(
+    self, access_token: str = None, **params
+) -> FollowRecommendationsResponse:
     """
 
     Parameters:
@@ -134,10 +147,13 @@ def get_follow_recommendations(self, **params) -> FollowRecommendationsResponse:
         endpoint=f"{Endpoints.FRIENDS_V1}",
         params=params,
         data_type=FollowRecommendationsResponse,
+        access_token=access_token,
     )
 
 
-def get_follow_request(self, from_timestamp: int = None) -> UsersByTimestampResponse:
+def get_follow_request(
+    self, from_timestamp: int = None, access_token: str = None
+) -> UsersByTimestampResponse:
     params = {}
     if from_timestamp:
         params["from_timestamp"] = from_timestamp
@@ -147,19 +163,23 @@ def get_follow_request(self, from_timestamp: int = None) -> UsersByTimestampResp
         endpoint=f"{Endpoints.USERS_V2}/follow_requests",
         params=params,
         data_type=UsersByTimestampResponse,
+        access_token=access_token,
     )
 
 
-def get_follow_request_count(self) -> int:
+def get_follow_request_count(self, access_token: str = None) -> int:
     self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/follow_requests_count",
         data_type=FollowRequestCountResponse,
+        access_token=access_token,
     ).users_count
 
 
-def get_following_users_born(self, birthdate: int = None) -> UsersResponse:
+def get_following_users_born(
+    self, birthdate: int = None, access_token: str = None
+) -> UsersResponse:
     params = {}
     if birthdate:
         params["birthdate"] = birthdate
@@ -169,10 +189,11 @@ def get_following_users_born(self, birthdate: int = None) -> UsersResponse:
         endpoint=f"{Endpoints.USERS_V1}/following_born_today",
         params=params,
         data_type=UsersResponse,
+        access_token=access_token,
     )
 
 
-def get_footprints(self, **params) -> List[Footprint]:
+def get_footprints(self, access_token: str = None, **params) -> List[Footprint]:
     """
 
     Parameters:
@@ -189,17 +210,21 @@ def get_footprints(self, **params) -> List[Footprint]:
         endpoint=f"{Endpoints.USERS_V2}/footprints",
         params=params,
         data_type=FootprintsResponse,
+        access_token=access_token,
     ).footprints
 
 
-def get_fresh_user(self, user_id: int) -> UserResponse:
+def get_fresh_user(self, user_id: int, access_token: str = None) -> UserResponse:
     self._check_authorization(access_token)
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}", data_type=UserResponse
+        "GET",
+        endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}",
+        data_type=UserResponse,
+        access_token=access_token,
     )
 
 
-def get_hima_users(self, **params) -> List[UserWrapper]:
+def get_hima_users(self, access_token: str = None, **params) -> List[UserWrapper]:
     """
 
     Parameters:
@@ -215,6 +240,7 @@ def get_hima_users(self, **params) -> List[UserWrapper]:
         endpoint=f"{Endpoints.USERS_V2}/hima_users",
         params=params,
         data_type=HimaUsersResponse,
+        access_token=access_token,
     ).hima_users
 
 
@@ -251,16 +277,21 @@ def get_user_ranking(self, mode: str) -> RankingUsersResponse:
     )
 
 
-def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
+def get_refresh_counter_requests(
+    self, access_token: str = None
+) -> RefreshCounterRequestsResponse:
     self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/reset_counters",
         data_type=RefreshCounterRequestsResponse,
+        access_token=access_token,
     )
 
 
-def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
+def get_social_shared_users(
+    self, access_token: str = None, **params
+) -> SocialShareUsersResponse:
     """
 
     Parameters:
@@ -277,33 +308,41 @@ def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
         endpoint=f"{Endpoints.USERS_V2}/social_shared_users",
         params=params,
         data_type=SocialShareUsersResponse,
+        access_token=access_token,
     )
 
 
-def get_timestamp(self) -> UserTimestampResponse:
+def get_timestamp(self, access_token: str = None) -> UserTimestampResponse:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/timestamp",
         data_type=UserTimestampResponse,
+        access_token=access_token,
     )
 
 
-def get_user(self, user_id: int) -> User:
+def get_user(self, user_id: int, access_token: str = None) -> User:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V2}/{user_id}", data_type=UserResponse
+        "GET",
+        endpoint=f"{Endpoints.USERS_V2}/{user_id}",
+        data_type=UserResponse,
+        access_token=access_token,
     ).user
 
 
-def get_user_email(self, user_id: int) -> str:
+def get_user_email(self, user_id: int, access_token: str = None) -> str:
     self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}",
         data_type=UserEmailResponse,
+        access_token=access_token,
     ).email
 
 
-def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
+def get_user_followers(
+    self, user_id: int, access_token: str = None, **params
+) -> FollowUsersResponse:
     """
 
     Parameters:
@@ -320,10 +359,13 @@ def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/followers",
         params=params,
         data_type=FollowUsersResponse,
+        access_token=access_token,
     )
 
 
-def get_user_followings(self, user_id: int, **params) -> FollowUsersResponse:
+def get_user_followings(
+    self, user_id: int, access_token: str = None, **params
+) -> FollowUsersResponse:
     # @Body @Nullable SearchUsersRequest searchUsersRequest
     """
 
@@ -343,34 +385,44 @@ def get_user_followings(self, user_id: int, **params) -> FollowUsersResponse:
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/list_followings",
         params=params,
         data_type=FollowUsersResponse,
+        access_token=access_token,
     )
 
 
-def get_user_from_qr(self, qr: str) -> UserResponse:
+def get_user_from_qr(self, qr: str, access_token: str = None) -> UserResponse:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V1}/qr_codes/{qr}", data_type=UserResponse
+        "GET",
+        endpoint=f"{Endpoints.USERS_V1}/qr_codes/{qr}",
+        data_type=UserResponse,
+        access_token=access_token,
     )
 
 
-def get_user_without_leaving_footprint(self, user_id: int) -> UserResponse:
+def get_user_without_leaving_footprint(
+    self, user_id: int, access_token: str = None
+) -> UserResponse:
     return self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V2}/info/{user_id}", data_type=UserResponse
+        "GET",
+        endpoint=f"{Endpoints.USERS_V2}/info/{user_id}",
+        data_type=UserResponse,
+        access_token=access_token,
     )
 
 
-def get_users(self, user_ids: List[int]) -> UsersResponse:
+def get_users(self, user_ids: List[int], access_token: str = None) -> UsersResponse:
     headers = self.session.headers
-    headers["X-Jwt"] = self.get_web_socket_token()
+    headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/list_id",
         params={"user_ids[]": user_ids},
         data_type=UsersResponse,
         headers=headers,
+        access_token=access_token,
     )
 
 
-def reduce_kenta_penalty(self, user_id: int):
+def reduce_kenta_penalty(self, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
@@ -384,16 +436,18 @@ def reduce_kenta_penalty(self, user_id: int):
             "signed_version": signed_version_calculating(),
         },
         data_type=CreatePostResponse,
+        access_token=access_token,
     )
     self.logger.info("Penalty has been reduced.")
     return response
 
 
-def refresh_counter(self, counter: str):
+def refresh_counter(self, counter: str, access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/reset_counters",
         payload={"counter": counter},
+        access_token=access_token,
     )
     self.logger.info("Requested counter refresh.")
     return response
@@ -447,17 +501,21 @@ def register_user(
     return response
 
 
-def remove_user_avatar(self):
+def remove_user_avatar(self, access_token: str = None):
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V2}/remove_profile_photo"
+        "POST",
+        endpoint=f"{Endpoints.USERS_V2}/remove_profile_photo",
+        access_token=access_token,
     )
     self.logger.info("Profile image has been removed.")
     return response
 
 
-def remove_user_cover(self):
+def remove_user_cover(self, access_token: str = None):
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V2}/remove_cover_image"
+        "POST",
+        endpoint=f"{Endpoints.USERS_V2}/remove_cover_image",
+        access_token=access_token,
     )
     self.logger.info("Profile cover image has been removed.")
     return response
@@ -472,6 +530,7 @@ def report_user(
     screenshot_2_filename: str = None,
     screenshot_3_filename: str = None,
     screenshot_4_filename: str = None,
+    access_token: str = None,
 ):
     self._check_authorization(access_token)
     response = self._make_request(
@@ -485,12 +544,15 @@ def report_user(
             "screenshot_3_filename": screenshot_3_filename,
             "screenshot_4_filename": screenshot_4_filename,
         },
+        access_token=access_token,
     )
     self.logger.info(f"Reported the user '{user_id}'")
     return response
 
 
-def reset_password(self, email: str, email_grant_token: str, password: str):
+def reset_password(
+    self, email: str, email_grant_token: str, password: str, access_token: str = None
+):
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.USERS_V1}/reset_password",
@@ -499,12 +561,13 @@ def reset_password(self, email: str, email_grant_token: str, password: str):
             "email_grant_token": email_grant_token,
             "password": password,
         },
+        access_token=access_token,
     )
     self.logger.info("Reset the password.")
     return response
 
 
-def search_lobi_users(self, **params) -> UsersResponse:
+def search_lobi_users(self, access_token: str = None, **params) -> UsersResponse:
     """
 
     Parameters:
@@ -520,10 +583,11 @@ def search_lobi_users(self, **params) -> UsersResponse:
         endpoint=f"{Endpoints.LOBI_FRIENDS_V1}",
         params=params,
         data_type=UsersResponse,
+        access_token=access_token,
     )
 
 
-def search_users(self, **params) -> UsersResponse:
+def search_users(self, access_token: str = None, **params) -> UsersResponse:
     """
 
     Parameters:
@@ -546,10 +610,13 @@ def search_users(self, **params) -> UsersResponse:
         endpoint=f"{Endpoints.USERS_V1}/search",
         params=params,
         data_type=UsersResponse,
+        access_token=access_token,
     )
 
 
-def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
+def set_follow_permission_enabled(
+    self, nickname: str, is_private: bool = None, access_token: str = None
+):
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -563,52 +630,57 @@ def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
             "signed_info": signed_info_calculating(self.device_uuid, timestamp),
             "signed_version": signed_version_calculating(),
         },
+        access_token=access_token,
     )
     self.logger.info("Follow permission has been enabled.")
     return response
 
 
-def set_setting_follow_recommendation_enabled(self, on: bool):
+def set_setting_follow_recommendation_enabled(self, on: bool, access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/visible_on_sns_friend_recommendation_setting",
         params={"on": on},
+        access_token=access_token,
     )
     self.logger.info("Follow recommendation has been enabled.")
     return response
 
 
-def take_action_follow_request(self, target_id: int, action: str):
+def take_action_follow_request(
+    self, target_id: int, action: str, access_token: str = None
+):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{target_id}/follow_request",
         payload={"action": action},
+        access_token=access_token,
     )
     self.logger.info("Took action follow request.")
     return response
 
 
-def turn_on_hima(self):
+def turn_on_hima(self, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "GET",
-        endpoint=f"{Endpoints.USERS_V1}/hima",
+        "GET", endpoint=f"{Endpoints.USERS_V1}/hima", access_token=access_token
     )
     self.logger.info("Turned on 'hima now'.")
     return response
 
 
-def unfollow_user(self, user_id: int):
+def unfollow_user(self, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow",
+        access_token=access_token,
     )
     self.logger.info(f"Unfollowed the user '{user_id}'")
     return response
 
 
-def update_language(self, language: str):
+def update_language(self, language: str, access_token: str = None):
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -620,6 +692,7 @@ def update_language(self, language: str):
             "signed_info": signed_info_calculating(self.device_uuid, timestamp),
             "language": language,
         },
+        access_token=access_token,
     )
     self.logger.info("Language has been updated.")
     return response
@@ -635,6 +708,7 @@ def update_user(
     profile_icon_filename: str = None,
     cover_image_filename: str = None,
     username: str = None,
+    access_token: str = None,
 ):
     self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
@@ -655,6 +729,7 @@ def update_user(
             "timestamp": timestamp,
             "signed_info": signed_info_calculating(self.device_uuid, timestamp),
         },
+        access_token=access_token,
     )
     self.logger.info("User profile has been updated.")
     return response
@@ -663,26 +738,30 @@ def update_user(
 # BlockApi
 
 
-def block_user(self, user_id: int):
+def block_user(self, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/block",
+        access_token=access_token,
     )
     self.logger.info(f"Blocked the user '{user_id}'")
     return response
 
 
-def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
+def get_blocked_user_ids(self, access_token: str = None) -> BlockedUserIdsResponse:
     self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/block_ids",
         data_type=BlockedUserIdsResponse,
+        access_token=access_token,
     )
 
 
-def get_blocked_users(self, from_id: int = None) -> BlockedUsersResponse:
+def get_blocked_users(
+    self, from_id: int = None, access_token: str = None
+) -> BlockedUsersResponse:
     # @Body @NotNull SearchUsersRequest searchUsersRequest
     self._check_authorization(access_token)
     params = {}
@@ -693,13 +772,16 @@ def get_blocked_users(self, from_id: int = None) -> BlockedUsersResponse:
         endpoint=f"{Endpoints.USERS_V2}/blocked",
         params=params,
         data_type=BlockedUsersResponse,
+        access_token=access_token,
     )
 
 
-def unblock_user(self, user_id: int):
+def unblock_user(self, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unblock"
+        "POST",
+        endpoint=f"{Endpoints.USERS_V2}/{user_id}/unblock",
+        access_token=access_token,
     )
     self.logger.info(f"Unblocked the user '{user_id}'")
     return response
@@ -708,7 +790,9 @@ def unblock_user(self, user_id: int):
 # HiddenApi
 
 
-def get_hidden_users_list(self, **params: Union[str, int]) -> HiddenResponse:
+def get_hidden_users_list(
+    self, access_token: str = None, **params: Union[str, int]
+) -> HiddenResponse:
     """
 
     Parameters:
@@ -724,24 +808,29 @@ def get_hidden_users_list(self, **params: Union[str, int]) -> HiddenResponse:
         endpoint=f"{Endpoints.HIDDEN_V1}/users",
         params=params,
         data_type=HiddenResponse,
+        access_token=access_token,
     )
 
 
-def hide_user(self, user_id: int):
+def hide_user(self, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.HIDDEN_V1}/users", payload={"user_id": user_id}
+        "POST",
+        endpoint=f"{Endpoints.HIDDEN_V1}/users",
+        payload={"user_id": user_id},
+        access_token=access_token,
     )
     self.logger.info(f"User '{user_id}' is hidden")
     return response
 
 
-def unhide_users(self, user_ids: List[int]):
+def unhide_users(self, user_ids: List[int], access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.HIDDEN_V1}/users",
         params={"user_ids[]": user_ids},
+        access_token=access_token,
     )
     self.logger.info("Unhid users")
     return response
