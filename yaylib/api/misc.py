@@ -133,13 +133,14 @@ def get_old_file_upload_presigned_url(self, video_file_name: str) -> str:
     ).presigned_url
 
 
-def get_web_socket_token(self, headers: dict = None) -> str:
-    self._check_authorization()
+def get_web_socket_token(self, headers: dict = None, access_token: str = None) -> str:
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/ws_token",
         data_type=WebSocketTokenResponse,
         headers=headers,
+        access_token=access_token,
     ).token
 
 

@@ -226,10 +226,11 @@ def create_post(
     attachment_8_filename: str = None,
     attachment_9_filename: str = None,
     video_file_name: str = None,
+    access_token: str = None,
 ) -> Post:
-    self._check_authorization()
+    self._check_authorization(access_token)
     headers = self.session.headers
-    headers["X-Jwt"] = self.get_web_socket_token()
+    headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
 
     if text is not None:
         if "@:start:" in text and ":end:" in text:
@@ -281,6 +282,7 @@ def create_post(
         },
         data_type=Post,
         headers=headers,
+        access_token=access_token,
     )
     self.logger.info("Post has been created.")
     return response

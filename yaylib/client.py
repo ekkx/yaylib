@@ -1538,13 +1538,15 @@ class Client(API):
         """
         return get_old_file_upload_presigned_url(self, video_file_name)
 
-    def get_web_socket_token(self, headers: dict = None) -> str:
+    def get_web_socket_token(
+        self, headers: dict = None, access_token: str = None
+    ) -> str:
         """
 
         Web Socket Tokenを取得します
 
         """
-        return get_web_socket_token(self, headers)
+        return get_web_socket_token(self, headers, access_token)
 
     def upload_image(self, image_type: str, image_path: str) -> str:
         """
@@ -1670,6 +1672,7 @@ class Client(API):
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
+        access_token: str = None,
     ) -> Post:
         """
 
@@ -1697,6 +1700,7 @@ class Client(API):
             attachment_8_filename,
             attachment_9_filename,
             video_file_name,
+            access_token,
         )
 
     def create_repost(

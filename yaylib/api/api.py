@@ -107,11 +107,20 @@ class API:
         self.logger.info("yaylib version: " + self.yaylib_version + " started")
 
     def _request(
-        self, method, endpoint, params=None, payload=None, user_auth=True, headers=None
+        self,
+        method,
+        endpoint,
+        params=None,
+        payload=None,
+        user_auth=True,
+        headers=None,
+        access_token=None,
     ):
         headers = headers or self.session.headers
 
-        if not user_auth:
+        if access_token is not None:
+            headers["Authorization"] = f"Bearer {access_token}"
+        elif not user_auth and "Authorization" in headers:
             del headers["Authorization"]
 
         response = None
@@ -214,8 +223,11 @@ class API:
         data_type=None,
         user_auth=True,
         headers=None,
+        access_token=None,
     ):
-        response = self._request(method, endpoint, params, payload, user_auth, headers)
+        response = self._request(
+            method, endpoint, params, payload, user_auth, headers, access_token
+        )
         if data_type:
             return self._construct_response(response, data_type)
         return response
@@ -229,8 +241,8 @@ class API:
                 data = data_type(data)
         return data
 
-    def _check_authorization(self) -> None:
-        if self.session.headers.get("Authorization") is None:
+    def _check_authorization(self, access_token) -> None:
+        if self.session.headers.get("Authorization") is None and access_token is None:
             message = "Authorization is not present in the header."
             raise AuthenticationError(message)
 
