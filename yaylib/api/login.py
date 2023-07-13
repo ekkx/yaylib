@@ -23,16 +23,19 @@ SOFTWARE.
 """
 
 from datetime import datetime
-
-import os
-import json
-
 from cryptography.fernet import Fernet
 
 from ..config import Endpoints
 from ..errors import AuthenticationError, ForbiddenError
 from ..responses import LoginUserResponse, LoginUpdateResponse, TokenResponse
-from ..utils import Colors, console_print, signed_info_calculating
+from ..utils import (
+    Colors,
+    console_print,
+    load_credentials,
+    save_credentials,
+    decrypt,
+    signed_info_calculating,
+)
 
 
 def change_email(
@@ -100,75 +103,15 @@ def is_valid_token(self, access_token: str):
         return False
 
 
-def save_credentials(self, fernet, access_token, refresh_token, user_id, email=None):
-    credentials = load_credentials(self)
-    updated_credentials = {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "user_id": user_id,
-        "email": email,
-    }
-    if email is None:
-        updated_credentials["email"] = credentials.get("email")
-
-    updated_credentials = encrypt(fernet, updated_credentials)
-
-    with open(self.base_path + "credentials.json", "w") as f:
-        json.dump(updated_credentials, f)
-
-
-def load_credentials(self, check_email: str = None):
-    if not os.path.exists(self.base_path + "credentials.json"):
-        return None
-
-    with open(self.base_path + "credentials.json", "r") as f:
-        credentials = json.load(f)
-
-    result = all(
-        key in credentials
-        for key in ("access_token", "refresh_token", "user_id", "email")
-    )
-    credentials = None if result is False else credentials
-
-    if check_email is not None:
-        credentials = None if check_email != credentials["email"] else credentials
-
-    return credentials
-
-
-def encrypt(fernet, credentials: dict):
-    credentials.update(
-        {
-            "access_token": fernet.encrypt(
-                credentials.get("access_token").encode()
-            ).decode(),
-            "refresh_token": fernet.encrypt(
-                credentials.get("refresh_token").encode()
-            ).decode(),
-        }
-    )
-    return credentials
-
-
-def decrypt(fernet, credentials: dict):
-    credentials.update(
-        {
-            "access_token": fernet.decrypt(credentials.get("access_token")).decode(),
-            "refresh_token": fernet.decrypt(credentials.get("refresh_token")).decode(),
-        }
-    )
-    return credentials
-
-
 def login_with_email(
     self, email: str, password: str, secret_key: str = None
 ) -> LoginUserResponse:
-    credentials = load_credentials(self, email)
+    credentials = load_credentials(base_path=self.base_path, check_email=email)
     if credentials is not None:
         if secret_key is not None:
             self.secret_key = secret_key
-            fernet = Fernet(secret_key)
-            credentials = decrypt(fernet, credentials)
+            self.fernet = Fernet(secret_key)
+            credentials = decrypt(fernet=self.fernet, credentials=credentials)
             self.session.headers.setdefault(
                 "Authorization", f"Bearer {credentials['access_token']}"
             )
@@ -199,7 +142,7 @@ def login_with_email(
 
     secret_key = Fernet.generate_key()
     self.secret_key = secret_key
-    fernet = Fernet(secret_key)
+    self.fernet = Fernet(secret_key)
 
     console_print(
         f"Your 'secret_key' for {Colors.BOLD + email + Colors.RESET} is: {Colors.OKGREEN + secret_key.decode() + Colors.RESET}",
@@ -208,8 +151,8 @@ def login_with_email(
     )
 
     save_credentials(
-        self,
-        fernet=fernet,
+        base_path=self.base_path,
+        fernet=self.fernet,
         access_token=response.access_token,
         refresh_token=response.refresh_token,
         user_id=response.user_id,

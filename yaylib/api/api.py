@@ -69,6 +69,7 @@ class API:
         self.yaylib_version = Configs.YAYLIB_VERSION
         self.api_version = Configs.YAY_API_VERSION
         self.api_key = Configs.YAY_API_KEY
+        self.fernet = None
         self.secret_key = None
 
         self.proxy = {}
@@ -150,9 +151,10 @@ class API:
                 if auth_retry_count < max_auth_retries:
                     credentials = load_credentials(base_path=self.base_path)
 
-                    if credentials is not None:
-                        fernet = Fernet(self.secret_key)
-                        credentials = decrypt(fernet, credentials)
+                    if credentials is not None and self.fernet is not None:
+                        credentials = decrypt(
+                            fernet=self.fernet, credentials=credentials
+                        )
                         refresh_token = credentials["refresh_token"]
                         response = get_token(
                             self,
@@ -161,7 +163,7 @@ class API:
                         )
                         save_credentials(
                             base_path=self.base_path,
-                            fernet=fernet,
+                            fernet=self.fernet,
                             access_token=response.access_token,
                             refresh_token=response.refresh_token,
                             user_id=response.user_id,
