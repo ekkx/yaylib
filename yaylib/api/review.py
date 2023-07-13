@@ -30,18 +30,19 @@ from ..responses import ReviewsResponse
 from ..utils import signed_info_calculating
 
 
-def create_review(self, user_id: int, comment: str):
+def create_review(self, user_id: int, comment: str, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
         payload={"comment": comment},
+        access_token=access_token,
     )
     self.logger.info(f"Review has been sent to {user_id}.")
     return response
 
 
-def create_reviews(self, user_ids: List[int], comment: str):
+def create_reviews(self, user_ids: List[int], comment: str, access_token: str = None):
     self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
@@ -57,23 +58,25 @@ def create_reviews(self, user_ids: List[int], comment: str):
                 self.uuid, timestamp, shared_key=True
             ),
         },
+        access_token=access_token,
     )
     self.logger.info("Reviews have been sent to multiple users.")
     return response
 
 
-def delete_reviews(self, review_ids: List[int]):
+def delete_reviews(self, review_ids: List[int], access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V1}/reviews",
         params={"review_ids[]": review_ids},
+        access_token=access_token,
     )
     self.logger.info("Reviews have been deleted.")
     return response
 
 
-def get_my_reviews(self, **params) -> ReviewsResponse:
+def get_my_reviews(self, access_token: str = None, **params) -> ReviewsResponse:
     """
 
     Parameters
@@ -89,10 +92,13 @@ def get_my_reviews(self, **params) -> ReviewsResponse:
         endpoint=f"{Endpoints.USERS_V1}/reviews/mine",
         params=params,
         data_type=ReviewsResponse,
+        access_token=access_token,
     )
 
 
-def get_reviews(self, user_id: int, **params) -> ReviewsResponse:
+def get_reviews(
+    self, user_id: int, access_token: str = None, **params
+) -> ReviewsResponse:
     """
 
     Parameters
@@ -108,22 +114,28 @@ def get_reviews(self, user_id: int, **params) -> ReviewsResponse:
         endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
         params=params,
         data_type=ReviewsResponse,
+        access_token=access_token,
     )
 
 
-def pin_review(self, review_id: int):
+def pin_review(self, review_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "POST", endpoint=f"{Endpoints.PINNED_V1}/reviews", payload={"id": review_id}
+        "POST",
+        endpoint=f"{Endpoints.PINNED_V1}/reviews",
+        payload={"id": review_id},
+        access_token=access_token,
     )
     self.logger.info("Pinned the review.")
     return response
 
 
-def unpin_review(self, review_id: int):
+def unpin_review(self, review_id: int, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "DELETE", endpoint=f"{Endpoints.PINNED_V1}/reviews{review_id}"
+        "DELETE",
+        endpoint=f"{Endpoints.PINNED_V1}/reviews{review_id}",
+        access_token=access_token,
     )
     self.logger.info("Unpinned the review.")
     return response
