@@ -30,7 +30,7 @@ from ..responses import GroupThreadListResponse, PostsResponse
 
 
 def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread/{thread_id}",
@@ -43,7 +43,7 @@ def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
 def convert_post_to_thread(
     self, post_id: int, title: str = None, thread_icon_filename: str = None
 ) -> ThreadInfo:
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread",
@@ -57,7 +57,7 @@ def convert_post_to_thread(
 def create_thread(
     self, group_id: int, title: str, thread_icon_filename: str
 ) -> ThreadInfo:
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.THREADS_V1}",
@@ -97,7 +97,7 @@ def get_group_thread_list(
 
 
 def get_thread_joined_statuses(self, ids: List[int]) -> dict:
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET", endpoint=f"{Endpoints.THREADS_V1}/joined_statuses", params={"ids[]": ids}
     )
@@ -127,7 +127,7 @@ def get_thread_posts(
 
 
 def join_thread(self, thread_id: int, user_id: int):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
@@ -137,7 +137,7 @@ def join_thread(self, thread_id: int, user_id: int):
 
 
 def leave_thread(self, thread_id: int, user_id: int):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
@@ -147,7 +147,7 @@ def leave_thread(self, thread_id: int, user_id: int):
 
 
 def remove_thread(self, thread_id: int):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
@@ -157,7 +157,7 @@ def remove_thread(self, thread_id: int):
 
 
 def update_thread(self, thread_id: int, title: str, thread_icon_filename: str):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",

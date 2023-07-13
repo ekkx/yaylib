@@ -52,7 +52,7 @@ from ..utils import signed_info_calculating, signed_version_calculating
 
 
 def delete_footprint(self, user_id: int, footprint_id: int):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE", endpoint=f"{Endpoints.USERS_V2}/{user_id}/footprints/{footprint_id}"
     )
@@ -61,7 +61,7 @@ def delete_footprint(self, user_id: int, footprint_id: int):
 
 
 def destroy_user(self):
-    self._check_authorization()
+    self._check_authorization(access_token)
     answer = input("Are you sure you want to delete your account? Y/N")
     if answer.lower() != "y":
         return
@@ -81,7 +81,7 @@ def destroy_user(self):
 
 
 def follow_user(self, user_id: int):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/follow"
     )
@@ -90,7 +90,7 @@ def follow_user(self, user_id: int):
 
 
 def follow_users(self, user_ids: List[int]):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/follow", params={"user_ids[]": user_ids}
     )
@@ -108,7 +108,7 @@ def get_active_followings(self, **params) -> ActiveFollowingsResponse:
         - from_loggedin_at: int = None
 
     """
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/active_followings",
@@ -128,7 +128,7 @@ def get_follow_recommendations(self, **params) -> FollowRecommendationsResponse:
         - sources: List[str] = None
 
     """
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.FRIENDS_V1}",
@@ -141,7 +141,7 @@ def get_follow_request(self, from_timestamp: int = None) -> UsersByTimestampResp
     params = {}
     if from_timestamp:
         params["from_timestamp"] = from_timestamp
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/follow_requests",
@@ -151,7 +151,7 @@ def get_follow_request(self, from_timestamp: int = None) -> UsersByTimestampResp
 
 
 def get_follow_request_count(self) -> int:
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/follow_requests_count",
@@ -163,7 +163,7 @@ def get_following_users_born(self, birthdate: int = None) -> UsersResponse:
     params = {}
     if birthdate:
         params["birthdate"] = birthdate
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/following_born_today",
@@ -183,7 +183,7 @@ def get_footprints(self, **params) -> List[Footprint]:
         - mode: str = None
 
     """
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/footprints",
@@ -193,7 +193,7 @@ def get_footprints(self, **params) -> List[Footprint]:
 
 
 def get_fresh_user(self, user_id: int) -> UserResponse:
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET", endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}", data_type=UserResponse
     )
@@ -209,7 +209,7 @@ def get_hima_users(self, **params) -> List[UserWrapper]:
         - number: int = None
 
     """
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/hima_users",
@@ -252,7 +252,7 @@ def get_user_ranking(self, mode: str) -> RankingUsersResponse:
 
 
 def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/reset_counters",
@@ -271,7 +271,7 @@ def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
         - from_id: int - (Optional)
 
     """
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/social_shared_users",
@@ -295,7 +295,7 @@ def get_user(self, user_id: int) -> User:
 
 
 def get_user_email(self, user_id: int) -> str:
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}",
@@ -337,7 +337,7 @@ def get_user_followings(self, user_id: int, **params) -> FollowUsersResponse:
         - number: int - (optional)
 
     """
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/list_followings",
@@ -371,7 +371,7 @@ def get_users(self, user_ids: List[int]) -> UsersResponse:
 
 
 def reduce_kenta_penalty(self, user_id: int):
-    self._check_authorization()
+    self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -473,7 +473,7 @@ def report_user(
     screenshot_3_filename: str = None,
     screenshot_4_filename: str = None,
 ):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V3}/{user_id}/report",
@@ -589,7 +589,7 @@ def take_action_follow_request(self, target_id: int, action: str):
 
 
 def turn_on_hima(self):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/hima",
@@ -599,7 +599,7 @@ def turn_on_hima(self):
 
 
 def unfollow_user(self, user_id: int):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow",
@@ -636,7 +636,7 @@ def update_user(
     cover_image_filename: str = None,
     username: str = None,
 ):
-    self._check_authorization()
+    self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -664,7 +664,7 @@ def update_user(
 
 
 def block_user(self, user_id: int):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/block",
@@ -674,7 +674,7 @@ def block_user(self, user_id: int):
 
 
 def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/block_ids",
@@ -684,7 +684,7 @@ def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
 
 def get_blocked_users(self, from_id: int = None) -> BlockedUsersResponse:
     # @Body @NotNull SearchUsersRequest searchUsersRequest
-    self._check_authorization()
+    self._check_authorization(access_token)
     params = {}
     if from_id:
         params["from_id"] = from_id
@@ -697,7 +697,7 @@ def get_blocked_users(self, from_id: int = None) -> BlockedUsersResponse:
 
 
 def unblock_user(self, user_id: int):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unblock"
     )
@@ -718,7 +718,7 @@ def get_hidden_users_list(self, **params: Union[str, int]) -> HiddenResponse:
         - number: int = None
 
     """
-    self._check_authorization()
+    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.HIDDEN_V1}/users",
@@ -728,7 +728,7 @@ def get_hidden_users_list(self, **params: Union[str, int]) -> HiddenResponse:
 
 
 def hide_user(self, user_id: int):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "POST", endpoint=f"{Endpoints.HIDDEN_V1}/users", payload={"user_id": user_id}
     )
@@ -737,7 +737,7 @@ def hide_user(self, user_id: int):
 
 
 def unhide_users(self, user_ids: List[int]):
-    self._check_authorization()
+    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.HIDDEN_V1}/users",

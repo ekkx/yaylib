@@ -163,7 +163,7 @@ def login_with_email(
 
 def logout(self):
     try:
-        self._check_authorization()
+        self._check_authorization(access_token)
         response = self._make_request(
             "POST", endpoint=f"{Endpoints.USERS_V1}/logout", payload={"uuid": self.uuid}
         )
