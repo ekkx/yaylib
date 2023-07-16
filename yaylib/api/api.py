@@ -58,7 +58,7 @@ class API:
         err_lang="ja",
         base_path=current_path + "/config/",
         save_session=True,
-        loglevel_stream=logging.INFO,
+        loglevel=logging.INFO,
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
         self.api_version = Configs.YAY_API_VERSION
@@ -91,7 +91,7 @@ class API:
             os.makedirs(base_path)
 
         ch = logging.StreamHandler()
-        ch.setLevel(loglevel_stream)
+        ch.setLevel(loglevel)
         ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
         handler_existed = False
@@ -142,7 +142,7 @@ class API:
                 method, endpoint, params=params, json=payload, headers=headers
             )
 
-            if response.status_code == 401 and self.save_session is True:
+            if self.save_session is True and response.status_code == 401:
                 if "/api/v1/oauth/token" in endpoint:
                     os.remove(self.base_path + "credentials.json")
                     message = "Refresh token expired. Try logging in again."
