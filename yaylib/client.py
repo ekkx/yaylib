@@ -776,53 +776,57 @@ class Client(API):
         """
         return get_messages(self, chat_room_id, access_token, **params)
 
-    def get_request_chat_rooms(self, from_timestamp: int = None) -> ChatRoomsResponse:
+    def get_request_chat_rooms(
+        self, from_timestamp: int = None, access_token: str = None
+    ) -> ChatRoomsResponse:
         """
 
         チャットリクエストを取得します
 
         """
-        return get_request_chat_rooms(self, from_timestamp)
+        return get_request_chat_rooms(self, from_timestamp, access_token)
 
-    def get_chat_room(self, chat_room_id: int) -> ChatRoom:
+    def get_chat_room(self, chat_room_id: int, access_token: str = None) -> ChatRoom:
         """
 
         チャットルームの詳細を取得します
 
         """
-        return get_chat_room(self, chat_room_id)
+        return get_chat_room(self, chat_room_id, access_token)
 
-    def get_sticker_packs(self) -> List[StickerPack]:
+    def get_sticker_packs(self, access_token: str = None) -> List[StickerPack]:
         """
 
         スタンプを取得します
 
         """
-        return get_sticker_packs(self)
+        return get_sticker_packs(self, access_token)
 
-    def get_chat_requests_count(self) -> int:
+    def get_chat_requests_count(self, access_token: str = None) -> int:
         """
 
         チャットリクエストの数を取得します
 
         """
-        return get_total_chat_requests(self)
+        return get_total_chat_requests(self, access_token)
 
-    def hide_chat(self, chat_room_id: int) -> dict:
+    def hide_chat(self, chat_room_id: int, access_token: str = None) -> dict:
         """
 
         チャットルームを非表示にします
 
         """
-        return hide_chat(self, chat_room_id)
+        return hide_chat(self, chat_room_id, access_token)
 
-    def invite_to_chat(self, chat_room_id: int, user_ids: List[int]) -> dict:
+    def invite_to_chat(
+        self, chat_room_id: int, user_ids: List[int], access_token: str = None
+    ) -> dict:
         """
 
         チャットルームにユーザーを招待します
 
         """
-        return invite_to_chat(self, chat_room_id, user_ids)
+        return invite_to_chat(self, chat_room_id, user_ids, access_token)
 
     def kick_users_from_chat(self, chat_room_id: int, user_ids: List[int]) -> dict:
         """
@@ -830,7 +834,7 @@ class Client(API):
         チャットルームからユーザーを追放します
 
         """
-        return kick_users_from_chat(self, chat_room_id, user_ids)
+        return kick_users_from_chat(self, chat_room_id, user_ids, access_token)
 
     def pin_chat(self, room_id: int) -> dict:
         """
@@ -838,7 +842,7 @@ class Client(API):
         チャットルームをピン止めします
 
         """
-        return pin_chat(self, room_id)
+        return pin_chat(self, room_id, access_token)
 
     def read_message(self, chat_room_id: int, message_id: int) -> dict:
         """
@@ -846,7 +850,7 @@ class Client(API):
         メッセージを既読にします
 
         """
-        return read_message(self, chat_room_id, message_id)
+        return read_message(self, chat_room_id, message_id, access_token)
 
     def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
         """
@@ -854,7 +858,7 @@ class Client(API):
         チャットルームを更新します
 
         """
-        return refresh_chat_rooms(self, from_time)
+        return refresh_chat_rooms(self, from_time, access_token)
 
     def remove_chat_rooms(self, chat_room_ids: List[int]) -> dict:
         """
@@ -862,7 +866,7 @@ class Client(API):
         チャットルームを削除します
 
         """
-        return remove_chat_rooms(self, chat_room_ids)
+        return remove_chat_rooms(self, chat_room_ids, access_token)
 
     def report_chat_room(
         self,
@@ -890,6 +894,7 @@ class Client(API):
             screenshot_2_filename,
             screenshot_3_filename,
             screenshot_4_filename,
+            access_token,
         )
 
     def send_message(
@@ -920,6 +925,7 @@ class Client(API):
             attachment_file_name,
             sticker_pack_id,
             video_file_name,
+            access_token,
         )
 
     def unhide_chat(self, chat_room_ids: int) -> dict:
@@ -928,7 +934,7 @@ class Client(API):
         チャットの非表示を解除します
 
         """
-        return unhide_chat(self, chat_room_ids)
+        return unhide_chat(self, chat_room_ids, access_token)
 
     def unpin_chat(self, chat_room_id: int) -> dict:
         """
@@ -936,7 +942,7 @@ class Client(API):
         チャットルームのピン止めを解除します
 
         """
-        return unpin_chat(self, chat_room_id)
+        return unpin_chat(self, chat_room_id, access_token)
 
     # -GROUP
 
@@ -946,7 +952,7 @@ class Client(API):
         サークル副管理人の権限オファーを引き受けます
 
         """
-        return accept_moderator_offer(self, group_id)
+        return accept_moderator_offer(self, group_id, access_token)
 
     def accept_ownership_offer(self, group_id: int) -> dict:
         """
@@ -954,7 +960,7 @@ class Client(API):
         サークル管理人の権限オファーを引き受けます
 
         """
-        return accept_ownership_offer(self, group_id)
+        return accept_ownership_offer(self, group_id, access_token)
 
     def accept_group_join_request(self, group_id: int, user_id: int) -> dict:
         """
@@ -962,7 +968,7 @@ class Client(API):
         サークル参加リクエストを承認します
 
         """
-        return accept_group_join_request(self, group_id, user_id)
+        return accept_group_join_request(self, group_id, user_id, access_token)
 
     def add_related_groups(self, group_id: int, related_group_id: List[int]) -> dict:
         """
@@ -970,7 +976,7 @@ class Client(API):
         関連サークルを追加します
 
         """
-        return add_related_groups(self, group_id, related_group_id)
+        return add_related_groups(self, group_id, related_group_id, access_token)
 
     def ban_group_user(self, group_id: int, user_id: int) -> dict:
         """
@@ -978,7 +984,7 @@ class Client(API):
         サークルからユーザーを追放します
 
         """
-        return ban_group_user(self, group_id, user_id)
+        return ban_group_user(self, group_id, user_id, access_token)
 
     def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
         """
@@ -986,7 +992,7 @@ class Client(API):
         サークルの未読ステータスを取得します
 
         """
-        return check_unread_status(self, from_time)
+        return check_unread_status(self, from_time, access_token)
 
     def create_group(
         self,
@@ -1038,6 +1044,7 @@ class Client(API):
             allow_members_to_post_media,
             allow_members_to_post_url,
             guidelines,
+            access_token,
         )
 
     def pin_group(self, group_id: int) -> dict:
@@ -1046,7 +1053,7 @@ class Client(API):
         サークルをピンします
 
         """
-        return create_pin_group(self, group_id)
+        return create_pin_group(self, group_id, access_token)
 
     def decline_moderator_offer(self, group_id: int) -> dict:
         """
@@ -1054,7 +1061,7 @@ class Client(API):
         サークル副管理人の権限オファーを断ります
 
         """
-        return decline_moderator_offer(self, group_id)
+        return decline_moderator_offer(self, group_id, access_token)
 
     def decline_ownership_offer(self, group_id: int) -> dict:
         """
@@ -1062,7 +1069,7 @@ class Client(API):
         サークル管理人の権限オファーを断ります
 
         """
-        return decline_ownership_offer(self, group_id)
+        return decline_ownership_offer(self, group_id, access_token)
 
     def decline_group_join_request(self, group_id: int, user_id: int) -> dict:
         """
@@ -1070,7 +1077,7 @@ class Client(API):
         サークル参加リクエストを断ります
 
         """
-        return decline_group_join_request(self, group_id, user_id)
+        return decline_group_join_request(self, group_id, user_id, access_token)
 
     def unpin_group(self, group_id: int) -> dict:
         """
@@ -1078,7 +1085,7 @@ class Client(API):
         サークルのピン止めを解除します
 
         """
-        return delete_pin_group(self, group_id)
+        return delete_pin_group(self, group_id, access_token)
 
     def get_banned_group_members(
         self, group_id: int, page: int = None
@@ -1088,7 +1095,7 @@ class Client(API):
         追放されたサークルメンバーを取得します
 
         """
-        return get_banned_group_members(self, group_id, page)
+        return get_banned_group_members(self, group_id, page, access_token)
 
     def get_group_categories(self, **params) -> GroupCategoriesResponse:
         """
@@ -1102,7 +1109,7 @@ class Client(API):
             - number: int - (optional)
 
         """
-        return get_group_categories(self, **params)
+        return get_group_categories(self, access_token, **params)
 
     def get_create_group_quota(self) -> CreateGroupQuota:
         """
@@ -1110,7 +1117,7 @@ class Client(API):
         サークル作成可能な割当量を取得します
 
         """
-        return get_create_group_quota(self)
+        return get_create_group_quota(self, access_token)
 
     def get_group(self, group_id: int) -> GroupResponse:
         """
@@ -1118,7 +1125,7 @@ class Client(API):
         サークルの詳細を取得します
 
         """
-        return get_group(self, group_id)
+        return get_group(self, group_id, access_token)
 
     def get_groups(self, **params) -> GroupsResponse:
         """
@@ -1134,7 +1141,7 @@ class Client(API):
             - sub_category_id: int = None
 
         """
-        return get_groups(self, **params)
+        return get_groups(self, access_token, **params)
 
     def get_invitable_users(self, group_id: int, **params) -> UsersByTimestampResponse:
         """
@@ -1148,7 +1155,7 @@ class Client(API):
             - user[nickname]: str - (optional)
 
         """
-        return get_invitable_users(self, group_id, **params)
+        return get_invitable_users(self, group_id, access_token, **params)
 
     def get_joined_statuses(self, ids: List[int]) -> dict:
         """
@@ -1156,7 +1163,7 @@ class Client(API):
         サークルの参加ステータスを取得します
 
         """
-        return get_joined_statuses(self, ids)
+        return get_joined_statuses(self, ids, access_token)
 
     def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
         """
@@ -1164,7 +1171,7 @@ class Client(API):
         特定のサークルメンバーの情報を取得します
 
         """
-        return get_group_member(self, group_id, user_id)
+        return get_group_member(self, group_id, user_id, access_token)
 
     def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
         """
@@ -1183,7 +1190,7 @@ class Client(API):
             - followed_by_me: bool - (optional)
 
         """
-        return get_group_members(self, group_id, **params)
+        return get_group_members(self, group_id, access_token, **params)
 
     def get_my_groups(self, from_timestamp: None) -> GroupsResponse:
         """
@@ -1191,7 +1198,7 @@ class Client(API):
         自分のサークルを取得します
 
         """
-        return get_my_groups(self, from_timestamp)
+        return get_my_groups(self, from_timestamp, access_token)
 
     def get_relatable_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
         """
@@ -1206,7 +1213,7 @@ class Client(API):
             - from: str - (optional)
 
         """
-        return get_relatable_groups(self, group_id, **params)
+        return get_relatable_groups(self, group_id, access_token, **params)
 
     def get_related_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
         """
@@ -1221,7 +1228,7 @@ class Client(API):
             - from: str - (optional)
 
         """
-        return get_related_groups(self, group_id, **params)
+        return get_related_groups(self, group_id, access_token, **params)
 
     def get_user_groups(self, **params) -> GroupsResponse:
         """
@@ -1235,7 +1242,7 @@ class Client(API):
             - page: int - (optional)
 
         """
-        return get_user_groups(self, **params)
+        return get_user_groups(self, access_token, **params)
 
     def invite_users_to_group(self, group_id: int, user_ids: List[int]) -> dict:
         """
@@ -1243,7 +1250,7 @@ class Client(API):
         サークルにユーザーを招待します
 
         """
-        return invite_users_to_group(self, group_id, user_ids)
+        return invite_users_to_group(self, group_id, user_ids, access_token)
 
     def join_group(self, group_id: int) -> dict:
         """
@@ -1251,7 +1258,7 @@ class Client(API):
         サークルに参加します
 
         """
-        return join_group(self, group_id)
+        return join_group(self, group_id, access_token)
 
     def leave_group(self, group_id: int) -> dict:
         """
@@ -1259,7 +1266,7 @@ class Client(API):
         サークルから脱退します
 
         """
-        return leave_group(self, group_id)
+        return leave_group(self, group_id, access_token)
 
     def post_gruop_social_shared(self, group_id: int, sns_name: str) -> dict:
         """
@@ -1267,7 +1274,7 @@ class Client(API):
         サークルのソーシャルシェアを投稿します
 
         """
-        return post_gruop_social_shared(self, group_id, sns_name)
+        return post_gruop_social_shared(self, group_id, sns_name, access_token)
 
     def remove_group_cover(self, group_id: int) -> dict:
         """
@@ -1275,7 +1282,7 @@ class Client(API):
         サークルのカバー画像を削除します
 
         """
-        return remove_group_cover(self, group_id)
+        return remove_group_cover(self, group_id, access_token)
 
     def remove_moderator(self, group_id: int, user_id: int) -> dict:
         """
@@ -1283,7 +1290,7 @@ class Client(API):
         サークルの副管理人を削除します
 
         """
-        return remove_moderator(self, group_id, user_id)
+        return remove_moderator(self, group_id, user_id, access_token)
 
     def remove_related_groups(
         self, group_id: int, related_group_ids: List[int]
@@ -1293,7 +1300,7 @@ class Client(API):
         関連のあるサークルを削除します
 
         """
-        return remove_related_groups(self, group_id, related_group_ids)
+        return remove_related_groups(self, group_id, related_group_ids, access_token)
 
     def report_group(
         self,
@@ -1321,6 +1328,7 @@ class Client(API):
             screenshot_2_filename,
             screenshot_3_filename,
             screenshot_4_filename,
+            access_token,
         )
 
     def send_moderator_offers(self, group_id: int, user_ids: List[int]) -> dict:
@@ -1329,7 +1337,7 @@ class Client(API):
         複数人にサークル副管理人のオファーを送信します
 
         """
-        return send_moderator_offers(self, group_id, user_ids)
+        return send_moderator_offers(self, group_id, user_ids, access_token)
 
     def send_ownership_offer(self, group_id: int, user_id: int) -> dict:
         """
@@ -1337,7 +1345,7 @@ class Client(API):
         サークル管理人権限のオファーを送信します
 
         """
-        return send_ownership_offer(self, group_id, user_id)
+        return send_ownership_offer(self, group_id, user_id, access_token)
 
     def set_group_title(self, group_id: int, title: str) -> dict:
         """
@@ -1345,7 +1353,7 @@ class Client(API):
         サークルのタイトルを設定します
 
         """
-        return set_group_title(self, group_id, title)
+        return set_group_title(self, group_id, title, access_token)
 
     def take_over_group_ownership(self, group_id: int) -> dict:
         """
@@ -1353,7 +1361,7 @@ class Client(API):
         サークル管理人の権限を引き継ぎます
 
         """
-        return take_over_group_ownership(self, group_id)
+        return take_over_group_ownership(self, group_id, access_token)
 
     def unban_group_member(self, group_id: int, user_id: int) -> dict:
         """
@@ -1361,7 +1369,7 @@ class Client(API):
         特定のサークルメンバーの追放を解除します
 
         """
-        return unban_group_member(self, group_id, user_id)
+        return unban_group_member(self, group_id, user_id, access_token)
 
     def update_group(
         self,
@@ -1414,6 +1422,7 @@ class Client(API):
             allow_members_to_post_media,
             allow_members_to_post_url,
             guidelines,
+            access_token,
         )
 
     def withdraw_moderator_offer(self, group_id: int, user_id: int) -> dict:
@@ -1422,7 +1431,7 @@ class Client(API):
         サークル副管理人のオファーを取り消します
 
         """
-        return withdraw_moderator_offer(self, group_id, user_id)
+        return withdraw_moderator_offer(self, group_id, user_id, access_token)
 
     def withdraw_ownership_offer(self, group_id: int, user_id: int) -> dict:
         """
@@ -1430,7 +1439,7 @@ class Client(API):
         サークル管理人のオファーを取り消します
 
         """
-        return withdraw_ownership_offer(self, group_id, user_id)
+        return withdraw_ownership_offer(self, group_id, user_id, access_token)
 
     # -LOGIN
 
@@ -1450,7 +1459,7 @@ class Client(API):
         パスワードを変更します
 
         """
-        return change_password(self, current_password, new_password)
+        return change_password(self, current_password, new_password, access_token)
 
     def get_token(
         self,
@@ -1464,7 +1473,7 @@ class Client(API):
         トークンを再発行します
 
         """
-        return get_token(self, grant_type, refresh_token, email, password)
+        return get_token(self, grant_type, refresh_token, email, password, access_token)
 
     def login(
         self, email: str, password: str, secret_key: str = None
@@ -1482,7 +1491,7 @@ class Client(API):
         ログアウトします
 
         """
-        return logout(self)
+        return logout(self, access_token)
 
     def resend_confirm_email(self) -> dict:
         """
@@ -1490,7 +1499,7 @@ class Client(API):
         確認メールを再送信します
 
         """
-        return resend_confirm_email(self)
+        return resend_confirm_email(self, access_token)
 
     def restore_user(self, user_id: int) -> LoginUserResponse:
         """
@@ -1498,7 +1507,7 @@ class Client(API):
         ユーザーを復元します
 
         """
-        return restore_user(self, user_id)
+        return restore_user(self, user_id, access_token)
 
     def revoke_tokens(self) -> dict:
         """
@@ -1506,7 +1515,7 @@ class Client(API):
         トークンを無効化します
 
         """
-        return revoke_tokens(self)
+        return revoke_tokens(self, access_token)
 
     def save_account_with_email(
         self,
@@ -1526,6 +1535,7 @@ class Client(API):
             password,
             current_password,
             email_grant_token,
+            access_token,
         )
 
     # -MISC
@@ -1554,7 +1564,9 @@ class Client(API):
         メールアドレス確認用の署名付きURLを取得します
 
         """
-        return get_email_verification_presigned_url(self, email, locale, intent)
+        return get_email_verification_presigned_url(
+            self, email, locale, intent, access_token
+        )
 
     def get_file_upload_presigned_urls(
         self, file_names: List[str]
@@ -1564,7 +1576,7 @@ class Client(API):
         ファイルアップロード用の署名付きURLを取得します
 
         """
-        return get_file_upload_presigned_urls(self, file_names)
+        return get_file_upload_presigned_urls(self, file_names, access_token)
 
     # def get_id_checker_presigned_url(
     #         self,
@@ -1580,7 +1592,7 @@ class Client(API):
         動画ファイルアップロード用の署名付きURLを取得します
 
         """
-        return get_old_file_upload_presigned_url(self, video_file_name)
+        return get_old_file_upload_presigned_url(self, video_file_name, access_token)
 
     def get_web_socket_token(
         self, headers: dict = None, access_token: str = None
@@ -1603,7 +1615,7 @@ class Client(API):
             - image_path: str - (required): "画像のパス
 
         """
-        return upload_image(self, image_type, image_path)
+        return upload_image(self, image_type, image_path, access_token)
 
     # -POST
 
@@ -1613,7 +1625,7 @@ class Client(API):
         ブックマークに追加します
 
         """
-        return add_bookmark(self, user_id, post_id)
+        return add_bookmark(self, user_id, post_id, access_token)
 
     def add_group_highlight_post(self, group_id: int, post_id: int) -> dict:
         """
@@ -1621,7 +1633,7 @@ class Client(API):
         投稿をグループのまとめに追加します
 
         """
-        return add_group_highlight_post(self, group_id, post_id)
+        return add_group_highlight_post(self, group_id, post_id, access_token)
 
     def create_call_post(
         self,
@@ -1669,6 +1681,7 @@ class Client(API):
             attachment_7_filename,
             attachment_8_filename,
             attachment_9_filename,
+            access_token,
         )
 
     def pin_group_post(self, post_id: int, group_id: int) -> dict:
@@ -1677,7 +1690,7 @@ class Client(API):
         グループの投稿をピンします
 
         """
-        return create_group_pin_post(self, post_id, group_id)
+        return create_group_pin_post(self, post_id, group_id, access_token)
 
     def pin_post(self, post_id: int) -> dict:
         """
@@ -1685,7 +1698,7 @@ class Client(API):
         投稿をピンします
 
         """
-        return create_pin_post(self, post_id)
+        return create_pin_post(self, post_id, access_token)
 
     def mention(self, user_id: int) -> str:
         """
@@ -1797,6 +1810,7 @@ class Client(API):
             attachment_8_filename,
             attachment_9_filename,
             video_file_name,
+            access_token,
         )
 
     def create_share_post(
@@ -1814,7 +1828,7 @@ class Client(API):
 
         """
         return create_share_post(
-            self, shareable_type, shareable_id, text, font_size, color, group_id
+            self, shareable_type, shareable_id, text, font_size, color, group_id, access_token
         )
 
     def create_thread_post(
@@ -1866,7 +1880,7 @@ class Client(API):
             attachment_7_filename,
             attachment_8_filename,
             attachment_9_filename,
-            video_file_name,
+            video_file_name, access_token,
         )
 
     def delete_all_post(self) -> dict:
@@ -1875,7 +1889,7 @@ class Client(API):
         すべての自分の投稿を削除します
 
         """
-        return delete_all_post(self)
+        return delete_all_post(self, access_token)
 
     def unpin_group_post(self, group_id: int) -> dict:
         """
@@ -1883,7 +1897,7 @@ class Client(API):
         グループのピン投稿を解除します
 
         """
-        return delete_group_pin_post(self, group_id)
+        return delete_group_pin_post(self, group_id, access_token)
 
     def unpin_post(self, post_id: int) -> dict:
         """
@@ -1891,7 +1905,7 @@ class Client(API):
         ピン投稿を削除します
 
         """
-        return delete_pin_post(self, post_id)
+        return delete_pin_post(self, post_id, access_token)
 
     def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
         """
@@ -1899,7 +1913,7 @@ class Client(API):
         ブックマークを取得します
 
         """
-        return get_bookmark(self, user_id, from_str)
+        return get_bookmark(self, user_id, from_str, access_token)
 
     def get_timeline_calls(self, **params) -> PostsResponse:
         """
@@ -1920,7 +1934,7 @@ class Client(API):
             - shared_interest_categories: bool = None
 
         """
-        return get_timeline_calls(self, **params)
+        return get_timeline_calls(self, access_token, **params)
 
     def get_conversation(self, conversation_id: int, **params) -> PostsResponse:
         """
@@ -1938,7 +1952,7 @@ class Client(API):
             - reverse: bool = True
 
         """
-        return get_conversation(self, conversation_id, **params)
+        return get_conversation(self, conversation_id, access_token, **params)
 
     def get_conversation_root_posts(self, post_ids: List[int]) -> PostsResponse:
         """
@@ -1946,7 +1960,7 @@ class Client(API):
         会話の原点の投稿を取得します
 
         """
-        return get_conversation_root_posts(self, post_ids)
+        return get_conversation_root_posts(self, post_ids, access_token)
 
     def get_following_call_timeline(self, **params) -> PostsResponse:
         """
@@ -1964,7 +1978,7 @@ class Client(API):
             - exclude_recent_gomimushi: bool = None
 
         """
-        return get_following_call_timeline(self, **params)
+        return get_following_call_timeline(self, access_token, **params)
 
     def get_following_timeline(self, **params) -> PostsResponse:
         """
@@ -1983,7 +1997,7 @@ class Client(API):
             - custom_generation_range: bool = None
 
         """
-        return get_following_timeline(self, **params)
+        return get_following_timeline(self, access_token, **params)
 
     def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
         """
@@ -1998,7 +2012,7 @@ class Client(API):
             - number: int = None
 
         """
-        return get_group_highlight_posts(self, group_id, **params)
+        return get_group_highlight_posts(self, group_id, access_token, **params)
 
     def get_group_timeline_by_keyword(
         self, group_id: int, keyword: str, **params
@@ -2017,7 +2031,7 @@ class Client(API):
             - only_thread_posts: bool = False
 
         """
-        return get_group_timeline_by_keyword(self, group_id, keyword, **params)
+        return get_group_timeline_by_keyword(self, group_id, keyword, access_token, **params)
 
     def get_group_timeline(self, group_id: int, **params) -> PostsResponse:
         """
@@ -2035,7 +2049,7 @@ class Client(API):
             - only_root: bool
 
         """
-        return get_group_timeline(self, group_id, **params)
+        return get_group_timeline(self, group_id, access_token, **params)
 
     def get_timeline_by_hashtag(self, hashtag: str, **params) -> PostsResponse:
         """
@@ -2050,7 +2064,7 @@ class Client(API):
             - number: int - (optional)
 
         """
-        return get_timeline_by_hashtag(self, hashtag, **params)
+        return get_timeline_by_hashtag(self, hashtag, access_token, **params)
 
     def get_my_posts(self, **params) -> PostsResponse:
         """
@@ -2065,7 +2079,7 @@ class Client(API):
             - include_group_post: bool - (optional)
 
         """
-        return get_my_posts(self, **params)
+        return get_my_posts(self, access_token, **params)
 
     def get_post(self, post_id: int) -> Post:
         """
@@ -2073,7 +2087,7 @@ class Client(API):
         投稿の詳細を取得します
 
         """
-        return get_post(self, post_id)
+        return get_post(self, post_id, access_token)
 
     def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
         """
@@ -2087,7 +2101,7 @@ class Client(API):
             - number: int - (optional)
 
         """
-        return get_post_likers(self, post_id, **params)
+        return get_post_likers(self, post_id, access_token, **params)
 
     def get_reposts(self, post_id: int, **params: int) -> PostsResponse:
         """
@@ -2102,7 +2116,7 @@ class Client(API):
             - number: int - (optional)
 
         """
-        return get_post_reposts(self, post_id, **params)
+        return get_post_reposts(self, post_id, access_token, **params)
 
     def get_posts(self, post_ids: List[int]) -> PostsResponse:
         """
@@ -2110,7 +2124,7 @@ class Client(API):
         複数の投稿を取得します
 
         """
-        return get_posts(self, post_ids)
+        return get_posts(self, post_ids, access_token)
 
     def get_recommended_post_tags(
         self, tag: str = None, save_recent_search: bool = False
@@ -2120,7 +2134,7 @@ class Client(API):
         おすすめのタグ候補を取得します
 
         """
-        return get_recommended_post_tags(self, tag, save_recent_search)
+        return get_recommended_post_tags(self, tag, save_recent_search, access_token)
 
     def get_recommended_posts(self, **params) -> PostsResponse:
         """
@@ -2135,7 +2149,7 @@ class Client(API):
             - number: int
 
         """
-        return get_recommended_posts(self, **params)
+        return get_recommended_posts(self, access_token, **params)
 
     def get_timeline_by_keyword(self, keyword: str = None, **params) -> PostsResponse:
         """
@@ -2150,7 +2164,7 @@ class Client(API):
             - number: int
 
         """
-        return get_timeline_by_keyword(self, keyword, **params)
+        return get_timeline_by_keyword(self, keyword, access_token, **params)
 
     def get_timeline(self, **params) -> PostsResponse:
         # - from: str - (optional)
@@ -2174,7 +2188,7 @@ class Client(API):
             - custom_generation_range: bool - (optional)
 
         """
-        return get_timeline(self, **params)
+        return get_timeline(self, access_token, **params)
 
     def get_url_metadata(self, url: str) -> SharedUrl:
         """
@@ -2182,7 +2196,7 @@ class Client(API):
         URLのメタデータを取得します
 
         """
-        return get_url_metadata(self, url)
+        return get_url_metadata(self, url, access_token)
 
     def get_user_timeline(self, user_id: int, **params) -> PostsResponse:
         """
@@ -2197,7 +2211,7 @@ class Client(API):
             - post_type: str - (optional)
 
         """
-        return get_user_timeline(self, user_id, **params)
+        return get_user_timeline(self, user_id, access_token, **params)
 
     def like(self, post_ids: List[int]) -> LikePostsResponse:
         """
@@ -2207,7 +2221,7 @@ class Client(API):
         ※ 一度にいいねできる投稿数は最大25個
 
         """
-        return like_posts(self, post_ids)
+        return like_posts(self, post_ids, access_token)
 
     def remove_bookmark(self, user_id: int, post_id: int) -> dict:
         """
@@ -2215,7 +2229,7 @@ class Client(API):
         ブックマークを削除します
 
         """
-        return remove_bookmark(self, user_id, post_id)
+        return remove_bookmark(self, user_id, post_id, access_token)
 
     def remove_group_highlight_post(self, group_id: int, post_id: int) -> dict:
         """
@@ -2223,7 +2237,7 @@ class Client(API):
         サークルのハイライト投稿を解除します
 
         """
-        return remove_group_highlight_post(self, group_id, post_id)
+        return remove_group_highlight_post(self, group_id, post_id, access_token)
 
     def remove_posts(self, post_ids: List[int]) -> dict:
         """
@@ -2231,7 +2245,7 @@ class Client(API):
         複数の投稿を削除します
 
         """
-        return remove_posts(self, post_ids)
+        return remove_posts(self, post_ids, access_token)
 
     def report_post(
         self,
@@ -2258,7 +2272,7 @@ class Client(API):
             screenshot_filename,
             screenshot_2_filename,
             screenshot_3_filename,
-            screenshot_4_filename,
+            screenshot_4_filename, access_token,
         )
 
     def unlike(self, post_id: int) -> dict:
@@ -2267,7 +2281,7 @@ class Client(API):
         投稿のいいねを解除します
 
         """
-        return unlike_post(self, post_id)
+        return unlike_post(self, post_id, access_token)
 
     def update_post(
         self,
@@ -2282,7 +2296,7 @@ class Client(API):
         投稿を編集します
 
         """
-        return update_post(self, post_id, text, font_size, color, message_tags)
+        return update_post(self, post_id, text, font_size, color, message_tags, access_token)
 
     def view_video(self, video_id: int) -> dict:
         """
@@ -2290,7 +2304,7 @@ class Client(API):
         動画を視聴します
 
         """
-        return view_video(self, video_id)
+        return view_video(self, video_id, access_token)
 
     def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
         """
@@ -2298,7 +2312,7 @@ class Client(API):
         アンケートに投票します
 
         """
-        return vote_survey(self, survey_id, choice_id)
+        return vote_survey(self, survey_id, choice_id, access_token)
 
     # -REVIEW
 
@@ -2308,7 +2322,7 @@ class Client(API):
         レターを送信します
 
         """
-        return create_review(self, user_id, comment)
+        return create_review(self, user_id, comment, access_token)
 
     def create_reviews(self, user_ids: List[int], comment: str) -> dict:
         """
@@ -2316,7 +2330,7 @@ class Client(API):
         複数人にレターを送信します
 
         """
-        return create_reviews(self, user_ids, comment)
+        return create_reviews(self, user_ids, comment, access_token)
 
     def delete_reviews(self, review_ids: List[int]) -> dict:
         """
@@ -2324,7 +2338,7 @@ class Client(API):
         レターを削除します
 
         """
-        return delete_reviews(self, review_ids)
+        return delete_reviews(self, review_ids, access_token)
 
     def get_my_reviews(self, **params) -> ReviewsResponse:
         """
@@ -2338,7 +2352,7 @@ class Client(API):
             - number: int = (optional)
 
         """
-        return get_my_reviews(self, **params)
+        return get_my_reviews(self, access_token, **params)
 
     def get_reviews(self, user_id: int, **params) -> ReviewsResponse:
         """
@@ -2353,7 +2367,7 @@ class Client(API):
             - number: int = (optional)
 
         """
-        return get_reviews(self, user_id, **params)
+        return get_reviews(self, user_id, access_token, **params)
 
     def pin_review(self, review_id: int) -> dict:
         """
@@ -2361,7 +2375,7 @@ class Client(API):
         レターをピンします
 
         """
-        return pin_review(self, review_id)
+        return pin_review(self, review_id, access_token)
 
     def unpin_review(self, review_id: int) -> dict:
         """
@@ -2369,7 +2383,7 @@ class Client(API):
         レターのピン止めを解除します
 
         """
-        return unpin_review(self, review_id)
+        return unpin_review(self, review_id, access_token)
 
     # -THREAD
 
@@ -2379,7 +2393,7 @@ class Client(API):
         投稿をスレッドに追加します
 
         """
-        return add_post_to_thread(self, post_id, thread_id)
+        return add_post_to_thread(self, post_id, thread_id, access_token)
 
     def convert_post_to_thread(
         self, post_id: int, title: str = None, thread_icon_filename: str = None
@@ -2389,7 +2403,7 @@ class Client(API):
         投稿をスレッドに変換します
 
         """
-        return convert_post_to_thread(self, post_id, title, thread_icon_filename)
+        return convert_post_to_thread(self, post_id, title, thread_icon_filename, access_token)
 
     def create_thread(
         self, group_id: int, title: str, thread_icon_filename: str
@@ -2399,7 +2413,7 @@ class Client(API):
         スレッドを作成します
 
         """
-        return create_thread(self, group_id, title, thread_icon_filename)
+        return create_thread(self, group_id, title, thread_icon_filename, access_token)
 
     def get_group_thread_list(
         self, group_id: int, from_str: str = None, **params
@@ -2416,7 +2430,7 @@ class Client(API):
             - join_status: str = None
 
         """
-        return get_group_thread_list(self, group_id, from_str, **params)
+        return get_group_thread_list(self, group_id, from_str, access_token, **params)
 
     def get_thread_joined_statuses(self, ids: List[int]) -> dict:
         """
@@ -2424,7 +2438,7 @@ class Client(API):
         スレッド参加ステータスを取得します
 
         """
-        return get_thread_joined_statuses(self, ids)
+        return get_thread_joined_statuses(self, ids, access_token)
 
     def get_thread_posts(
         self, thread_id: int, from_str: str = None, **params
@@ -2441,7 +2455,7 @@ class Client(API):
             - from_str: str = None
 
         """
-        return get_thread_posts(self, thread_id, from_str, **params)
+        return get_thread_posts(self, thread_id, from_str, access_token, **params)
 
     def join_thread(self, thread_id: int, user_id: int) -> dict:
         """
@@ -2449,7 +2463,7 @@ class Client(API):
         スレッドに参加します
 
         """
-        return join_thread(self, thread_id, user_id)
+        return join_thread(self, thread_id, user_id, access_token)
 
     def leave_thread(self, thread_id: int, user_id: int) -> dict:
         """
@@ -2457,7 +2471,7 @@ class Client(API):
         スレッドから脱退します
 
         """
-        return leave_thread(self, thread_id, user_id)
+        return leave_thread(self, thread_id, user_id, access_token)
 
     def remove_thread(self, thread_id: int) -> dict:
         """
@@ -2465,7 +2479,7 @@ class Client(API):
         スレッドを削除します
 
         """
-        return remove_thread(self, thread_id)
+        return remove_thread(self, thread_id, access_token)
 
     def update_thread(
         self, thread_id: int, title: str, thread_icon_filename: str
@@ -2475,7 +2489,7 @@ class Client(API):
         スレッドを編集します
 
         """
-        return update_thread(self, thread_id, title, thread_icon_filename)
+        return update_thread(self, thread_id, title, thread_icon_filename, access_token)
 
     # -USER
 
@@ -2485,7 +2499,7 @@ class Client(API):
         足跡を削除します
 
         """
-        return delete_footprint(self, user_id, footprint_id)
+        return delete_footprint(self, user_id, footprint_id, access_token)
 
     def destroy_user(self) -> dict:
         """
@@ -2493,7 +2507,7 @@ class Client(API):
         アカウントを削除します
 
         """
-        return destroy_user(self)
+        return destroy_user(self, access_token)
 
     def follow_user(self, user_id: int) -> dict:
         """
@@ -2501,7 +2515,7 @@ class Client(API):
         ユーザーをフォローします
 
         """
-        return follow_user(self, user_id)
+        return follow_user(self, user_id, access_token)
 
     def follow_users(self, user_ids: List[int]) -> dict:
         """
@@ -2509,7 +2523,7 @@ class Client(API):
         複数のユーザーをフォローします
 
         """
-        return follow_users(self, user_ids)
+        return follow_users(self, user_ids, access_token)
 
     def get_active_followings(self, **params) -> ActiveFollowingsResponse:
         """
@@ -2523,7 +2537,7 @@ class Client(API):
             - from_loggedin_at: int = None
 
         """
-        return get_active_followings(self, **params)
+        return get_active_followings(self, access_token, **params)
 
     def get_follow_recommendations(self, **params) -> FollowRecommendationsResponse:
         """
@@ -2538,7 +2552,7 @@ class Client(API):
             - sources: List[str] = None
 
         """
-        return get_follow_recommendations(self, **params)
+        return get_follow_recommendations(self, access_token, **params)
 
     def get_follow_request(
         self, from_timestamp: int = None
@@ -2548,7 +2562,7 @@ class Client(API):
         フォローリクエストを取得します
 
         """
-        return get_follow_request(self, from_timestamp)
+        return get_follow_request(self, from_timestamp, access_token)
 
     def get_follow_request_count(self) -> int:
         """
@@ -2556,7 +2570,7 @@ class Client(API):
         フォローリクエストの数を取得します
 
         """
-        return get_follow_request_count(self)
+        return get_follow_request_count(self, access_token)
 
     def get_following_users_born(self, birthdate: int = None) -> UsersResponse:
         """
@@ -2564,7 +2578,7 @@ class Client(API):
         フォロー中のユーザーの誕生日を取得します
 
         """
-        return get_following_users_born(self, birthdate)
+        return get_following_users_born(self, birthdate, access_token)
 
     def get_footprints(self, **params) -> List[Footprint]:
         """
@@ -2579,7 +2593,7 @@ class Client(API):
             - mode: str = None
 
         """
-        return get_footprints(self, **params)
+        return get_footprints(self, access_token, **params)
 
     def get_fresh_user(self, user_id: int) -> UserResponse:
         """
@@ -2587,7 +2601,7 @@ class Client(API):
         認証情報などを含んだユーザー情報を取得します
 
         """
-        return get_fresh_user(self, user_id)
+        return get_fresh_user(self, user_id, access_token)
 
     def get_hima_users(self, **params) -> List[UserWrapper]:
         """
@@ -2601,7 +2615,7 @@ class Client(API):
             - number: int = None
 
         """
-        return get_hima_users(self, **params)
+        return get_hima_users(self, access_token, **params)
 
     def get_user_ranking(self, mode: str) -> RankingUsersResponse:
         """
@@ -2636,7 +2650,7 @@ class Client(API):
         カウンター更新のリクエストを取得します
 
         """
-        return get_refresh_counter_requests(self)
+        return get_refresh_counter_requests(self, access_token)
 
     def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
         """
@@ -2651,7 +2665,7 @@ class Client(API):
             - from_id: int - (Optional)
 
         """
-        return get_social_shared_users(self, **params)
+        return get_social_shared_users(self, access_token, **params)
 
     def get_timestamp(self) -> UserTimestampResponse:
         """
@@ -2659,7 +2673,7 @@ class Client(API):
         タイムスタンプを取得します
 
         """
-        return get_timestamp(self)
+        return get_timestamp(self, access_token)
 
     def get_user(self, user_id: int) -> User:
         """
@@ -2667,7 +2681,7 @@ class Client(API):
         ユーザーの情報を取得します
 
         """
-        return get_user(self, user_id)
+        return get_user(self, user_id, access_token)
 
     def get_user_email(self, user_id: int) -> str:
         """
@@ -2675,7 +2689,7 @@ class Client(API):
         ユーザーのメールアドレスを取得します
 
         """
-        return get_user_email(self, user_id)
+        return get_user_email(self, user_id, access_token)
 
     def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
         """
@@ -2690,7 +2704,7 @@ class Client(API):
             - followed_by_me: int = None
 
         """
-        return get_user_followers(self, user_id, **params)
+        return get_user_followers(self, user_id, access_token, **params)
 
     def get_user_followings(self, user_id: int, **params) -> FollowUsersResponse:
         """
@@ -2706,7 +2720,7 @@ class Client(API):
             - order_by: str = None
 
         """
-        return get_user_followings(self, user_id, **params)
+        return get_user_followings(self, user_id, access_token, **params)
 
     def get_user_from_qr(self, qr: str) -> UserResponse:
         """
@@ -2714,7 +2728,7 @@ class Client(API):
         QRコードからユーザーを取得します
 
         """
-        return get_user_from_qr(self, qr)
+        return get_user_from_qr(self, qr, access_token)
 
     def get_user_without_leaving_footprint(self, user_id: int) -> UserResponse:
         """
@@ -2722,7 +2736,7 @@ class Client(API):
         足跡をつけずにユーザーの情報を取得します
 
         """
-        return get_user_without_leaving_footprint(self, user_id)
+        return get_user_without_leaving_footprint(self, user_id, access_token)
 
     def get_users(self, user_ids: List[int]) -> UsersResponse:
         """
@@ -2730,7 +2744,7 @@ class Client(API):
         複数のユーザーの情報を取得します
 
         """
-        return get_users(self, user_ids)
+        return get_users(self, user_ids, access_token)
 
     def reduce_kenta_penalty(self, user_id: int) -> dict:
         """
@@ -2738,7 +2752,7 @@ class Client(API):
         ペナルティーを緩和します
 
         """
-        return reduce_kenta_penalty(self, user_id)
+        return reduce_kenta_penalty(self, user_id, access_token)
 
     def refresh_counter(self, counter: str) -> dict:
         """
@@ -2746,7 +2760,7 @@ class Client(API):
         カウンターを更新します
 
         """
-        return refresh_counter(self, counter)
+        return refresh_counter(self, counter, access_token)
 
     def register_user(
         self,
@@ -2793,7 +2807,7 @@ class Client(API):
         ユーザーのアイコンを削除します
 
         """
-        return remove_user_avatar(self)
+        return remove_user_avatar(self, access_token)
 
     def remove_user_cover(self) -> dict:
         """
@@ -2801,7 +2815,7 @@ class Client(API):
         ユーザーのカバー画像を削除します
 
         """
-        return remove_user_cover(self)
+        return remove_user_cover(self, access_token)
 
     def report_user(
         self,
@@ -2826,7 +2840,7 @@ class Client(API):
             screenshot_filename,
             screenshot_2_filename,
             screenshot_3_filename,
-            screenshot_4_filename,
+            screenshot_4_filename, access_token,
         )
 
     def reset_password(self, email: str, email_grant_token: str, password: str) -> dict:
@@ -2835,7 +2849,7 @@ class Client(API):
         パスワードをリセットします
 
         """
-        return reset_password(self, email, email_grant_token, password)
+        return reset_password(self, email, email_grant_token, password, access_token)
 
     def search_lobi_users(self, **params) -> UsersResponse:
         """
@@ -2850,7 +2864,7 @@ class Client(API):
             - from_str: str = None
 
         """
-        return search_lobi_users(self**params)
+        return search_lobi_users(self, access_token, **params)
 
     def search_users(self, **params) -> UsersResponse:
         """
@@ -2872,7 +2886,7 @@ class Client(API):
             - save_recent_search: bool = None
 
         """
-        return search_users(self, **params)
+        return search_users(self, access_token, **params)
 
     def set_follow_permission_enabled(
         self, nickname: str, is_private: bool = None
@@ -2882,10 +2896,10 @@ class Client(API):
         フォローを許可制に設定します
 
         """
-        return set_follow_permission_enabled(self, nickname, is_private)
+        return set_follow_permission_enabled(self, nickname, is_private, access_token)
 
     def take_action_follow_request(self, target_id: int, action: str) -> dict:
-        return take_action_follow_request(self, target_id, action)
+        return take_action_follow_request(self, target_id, action, access_token)
 
     def turn_on_hima(self) -> dict:
         """
@@ -2893,7 +2907,7 @@ class Client(API):
         ひまなう
 
         """
-        return turn_on_hima(self)
+        return turn_on_hima(self, access_token)
 
     def unfollow_user(self, user_id: int) -> dict:
         """
@@ -2901,7 +2915,7 @@ class Client(API):
         ユーザーをアンフォローします
 
         """
-        return unfollow_user(self, user_id)
+        return unfollow_user(self, user_id, access_token)
 
     def update_user(
         self,
@@ -2928,7 +2942,7 @@ class Client(API):
             country_code,
             profile_icon_filename,
             cover_image_filename,
-            username,
+            username, access_token,
         )
 
     def block_user(self, user_id: int) -> dict:
@@ -2937,7 +2951,7 @@ class Client(API):
         ユーザーをブロックします
 
         """
-        return block_user(self, user_id)
+        return block_user(self, user_id, access_token)
 
     def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
         """
@@ -2945,7 +2959,7 @@ class Client(API):
         あなたをブロックしたユーザーを取得します
 
         """
-        return get_blocked_user_ids(self)
+        return get_blocked_user_ids(self, access_token)
 
     def get_blocked_users(self, from_id: int = None) -> BlockedUsersResponse:
         """
@@ -2953,7 +2967,7 @@ class Client(API):
         ブロックしたユーザーを取得します
 
         """
-        return get_blocked_users(self, from_id)
+        return get_blocked_users(self, from_id, access_token)
 
     def unblock_user(self, user_id: int) -> dict:
         """
@@ -2961,7 +2975,7 @@ class Client(API):
         ユーザーをアンブロックします
 
         """
-        return unblock_user(self, user_id)
+        return unblock_user(self, user_id, access_token)
 
     def get_hidden_users_list(self, **params: Union[str, int]) -> HiddenResponse:
         """
@@ -2975,7 +2989,7 @@ class Client(API):
             - number: int = None
 
         """
-        return get_hidden_users_list(self, **params)
+        return get_hidden_users_list(self, access_token, **params)
 
     def hide_user(self, user_id: int) -> dict:
         """
@@ -2983,7 +2997,7 @@ class Client(API):
         ユーザーを非表示にします
 
         """
-        return hide_user(self, user_id)
+        return hide_user(self, user_id, access_token)
 
     def unhide_users(self, user_ids: List[int]) -> dict:
         """
@@ -2991,4 +3005,4 @@ class Client(API):
         ユーザーの非表示を解除します
 
         """
-        return unhide_users(self, user_ids)
+        return unhide_users(self, user_ids, access_token)
