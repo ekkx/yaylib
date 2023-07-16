@@ -114,9 +114,9 @@ def is_valid_token(self, access_token: str):
 def login_with_email(
     self, email: str, password: str, secret_key: str = None
 ) -> LoginUserResponse:
-    credentials = load_credentials(base_path=self.base_path, check_email=email)
-    if credentials is not None:
-        if secret_key is not None:
+    if self.save_session:
+        credentials = load_credentials(base_path=self.base_path, check_email=email)
+        if credentials is not None and secret_key is not None:
             self.secret_key = secret_key
             self.fernet = Fernet(secret_key)
             credentials = decrypt(fernet=self.fernet, credentials=credentials)
@@ -125,7 +125,7 @@ def login_with_email(
             )
             self.logger.info(f"Successfully logged in as '{credentials['user_id']}'")
             return credentials
-        else:
+        elif credentials is not None:
             message = f"{Colors.WARNING}Credential file found. The 'secret_key' must be provided to decrypt the credentials.{Colors.RESET}"
             console_print(message)
 
@@ -141,31 +141,32 @@ def login_with_email(
         data_type=LoginUserResponse,
     )
 
-    message = "Invalid email or password."
     if response.access_token is None:
-        raise ForbiddenError(message)
+        raise ForbiddenError("Invalid email or password.")
 
     self.session.headers.setdefault("Authorization", f"Bearer {response.access_token}")
     self.logger.info(f"Successfully logged in as '{response.user_id}'")
 
-    secret_key = Fernet.generate_key()
-    self.secret_key = secret_key
-    self.fernet = Fernet(secret_key)
+    if self.save_session:
+        secret_key = Fernet.generate_key()
+        self.secret_key = secret_key
+        self.fernet = Fernet(secret_key)
 
-    console_print(
-        f"Your 'secret_key' for {Colors.BOLD + email + Colors.RESET} is: {Colors.OKGREEN + secret_key.decode() + Colors.RESET}",
-        "Please copy and securely store this key in a safe location.",
-        "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
-    )
+        console_print(
+            f"Your 'secret_key' for {Colors.BOLD + email + Colors.RESET} is: {Colors.OKGREEN + secret_key.decode() + Colors.RESET}",
+            "Please copy and securely store this key in a safe location.",
+            "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
+        )
 
-    save_credentials(
-        base_path=self.base_path,
-        fernet=self.fernet,
-        access_token=response.access_token,
-        refresh_token=response.refresh_token,
-        user_id=response.user_id,
-        email=email,
-    )
+        save_credentials(
+            base_path=self.base_path,
+            fernet=self.fernet,
+            access_token=response.access_token,
+            refresh_token=response.refresh_token,
+            user_id=response.user_id,
+            email=email,
+        )
+
     return response
 
 

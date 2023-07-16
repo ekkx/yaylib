@@ -142,7 +142,7 @@ class API:
                 method, endpoint, params=params, json=payload, headers=headers
             )
 
-            if response.status_code == 401:
+            if response.status_code == 401 and self.save_session is True:
                 if "/api/v1/oauth/token" in endpoint:
                     os.remove(self.base_path + "credentials.json")
                     message = "Refresh token expired. Try logging in again."
