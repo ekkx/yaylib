@@ -82,7 +82,7 @@ api.login(email, password, secret_key)
 
 `secret_key`は初回ログイン時にターミナルに表示されます。
 
-また、Clientクラスのsecret_keyフィールドにアクセスすることで取得できます。
+また、Client クラスの secret_key フィールドにアクセスすることで取得できます。
 
 ```python
 import yaylib
@@ -151,16 +151,16 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>エラー出力言語（ja もしくは en）</td>
 	</tr>
     <tr>
-		<td><code>loglevel_stream</code></td>
+		<td><code>save_session</code></td>
+		<td><code>bool</code></td>
+		<td><code>True</code></td>
+		<td>セッションを保存するか否か</td>
+	</tr>
+    <tr>
+		<td><code>loglevel</code></td>
 		<td><code>int</code></td>
 		<td><code>logging.INFO</code></td>
 		<td>ログレベルの設定</td>
-	</tr>
-    <tr>
-		<td><code>host</code></td>
-		<td><code>str</code></td>
-		<td><code>api.yay.space</code></td>
-		<td>yay.spaceのプロダクションホスト</td>
 	</tr>
 </table>
 
