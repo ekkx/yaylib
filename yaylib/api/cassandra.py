@@ -74,7 +74,7 @@ def received_notification(
     self._check_authorization(access_token)
     return self._make_request(
         "POST",
-        endpoint=f"{self.host}/api/received_push_notifications",
+        endpoint=f"{Configs.YAY_API_URL}/api/received_push_notifications",
         payload={"pid": pid, "type": type, "opened_at": opened_at},
         access_token=access_token,
     )

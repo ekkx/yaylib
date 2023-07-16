@@ -28,7 +28,6 @@ import logging
 from json import JSONDecodeError
 
 import httpx
-from cryptography.fernet import Fernet
 
 from .login import get_token
 
@@ -58,8 +57,8 @@ class API:
         timeout=30,
         err_lang="ja",
         base_path=current_path + "/config/",
+        save_session=True,
         loglevel_stream=logging.INFO,
-        host=Configs.YAY_PRODUCTION_HOST,
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
         self.api_version = Configs.YAY_API_VERSION
@@ -77,7 +76,7 @@ class API:
         self.timeout = timeout
         self.err_lang = err_lang
         self.base_path = base_path
-        self.host = "https://" + host
+        self.save_session = save_session
 
         self._generate_all_uuids()
         self.session = httpx.Client(proxies=self.proxy, timeout=self.timeout)

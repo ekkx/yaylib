@@ -25,7 +25,7 @@ SOFTWARE.
 from datetime import datetime
 from cryptography.fernet import Fernet
 
-from ..config import Endpoints
+from ..config import Configs, Endpoints
 from ..errors import AuthenticationError, ForbiddenError
 from ..responses import LoginUserResponse, LoginUpdateResponse, TokenResponse
 from ..utils import (
@@ -89,7 +89,7 @@ def get_token(
 ) -> TokenResponse:
     return self._make_request(
         "POST",
-        endpoint=f"{self.host}/api/v1/oauth/token",
+        endpoint=f"{Configs.YAY_API_URL}/api/v1/oauth/token",
         payload={
             "grant_type": grant_type,
             "email": email,

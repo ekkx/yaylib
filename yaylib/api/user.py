@@ -25,7 +25,7 @@ SOFTWARE.
 from datetime import datetime
 from typing import Union, List
 
-from ..config import Endpoints
+from ..config import Configs, Endpoints
 from ..models import Footprint, User, UserWrapper
 from ..responses import (
     ActiveFollowingsResponse,
@@ -427,7 +427,7 @@ def reduce_kenta_penalty(self, user_id: int, access_token: str = None):
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
-        endpoint=f"{self.host}api/v3/users/{user_id}/reduce_penalty",
+        endpoint=f"{Configs.YAY_API_URL}api/v3/users/{user_id}/reduce_penalty",
         payload={
             "uuid": self.uuid,
             "api_key": self.api_key,
