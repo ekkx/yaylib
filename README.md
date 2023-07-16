@@ -56,7 +56,10 @@
 pip install yaylib
 ```
 
-開発バージョンをインストールする場合は、以下の手順を実行します:
+<br>
+
+> **Note**
+> 開発バージョンをインストールする場合は、以下の手順を実行します:
 
 ```bash
 git clone https://github.com/qvco/yaylib
@@ -127,7 +130,7 @@ api.login(email="メールアドレス", password="パスワード")
 api.create_post("Hello with yaylib!", in_reply_to=373189088)
 ```
 
-#### ✨ タイムラインを100件取得する
+#### ✨ タイムラインを 100 件取得する
 
 ```python
 import yaylib
