@@ -31,8 +31,8 @@ from ..responses import LoginUserResponse, LoginUpdateResponse, TokenResponse
 from ..utils import (
     Colors,
     console_print,
-    load_credentials,
-    save_credentials,
+    load_session,
+    save_session,
     decrypt,
     signed_info_calculating,
 )
@@ -115,7 +115,7 @@ def login_with_email(
     self, email: str, password: str, secret_key: str = None
 ) -> LoginUserResponse:
     if self.save_session:
-        credentials = load_credentials(base_path=self.base_path, check_email=email)
+        credentials = load_session(base_path=self.base_path, check_email=email)
         if credentials is not None and secret_key is not None:
             self.secret_key = secret_key
             self.fernet = Fernet(secret_key)
@@ -158,7 +158,7 @@ def login_with_email(
             "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
         )
 
-        save_credentials(
+        save_session(
             base_path=self.base_path,
             fernet=self.fernet,
             access_token=response.access_token,

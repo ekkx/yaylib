@@ -41,7 +41,7 @@ from ..errors import (
     RateLimitError,
     YayServerError,
 )
-from ..utils import Configs, generate_uuid, load_credentials, save_credentials, decrypt
+from ..utils import Configs, generate_uuid, load_session, save_session, decrypt
 
 
 current_path = os.path.abspath(os.getcwd())
@@ -152,7 +152,7 @@ class API:
                 self.logger.debug("Access token expired. Refreshing tokens...")
 
                 if auth_retry_count < max_auth_retries:
-                    credentials = load_credentials(base_path=self.base_path)
+                    credentials = load_session(base_path=self.base_path)
 
                     if credentials is not None and self.fernet is not None:
                         credentials = decrypt(
@@ -164,7 +164,7 @@ class API:
                             grant_type="refresh_token",
                             refresh_token=refresh_token,
                         )
-                        save_credentials(
+                        save_session(
                             base_path=self.base_path,
                             fernet=self.fernet,
                             access_token=response.access_token,
