@@ -246,24 +246,23 @@ class API:
             raise AuthenticationError(message)
 
     def _handle_response(self, response, formatted_response):
-        translated_response = formatted_response
         if isinstance(formatted_response, dict):
-            translated_response = self._translate_error_message(formatted_response)
+            formatted_response = self._translate_error_message(formatted_response)
 
         if response.status_code == 400:
-            raise BadRequestError(translated_response)
+            raise BadRequestError(formatted_response)
         if response.status_code == 401:
-            raise AuthenticationError(translated_response)
+            raise AuthenticationError(formatted_response)
         if response.status_code == 403:
-            raise ForbiddenError(translated_response)
+            raise ForbiddenError(formatted_response)
         if response.status_code == 404:
-            raise NotFoundError(translated_response)
+            raise NotFoundError(formatted_response)
         if response.status_code == 429:
-            raise RateLimitError(translated_response)
+            raise RateLimitError(formatted_response)
         if response.status_code == 500:
-            raise YayServerError(translated_response)
+            raise YayServerError(formatted_response)
         if response.status_code and not 200 <= response.status_code < 300:
-            raise HTTPError(translated_response)
+            raise HTTPError(formatted_response)
         return formatted_response
 
     def _translate_error_message(self, response):
