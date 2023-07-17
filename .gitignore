@@ -2,6 +2,7 @@ Pipfile
 .idea
 
 # Custom files
+nanameue/
 .py
 
 # Byte-compiled / optimized / DLL files

@@ -220,11 +220,11 @@ def upload_image(
 
     with open(image_path, "rb") as f:
         response = httpx.put(presigned_urls[0].url, data=f.read())
-        self._handle_response(response)
+        response.raise_for_status()
 
     with open(image_path, "rb") as f:
         response = httpx.put(presigned_urls[1].url, data=f.read())
-        self._handle_response(response)
+        response.raise_for_status()
 
     self.logger.info(f"Image '{filename}{ext}' is uploaded")
 
