@@ -348,7 +348,7 @@ class Client(API):
 
     ### Yay! (nanameue, Inc.) API Client
 
-    Copyright (c) 2023 Qvco, Konn
+    Copyright (c) 2023-present Qvco, Konn
 
     """
 
