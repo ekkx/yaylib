@@ -29,7 +29,7 @@ class LikeBot:
                         time.sleep(5)
 
                 for id in ids:
-                    self.api.like_posts(id)
+                    self.api.like(id)
 
                 liked += len(ids)
                 self.api.logger.info(f"いいね数: {liked}")
