@@ -374,10 +374,11 @@ def refresh_chat_rooms(
 
 def remove_chat_rooms(self, chat_room_ids: List[int], access_token: str = None):
     self._check_authorization(access_token)
+    chat_room_ids = [chat_room_ids] if isinstance(chat_room_ids, int) else chat_room_ids
     response = self._make_request(
         "POST",
-        endpoint=f"{Endpoints.CHAT_ROOMS_V2}/mass_destroy",
-        payload={"chat_room_ids[]": chat_room_ids},
+        endpoint=f"{Endpoints.CHAT_ROOMS_V1}/mass_destroy",
+        payload={"chat_room_ids": chat_room_ids},
         access_token=access_token,
     )
     self.logger.info(f"Chatrooms have been removed.")
