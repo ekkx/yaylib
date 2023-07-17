@@ -207,11 +207,11 @@ class API:
         )
 
         try:
-            json_response = response.json()
+            formatted_response = response.json()
         except JSONDecodeError:
-            return response.text
+            formatted_response = response.text
 
-        return self._handle_response(response, json_response)
+        return self._handle_response(response, formatted_response)
 
     def _make_request(
         self,
@@ -245,8 +245,11 @@ class API:
             message = "Authorization is not present in the header."
             raise AuthenticationError(message)
 
-    def _handle_response(self, response, json_response):
-        translated_response = self._translate_error_message(json_response)
+    def _handle_response(self, response, formatted_response):
+        translated_response = formatted_response
+        if isinstance(formatted_response, dict):
+            translated_response = self._translate_error_message(formatted_response)
+
         if response.status_code == 400:
             raise BadRequestError(translated_response)
         if response.status_code == 401:
@@ -261,7 +264,7 @@ class API:
             raise YayServerError(translated_response)
         if response.status_code and not 200 <= response.status_code < 300:
             raise HTTPError(translated_response)
-        return json_response
+        return formatted_response
 
     def _translate_error_message(self, response):
         if self.err_lang == "ja":

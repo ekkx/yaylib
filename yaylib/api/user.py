@@ -427,16 +427,15 @@ def reduce_kenta_penalty(self, user_id: int, access_token: str = None):
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
-        endpoint=f"{Configs.YAY_API_URL}api/v3/users/{user_id}/reduce_penalty",
+        endpoint=f"https://yay.space/api/v3/users/{user_id}/reduce_penalty",
         payload={
-            "uuid": self.uuid,
             "app_version": self.api_version,
-            "api_key": self.api_key,
             "timestamp": timestamp,
+            "api_key": self.api_key,
             "signed_info": signed_info_calculating(self.device_uuid, timestamp),
             "signed_version": signed_version_calculating(),
+            "uuid": self.uuid,
         },
-        data_type=CreatePostResponse,
         access_token=access_token,
     )
     self.logger.info("Penalty has been reduced.")
