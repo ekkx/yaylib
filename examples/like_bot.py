@@ -8,8 +8,8 @@ class LikeBot:
         self.api.login(email, password, secret_token)
 
     def run(self, amount=None):
-        min_collect = 30 if amount is None else amount
         amount = float("inf") if amount is None else amount
+        min_collect = 30
         liked = 0
 
         while liked < amount:
