@@ -42,7 +42,9 @@ from .api.call import (
     set_call,
     set_user_role,
     start_call,
+    start_anonymous_call,
     stop_call,
+    stop__anonymous_call
 )
 from .api.cassandra import (
     get_user_activities,
@@ -543,6 +545,16 @@ class Client(API):
         """
         return start_call(self, conference_id, call_sid, access_token)
 
+    def join_call_as_anonymous(
+        self, conference_id: int, agora_uid: str
+    ) -> ConferenceCall:
+        """
+
+        無名くんとして通話に参加します
+
+        """
+        return start_anonymous_call(self, conference_id, agora_uid)
+
     def leave_call(
         self, conference_id: int, call_sid: str = None, access_token: str = None
     ) -> dict:
@@ -552,6 +564,14 @@ class Client(API):
 
         """
         return stop_call(self, conference_id, call_sid, access_token)
+
+    def leave_call_as_anonymous(self, conference_id: int, agora_uid: str = None):
+        """
+
+        通話から退出します
+
+        """
+        return stop__anonymous_call(self, conference_id, agora_uid)
 
     # -CASSANDRA
 
