@@ -3,6 +3,8 @@ Pipfile
 
 # Custom files
 nanameue/
+agora/
+test_agora.py
 .py
 
 # Byte-compiled / optimized / DLL files

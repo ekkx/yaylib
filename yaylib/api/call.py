@@ -288,6 +288,20 @@ def start_call(
     return response
 
 
+def start_anonymous_call(
+    self, conference_id: int, agora_uid: str, access_token: str
+) -> ConferenceCall:
+    response = self._make_request(
+        "POST",
+        endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/start_conference_call",
+        payload={"conference_id": conference_id, "agora_uid": agora_uid},
+        data_type=ConferenceCallResponse,
+        access_token=access_token,
+    ).conference_call
+    self.logger.info("Joined the call.")
+    return response
+
+
 def stop_call(self, conference_id: int, call_sid: str = None, access_token: str = None):
     response = self._make_request(
         "POST",
