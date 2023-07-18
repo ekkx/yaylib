@@ -64,28 +64,28 @@ def parse_datetime(timestamp: int) -> str:
     return timestamp
 
 
-def encrypt(fernet, credentials: dict):
-    credentials.update(
+def encrypt(fernet, session: dict):
+    session.update(
         {
             "access_token": fernet.encrypt(
-                credentials.get("access_token").encode()
+                session.get("access_token").encode()
             ).decode(),
             "refresh_token": fernet.encrypt(
-                credentials.get("refresh_token").encode()
+                session.get("refresh_token").encode()
             ).decode(),
         }
     )
-    return credentials
+    return session
 
 
-def decrypt(fernet, credentials: dict):
-    credentials.update(
+def decrypt(fernet, session: dict):
+    session.update(
         {
-            "access_token": fernet.decrypt(credentials.get("access_token")).decode(),
-            "refresh_token": fernet.decrypt(credentials.get("refresh_token")).decode(),
+            "access_token": fernet.decrypt(session.get("access_token")).decode(),
+            "refresh_token": fernet.decrypt(session.get("refresh_token")).decode(),
         }
     )
-    return credentials
+    return session
 
 
 def save_session(
@@ -96,42 +96,42 @@ def save_session(
     user_id: int,
     email: str = None,
 ):
-    credentials = load_session(base_path=base_path)
-    updated_credentials = {
+    session = load_session(base_path=base_path)
+    updated_session = {
         "access_token": access_token,
         "refresh_token": refresh_token,
         "user_id": user_id,
         "email": email,
     }
     if email is None:
-        updated_credentials["email"] = credentials.get("email")
+        updated_session["email"] = session.get("email")
 
-    updated_credentials = encrypt(fernet, updated_credentials)
+    updated_session = encrypt(fernet, updated_session)
 
-    with open(base_path + "credentials.json", "w") as f:
-        json.dump(updated_credentials, f)
+    with open(base_path + "session.json", "w") as f:
+        json.dump(updated_session, f)
 
 
 def load_session(base_path: str, fernet=None, check_email: str = None):
-    if not os.path.exists(base_path + "credentials.json"):
+    if not os.path.exists(base_path + "session.json"):
         return None
 
-    with open(base_path + "credentials.json", "r") as f:
-        credentials = json.load(f)
+    with open(base_path + "session.json", "r") as f:
+        session = json.load(f)
 
     result = all(
-        key in credentials
+        key in session
         for key in ("access_token", "refresh_token", "user_id", "email")
     )
-    credentials = None if result is False else credentials
+    session = None if result is False else session
 
-    if check_email is not None and credentials is not None:
-        credentials = None if check_email != credentials["email"] else credentials
+    if check_email is not None and session is not None:
+        session = None if check_email != session["email"] else session
 
-    if fernet is not None and credentials is not None:
-        credentials = decrypt(fernet, credentials)
+    if fernet is not None and session is not None:
+        session = decrypt(fernet, session)
 
-    return credentials
+    return session
 
 
 def signed_info_calculating(uuid: str, timestamp: int, shared_key: bool = False) -> str:

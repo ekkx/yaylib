@@ -144,7 +144,7 @@ class API:
 
             if self.save_session is True and response.status_code == 401:
                 if "/api/v1/oauth/token" in endpoint:
-                    os.remove(self.base_path + "credentials.json")
+                    os.remove(self.base_path + "session.json")
                     message = "Refresh token expired. Try logging in again."
                     raise AuthenticationError(message)
 
@@ -152,13 +152,11 @@ class API:
                 self.logger.debug("Access token expired. Refreshing tokens...")
 
                 if auth_retry_count < max_auth_retries:
-                    credentials = load_session(base_path=self.base_path)
+                    session = load_session(base_path=self.base_path)
 
-                    if credentials is not None and self.fernet is not None:
-                        credentials = decrypt(
-                            fernet=self.fernet, credentials=credentials
-                        )
-                        refresh_token = credentials["refresh_token"]
+                    if session is not None and self.fernet is not None:
+                        session = decrypt(fernet=self.fernet, session=session)
+                        refresh_token = session["refresh_token"]
                         response = get_token(
                             self,
                             grant_type="refresh_token",
@@ -177,7 +175,7 @@ class API:
                         continue
 
                 else:
-                    os.remove(self.base_path + "credentials.json")
+                    os.remove(self.base_path + "session.json")
                     message = (
                         "Maximum authentication retries exceeded. Try logging in again."
                     )

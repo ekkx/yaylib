@@ -115,18 +115,18 @@ def login_with_email(
     self, email: str, password: str, secret_key: str = None
 ) -> LoginUserResponse:
     if self.save_session:
-        credentials = load_session(base_path=self.base_path, check_email=email)
-        if credentials is not None and secret_key is not None:
+        session = load_session(base_path=self.base_path, check_email=email)
+        if session is not None and secret_key is not None:
             self.secret_key = secret_key
             self.fernet = Fernet(secret_key)
-            credentials = decrypt(fernet=self.fernet, credentials=credentials)
+            session = decrypt(fernet=self.fernet, session=session)
             self.session.headers.setdefault(
-                "Authorization", f"Bearer {credentials['access_token']}"
+                "Authorization", f"Bearer {session['access_token']}"
             )
-            self.logger.info(f"Successfully logged in as '{credentials['user_id']}'")
-            return credentials
-        elif credentials is not None:
-            message = f"{Colors.WARNING}Credential file found. The 'secret_key' must be provided to decrypt the credentials.{Colors.RESET}"
+            self.logger.info(f"Successfully logged in as '{session['user_id']}'")
+            return session
+        elif session is not None:
+            message = f"{Colors.WARNING}Session file found. The 'secret_key' must be provided to decrypt the credentials.{Colors.RESET}"
             console_print(message)
 
     response = self._make_request(
