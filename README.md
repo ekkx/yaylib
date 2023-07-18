@@ -161,7 +161,7 @@ timeline = api.get_timeline_by_keyword(
 )
 
 for post in timeline.posts:
-    response = api.like_posts(post.id)
+    response = api.like(post.id)
     print(post.id, response.data) # 実行結果を出力
 ```
 
