@@ -75,7 +75,9 @@ def generate_sns_thumbnail(self, access_token: str = None, **params):
 def send_verification_code(self, email: str):
     response = self._make_request(
         "POST",
-        endpoint=self.get_email_verification_presigned_url(email=email, locale="ja"),
+        endpoint=self.get_email_verification_presigned_url(
+            email=email, locale="ja"
+        ).url,
         payload={"locale": "ja", "email": email},
     )
     self.logger.info(f"Verification code successfully sent to '{email}'.")
@@ -105,7 +107,7 @@ def get_email_verification_presigned_url(
         },
         data_type=EmailVerificationPresignedUrlResponse,
         access_token=access_token,
-    ).url
+    )
 
 
 def get_file_upload_presigned_urls(

@@ -365,11 +365,14 @@ class EmailGrantTokenResponse:
 
 
 class EmailVerificationPresignedUrlResponse:
-    __slots__ = ("data", "url")
+    __slots__ = ("data", "url", "presigned_url", "expires_at", "method_type")
 
     def __init__(self, data):
         self.data = data
         self.url = data.get("url")
+        self.presigned_url = data.get("presigned_url")
+        self.expires_at = data.get("expires_at")
+        self.method_type = data.get("method_type")
 
     def __repr__(self):
         return f"EmailVerificationPresignedUrlResponse(data={self.data})"
