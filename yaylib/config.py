@@ -27,12 +27,13 @@ from enum import Enum
 
 class Configs:
     YAYLIB_VERSION = "1.0.2"
-    YAY_API_VERSION = "3.16"
-    YAY_VERSION_NAME = "3.16.1"
-    YAY_API_VERSION_KEY = "e83a1d2588918c2061280427c88e6f56"
+    YAY_API_VERSION = "3.20"
+    YAY_VERSION_NAME = "3.20.1"
+    YAY_API_VERSION_KEY = "d4420f4943bebe2831c20b2b4cb4a8c1"
     YAY_API_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
     YAY_SHARED_KEY = "yayZ1"
     YAY_STORE_KEY = "yayZ1payment"
+    AGORA_APP_ID = "79046b8c9be54945b7f10a4d128d5395"
     ID_CARD_CHECK_SECRET_KEY = "4aa6d1c301a97154bc1098c2"
     YAY_REVIEW_HOST_1 = "review.yay.space"
     YAY_REVIEW_HOST_2 = "cas-stg.yay.space"
