@@ -137,7 +137,6 @@
 - <a href="">POST /v2/users/remove_cover_image</a> (`removeUserCover`)
 - <a href="">POST /v1/users/reset_counters</a> (`refreshCounter`)
 - <a href="">GET /v1/users/reset_counters</a> (`getRefreshCounterRequests`)
-- <a href="">POST /api/v3/users/:id/reduce_penalty</a> (`reduceKentaPenalty`)
 
 #### Follow Management
 
