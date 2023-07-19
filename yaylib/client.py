@@ -326,10 +326,9 @@ from .responses import (
 
 
 class WSClient(API):
-    def __init__(self, on_open=None, on_message=None, on_error=None, on_close=None):
+    def __init__(self, on_message=None, on_error=None, on_close=None):
         self.ws_url = "wss://" + Configs.YAY_CABLE_HOST
         self.ws = None
-        self.on_open = on_open
         self.on_message = on_message
         self.on_error = on_error
         self.on_close = on_close
