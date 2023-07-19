@@ -16,10 +16,12 @@ from .errors import *
 from .models import *
 from .responses import *
 from .utils import *
+from .api.chat import ChatEventListener
 
 __version__ = Configs.YAYLIB_VERSION
 __all__ = [
     "Client",
+    "ChatEventListener",
     "config",
     "errors",
     "models",
