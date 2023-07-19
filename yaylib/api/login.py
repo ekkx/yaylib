@@ -124,7 +124,7 @@ def login_with_email(
                 "Authorization", f"Bearer {session['access_token']}"
             )
             self.logger.info(f"Successfully logged in as '{session['user_id']}'")
-            return session
+            return LoginUserResponse(session)
         elif session is not None:
             message = f"{Colors.WARNING}Session file found. The 'secret_key' must be provided to decrypt the credentials.{Colors.RESET}"
             console_print(message)

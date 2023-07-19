@@ -40,11 +40,6 @@ from ..responses import (
 )
 
 
-class ChatEventListener:
-    def on_message(self, message):
-        pass
-
-
 def accept_chat_request(self, chat_room_ids: List[int], access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(

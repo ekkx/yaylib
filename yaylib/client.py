@@ -327,7 +327,8 @@ from .responses import (
 
 class WSClient(API):
     def __init__(self, on_open=None, on_message=None, on_error=None, on_close=None):
-        self.ws_url = "wss://" + Configs.YAY_CABLE_HOST
+        ws_token = get_web_socket_token(self)
+        self.ws_url = f"wss://{Configs.YAY_CABLE_HOST}/?token={ws_token}&app_version={Configs.YAY_VERSION_NAME}"
         self.ws = None
         self.on_open = on_open
         self.on_message = on_message
@@ -345,20 +346,28 @@ class WSClient(API):
         self.ws.run_forever()
 
     def _on_open(self, ws):
-        if self.on_open:
-            self.on_open(ws)
+        pass
 
     def _on_message(self, ws, message):
-        if self.on_message:
-            self.on_message(ws, message)
+        pass
 
     def _on_error(self, ws, error):
-        if self.on_error:
-            self.on_error(ws, error)
+        pass
 
     def _on_close(self, ws):
-        if self.on_close:
-            self.on_close(ws)
+        pass
+
+
+class ChatEventListener(WSClient):
+    def on_open(self, ws):
+        message = {
+            "command": "subscribe",
+            "identifier": json.dumps(json.loads('{"channel":"ChatRoomChannel"}')),
+        }
+        self.ws.send(json.dumps(message))
+
+    def on_message(self, ws, message):
+        pass
 
 
 class Client(API):
