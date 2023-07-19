@@ -39,6 +39,7 @@ class Configs:
     YAY_REVIEW_HOST_2 = "cas-stg.yay.space"
     YAY_STAGING_HOST_1 = "stg.yay.space"
     YAY_STAGING_HOST_2 = "cas.yay.space"
+    YAY_CABLE_HOST = "cable.yay.space"
     YAY_PRODUCTION_HOST = "api.yay.space"
     YAY_API_URL = "https://" + YAY_PRODUCTION_HOST
     ID_CARD_CHECK_HOST_PRODUCTION = "idcardcheck.com"

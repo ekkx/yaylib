@@ -28,6 +28,7 @@ import logging
 from json import JSONDecodeError
 
 import httpx
+import websocket
 
 from .login import get_token
 
