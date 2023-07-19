@@ -422,26 +422,6 @@ def get_users(self, user_ids: List[int], access_token: str = None) -> UsersRespo
     )
 
 
-def reduce_kenta_penalty(self, user_id: int, access_token: str = None):
-    self._check_authorization(access_token)
-    timestamp = int(datetime.now().timestamp())
-    response = self._make_request(
-        "POST",
-        endpoint=f"{Configs.YAY_API_URL}/api/v3/users/{user_id}/reduce_penalty",
-        payload={
-            "app_version": self.api_version,
-            "timestamp": timestamp,
-            "api_key": self.api_key,
-            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
-            "signed_version": signed_version_calculating(),
-            "uuid": self.uuid,
-        },
-        access_token=access_token,
-    )
-    self.logger.info("Penalty has been reduced.")
-    return response
-
-
 def refresh_counter(self, counter: str, access_token: str = None):
     response = self._make_request(
         "POST",

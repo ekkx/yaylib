@@ -44,7 +44,7 @@ from .api.call import (
     start_call,
     start_anonymous_call,
     stop_call,
-    stop__anonymous_call
+    stop__anonymous_call,
 )
 from .api.cassandra import (
     get_user_activities,
@@ -239,7 +239,6 @@ from .api.user import (
     get_user_from_qr,
     get_user_without_leaving_footprint,
     get_users,
-    reduce_kenta_penalty,
     refresh_counter,
     register_user,
     remove_user_avatar,
@@ -2934,14 +2933,6 @@ class Client(API):
 
         """
         return get_users(self, user_ids, access_token)
-
-    def reduce_kenta_penalty(self, user_id: int, access_token: str = None) -> dict:
-        """
-
-        ペナルティーを緩和します
-
-        """
-        return reduce_kenta_penalty(self, user_id, access_token)
 
     def refresh_counter(self, counter: str, access_token: str = None) -> dict:
         """
