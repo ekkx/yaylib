@@ -326,9 +326,10 @@ from .responses import (
 
 
 class WSClient(API):
-    def __init__(self, on_message=None, on_error=None, on_close=None):
+    def __init__(self, on_open=None, on_message=None, on_error=None, on_close=None):
         self.ws_url = "wss://" + Configs.YAY_CABLE_HOST
         self.ws = None
+        self.on_open = on_open
         self.on_message = on_message
         self.on_error = on_error
         self.on_close = on_close
@@ -336,11 +337,16 @@ class WSClient(API):
     def run(self):
         self.ws = websocket.WebSocketApp(
             url=self.ws_url,
+            on_open=self._on_open,
             on_message=self._on_message,
             on_error=self._on_error,
             on_close=self._on_close,
         )
         self.ws.run_forever()
+
+    def _on_open(self, ws):
+        if self.on_open:
+            self.on_open(ws)
 
     def _on_message(self, ws, message):
         if self.on_message:
