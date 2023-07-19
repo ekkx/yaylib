@@ -321,6 +321,11 @@ from .responses import (
 )
 
 
+class WSClient(object):
+    def __init__(self, on_open=None, on_message=None, on_error=None, on_close=None):
+        pass
+
+
 class Client(API):
     """
 
