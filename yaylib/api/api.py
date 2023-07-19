@@ -24,13 +24,10 @@ SOFTWARE.
 
 import os
 import time
-import json
 import logging
-
 from json import JSONDecodeError
 
 import httpx
-import websocket
 
 from .login import get_token
 
@@ -66,9 +63,6 @@ class API:
         self.yaylib_version = Configs.YAYLIB_VERSION
         self.api_version = Configs.YAY_API_VERSION
         self.api_key = Configs.YAY_API_KEY
-        self.ws_url = "wss://" + Configs.YAY_CABLE_HOST
-        self.ws = None
-        self.listeners = []
         self.fernet = None
         self.secret_key = None
 
@@ -243,21 +237,6 @@ class API:
             elif data is not None:
                 data = data_type(data)
         return data
-
-    def add_listener(self, listener):
-        self.listeners.append(listener)
-
-    def remove_listener(self, listener):
-        self.listeners.remove(listener)
-
-    def on_message(self, ws, message):
-        data = json.loads(message)
-        for listener in self.listeners:
-            listener.on_message(data)
-
-    def run(self):
-        self.ws = websocket.WebSocketApp(self.ws_url, on_message=self.on_message)
-        self.ws.run_forever()
 
     def _check_authorization(self, access_token) -> None:
         if self.session.headers.get("Authorization") is None and access_token is None:
