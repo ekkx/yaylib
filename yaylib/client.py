@@ -24,6 +24,9 @@ SOFTWARE.
 
 from typing import Dict, List, Union
 
+import json
+import websocket
+
 from .api import API
 from .api.call import (
     bump_call,
@@ -330,6 +333,27 @@ class WSClient(API):
         self.on_message = on_message
         self.on_error = on_error
         self.on_close = on_close
+
+    def run(self):
+        self.ws = websocket.WebSocketApp(
+            url=self.ws_url,
+            on_message=self._on_message,
+            on_error=self._on_error,
+            on_close=self._on_close,
+        )
+        self.ws.run_forever()
+
+    def _on_message(self, ws, message):
+        if self.on_message:
+            self.on_message(ws, message)
+
+    def _on_error(self, ws, error):
+        if self.on_error:
+            self.on_error(ws, error)
+
+    def _on_close(self, ws):
+        if self.on_close:
+            self.on_close(ws)
 
 
 class Client(API):
