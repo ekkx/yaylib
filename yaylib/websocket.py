@@ -107,8 +107,6 @@ class ChatEventListener(WebSocket):
         if "identifier" in message and "type" not in message:
             message = WebSocketResponse(message).message
 
-            print(message)
-
             if "event" not in message:
                 self.on_message(ChatRoom(message.get("chat")))
             elif message.get("event") == "chat_deleted":
