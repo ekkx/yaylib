@@ -350,10 +350,21 @@ class WebSocket:
             on_close=self._on_close,
         )
         self.ws.run_forever()
-        
+
 
 class ChatEventListener(WebSocket):
-    pass
+    def __init__(self):
+        super().__init__()
+
+    def _on_open(self, ws):
+        message = {
+            "command": "subscribe",
+            "identifier": '{"channel":"ChatRoomChannel"}',
+        }
+        ws.send(json.dumps(message))
+
+    def _on_message(self, ws, message):
+        pass
 
 
 class Client(API):
