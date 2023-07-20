@@ -376,9 +376,9 @@ class ChatEventListener(WebSocket):
         if "identifier" in message and "type" not in message:
             message = WebSocketResponse(message).message
             if "event" not in message:
-                self.on_message(ChatRoomEvent(message))
+                self.on_message(ChatRoomEvent(message.get("chat")))
 
-    def on_message(self, message):
+    def on_message(self, message: ChatRoomEvent):
         pass
 
 

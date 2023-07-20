@@ -757,18 +757,54 @@ class Interest:
 
 
 class Message:
-    __slots__ = ("data", "id", "user_id", "type", "text", "conference_call")
+    __slots__ = (
+        "data",
+        "attachment",
+        "attachment_android",
+        "attachment_thumbnail",
+        "conference_call",
+        "created_at",
+        "font_size",
+        "gif",
+        "id",
+        "message_type",
+        "reactions_count",
+        "room_id",
+        "sticker",
+        "text",
+        "user",
+        "user_id",
+        "video_processed",
+        "video_thumbnail_big_url",
+        "video_thumbnail_url",
+        "video_url",
+    )
 
     def __init__(self, data):
         self.data = data
-        self.id = data.get("id")
-        self.user_id = data.get("user_id")
-        self.type = data.get("type")
-        self.text = data.get("text")
+        self.attachment = data.get("attachment")
+        self.attachment_android = data.get("attachment_android")
+        self.attachment_thumbnail = data.get("attachment_thumbnail")
 
         self.conference_call = data.get("conference_call")
         if self.conference_call is not None:
             self.conference_call = ConferenceCall(self.conference_call)
+
+        self.created_at = data.get("created_at")
+        self.font_size = data.get("font_size")
+        self.gif = data.get("gif")
+        self.id = data.get("id")
+        self.message_type = data.get("message_type")
+        self.reactions_count = data.get("reactions_count")
+        self.room_id = data.get("room_id")
+        self.sticker = data.get("sticker")
+        self.text = data.get("text")
+        self.user = data.get("user")
+        self.user_id = data.get("user_id")
+        self.video_processed = data.get("video_processed")
+        self.video_thumbnail_big_url = data.get("video_thumbnail_big_url")
+        self.video_thumbnail_url = data.get("video_thumbnail_url")
+        self.video_url = data.get("video_url")
 
     def __repr__(self):
         return f"Message(data={self.data})"
