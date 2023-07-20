@@ -364,6 +364,12 @@ class ChatEventListener(WebSocket):
         ws.send(json.dumps(message))
 
     def _on_message(self, ws, message):
+        message = json.loads(message)
+
+        if "identifier" in message and "type" not in message:
+            self.on_message(message)
+
+    def on_message(self, message):
         pass
 
 
