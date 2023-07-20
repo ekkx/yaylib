@@ -350,6 +350,10 @@ class WebSocket:
             on_close=self._on_close,
         )
         self.ws.run_forever()
+        
+
+class ChatEventListener(WebSocket):
+    pass
 
 
 class Client(API):
