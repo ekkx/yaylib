@@ -355,6 +355,34 @@ class WebSocket(object):
         self.ws.run_forever()
 
 
+class MessageEventListener(WebSocket):
+    """Event Listener for chat messages"""
+
+    def __init__(self, chat_room_id: int):
+        super().__init__()
+        self.chat_room_id = chat_room_id
+
+    def _on_open(self, ws):
+        ws.send(
+            json.dumps(
+                {
+                    "command": "subscribe",
+                    "identifier": f'{{"channel":"MessagesChannel", "chat_room_id": {self.chat_room_id}}}',
+                }
+            )
+        )
+
+    def _on_message(self, ws, message):
+        message = json.loads(message)
+
+        if "identifier" in message and "type" not in message:
+            message = WebSocketResponse(message).message["data"]
+            self.on_message(Message(message))
+
+    def on_message(self, message: Message):
+        pass
+
+
 class ChatEventListener(WebSocket):
     """Event Listener for ChatRoom"""
 
@@ -379,7 +407,7 @@ class ChatEventListener(WebSocket):
             if "event" not in message:
                 self.on_message(ChatRoomEvent(message.get("chat")))
 
-    def on_message(self, message: ChatRoomEvent):
+    def on_message(self, chat_room: ChatRoomEvent):
         pass
 
 
@@ -404,9 +432,9 @@ class GroupEventListener(WebSocket):
 
         if "identifier" in message and "type" not in message:
             message = WebSocketResponse(message).message
-            self.on_message(GroupUpdateEvent(message))
+            self.on_group_update(GroupUpdateEvent(message).group_id)
 
-    def on_message(self, message: GroupUpdateEvent):
+    def on_group_update(self, group_id: int):
         pass
 
 

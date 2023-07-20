@@ -1202,6 +1202,18 @@ class WebSocketResponse:
         return f"WebSocketResponse(data={self.data})"
 
 
+class WebSocketMessageResponse:
+    __slots__ = ("response", "data", "event")
+
+    def __init__(self, data):
+        self.response = data
+        self.data = data.get("data")
+        self.event = data.get("event")
+
+    def __repr__(self):
+        return f"WebSocketMessageResponse(response={self.response})"
+
+
 class WebSocketTokenResponse:
     __slots__ = ("data", "token")
 

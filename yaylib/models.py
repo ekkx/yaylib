@@ -190,6 +190,26 @@ class ChatRoomDraft:
         return f"ChatRoomDraft(data={self.data})"
 
 
+class MessageEvent:
+    __slots__ = (
+        "data",
+        "message",
+        "event",
+    )
+
+    def __init__(self, data):
+        self.data = data
+
+        self.message = data.get("data")
+        if self.message is not None:
+            self.message = Message(self.message)
+
+        self.event = data.get("event")
+
+    def __repr__(self):
+        return f"MessageEvent(data={self.data})"
+
+
 class ChatRoomEvent:
     __slots__ = (
         "data",
