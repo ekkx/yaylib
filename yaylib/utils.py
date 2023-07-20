@@ -109,7 +109,7 @@ def save_session(
     updated_session = encrypt(fernet, updated_session)
 
     with open(base_path + "session.json", "w") as f:
-        json.dump(updated_session, f)
+        json.dump(updated_session, f, indent=4)
 
 
 def load_session(base_path: str, fernet=None, check_email: str = None):
@@ -120,8 +120,7 @@ def load_session(base_path: str, fernet=None, check_email: str = None):
         session = json.load(f)
 
     result = all(
-        key in session
-        for key in ("access_token", "refresh_token", "user_id", "email")
+        key in session for key in ("access_token", "refresh_token", "user_id", "email")
     )
     session = None if result is False else session
 
