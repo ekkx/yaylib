@@ -325,49 +325,31 @@ from .responses import (
 )
 
 
-class WSClient(API):
-    def __init__(self, on_open=None, on_message=None, on_error=None, on_close=None):
-        ws_token = get_web_socket_token(self)
-        self.ws_url = f"wss://{Configs.YAY_CABLE_HOST}/?token={ws_token}&app_version={Configs.YAY_VERSION_NAME}"
+class WebSocket:
+    def __init__(self):
         self.ws = None
-        self.on_open = on_open
-        self.on_message = on_message
-        self.on_error = on_error
-        self.on_close = on_close
 
-    def run(self):
-        self.ws = websocket.WebSocketApp(
-            url=self.ws_url,
-            on_open=self._on_open,
-            on_message=self._on_message,
-            on_error=self._on_error,
-            on_close=self._on_close,
-        )
-        self.ws.run_forever()
-
-    def _on_open(self, ws):
-        pass
-
-    def _on_message(self, ws, message):
-        pass
-
-    def _on_error(self, ws, error):
-        pass
-
-    def _on_close(self, ws):
-        pass
-
-
-class ChatEventListener(WSClient):
     def on_open(self, ws):
-        message = {
-            "command": "subscribe",
-            "identifier": json.dumps(json.loads('{"channel":"ChatRoomChannel"}')),
-        }
-        self.ws.send(json.dumps(message))
+        pass
 
     def on_message(self, ws, message):
         pass
+
+    def on_error(self, ws, error):
+        print(error)
+
+    def on_close(self, ws):
+        print("WebSocket closed")
+
+    def run(self, ws_token):
+        self.ws = websocket.WebSocketApp(
+            url=f"wss://{Configs.YAY_CABLE_HOST}/?token={ws_token}&app_version={Configs.YAY_VERSION_NAME}",
+            on_open=self.on_open,
+            on_message=self.on_message,
+            on_error=self.on_error,
+            on_close=self.on_close,
+        )
+        self.ws.run_forever()
 
 
 class Client(API):
