@@ -325,7 +325,7 @@ from .responses import (
 )
 
 
-class WebSocket:
+class WebSocket(object):
     def __init__(self):
         self.ws = None
 
@@ -339,7 +339,7 @@ class WebSocket:
         print(error)
 
     def _on_close(self, ws):
-        print("WebSocket closed")
+        print("WebSocket closed.")
 
     def run(self, ws_token):
         self.ws = websocket.WebSocketApp(
@@ -353,15 +353,20 @@ class WebSocket:
 
 
 class ChatEventListener(WebSocket):
+    """Event Listener for ChatRoom"""
+
     def __init__(self):
         super().__init__()
 
     def _on_open(self, ws):
-        message = {
-            "command": "subscribe",
-            "identifier": '{"channel":"ChatRoomChannel"}',
-        }
-        ws.send(json.dumps(message))
+        ws.send(
+            json.dumps(
+                {
+                    "command": "subscribe",
+                    "identifier": '{"channel":"ChatRoomChannel"}',
+                }
+            )
+        )
 
     def _on_message(self, ws, message):
         message = json.loads(message)
