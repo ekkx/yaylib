@@ -431,10 +431,40 @@ class GroupEventListener(WebSocket):
         message = json.loads(message)
 
         if "identifier" in message and "type" not in message:
-            message = WebSocketResponse(message).message
-            self.on_group_update(GroupUpdateEvent(message).group_id)
+            message = GroupUpdateEvent(WebSocketResponse(message).message)
+            if message.event == "new_post":
+                self.on_post(message.group_id)
 
-    def on_group_update(self, group_id: int):
+    def on_post(self, group_id: int):
+        pass
+
+
+class GroupPostEventListener(WebSocket):
+    """Event Listener for group posts"""
+
+    def __init__(self, group_id: int):
+        super().__init__()
+        self.group_id = group_id
+
+    def _on_open(self, ws):
+        ws.send(
+            json.dumps(
+                {
+                    "command": "subscribe",
+                    "identifier": f'{{"channel":"GroupPostsChannel", "group_id": {self.group_id}}}',
+                }
+            )
+        )
+
+    def _on_message(self, ws, message):
+        message = json.loads(message)
+
+        if "identifier" in message and "type" not in message:
+            message = GroupUpdateEvent(WebSocketResponse(message).message)
+            if message.event == "new_post":
+                self.on_post(message.group_id)
+
+    def on_post(self, group_id: int):
         pass
 
 
