@@ -329,25 +329,25 @@ class WebSocket:
     def __init__(self):
         self.ws = None
 
-    def on_open(self, ws):
+    def _on_open(self, ws):
         pass
 
-    def on_message(self, ws, message):
+    def _on_message(self, ws, message):
         pass
 
-    def on_error(self, ws, error):
+    def _on_error(self, ws, error):
         print(error)
 
-    def on_close(self, ws):
+    def _on_close(self, ws):
         print("WebSocket closed")
 
     def run(self, ws_token):
         self.ws = websocket.WebSocketApp(
             url=f"wss://{Configs.YAY_CABLE_HOST}/?token={ws_token}&app_version={Configs.YAY_VERSION_NAME}",
-            on_open=self.on_open,
-            on_message=self.on_message,
-            on_error=self.on_error,
-            on_close=self.on_close,
+            on_open=self._on_open,
+            on_message=self._on_message,
+            on_error=self._on_error,
+            on_close=self._on_close,
         )
         self.ws.run_forever()
 
