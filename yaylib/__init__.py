@@ -21,6 +21,7 @@ __version__ = Configs.YAYLIB_VERSION
 __all__ = [
     "Client",
     "ChatEventListener",
+    "GroupEventListener",
     "config",
     "errors",
     "models",

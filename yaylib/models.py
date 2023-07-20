@@ -216,6 +216,22 @@ class ChatRoomEvent:
         return f"ChatRoomEvent(data={self.data})"
 
 
+class GroupUpdateEvent:
+    __slots__ = (
+        "data",
+        "group_id",
+        "event",
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.group_id = data.get("data").get("group_id")
+        self.event = data.get("event")
+
+    def __repr__(self):
+        return f"GroupUpdateEvent(data={self.data})"
+
+
 class Choice:
     __slots__ = ("data", "id", "label", "votes_count")
 

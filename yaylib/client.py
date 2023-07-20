@@ -270,6 +270,7 @@ from .models import (
     Bgm,
     ChatRoom,
     ChatRoomEvent,
+    GroupUpdateEvent,
     ConferenceCall,
     CreateGroupQuota,
     Footprint,
@@ -379,6 +380,33 @@ class ChatEventListener(WebSocket):
                 self.on_message(ChatRoomEvent(message.get("chat")))
 
     def on_message(self, message: ChatRoomEvent):
+        pass
+
+
+class GroupEventListener(WebSocket):
+    """Event Listener for all the group updates on Yay!"""
+
+    def __init__(self):
+        super().__init__()
+
+    def _on_open(self, ws):
+        ws.send(
+            json.dumps(
+                {
+                    "command": "subscribe",
+                    "identifier": '{"channel":"GroupUpdatesChannel"}',
+                }
+            )
+        )
+
+    def _on_message(self, ws, message):
+        message = json.loads(message)
+
+        if "identifier" in message and "type" not in message:
+            message = WebSocketResponse(message).message
+            self.on_message(GroupUpdateEvent(message))
+
+    def on_message(self, message: GroupUpdateEvent):
         pass
 
 
