@@ -161,7 +161,7 @@ class ChatRoom:
         if self.last_message is not None:
             self.last_message = Message(self.last_message)
 
-        self.name = data.get("updated_at")
+        self.name = data.get("name")
         self.is_group = data.get("is_group")
 
         self.owner = data.get("owner")
@@ -188,6 +188,32 @@ class ChatRoomDraft:
 
     def __repr__(self):
         return f"ChatRoomDraft(data={self.data})"
+
+
+class ChatRoomEvent:
+    __slots__ = (
+        "data",
+        "icon_thumbnail",
+        "id",
+        "last_message",
+        "name",
+        "unread_count",
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.icon_thumbnail = data.get("icon_thumbnail")
+        self.id = data.get("id")
+
+        self.last_message = data.get("last_message")
+        if self.last_message is not None:
+            self.last_message = Message(self.last_message)
+
+        self.name = data.get("name")
+        self.unread_count = data.get("unread_count")
+
+    def __repr__(self):
+        return f"ChatRoomEvent(data={self.data})"
 
 
 class Choice:

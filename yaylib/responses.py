@@ -1190,6 +1190,18 @@ class UserTimestampResponse:
         return f"UserTimestampResponse(data={self.data})"
 
 
+class WebSocketResponse:
+    __slots__ = ("data", "identifier", "message")
+
+    def __init__(self, data):
+        self.data = data
+        self.identifier = data.get("identifier")
+        self.message = data.get("message")
+
+    def __repr__(self):
+        return f"WebSocketResponse(data={self.data})"
+
+
 class WebSocketTokenResponse:
     __slots__ = ("data", "token")
 

@@ -269,6 +269,7 @@ from .config import Configs
 from .models import (
     Bgm,
     ChatRoom,
+    ChatRoomEvent,
     ConferenceCall,
     CreateGroupQuota,
     Footprint,
@@ -322,6 +323,7 @@ from .responses import (
     RankingUsersResponse,
     UsersByTimestampResponse,
     UserTimestampResponse,
+    WebSocketResponse,
 )
 
 
@@ -372,7 +374,9 @@ class ChatEventListener(WebSocket):
         message = json.loads(message)
 
         if "identifier" in message and "type" not in message:
-            self.on_message(message)
+            message = WebSocketResponse(message).message
+            if "event" not in message:
+                self.on_message(ChatRoomEvent(message))
 
     def on_message(self, message):
         pass
