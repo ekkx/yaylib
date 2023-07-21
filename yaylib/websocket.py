@@ -31,6 +31,8 @@ from .responses import WebSocketResponse
 
 
 class WebSocketBaseHandler(object):
+    """イベントハンドラーの基底クラス"""
+
     def __init__(self):
         self.ws = None
 
@@ -58,7 +60,7 @@ class WebSocketBaseHandler(object):
 
 
 class MessageEventHandler(WebSocketBaseHandler):
-    """Event Listener for chat messages"""
+    """特定のチャットルームのメッセージイベントを取得します"""
 
     def __init__(self, chat_room_id: int):
         super().__init__()
@@ -86,7 +88,7 @@ class MessageEventHandler(WebSocketBaseHandler):
 
 
 class ChatRoomEventHandler(WebSocketBaseHandler):
-    """Event Listener for ChatRoom"""
+    """チャットルームのイベントを取得します"""
 
     def __init__(self):
         super().__init__()
@@ -120,7 +122,13 @@ class ChatRoomEventHandler(WebSocketBaseHandler):
 
 
 class GroupUpdateEventHandler(WebSocketBaseHandler):
-    """Event Listener for all the group updates on Yay!"""
+    """
+
+    Yay!に存在する全てのサークルのイベントを取得します
+
+    ※ イベントが発生してから約1分遅れて送信されます。
+
+    """
 
     def __init__(self):
         super().__init__()
@@ -148,7 +156,13 @@ class GroupUpdateEventHandler(WebSocketBaseHandler):
 
 
 class GroupPostEventHandler(WebSocketBaseHandler):
-    """Event Listener for group posts"""
+    """
+
+    特定のサークルの投稿イベントを取得します
+
+    ※ イベントが発生してから約1分遅れて送信されます。
+
+    """
 
     def __init__(self, group_id: int):
         super().__init__()
