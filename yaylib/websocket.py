@@ -30,7 +30,7 @@ from .models import Message, ChatRoom, GroupUpdateEvent
 from .responses import WebSocketResponse
 
 
-class WebSocket(object):
+class WebSocketBaseHandler(object):
     def __init__(self):
         self.ws = None
 
@@ -44,7 +44,7 @@ class WebSocket(object):
         print(error)
 
     def _on_close(self, ws):
-        print("WebSocket closed.")
+        print("WebSocket Closed.")
 
     def run(self, ws_token):
         self.ws = websocket.WebSocketApp(
@@ -57,7 +57,7 @@ class WebSocket(object):
         self.ws.run_forever()
 
 
-class MessageEventListener(WebSocket):
+class MessageEventListener(WebSocketBaseHandler):
     """Event Listener for chat messages"""
 
     def __init__(self, chat_room_id: int):
@@ -85,7 +85,7 @@ class MessageEventListener(WebSocket):
         pass
 
 
-class ChatEventListener(WebSocket):
+class ChatEventListener(WebSocketBaseHandler):
     """Event Listener for ChatRoom"""
 
     def __init__(self):
@@ -119,7 +119,7 @@ class ChatEventListener(WebSocket):
         pass
 
 
-class GroupEventListener(WebSocket):
+class GroupEventListener(WebSocketBaseHandler):
     """Event Listener for all the group updates on Yay!"""
 
     def __init__(self):
@@ -147,7 +147,7 @@ class GroupEventListener(WebSocket):
         pass
 
 
-class GroupPostEventListener(WebSocket):
+class GroupPostEventListener(WebSocketBaseHandler):
     """Event Listener for group posts"""
 
     def __init__(self, group_id: int):
