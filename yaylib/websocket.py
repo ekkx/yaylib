@@ -181,6 +181,21 @@ class GroupUpdateEventHandler(WebSocketBaseHandler):
 
         - on_post(group_id: int): サークルに投稿されたときに呼び出されます
 
+    Example
+    -------
+
+        >>> import yaylib
+        >>>
+        >>> class MyHandler(yaylib.GroupUpdateEventHandler):
+        >>>     def on_post(self, group_id):
+        >>>         print(group_id)
+        >>>
+        >>> api = yaylib.Client()
+        >>>
+        >>> ws_token = api.get_web_socket_token()
+        >>> bot = MyHandler()
+        >>> bot.run(ws_token)
+
     """
 
     def __init__(self):
