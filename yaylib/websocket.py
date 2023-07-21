@@ -70,6 +70,7 @@ class MessageEventHandler(WebSocketBaseHandler):
     Methods
     -------
 
+        - on_connect(sid: str): チャンネル接続時に呼び出されます
         - on_message(message: Message): 新しいメッセージを受信したときに呼び出されます
 
     Example
@@ -128,6 +129,7 @@ class ChatRoomEventHandler(WebSocketBaseHandler):
     Methods
     -------
 
+        - on_connect(sid: str): チャンネル接続時に呼び出されます
         - on_message(chat_room: ChatRoom): 新しいメッセージを受信したときに呼び出されます
         - on_delete(room_id: int): チャットルームが削除されたときに呼び出されます
 
@@ -203,6 +205,7 @@ class GroupUpdateEventHandler(WebSocketBaseHandler):
     Methods
     -------
 
+        - on_connect(sid: str): チャンネル接続時に呼び出されます
         - on_post(group_id: int): サークルに投稿されたときに呼び出されます
 
     Example
@@ -264,6 +267,7 @@ class GroupPostEventHandler(WebSocketBaseHandler):
     Methods
     -------
 
+        - on_connect(sid: str): チャンネル接続時に呼び出されます
         - on_post(group_id: int): サークルに投稿されたときに呼び出されます
 
     Example
