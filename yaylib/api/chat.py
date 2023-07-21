@@ -42,10 +42,13 @@ from ..responses import (
 
 def accept_chat_request(self, chat_room_ids: List[int], access_token: str = None):
     self._check_authorization(access_token)
+    chat_room_ids = (
+        [chat_room_ids] if not isinstance(chat_room_ids, list) else chat_room_ids
+    )
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
-        payload={"chat_room_ids[]": chat_room_ids},
+        payload={"chat_room_ids": chat_room_ids},
         access_token=access_token,
     )
     self.logger.info("Accepted chat requests")

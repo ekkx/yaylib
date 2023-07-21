@@ -254,7 +254,7 @@ class TotalChatRequestResponse:
 
     def __init__(self, data):
         self.data = data
-        self.chat = data.get("total")
+        self.total = data.get("total")
 
     def __repr__(self):
         return f"TotalChatRequestResponse(data={self.data})"
