@@ -160,11 +160,26 @@ class ChatRoomEventHandler(WebSocketBaseHandler):
     def _on_message(self, ws, message):
         message = ChannelResponse(json.loads(message))
 
+        print(message)
+
+        if message.type == "welcome":
+            self.on_connect(message.sid)
+
         if message.identifier is not None and message.type is None:
-            if "event" not in message.message:
-                self.on_message(ChatRoom(message.message.data.get("chat")))
-            elif message.get("event") == "chat_deleted":
-                self.on_delete(message.get("data").get("room_id"))
+            if message.message.event is None:
+                self.on_message(ChatRoom(message.message.response.get("chat")))
+
+            elif message.message.event == "total_chat_request":
+                self.on_request(message.message.data.get("total_count"))
+
+            elif message.message.event == "chat_deleted":
+                self.on_delete(message.message.data.get("room_id"))
+
+    def on_connect(self, sid: str):
+        pass
+
+    def on_request(self, total_count: int):
+        pass
 
     def on_message(self, chat_room: ChatRoom):
         pass
