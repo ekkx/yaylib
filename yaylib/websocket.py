@@ -57,7 +57,7 @@ class WebSocketBaseHandler(object):
         self.ws.run_forever()
 
 
-class MessageEventListener(WebSocketBaseHandler):
+class MessageEventHandler(WebSocketBaseHandler):
     """Event Listener for chat messages"""
 
     def __init__(self, chat_room_id: int):
@@ -85,7 +85,7 @@ class MessageEventListener(WebSocketBaseHandler):
         pass
 
 
-class ChatEventListener(WebSocketBaseHandler):
+class ChatRoomEventHandler(WebSocketBaseHandler):
     """Event Listener for ChatRoom"""
 
     def __init__(self):
@@ -119,7 +119,7 @@ class ChatEventListener(WebSocketBaseHandler):
         pass
 
 
-class GroupEventListener(WebSocketBaseHandler):
+class GroupUpdateEventHandler(WebSocketBaseHandler):
     """Event Listener for all the group updates on Yay!"""
 
     def __init__(self):
@@ -147,7 +147,7 @@ class GroupEventListener(WebSocketBaseHandler):
         pass
 
 
-class GroupPostEventListener(WebSocketBaseHandler):
+class GroupPostEventHandler(WebSocketBaseHandler):
     """Event Listener for group posts"""
 
     def __init__(self, group_id: int):
