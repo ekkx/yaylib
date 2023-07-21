@@ -88,7 +88,15 @@ class MessageEventHandler(WebSocketBaseHandler):
 
 
 class ChatRoomEventHandler(WebSocketBaseHandler):
-    """チャットルームのイベントを取得します"""
+    """チャットルームのイベントを取得します
+
+    Methods:
+    -------
+
+        - on_message(chat_room: ChatRoom): 新しいメッセージを受信したときに呼び出されます
+        - on_delete(room_id: int): チャットルームが削除されたときに呼び出されます
+
+    """
 
     def __init__(self):
         super().__init__()
