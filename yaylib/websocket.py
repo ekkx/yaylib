@@ -67,6 +67,21 @@ class MessageEventHandler(WebSocketBaseHandler):
 
         - on_message(message: Message): 新しいメッセージを受信したときに呼び出されます
 
+    Example
+    -------
+
+        >>> import yaylib
+        >>>
+        >>> class MyHandler(yaylib.MessageEventHandler):
+        >>>     def on_message(self, message):
+        >>>         print(message.text)
+        >>>
+        >>> api = yaylib.Client()
+        >>>
+        >>> ws_token = api.get_web_socket_token()
+        >>> bot = MyHandler()
+        >>> bot.run(ws_token)
+
     """
 
     def __init__(self, chat_room_id: int):
