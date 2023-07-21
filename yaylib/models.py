@@ -828,12 +828,20 @@ class Message:
 
         self.created_at = data.get("created_at")
         self.font_size = data.get("font_size")
+
         self.gif = data.get("gif")
+        if self.gif is not None:
+            self.gif = GifImage(self.gif)
+
         self.id = data.get("id")
         self.message_type = data.get("message_type")
         self.reactions_count = data.get("reactions_count")
         self.room_id = data.get("room_id")
+
         self.sticker = data.get("sticker")
+        if self.sticker is not None:
+            self.sticker = Sticker(self.sticker)
+
         self.text = data.get("text")
         self.user = data.get("user")
         self.user_id = data.get("user_id")
