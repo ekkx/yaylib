@@ -26,8 +26,8 @@ import json
 import websocket
 
 from .config import Configs
-from .models import Message, ChatRoom, GroupUpdateEvent
-from .responses import WebSocketResponse
+from .models import Message, ChatRoom, GroupUpdatesEvent
+from .responses import ChannelResponse
 
 
 class WebSocketBaseHandler(object):
@@ -47,6 +47,9 @@ class WebSocketBaseHandler(object):
 
     def _on_close(self, ws):
         print("WebSocket Closed.")
+
+    def on_connect(self, sid: str):
+        pass
 
     def run(self, ws_token: str):
         self.ws = websocket.WebSocketApp(
@@ -101,11 +104,10 @@ class MessageEventHandler(WebSocketBaseHandler):
         )
 
     def _on_message(self, ws, message):
-        message = json.loads(message)
+        message = ChannelResponse(json.loads(message))
 
-        if "identifier" in message and "type" not in message:
-            message = WebSocketResponse(message).message["data"]
-            self.on_message(Message(message))
+        if message.identifier is not None and message.type is None:
+            self.on_message(Message(message.message.data))
 
     def on_message(self, message: Message):
         pass
@@ -156,13 +158,11 @@ class ChatRoomEventHandler(WebSocketBaseHandler):
         )
 
     def _on_message(self, ws, message):
-        message = json.loads(message)
+        message = ChannelResponse(json.loads(message))
 
-        if "identifier" in message and "type" not in message:
-            message = WebSocketResponse(message).message
-
-            if "event" not in message:
-                self.on_message(ChatRoom(message.get("chat")))
+        if message.identifier is not None and message.type is None:
+            if "event" not in message.message:
+                self.on_message(ChatRoom(message.message.data.get("chat")))
             elif message.get("event") == "chat_deleted":
                 self.on_delete(message.get("data").get("room_id"))
 
@@ -216,12 +216,19 @@ class GroupUpdateEventHandler(WebSocketBaseHandler):
         )
 
     def _on_message(self, ws, message):
-        message = json.loads(message)
+        message = ChannelResponse(json.loads(message))
 
-        if "identifier" in message and "type" not in message:
-            message = GroupUpdateEvent(WebSocketResponse(message).message)
+        if message.type == "welcome":
+            self.on_connect(message.sid)
+
+        if message.identifier is not None and message.type is None:
+            message = GroupUpdatesEvent(message.message.response)
+
             if message.event == "new_post":
-                self.on_post(message.group_id)
+                self.on_post(message.data.get("group_id"))
+
+    def on_connect(self, sid: str):
+        pass
 
     def on_post(self, group_id: int):
         pass
@@ -273,10 +280,10 @@ class GroupPostEventHandler(WebSocketBaseHandler):
     def _on_message(self, ws, message):
         message = json.loads(message)
 
-        if "identifier" in message and "type" not in message:
-            message = GroupUpdateEvent(WebSocketResponse(message).message)
-            if message.event == "new_post":
-                self.on_post(message.group_id)
+        # if "identifier" in message and "type" not in message:
+        #     message = GroupUpdateEvent(WebSocketResponse(message).message)
+        #     if message.event == "new_post":
+        #         self.on_post(message.group_id)
 
     def on_post(self, group_id: int):
         pass
