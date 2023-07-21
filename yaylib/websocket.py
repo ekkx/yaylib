@@ -175,6 +175,11 @@ class GroupPostEventHandler(WebSocketBaseHandler):
 
     ※ イベントが発生してから約1分遅れて送信されます。
 
+    Methods
+    -------
+
+        - on_post(group_id: int): サークルに投稿されたときに呼び出されます
+
     """
 
     def __init__(self, group_id: int):
