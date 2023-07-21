@@ -278,12 +278,21 @@ class GroupPostEventHandler(WebSocketBaseHandler):
         )
 
     def _on_message(self, ws, message):
-        message = json.loads(message)
+        message = ChannelResponse(json.loads(message))
 
-        # if "identifier" in message and "type" not in message:
-        #     message = GroupUpdateEvent(WebSocketResponse(message).message)
-        #     if message.event == "new_post":
-        #         self.on_post(message.group_id)
+        print(message)
+
+        if message.type == "welcome":
+            self.on_connect(message.sid)
+
+        if message.identifier is not None and message.type is None:
+            message = GroupUpdatesEvent(message.message.response)
+
+            if message.event == "new_post":
+                self.on_post(message.data.get("group_id"))
+
+    def on_connect(self, sid: str):
+        pass
 
     def on_post(self, group_id: int):
         pass
