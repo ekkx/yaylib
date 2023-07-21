@@ -48,7 +48,7 @@ class WebSocketBaseHandler(object):
     def _on_close(self, ws):
         print("WebSocket Closed.")
 
-    def run(self, ws_token):
+    def run(self, ws_token: str):
         self.ws = websocket.WebSocketApp(
             url=f"wss://{Configs.YAY_CABLE_HOST}/?token={ws_token}&app_version={Configs.YAY_VERSION_NAME}",
             on_open=self._on_open,
@@ -60,7 +60,9 @@ class WebSocketBaseHandler(object):
 
 
 class MessageEventHandler(WebSocketBaseHandler):
-    """特定のチャットルームのメッセージイベントを取得します
+    """
+
+    特定のチャットルームのメッセージイベントを取得します
 
     Methods
     -------
@@ -110,7 +112,9 @@ class MessageEventHandler(WebSocketBaseHandler):
 
 
 class ChatRoomEventHandler(WebSocketBaseHandler):
-    """チャットルームのイベントを取得します
+    """
+
+    チャットルームのイベントを取得します
 
     Methods
     -------
