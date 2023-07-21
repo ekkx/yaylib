@@ -118,6 +118,24 @@ class ChatRoomEventHandler(WebSocketBaseHandler):
         - on_message(chat_room: ChatRoom): 新しいメッセージを受信したときに呼び出されます
         - on_delete(room_id: int): チャットルームが削除されたときに呼び出されます
 
+    Example
+    -------
+
+        >>> import yaylib
+        >>>
+        >>> class MyHandler(yaylib.ChatRoomEventHandler):
+        >>>     def on_message(self, chat_room):
+        >>>         print(chat_room.last_message.text)
+        >>>
+        >>>     def on_delete(self, room_id):
+        >>>         print(room_id)
+        >>>
+        >>> api = yaylib.Client()
+        >>>
+        >>> ws_token = api.get_web_socket_token()
+        >>> bot = MyHandler()
+        >>> bot.run(ws_token)
+
     """
 
     def __init__(self):
