@@ -576,7 +576,7 @@ class GroupResponse:
 
         self.group = data.get("group")
         if self.group is not None:
-            self.group = Setting(self.group)
+            self.group = Group(self.group)
 
     def __repr__(self):
         return f"GroupResponse(data={self.data})"
