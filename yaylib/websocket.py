@@ -106,8 +106,15 @@ class MessageEventHandler(WebSocketBaseHandler):
     def _on_message(self, ws, message):
         message = ChannelResponse(json.loads(message))
 
+        if message.type == "welcome":
+            self.on_connect(message.sid)
+
         if message.identifier is not None and message.type is None:
-            self.on_message(Message(message.message.data))
+            if message.message.event == "new_message":
+                self.on_message(Message(message.message.data))
+
+    def on_connect(self, sid: str):
+        pass
 
     def on_message(self, message: Message):
         pass
@@ -159,8 +166,6 @@ class ChatRoomEventHandler(WebSocketBaseHandler):
 
     def _on_message(self, ws, message):
         message = ChannelResponse(json.loads(message))
-
-        print(message)
 
         if message.type == "welcome":
             self.on_connect(message.sid)
