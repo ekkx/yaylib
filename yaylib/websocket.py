@@ -60,7 +60,14 @@ class WebSocketBaseHandler(object):
 
 
 class MessageEventHandler(WebSocketBaseHandler):
-    """特定のチャットルームのメッセージイベントを取得します"""
+    """特定のチャットルームのメッセージイベントを取得します
+
+    Methods
+    -------
+
+        - on_message(message: Message): 新しいメッセージを受信したときに呼び出されます
+
+    """
 
     def __init__(self, chat_room_id: int):
         super().__init__()
