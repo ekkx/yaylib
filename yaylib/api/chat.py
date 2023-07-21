@@ -430,6 +430,7 @@ def send_message(
     gif_image_id: int = None,
     attachment_file_name: str = None,
     sticker_pack_id: int = None,
+    sticker_id: int = None,
     video_file_name: str = None,
     access_token: str = None,
 ) -> MessageResponse:
@@ -438,7 +439,6 @@ def send_message(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/messages/new",
         payload={
-            "chat_room_id": chat_room_id,
             "message_type": message_type,
             "call_type": call_type,
             "text": text,
@@ -446,6 +446,7 @@ def send_message(
             "gif_image_id": gif_image_id,
             "attachment_file_name": attachment_file_name,
             "sticker_pack_id": sticker_pack_id,
+            "sticker_id": sticker_id,
             "video_file_name": video_file_name,
         },
         data_type=MessageResponse,
