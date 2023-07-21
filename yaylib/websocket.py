@@ -90,7 +90,7 @@ class MessageEventHandler(WebSocketBaseHandler):
 class ChatRoomEventHandler(WebSocketBaseHandler):
     """チャットルームのイベントを取得します
 
-    Methods:
+    Methods
     -------
 
         - on_message(chat_room: ChatRoom): 新しいメッセージを受信したときに呼び出されます
@@ -135,6 +135,11 @@ class GroupUpdateEventHandler(WebSocketBaseHandler):
     Yay!に存在する全てのサークルのイベントを取得します
 
     ※ イベントが発生してから約1分遅れて送信されます。
+
+    Methods
+    -------
+
+        - on_post(group_id: int): サークルに投稿されたときに呼び出されます
 
     """
 
