@@ -353,9 +353,6 @@ class Client(API):
 
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-
     # -CALL
 
     def get_user_active_call(self, user_id: int, access_token: str = None) -> Post:
