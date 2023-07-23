@@ -204,7 +204,7 @@ def invite_users_to_call(
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/invite",
-        payload={"call_id": call_id, "user_ids[]": user_ids},
+        payload={"call_id": call_id, "user_ids": user_ids},
         access_token=access_token,
     )
     self.logger.info("Invited users to call.")
