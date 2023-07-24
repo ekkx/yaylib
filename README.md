@@ -148,10 +148,6 @@ api.login(email="メールアドレス", password="パスワード")
 api.create_post("Hello with yaylib!", shared_url="https://github.com/qvco/yaylib")
 ```
 
-<p align="center">
-    <img src="https://github.com/qvco/yaylib/assets/77382767/44aa5df8-4654-4f8d-a73f-79d530b8a0e1" alt="Writing Text Threads" width="400px" />
-</p>
-
 #### ✨ 画像と一緒に投稿を作成する
 
 ```python
