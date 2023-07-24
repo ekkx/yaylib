@@ -77,6 +77,55 @@ pip install -e .
 
 ## [<img src="https://github.com/qvco/yaylib/assets/77382767/dc7dcea0-c581-4039-8fc2-3994884d2ba3" width="30" height="30" />](https://github.com/qvco) Quick Example
 
+### yaylib 利用で実現できること
+
+<table>
+    <tr>
+        <th>カテゴリ</th>
+        <th>「yaylib」で自動化できること</th>
+        <th>応用先</th>
+    </tr>
+    <tr>
+		<td>データ収集の効率化</td>
+		<td>
+            <li>投稿情報取得</li>
+            <li>ユーザー情報取得</li>
+            <li>人気のワード取得</li>
+            <li>フォロー/フォロワー情報取得</li>
+        </td>
+		<td>
+            <li>SNSデータマーケティング</li>
+            <li>トレンド解析</li>
+            <li>ニーズ調査</li>
+        </td>
+	</tr>
+    <tr>
+		<td>アカウント操作<br>(投稿関連)</td>
+		<td>
+            <li>投稿する</li>
+            <li>リツイートする</li>
+            <li>いいねする</li>
+        </td>
+		<td>
+            <li>Yay! 自動運用</li>
+            <li>Yay! Bot開発</li>
+        </td>
+	</tr>
+    <tr>
+		<td>アカウント操作<br>(ユーザー関連)</td>
+		<td>
+            <li>フォローする/フォロー解除する</li>
+            <li>ブロックする/ブロック解除する</li>
+            <li>ミュートする/ミュート解除する</li>
+            <li>DMを送る</li>
+        </td>
+		<td>
+            <li>Yay! 自動運用</li>
+            <li>Yay! Bot開発</li>
+        </td>
+	</tr>
+</table>
+
 #### ✨ 投稿を作成する
 
 ```python
