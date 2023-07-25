@@ -40,4 +40,5 @@ __all__ = [
     "user_identity",
     "user",
     "wallet",
+    "websocket",
 ]

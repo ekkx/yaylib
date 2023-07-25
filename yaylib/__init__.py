@@ -16,7 +16,7 @@ from .errors import *
 from .models import *
 from .responses import *
 from .utils import *
-from .websocket import *
+from .api.websocket import *
 
 __version__ = Configs.YAYLIB_VERSION
 __all__ = [

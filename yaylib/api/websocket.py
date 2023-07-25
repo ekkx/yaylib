@@ -25,9 +25,9 @@ SOFTWARE.
 import json
 import websocket
 
-from .config import Configs
-from .models import Message, ChatRoom, GroupUpdatesEvent
-from .responses import ChannelResponse
+from ..config import Configs
+from ..models import Message, ChatRoom, GroupUpdatesEvent
+from ..responses import ChannelResponse
 
 
 class WebSocketBaseHandler(object):
