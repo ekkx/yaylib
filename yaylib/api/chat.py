@@ -316,7 +316,7 @@ def invite_to_chat(
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/invite",
-        payload={"with_user_ids[]": user_ids},
+        payload={"with_user_ids": user_ids},
         access_token=access_token,
     )
     self.logger.info("Invited users to the chatroom.")
@@ -461,7 +461,7 @@ def unhide_chat(self, chat_room_ids: int, access_token: str = None):
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.HIDDEN_V1}/chats",
-        params={"chat_room_ids[]": chat_room_ids},
+        params={"chat_room_ids": chat_room_ids},
         access_token=access_token,
     )
     self.logger.info("Unhid the chatrooms")
