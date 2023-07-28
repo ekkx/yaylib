@@ -119,7 +119,8 @@ class API:
 
         if access_token is not None:
             headers["Authorization"] = f"Bearer {access_token}"
-        elif not user_auth and "Authorization" in headers:
+
+        if not user_auth and "Authorization" in headers:
             del headers["Authorization"]
 
         response = None
