@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from ..config import Configs
+from ..config import Configs, Endpoints
 from ..responses import ActivitiesResponse
 
 
@@ -74,7 +74,7 @@ def received_notification(
     self._check_authorization(access_token)
     return self._make_request(
         "POST",
-        endpoint=f"{Configs.YAY_API_URL}/api/received_push_notifications",
+        endpoint=f"{Endpoints.BASE_API_URL}/api/received_push_notifications",
         payload={"pid": pid, "type": type, "opened_at": opened_at},
         access_token=access_token,
     )

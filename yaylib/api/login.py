@@ -89,7 +89,7 @@ def get_token(
 ) -> TokenResponse:
     return self._make_request(
         "POST",
-        endpoint=f"{Configs.YAY_API_URL}/api/v1/oauth/token",
+        endpoint=f"{Endpoints.BASE_API_URL}/api/v1/oauth/token",
         payload={
             "grant_type": grant_type,
             "email": email,
