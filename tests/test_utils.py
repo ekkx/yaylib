@@ -22,48 +22,48 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import os
-import json
 import unittest
-
-import vcr
-
-import yaylib
-
-
-base_path = os.path.abspath(os.getcwd()) + "/config/"
-cassette_library_dir = "cassettes"
-
-
-with open(base_path + "test_config.json", "r") as f:
-    test_config = json.load(f)
-
-
-email = test_config.get("email", "")
-password = test_config.get("password", "")
-secret_key = test_config.get("secret_key", "")
-opponent_id = test_config.get("opponent_id", "")
-
-
-def before_record_response(response):
-    body = response["content"]
-    if body:
-        json_body = json.loads(body)
-        if "token" in json_body:
-            del json_body["token"]
-        response["content"] = json.dumps(json_body)
-    return response
-
-
-tape = vcr.VCR(
-    cassette_library_dir=cassette_library_dir,
-    filter_headers=["Authorization", "X-Jwt"],
-    filter_query_parameters=["token", "access_token"],
-    before_record_response=before_record_response,
+from yaylib.utils import (
+    console_print,
+    generate_uuid,
+    parse_datetime,
+    encrypt,
+    decrypt,
+    save_session,
+    load_session,
+    signed_info_calculating,
+    signed_version_calculating,
 )
 
 
-class YaylibTestCase(unittest.TestCase):
-    def setUp(self):
-        self.api = yaylib.Client()
-        self.api.login(email, password, secret_key)
+class TestUtils(unittest.TestCase):
+    def test_console_print(self):
+        pass
+
+    def test_generaate_uuid(self):
+        pass
+
+    def test_parse_datetime(self):
+        pass
+
+    def test_encrypt(self):
+        pass
+
+    def test_decrypt(self):
+        pass
+
+    def test_save_session(self):
+        pass
+
+    def test_load_session(self):
+        pass
+
+    def test_signed_info_calculating(self):
+        pass
+
+    def test_signed_version_calculating(self):
+        pass
+
+
+if __name__ == "__main__":
+    unittest.main()
