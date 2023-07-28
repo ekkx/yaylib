@@ -85,7 +85,7 @@ class MessageEventHandler(WebSocketBaseHandler):
         >>> api = yaylib.Client()
         >>>
         >>> ws_token = api.get_web_socket_token()
-        >>> bot = MyHandler()
+        >>> bot = MyHandler(chat_room_id=12345)
         >>> bot.run(ws_token)
 
     """
@@ -282,7 +282,7 @@ class GroupPostEventHandler(WebSocketBaseHandler):
         >>> api = yaylib.Client()
         >>>
         >>> ws_token = api.get_web_socket_token()
-        >>> bot = MyHandler()
+        >>> bot = MyHandler(group_id=12345)
         >>> bot.run(ws_token)
 
     """
