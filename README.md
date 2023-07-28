@@ -238,15 +238,15 @@ api.login(email="メールアドレス", password="パスワード")
 
 
 class ChatBot(yaylib.ChatRoomEventHandler):
-    # チャットリクエストを承認する
+
     def on_request(self, total_count: int):
+        # チャットリクエストを承認する
         chat_room = api.get_request_chat_rooms().chat_rooms[0]
         api.accept_chat_request(chat_room_ids=[chat_room.id])
-
         self.on_message(chat_room)
 
-    # メッセージを取得する
     def on_message(self, chat_room):
+        # メッセージを出力する
         print(chat_room.last_message.text)
 
 
