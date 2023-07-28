@@ -304,7 +304,7 @@ class ErrorMessage(Enum):
     InvalidAppVersion = "アプリをアップデートしてください"
     InvalidPhoneNumber = "この機能を使用するためには電話番号認証が必要です"
     FollowLimitation = "制限に達したので、これ以上フォローすることができません。この制限はフォローワーを増やすことで、増やすことができます。"
-    AgeGapNotAllowed = "レターを送れません。年齢が離れすぎています"
+    AgeGapNotAllowed = "レター、もしくはチャットを送れません。年齢が離れすぎています"
     GroupOwnerOrGroupModeratorOnly = "サークル管理人か副管理人のみ可能な操作です"
     UnableToRegisterUserDueToPolicy = "利用規約に基づき、現在アカウントを登録できません"
     SnsShareRewardAlreadyBeenClaimed = "SNS共有の特典は既に取得済みです"
