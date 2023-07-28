@@ -279,5 +279,5 @@ class API:
             return response
 
     def _generate_all_uuids(self):
-        self.device_uuid = generate_uuid()[0]
-        self.uuid, self.url_uuid = generate_uuid()
+        self.device_uuid = generate_uuid(True)
+        self.uuid = generate_uuid(True)

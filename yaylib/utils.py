@@ -52,10 +52,12 @@ def console_print(*args):
     print("\n")
 
 
-def generate_uuid() -> tuple:
+def generate_uuid(uuid_type: bool = True) -> tuple:
     generated_uuid = str(uuid.uuid4())
-    url_uuid = generated_uuid.replace("-", "")
-    return generated_uuid, url_uuid
+    if uuid_type:
+        return generated_uuid
+    else:
+        return generated_uuid.replace("-", "")
 
 
 def parse_datetime(timestamp: int) -> str:
