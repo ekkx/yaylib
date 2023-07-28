@@ -22,26 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import logging
-import json
-import unittest
-
+import os
 import vcr
+import json
+import logging
+import unittest
 
 import yaylib
 
 
-json_path = "../config.json"
+base_path = os.path.abspath(os.getcwd()) + "/config/"
 cassette_library_dir = "cassettes"
 
-with open(json_path, "r") as f:
-    config = json.load(f)
 
-email = config.get("EMAIL", "")
-password = config.get("PASSWORD", "")
-user_id = config.get("USER_ID", "")
-opponent_id = config.get("OPPONENT_ID", "")
-access_token = config.get("ACCESS_TOKEN", "")
+with open(base_path + "test_config.json", "r") as f:
+    test_config = json.load(f)
+
+
+email = test_config.get("email", "")
+password = test_config.get("password", "")
+secret_key = test_config.get("secret_key", "")
+opponent_id = test_config.get("opponent_id", "")
 
 
 def before_record_response(response):
@@ -64,17 +65,5 @@ tape = vcr.VCR(
 
 class YaylibTestCase(unittest.TestCase):
     def setUp(self):
-        if access_token:
-            self.api = yaylib.Client(
-                access_token=access_token,
-                loglevel_stream=logging.DEBUG,
-            )
-        else:
-            self.api = yaylib.Client(
-                loglevel_stream=logging.DEBUG,
-            )
-            self.api.login(email, password)
-
-            config["ACCESS_TOKEN"] = self.api.login_data.access_token
-            with open(json_path, "w") as f:
-                f.write(json.dumps(config))
+        self.api = yaylib.Client(loglevel=logging.DEBUG)
+        self.api.login(email, password, secret_key)

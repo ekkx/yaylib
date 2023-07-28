@@ -1,7 +1,6 @@
 Pipfile
 .idea
 
-# Custom files
 nanameue/
 agora/
 test_agora.py
