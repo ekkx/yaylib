@@ -9,6 +9,13 @@ api.login(email, password)
 
 
 class ChatBot(yaylib.ChatRoomEventHandler):
+
+    def on_request(self, total_count: int):
+        # チャットリクエストを承認する
+        chat_room = api.get_request_chat_rooms().chat_rooms[0]
+        api.accept_chat_request(chat_room_ids=[chat_room.id])
+        self.on_message(chat_room)
+
     def on_message(self, chat_room):
         # 受信したメッセージをオウム返しする
         api.send_message(
