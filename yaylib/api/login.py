@@ -57,7 +57,7 @@ def change_email(
         data_type=LoginUpdateResponse,
         access_token=access_token,
     )
-    self.logger.info(self, fname="Your email has been changed.")
+    self.logger.info("Your email has been changed.")
     return response
 
 
@@ -75,7 +75,7 @@ def change_password(
         data_type=LoginUpdateResponse,
         access_token=access_token,
     )
-    self.logger.info(self, fname="Your password has been changed..")
+    self.logger.info("Your password has been changed..")
     return response
 
 
