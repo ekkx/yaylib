@@ -157,6 +157,12 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>セッションを保存するか否か</td>
 	</tr>
     <tr>
+		<td><code>session_filename</code></td>
+		<td><code>str</code></td>
+		<td><code>session</code></td>
+		<td>セッションを保存するファイル名</td>
+	</tr>
+    <tr>
 		<td><code>loglevel</code></td>
 		<td><code>int</code></td>
 		<td><code>logging.INFO</code></td>
