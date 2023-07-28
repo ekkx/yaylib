@@ -58,6 +58,7 @@ class API:
         err_lang="ja",
         base_path=current_path + "/config/",
         save_session=True,
+        session_filename="session",
         loglevel=logging.INFO,
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
@@ -77,6 +78,7 @@ class API:
         self.err_lang = err_lang
         self.base_path = base_path
         self.save_session = save_session
+        self.session_filename = session_filename
 
         self._generate_all_uuids()
         self.session = httpx.Client(proxies=self.proxy, timeout=self.timeout)
@@ -145,7 +147,7 @@ class API:
 
             if self.save_session is True and response.status_code == 401:
                 if "/api/v1/oauth/token" in endpoint:
-                    os.remove(self.base_path + "session.json")
+                    os.remove(self.base_path + self.session_filename + ".json")
                     message = "Refresh token expired. Try logging in again."
                     raise AuthenticationError(message)
 
@@ -153,7 +155,9 @@ class API:
                 self.logger.debug("Access token expired. Refreshing tokens...")
 
                 if auth_retry_count < max_auth_retries:
-                    session = load_session(base_path=self.base_path)
+                    session = load_session(
+                        base_path=self.base_path, session_filename=self.session_filename
+                    )
 
                     if session is not None and self.fernet is not None:
                         session = decrypt(fernet=self.fernet, session=session)
@@ -165,6 +169,7 @@ class API:
                         )
                         save_session(
                             base_path=self.base_path,
+                            session_filename=self.session_filename,
                             fernet=self.fernet,
                             access_token=response.access_token,
                             refresh_token=response.refresh_token,
@@ -176,7 +181,7 @@ class API:
                         continue
 
                 else:
-                    os.remove(self.base_path + "session.json")
+                    os.remove(self.base_path + self.session_filename + ".json")
                     message = (
                         "Maximum authentication retries exceeded. Try logging in again."
                     )

@@ -115,7 +115,11 @@ def login_with_email(
     self, email: str, password: str, secret_key: str = None
 ) -> LoginUserResponse:
     if self.save_session:
-        session = load_session(base_path=self.base_path, check_email=email)
+        session = load_session(
+            base_path=self.base_path,
+            session_filename=self.session_filename,
+            check_email=email,
+        )
         if session is not None and secret_key is not None:
             self.secret_key = secret_key
             self.fernet = Fernet(secret_key)
@@ -160,6 +164,7 @@ def login_with_email(
 
         save_session(
             base_path=self.base_path,
+            session_filename=self.session_filename,
             fernet=self.fernet,
             access_token=response.access_token,
             refresh_token=response.refresh_token,

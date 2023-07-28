@@ -341,6 +341,7 @@ class Client(API):
         - err_lang: str - (optional)
         - base_path: str - (optional)
         - save_session: bool - (optional)
+        - session_filename: str - (optional)
         - loglevel: int - (optional)
 
     <https://github.com/qvco/yaylib>

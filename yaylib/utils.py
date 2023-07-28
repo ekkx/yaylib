@@ -92,13 +92,14 @@ def decrypt(fernet, session: dict):
 
 def save_session(
     base_path: str,
+    session_filename: str,
     fernet,
     access_token: str,
     refresh_token: str,
     user_id: int,
     email: str = None,
 ):
-    session = load_session(base_path=base_path)
+    session = load_session(base_path=base_path, session_filename=session_filename)
     updated_session = {
         "access_token": access_token,
         "refresh_token": refresh_token,
@@ -110,15 +111,17 @@ def save_session(
 
     updated_session = encrypt(fernet, updated_session)
 
-    with open(base_path + "session.json", "w") as f:
+    with open(base_path + session_filename + ".json", "w") as f:
         json.dump(updated_session, f, indent=4)
 
 
-def load_session(base_path: str, fernet=None, check_email: str = None):
-    if not os.path.exists(base_path + "session.json"):
+def load_session(
+    base_path: str, session_filename: str, fernet=None, check_email: str = None
+):
+    if not os.path.exists(base_path + session_filename + ".json"):
         return None
 
-    with open(base_path + "session.json", "r") as f:
+    with open(base_path + session_filename + ".json", "r") as f:
         session = json.load(f)
 
     result = all(
