@@ -172,7 +172,11 @@ import yaylib
 api = yaylib.Client()
 api.login(email="メールアドレス", password="パスワード")
 
-api.create_post("Hello with yaylib!", in_reply_to=373189088)
+api.create_post(
+    "Hello with yaylib!",
+    in_reply_to=返信先の投稿ID,
+    mention_ids=[返信先のユーザーID]
+)
 ```
 
 #### ✨ タイムラインを 100 件取得する
@@ -185,7 +189,7 @@ api = yaylib.Client()
 timeline = api.get_timeline(number=100)
 
 for post in timeline.posts:
-    print(post.user.nickname)  # 投稿者
+    print(post.user.nickname)  # 投稿者名
     print(post.text)  # 本文
     print(post.likes_count)  # いいね数
     print(post.reposts_count)  # (´∀｀∩)↑age↑の数
@@ -222,6 +226,34 @@ timeline = api.get_timeline(number=15)
 
 for post in timeline.posts:
     api.follow_user(post.user.id)
+```
+
+#### ✨ リアルタイムでチャットを取得する
+
+```python
+import yaylib
+
+api = yaylib.Client()
+api.login(email="メールアドレス", password="パスワード")
+
+
+class ChatBot(yaylib.ChatRoomEventHandler):
+    # チャットリクエストを承認する
+    def on_request(self, total_count: int):
+        chat_room = api.get_request_chat_rooms().chat_rooms[0]
+        api.accept_chat_request(chat_room_ids=[chat_room.id])
+
+        self.on_message(chat_room)
+
+    # メッセージを取得する
+    def on_message(self, chat_room):
+        print(chat_room.last_message.text)
+
+
+ws_token = api.get_web_socket_token()
+
+bot = ChatBot()
+bot.run(ws_token)
 ```
 
 より詳しい使用例については、[こちら](https://github.com/qvco/yaylib/blob/master/examples) を参照してください。
