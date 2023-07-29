@@ -139,9 +139,6 @@ def load_session(
 
 
 def signed_info_calculating(uuid: str, timestamp: int, shared_key: bool = False) -> str:
-    """
-    Pass the device_uuid when shared_key is False.
-    """
     shared_key = Configs.YAY_SHARED_KEY if shared_key is True else ""
     return hashlib.md5(
         (Configs.YAY_API_KEY + uuid + str(timestamp) + shared_key).encode()

@@ -62,7 +62,7 @@ pip install yaylib
 > 開発バージョンをインストールする場合は、以下の手順を実行します:
 
 ```bash
-git clone https://github.com/qvco/yaylib
+git clone https://github.com/qvco/yaylib.git
 
 cd yaylib
 
