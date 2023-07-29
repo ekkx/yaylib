@@ -40,11 +40,8 @@ from ..responses import (
 )
 
 
-def accept_chat_request(self, chat_room_ids: List[int], access_token: str = None):
+def accept_chat_requests(self, chat_room_ids: List[int], access_token: str = None):
     self._check_authorization(access_token)
-    chat_room_ids = (
-        [chat_room_ids] if not isinstance(chat_room_ids, list) else chat_room_ids
-    )
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
@@ -253,12 +250,19 @@ def get_messages(
 
 
 def get_request_chat_rooms(
-    self, from_timestamp: int = None, access_token: str = None
+    self, access_token: str = None, **params
 ) -> ChatRoomsResponse:
+    """
+
+    Parameters:
+    ----------
+
+        - number: int (optional)
+        - from_timestamp: int (optional)
+        - access_token: str (optional)
+
+    """
     self._check_authorization(access_token)
-    params = {}
-    if from_timestamp:
-        params["from_timestamp"] = from_timestamp
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/request_list",

@@ -12,8 +12,8 @@ class ChatBot(yaylib.ChatRoomEventHandler):
 
     def on_request(self, total_count: int):
         # チャットリクエストを承認する
-        chat_room = api.get_request_chat_rooms().chat_rooms[0]
-        api.accept_chat_request(chat_room_ids=[chat_room.id])
+        chat_room = api.get_chat_requests(number=1).chat_rooms[0]
+        api.accept_chat_requests(chat_room_ids=[chat_room.id])
         self.on_message(chat_room)
 
     def on_message(self, chat_room):

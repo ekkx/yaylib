@@ -52,7 +52,7 @@ from .api.cassandra import (
     received_notification,
 )
 from .api.chat import (
-    accept_chat_request,
+    accept_chat_requests,
     check_unread_status,
     create_group_chat,
     create_private_chat,
@@ -612,7 +612,7 @@ class Client(API):
 
     # -CHAT
 
-    def accept_chat_request(
+    def accept_chat_requests(
         self, chat_room_ids: List[int], access_token: str = None
     ) -> dict:
         """
@@ -625,7 +625,7 @@ class Client(API):
             - chat_room_ids: List[int] - (required)
 
         """
-        return accept_chat_request(self, chat_room_ids, access_token)
+        return accept_chat_requests(self, chat_room_ids, access_token)
 
     def check_unread_status(
         self, from_time: int, access_token: str = None
@@ -796,15 +796,22 @@ class Client(API):
         """
         return get_messages(self, chat_room_id, access_token, **params)
 
-    def get_request_chat_rooms(
-        self, from_timestamp: int = None, access_token: str = None
+    def get_chat_requests(
+        self, access_token: str = None, **params
     ) -> ChatRoomsResponse:
         """
 
         チャットリクエストを取得します
 
+        Parameters:
+        ----------
+
+            - number: int (optional)
+            - from_timestamp: int (optional)
+            - access_token: str (optional)
+
         """
-        return get_request_chat_rooms(self, from_timestamp, access_token)
+        return get_request_chat_rooms(self, access_token, **params)
 
     def get_chat_room(self, chat_room_id: int, access_token: str = None) -> ChatRoom:
         """
