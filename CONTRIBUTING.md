@@ -1,16 +1,22 @@
-# Contributing!
+## 「yaylib」 に貢献される方へ
 
-👍🎉 「yaylib」の貢献にお時間を割いて頂き、どうもありがとうございます！ 🎉👍
+yaylib の改善にご協力いただきありがとうございます。
 
-## なにができるか
+ここではプロジェクトに貢献する方法、開発に参加する方法を紹介します。
 
-主に以下の方法で貢献できます:
+## 貢献の種類
 
-- [「yaylib」リポジトリ](https://github.com/qvco/yaylib)にスターをお願いします！GitHub の登録が必要です（無料）
-- お友だちのみんなに「yaylib」を布教しちゃう！
-- ドキュメントを充実させる (Translating the Docs into your language etc..)
-- バグを発見したら [Issues](https://github.com/qvco/yaylib/issues) セクションに、もしあればスクリーンショットとコマンドを教えてください！
-- 開発者の場合は、これらのバグやエラーの修正や[Discord サーバー](https://discord.gg/MEuBfNtqRN)の機能要望のチャンネルにある機能の追加をお願いします！
-- もし 「yaylib」 を使用して開発したボットや使用例があれば、[ぜひ教えてください](https://discord.gg/MEuBfNtqRN)！
+#### 利用者
+
+- [リポジトリにスター](https://github.com/qvco/yaylib)をする。 ※ GitHub の登録が必要です（無料）
+- お友達に「yaylib」を布教する。
+- バグを発見したら [イシュー](https://github.com/qvco/yaylib/issues) に報告する。
+- 「yaylib」 を使用したボットがあれば、[ぜひ教えてください](https://discord.gg/MEuBfNtqRN)！
+
+#### デベロッパー
+
+- バグの修正や機能の追加、ドキュメントの作成をお願いします。
+- コードに変更を加える場合は、[プルリクエスト](https://github.com/qvco/yaylib/pulls)から行ってください。
+- タスクがわからない場合は [イシュー](https://github.com/qvco/yaylib/issues)、もしくは [Discord サーバー](https://discord.gg/MEuBfNtqRN)から確認してください。
 
 **_yaylib のサポートに心から感謝します！！_**
