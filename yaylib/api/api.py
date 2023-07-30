@@ -41,7 +41,7 @@ from ..errors import (
     RateLimitError,
     YayServerError,
 )
-from ..utils import Configs, generate_uuid, load_session, save_session, decrypt
+from ..utils import Configs, generate_uuid, load_session, save_session, encrypt, decrypt
 
 
 current_path = os.path.abspath(os.getcwd())
@@ -79,6 +79,7 @@ class API:
         self.base_path = base_path
         self.save_session = save_session
         self.session_filename = session_filename
+        self._cookies = {}
 
         self._generate_all_uuids()
         self.session = httpx.Client(proxies=self.proxy, timeout=self.timeout)
@@ -237,13 +238,11 @@ class API:
 
     @property
     def cookies(self):
-        encrypted_cookies = load_session(
-            base_path=self.base_path,
-            session_filename=self.session_filename,
-        )
-        if self.fernet is None or encrypted_cookies is None:
-            return {}
-        return decrypt(fernet=self.fernet, session=encrypted_cookies)
+        return self._cookies
+
+    @cookies.setter
+    def cookies(self, value):
+        self._cookies = value
 
     @property
     def access_token(self):
@@ -274,6 +273,9 @@ class API:
             elif data is not None:
                 data = data_type(data)
         return data
+
+    def _reset_session(self):
+        self.cookies = {}
 
     def _check_authorization(self, access_token) -> None:
         if self.session.headers.get("Authorization") is None and access_token is None:
