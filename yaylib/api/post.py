@@ -39,7 +39,6 @@ from ..responses import (
     LikePostsResponse,
     ValidationPostResponse,
 )
-from ..utils import signed_info_calculating
 
 
 def add_bookmark(
@@ -116,7 +115,7 @@ def create_call_post(
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
             "category_id": category_id,
             "game_title": game_title,
             "joinable_by": joinable_by,
@@ -414,7 +413,7 @@ def create_share_post(
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
         data_type=Post,
         access_token=access_token,
@@ -1099,7 +1098,7 @@ def update_post(
             "message_tags": str(message_tags),
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
         access_token=access_token,
     )
