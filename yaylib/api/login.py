@@ -25,17 +25,10 @@ SOFTWARE.
 from datetime import datetime
 from cryptography.fernet import Fernet
 
-from ..config import Configs, Endpoints
+from ..config import Endpoints
 from ..errors import AuthenticationError, ForbiddenError
 from ..responses import LoginUserResponse, LoginUpdateResponse, TokenResponse
-from ..utils import (
-    Colors,
-    console_print,
-    load_cookies,
-    save_cookies,
-    decrypt,
-    signed_info_calculating,
-)
+from ..utils import Colors, console_print
 
 
 def change_email(
@@ -114,12 +107,8 @@ def is_valid_token(self, access_token: str):
 def login_with_email(
     self, email: str, password: str, secret_key: str = None
 ) -> LoginUserResponse:
-    if self.save_cookies:
-        cookies = load_cookies(
-            base_path=self.base_path,
-            cookie_filename=self.cookie_filename,
-            check_email=email,
-        )
+    if self.save_cookie_file:
+        cookies = self.load_cookies(email)
         if cookies is not None and secret_key is not None:
             self.secret_key = secret_key
             self.fernet = Fernet(secret_key)
@@ -151,7 +140,7 @@ def login_with_email(
     self.session.headers.setdefault("Authorization", f"Bearer {response.access_token}")
     self.logger.info(f"Successfully logged in as '{response.user_id}'")
 
-    if self.save_cookies:
+    if self.save_cookie_file:
         secret_key = Fernet.generate_key()
         self.secret_key = secret_key
         self.fernet = Fernet(secret_key)
