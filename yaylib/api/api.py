@@ -30,7 +30,6 @@ from json import JSONDecodeError
 import httpx
 
 from .login import get_token
-
 from ..config import ErrorType, ErrorMessage
 from ..errors import (
     HTTPError,
@@ -69,6 +68,7 @@ class API:
 
         self.proxy = {}
         if proxy is not None:
+            self.proxy["http"] = proxy
             self.proxy["https"] = proxy
 
         self.max_retries = max_retries
