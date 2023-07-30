@@ -200,7 +200,7 @@ def restore_user(self, user_id: int, access_token: str = None) -> LoginUserRespo
             "api_key": self.api_key,
             "uuid": self.uuid,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
         access_token=access_token,
     )

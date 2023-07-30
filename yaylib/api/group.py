@@ -39,7 +39,6 @@ from ..responses import (
     UsersResponse,
     UsersByTimestampResponse,
 )
-from ..utils import signed_info_calculating
 
 
 def accept_moderator_offer(self, group_id: int, access_token: str = None):
@@ -148,6 +147,7 @@ def create_group(
     access_token: str = None,
 ) -> CreateGroupResponse:
     self._check_authorization(access_token)
+    timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V3}/new",
@@ -169,10 +169,8 @@ def create_group(
             "cover_image_filename": cover_image_filename,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
-            "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid, int(datetime.now().timestamp())
-            ),
+            "timestamp": timestamp,
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
             "sub_category_id": sub_category_id,
             "hide_from_game_eight": hide_from_game_eight,
             "allow_members_to_post_image_and_video": allow_members_to_post_media,
@@ -586,6 +584,7 @@ def send_moderator_offers(
     self, group_id: int, user_ids: List[int], access_token: str = None
 ):
     self._check_authorization(access_token)
+    timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/deputize/mass",
@@ -593,10 +592,8 @@ def send_moderator_offers(
             "user_ids[]": user_ids,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
-            "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid, int(datetime.now().timestamp())
-            ),
+            "timestamp": timestamp,
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
         access_token=access_token,
     )
@@ -606,6 +603,7 @@ def send_moderator_offers(
 
 def send_ownership_offer(self, group_id: int, user_id: int, access_token: str = None):
     self._check_authorization(access_token)
+    timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/transfer",
@@ -613,10 +611,8 @@ def send_ownership_offer(self, group_id: int, user_id: int, access_token: str = 
             "user_id": user_id,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
-            "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid, int(datetime.now().timestamp())
-            ),
+            "timestamp": timestamp,
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
         access_token=access_token,
     )
@@ -684,6 +680,7 @@ def update_group(
     access_token: str = None,
 ) -> GroupResponse:
     self._check_authorization(access_token)
+    timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/update",
@@ -706,10 +703,8 @@ def update_group(
             "sub_category_id": sub_category_id,
             "uuid": self.uuid,
             "api_key": self.api_key,
-            "timestamp": int(datetime.now().timestamp()),
-            "signed_info": signed_info_calculating(
-                self.api_key, self.device_uuid, int(datetime.now().timestamp())
-            ),
+            "timestamp": timestamp,
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
             "hide_from_game_eight": hide_from_game_eight,
             "allow_members_to_post_image_and_video": allow_members_to_post_media,
             "allow_members_to_post_url": allow_members_to_post_url,
