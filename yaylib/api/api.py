@@ -235,6 +235,37 @@ class API:
             return self._construct_response(response, data_type)
         return response
 
+    @property
+    def cookies(self):
+        encrypted_cookies = load_session(
+            base_path=self.base_path,
+            session_filename=self.session_filename,
+        )
+        if self.fernet is None:
+            return {}
+        return decrypt(fernet=self.fernet, session=encrypted_cookies)
+
+    @property
+    def access_token(self):
+        auth_header = self.session.headers.get("Authorization")
+        if auth_header is not None:
+            return self.cookies.get("access_token") or auth_header.replace(
+                "Bearer ", ""
+            )
+        return self.cookies.get("access_token")
+
+    @property
+    def refresh_token(self):
+        return self.cookies.get("refresh_token")
+
+    @property
+    def user_id(self):
+        return self.cookies.get("user_id")
+
+    @property
+    def client_version(self):
+        return Configs.YAY_VERSION_NAME
+
     @staticmethod
     def _construct_response(data, data_type):
         if data_type is not None:
