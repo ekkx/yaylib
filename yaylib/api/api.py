@@ -154,7 +154,7 @@ class API:
                 method, endpoint, params=params, json=payload, headers=headers
             )
 
-            if self.save_cookies is True and response.status_code == 401:
+            if self.save_cookie_file is True and response.status_code == 401:
                 if "/api/v1/oauth/token" in endpoint:
                     os.remove(self.base_path + self.cookie_filename + ".json")
                     message = "Refresh token expired. Try logging in again."
@@ -164,24 +164,23 @@ class API:
                 self.logger.debug("Access token expired. Refreshing tokens...")
 
                 if auth_retry_count < max_auth_retries:
-                    cookies = self.load_cookies(
-                        base_path=self.base_path, cookie_filename=self.cookie_filename
-                    )
+                    cookies = self.load_cookies()
 
-                    if cookies is not None and self.fernet is not None:
-                        cookies = self.decrypt_cookies(
-                            fernet=self.fernet, cookies=cookies
-                        )
-                        refresh_token = cookies["refresh_token"]
+                    if self.fernet is not None:
+                        cookies = self.decrypt_cookies(self.fernet, cookies)
                         response = get_token(
                             self,
                             grant_type="refresh_token",
-                            refresh_token=refresh_token,
+                            refresh_token=cookies.get("refresh_token"),
+                        )
+                        self.cookies = self.cookies.update(
+                            {
+                                "access_token": response.access_token,
+                                "refresh_token": response.refresh_token,
+                                "user_id": response.user_id,
+                            }
                         )
                         self.save_cookies(
-                            base_path=self.base_path,
-                            cookie_filename=self.cookie_filename,
-                            fernet=self.fernet,
                             access_token=response.access_token,
                             refresh_token=response.refresh_token,
                             user_id=response.user_id,
