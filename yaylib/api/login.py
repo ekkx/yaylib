@@ -109,17 +109,19 @@ def login_with_email(
 ) -> LoginUserResponse:
     if self.save_cookie_file:
         cookies = self.load_cookies(email)
+
         if cookies is not None and secret_key is not None:
             self.secret_key = secret_key
             self.fernet = Fernet(secret_key)
-            cookies = decrypt(fernet=self.fernet, cookies=cookies)
+            cookies = self.decrypt_cookies(self.fernet, cookies)
             self.session.headers.setdefault(
-                "Authorization", f"Bearer {cookies['access_token']}"
+                "Authorization", f"Bearer {cookies.get('access_token')}"
             )
-            self.logger.info(f"Successfully logged in as '{cookies['user_id']}'")
+            self.logger.info(f"Successfully logged in as '{cookies.get('user_id')}'")
             return LoginUserResponse(cookies)
+
         elif cookies is not None:
-            message = f"{Colors.WARNING}Cookies file found. The 'secret_key' must be provided to decrypt the credentials.{Colors.RESET}"
+            message = f"{Colors.WARNING}Cookie file found. The 'secret_key' must be provided to decrypt the credentials.{Colors.RESET}"
             console_print(message)
 
     response = self._make_request(
@@ -151,10 +153,7 @@ def login_with_email(
             "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
         )
 
-        save_cookies(
-            base_path=self.base_path,
-            cookie_filename=self.cookie_filename,
-            fernet=self.fernet,
+        self.save_cookies(
             access_token=response.access_token,
             refresh_token=response.refresh_token,
             user_id=response.user_id,
@@ -173,6 +172,7 @@ def logout(self, access_token: str = None):
             payload={"uuid": self.uuid},
             access_token=access_token,
         )
+        self._reset_cookies()
         self.session.headers.pop("Authorization", None)
         self.logger.info("User has logged out.")
         return response

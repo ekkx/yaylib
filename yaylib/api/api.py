@@ -72,7 +72,7 @@ class API:
         self.api_version = Configs.YAY_API_VERSION
         self.api_key = Configs.YAY_API_KEY
         self.fernet = None
-        self.secret_key = None
+        self._secret_key = None
 
         self.proxy = {}
         if proxy is not None:
@@ -269,6 +269,14 @@ class API:
     @property
     def user_id(self):
         return self.cookies.get("user_id")
+
+    @property
+    def secret_key(self):
+        return self._secret_key
+
+    @secret_key.setter
+    def secret_key(self, value):
+        self._secret_key = value
 
     @property
     def client_version(self):
