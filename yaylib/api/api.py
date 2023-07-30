@@ -339,10 +339,8 @@ class API:
 
         if email is not None and email != cookies.get("email"):
             cookies = None if email != cookies.get("email") else cookies
-
         if self.fernet is not None and cookies is not None:
             cookies = self.decrypt_cookies(self.fernet, cookies)
-
         return cookies
 
     def save_cookies(self, access_token, refresh_token, user_id, email=None):
@@ -371,7 +369,7 @@ class API:
         return data
 
     def _reset_cookies(self):
-        self.cookies = {}
+        self._cookies = {}
 
     def _check_authorization(self, access_token) -> None:
         if self.session.headers.get("Authorization") is None and access_token is None:
