@@ -31,8 +31,8 @@ from ..responses import LoginUserResponse, LoginUpdateResponse, TokenResponse
 from ..utils import (
     Colors,
     console_print,
-    load_session,
-    save_session,
+    load_cookies,
+    save_cookies,
     decrypt,
     signed_info_calculating,
 )
@@ -114,23 +114,23 @@ def is_valid_token(self, access_token: str):
 def login_with_email(
     self, email: str, password: str, secret_key: str = None
 ) -> LoginUserResponse:
-    if self.save_session:
-        session = load_session(
+    if self.save_cookies:
+        cookies = load_cookies(
             base_path=self.base_path,
-            session_filename=self.session_filename,
+            cookie_filename=self.cookie_filename,
             check_email=email,
         )
-        if session is not None and secret_key is not None:
+        if cookies is not None and secret_key is not None:
             self.secret_key = secret_key
             self.fernet = Fernet(secret_key)
-            session = decrypt(fernet=self.fernet, session=session)
+            cookies = decrypt(fernet=self.fernet, cookies=cookies)
             self.session.headers.setdefault(
-                "Authorization", f"Bearer {session['access_token']}"
+                "Authorization", f"Bearer {cookies['access_token']}"
             )
-            self.logger.info(f"Successfully logged in as '{session['user_id']}'")
-            return LoginUserResponse(session)
-        elif session is not None:
-            message = f"{Colors.WARNING}Session file found. The 'secret_key' must be provided to decrypt the credentials.{Colors.RESET}"
+            self.logger.info(f"Successfully logged in as '{cookies['user_id']}'")
+            return LoginUserResponse(cookies)
+        elif cookies is not None:
+            message = f"{Colors.WARNING}Cookies file found. The 'secret_key' must be provided to decrypt the credentials.{Colors.RESET}"
             console_print(message)
 
     response = self._make_request(
@@ -151,7 +151,7 @@ def login_with_email(
     self.session.headers.setdefault("Authorization", f"Bearer {response.access_token}")
     self.logger.info(f"Successfully logged in as '{response.user_id}'")
 
-    if self.save_session:
+    if self.save_cookies:
         secret_key = Fernet.generate_key()
         self.secret_key = secret_key
         self.fernet = Fernet(secret_key)
@@ -162,9 +162,9 @@ def login_with_email(
             "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
         )
 
-        save_session(
+        save_cookies(
             base_path=self.base_path,
-            session_filename=self.session_filename,
+            cookie_filename=self.cookie_filename,
             fernet=self.fernet,
             access_token=response.access_token,
             refresh_token=response.refresh_token,

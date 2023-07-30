@@ -30,7 +30,7 @@ from json import JSONDecodeError
 import httpx
 
 from .login import get_token
-from ..config import ErrorType, ErrorMessage
+from ..config import Configs, ErrorType, ErrorMessage
 from ..errors import (
     HTTPError,
     BadRequestError,
@@ -40,7 +40,7 @@ from ..errors import (
     RateLimitError,
     YayServerError,
 )
-from ..utils import Configs, generate_uuid, load_cookies, save_cookies, encrypt, decrypt
+from ..utils import generate_uuid, load_cookies, save_cookies, encrypt, decrypt
 
 
 current_path = os.path.abspath(os.getcwd())
