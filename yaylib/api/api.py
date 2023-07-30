@@ -166,7 +166,7 @@ class API:
                 if auth_retry_count < max_auth_retries:
                     cookies = self.load_cookies()
 
-                    if self.fernet is not None:
+                    if cookies is not None and self.fernet is not None:
                         cookies = self.decrypt_cookies(self.fernet, cookies)
                         response = get_token(
                             self,
@@ -187,7 +187,7 @@ class API:
                         )
                         self.session.headers[
                             "Authorization"
-                        ] = f"Bearer {self.access_token}"
+                        ] = f"Bearer {response.access_token}"
                         continue
 
                 else:
