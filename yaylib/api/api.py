@@ -173,7 +173,7 @@ class API:
                             grant_type="refresh_token",
                             refresh_token=cookies.get("refresh_token"),
                         )
-                        self.cookies = self.cookies.update(
+                        self._cookies.update(
                             {
                                 "access_token": response.access_token,
                                 "refresh_token": response.refresh_token,
@@ -187,7 +187,7 @@ class API:
                         )
                         self.session.headers[
                             "Authorization"
-                        ] = f"Bearer {response.access_token}"
+                        ] = f"Bearer {self.access_token}"
                         continue
 
                 else:
