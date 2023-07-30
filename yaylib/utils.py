@@ -66,30 +66,6 @@ def parse_datetime(timestamp: int) -> str:
     return timestamp
 
 
-def encrypt(fernet, cookies: dict):
-    cookies.update(
-        {
-            "access_token": fernet.encrypt(
-                cookies.get("access_token").encode()
-            ).decode(),
-            "refresh_token": fernet.encrypt(
-                cookies.get("refresh_token").encode()
-            ).decode(),
-        }
-    )
-    return cookies
-
-
-def decrypt(fernet, cookies: dict):
-    cookies.update(
-        {
-            "access_token": fernet.decrypt(cookies.get("access_token")).decode(),
-            "refresh_token": fernet.decrypt(cookies.get("refresh_token")).decode(),
-        }
-    )
-    return cookies
-
-
 def save_cookies(
     base_path: str,
     cookie_filename: str,

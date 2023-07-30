@@ -314,8 +314,29 @@ class API:
             ).digest()
         ).decode("utf-8")
 
-    def load_cookies(self, check_email):
-        pass
+    def load_cookies(self, email=None):
+        with open(self.base_path + self.cookie_filename + ".json", "r") as f:
+            cookies = json.load(f)
+
+        result = all(
+            key in cookies
+            for key in (
+                "access_token",
+                "refresh_token",
+                "user_id",
+                "email",
+            )
+        )
+        if result is False:
+            raise ValueError("Invalid cookies.")
+
+        if email is not None and email != cookies.get("email"):
+            raise ValueError("Invalid email.")
+
+        if self.fernet is not None:
+            cookies = self.decrypt_cookies(self.fernet, cookies)
+
+        return cookies
 
     def save_cookies(self, access_token, refresh_token, user_id, email=None):
         pass
