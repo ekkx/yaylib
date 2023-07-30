@@ -27,7 +27,6 @@ from typing import List
 
 from ..config import Endpoints
 from ..responses import ReviewsResponse
-from ..utils import signed_info_calculating
 
 
 def create_review(self, user_id: int, comment: str, access_token: str = None):
@@ -54,7 +53,7 @@ def create_reviews(self, user_ids: List[int], comment: str, access_token: str = 
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(
+            "signed_info": self.generate_signed_info(
                 self.uuid, timestamp, shared_key=True
             ),
         },
