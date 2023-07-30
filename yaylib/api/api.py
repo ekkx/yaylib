@@ -22,11 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import base64
+import hashlib
+import hmac
+import json
+import logging
 import os
 import time
-import logging
-from json import JSONDecodeError
-
 import httpx
 
 from .login import get_token
@@ -40,7 +42,13 @@ from ..errors import (
     RateLimitError,
     YayServerError,
 )
-from ..utils import generate_uuid, load_cookies, save_cookies, encrypt, decrypt
+from ..utils import generate_uuid
+
+
+try:
+    from json.decoder import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
 
 
 current_path = os.path.abspath(os.getcwd())
@@ -56,7 +64,7 @@ class API:
         timeout=30,
         err_lang="ja",
         base_path=current_path + "/config/",
-        save_cookies=True,
+        save_cookie_file=True,
         cookie_filename="cookies",
         loglevel=logging.INFO,
     ):
@@ -77,7 +85,7 @@ class API:
         self.timeout = timeout
         self.err_lang = err_lang
         self.base_path = base_path
-        self.save_cookies = save_cookies
+        self.save_cookie_file = save_cookie_file
         self.cookie_filename = cookie_filename
         self._cookies = {}
 
@@ -156,19 +164,21 @@ class API:
                 self.logger.debug("Access token expired. Refreshing tokens...")
 
                 if auth_retry_count < max_auth_retries:
-                    cookies = load_cookies(
+                    cookies = self.load_cookies(
                         base_path=self.base_path, cookie_filename=self.cookie_filename
                     )
 
                     if cookies is not None and self.fernet is not None:
-                        cookies = decrypt(fernet=self.fernet, cookies=cookies)
+                        cookies = self.decrypt_cookies(
+                            fernet=self.fernet, cookies=cookies
+                        )
                         refresh_token = cookies["refresh_token"]
                         response = get_token(
                             self,
                             grant_type="refresh_token",
                             refresh_token=refresh_token,
                         )
-                        save_cookies(
+                        self.save_cookies(
                             base_path=self.base_path,
                             cookie_filename=self.cookie_filename,
                             fernet=self.fernet,
@@ -264,6 +274,37 @@ class API:
     @property
     def client_version(self):
         return Configs.YAY_VERSION_NAME
+
+    @staticmethod
+    def encrypt_cookies(fernet, cookies):
+        pass
+
+    @staticmethod
+    def decrypt_cookies(fernet, cookies):
+        pass
+
+    @staticmethod
+    def generate_signed_info(uuid, timestamp, shared_key=False):
+        shared_key = Configs.YAY_SHARED_KEY if shared_key is True else ""
+        return hashlib.md5(
+            (Configs.YAY_API_KEY + uuid + str(timestamp) + shared_key).encode()
+        ).hexdigest()
+
+    @staticmethod
+    def generate_signed_version():
+        return base64.b64encode(
+            hmac.new(
+                Configs.YAY_API_VERSION_KEY.encode(),
+                "yay_android/{}".format(Configs.YAY_API_VERSION).encode(),
+                hashlib.sha256,
+            ).digest()
+        ).decode("utf-8")
+
+    def load_cookies(self, check_email):
+        pass
+
+    def save_cookies(self, access_token, refresh_token, user_id, email=None):
+        pass
 
     @staticmethod
     def _construct_response(data, data_type):

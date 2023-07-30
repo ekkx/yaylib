@@ -136,19 +136,3 @@ def load_cookies(
         cookies = decrypt(fernet, cookies)
 
     return cookies
-
-
-def signed_info_calculating(uuid: str, timestamp: int, shared_key: bool = False) -> str:
-    shared_key = Configs.YAY_SHARED_KEY if shared_key is True else ""
-    return hashlib.md5(
-        (Configs.YAY_API_KEY + uuid + str(timestamp) + shared_key).encode()
-    ).hexdigest()
-
-
-def signed_version_calculating() -> str:
-    hash_object = hmac.new(
-        Configs.YAY_API_VERSION_KEY.encode(),
-        "yay_android/{}".format(Configs.YAY_API_VERSION).encode(),
-        hashlib.sha256,
-    )
-    return base64.b64encode(hash_object.digest()).decode("utf-8")
