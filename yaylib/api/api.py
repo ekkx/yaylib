@@ -286,23 +286,25 @@ class API:
     def encrypt_cookies(fernet, cookies):
         access_token = cookies.get("access_token")
         refresh_token = cookies.get("refresh_token")
-        return cookies.update(
+        cookies.update(
             {
                 "access_token": fernet.encrypt(access_token.encode()).decode(),
                 "refresh_token": fernet.encrypt(refresh_token.encode()).decode(),
             }
         )
+        return cookies
 
     @staticmethod
     def decrypt_cookies(fernet, cookies):
         access_token = cookies.get("access_token")
         refresh_token = cookies.get("refresh_token")
-        return cookies.update(
+        cookies.update(
             {
                 "access_token": fernet.decrypt(access_token).decode(),
                 "refresh_token": fernet.decrypt(refresh_token).decode(),
             }
         )
+        return cookies
 
     @staticmethod
     def generate_signed_info(uuid, timestamp, shared_key=False):
@@ -350,10 +352,12 @@ class API:
             "user_id": user_id,
             "email": email,
         }
+
         if email is None:
             updated_cookies["email"] = self.load_cookies().get("email")
 
         updated_cookies = self.encrypt_cookies(self.fernet, updated_cookies)
+
         with open(self.base_path + self.cookie_filename + ".json", "w") as f:
             json.dump(updated_cookies, f, indent=4)
 

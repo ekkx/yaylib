@@ -113,11 +113,11 @@ def login_with_email(
         if cookies is not None and secret_key is not None:
             self.secret_key = secret_key
             self.fernet = Fernet(secret_key)
-            cookies = self.decrypt_cookies(self.fernet, cookies)
+            self.cookies = self.decrypt_cookies(self.fernet, cookies)
             self.session.headers.setdefault(
-                "Authorization", f"Bearer {cookies.get('access_token')}"
+                "Authorization", f"Bearer {self.access_token}"
             )
-            self.logger.info(f"Successfully logged in as '{cookies.get('user_id')}'")
+            self.logger.info(f"Successfully logged in as '{self.user_id}'")
             return LoginUserResponse(cookies)
 
         elif cookies is not None:
@@ -144,7 +144,7 @@ def login_with_email(
 
     if self.save_cookie_file:
         secret_key = Fernet.generate_key()
-        self.secret_key = secret_key
+        self.secret_key = secret_key.decode()
         self.fernet = Fernet(secret_key)
 
         console_print(
@@ -152,6 +152,13 @@ def login_with_email(
             "Please copy and securely store this key in a safe location.",
             "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
         )
+
+        self.cookies = {
+            "access_token": response.access_token,
+            "refresh_token": response.refresh_token,
+            "user_id": response.user_id,
+            "email": email,
+        }
 
         self.save_cookies(
             access_token=response.access_token,
