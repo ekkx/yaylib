@@ -241,7 +241,7 @@ class API:
             base_path=self.base_path,
             session_filename=self.session_filename,
         )
-        if self.fernet is None:
+        if self.fernet is None or encrypted_cookies is None:
             return {}
         return decrypt(fernet=self.fernet, session=encrypted_cookies)
 
