@@ -339,7 +339,18 @@ class API:
         return cookies
 
     def save_cookies(self, access_token, refresh_token, user_id, email=None):
-        pass
+        updated_cookies = {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "user_id": user_id,
+            "email": email,
+        }
+        if email is None:
+            updated_cookies["email"] = self.load_cookies().get("email")
+
+        updated_cookies = self.encrypt_cookies(self.fernet, updated_cookies)
+        with open(self.base_path + self.cookie_filename + ".json", "w") as f:
+            json.dump(updated_cookies, f, indent=4)
 
     @staticmethod
     def _construct_response(data, data_type):
