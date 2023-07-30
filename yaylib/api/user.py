@@ -48,7 +48,6 @@ from ..responses import (
     UsersByTimestampResponse,
     UserTimestampResponse,
 )
-from ..utils import signed_info_calculating, signed_version_calculating
 
 
 def delete_footprint(self, user_id: int, footprint_id: int, access_token: str = None):
@@ -75,7 +74,7 @@ def destroy_user(self, access_token: str = None):
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
         access_token=access_token,
     )
@@ -458,8 +457,8 @@ def register_user(
             "app_version": self.api_version,
             "timestamp": timestamp,
             "api_key": self.api_key,
-            "signed_version": signed_version_calculating(),
-            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+            "signed_version": self.generate_signed_version(),
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
             "uuid": self.uuid,
             "nickname": nickname,
             "birth_date": birth_date,
@@ -607,8 +606,8 @@ def set_follow_permission_enabled(
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
-            "signed_version": signed_version_calculating(),
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+            "signed_version": self.generate_signed_version(),
         },
         access_token=access_token,
     )
@@ -669,7 +668,7 @@ def update_language(self, language: str, access_token: str = None):
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
             "language": language,
         },
         access_token=access_token,
@@ -707,7 +706,7 @@ def update_user(
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": signed_info_calculating(self.device_uuid, timestamp),
+            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
         access_token=access_token,
     )
