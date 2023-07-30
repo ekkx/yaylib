@@ -151,16 +151,16 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>エラー出力言語（ja もしくは en）</td>
 	</tr>
     <tr>
-		<td><code>save_session</code></td>
+		<td><code>save_cookie_file</code></td>
 		<td><code>bool</code></td>
 		<td><code>True</code></td>
-		<td>セッションを保存するか否か</td>
+		<td>クッキーを保存するか否か</td>
 	</tr>
     <tr>
-		<td><code>session_filename</code></td>
+		<td><code>cookie_filename</code></td>
 		<td><code>str</code></td>
-		<td><code>session</code></td>
-		<td>セッションを保存するファイル名</td>
+		<td><code>cookies</code></td>
+		<td>クッキーを保存するファイル名</td>
 	</tr>
     <tr>
 		<td><code>loglevel</code></td>
