@@ -277,11 +277,25 @@ class API:
 
     @staticmethod
     def encrypt_cookies(fernet, cookies):
-        pass
+        access_token = cookies.get("access_token")
+        refresh_token = cookies.get("refresh_token")
+        return cookies.update(
+            {
+                "access_token": fernet.encrypt(access_token.encode()).decode(),
+                "refresh_token": fernet.encrypt(refresh_token.encode()).decode(),
+            }
+        )
 
     @staticmethod
     def decrypt_cookies(fernet, cookies):
-        pass
+        access_token = cookies.get("access_token")
+        refresh_token = cookies.get("refresh_token")
+        return cookies.update(
+            {
+                "access_token": fernet.decrypt(access_token).decode(),
+                "refresh_token": fernet.decrypt(refresh_token).decode(),
+            }
+        )
 
     @staticmethod
     def generate_signed_info(uuid, timestamp, shared_key=False):
