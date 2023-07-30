@@ -66,76 +66,76 @@ def parse_datetime(timestamp: int) -> str:
     return timestamp
 
 
-def encrypt(fernet, session: dict):
-    session.update(
+def encrypt(fernet, cookies: dict):
+    cookies.update(
         {
             "access_token": fernet.encrypt(
-                session.get("access_token").encode()
+                cookies.get("access_token").encode()
             ).decode(),
             "refresh_token": fernet.encrypt(
-                session.get("refresh_token").encode()
+                cookies.get("refresh_token").encode()
             ).decode(),
         }
     )
-    return session
+    return cookies
 
 
-def decrypt(fernet, session: dict):
-    session.update(
+def decrypt(fernet, cookies: dict):
+    cookies.update(
         {
-            "access_token": fernet.decrypt(session.get("access_token")).decode(),
-            "refresh_token": fernet.decrypt(session.get("refresh_token")).decode(),
+            "access_token": fernet.decrypt(cookies.get("access_token")).decode(),
+            "refresh_token": fernet.decrypt(cookies.get("refresh_token")).decode(),
         }
     )
-    return session
+    return cookies
 
 
-def save_session(
+def save_cookies(
     base_path: str,
-    session_filename: str,
+    cookie_filename: str,
     fernet,
     access_token: str,
     refresh_token: str,
     user_id: int,
     email: str = None,
 ):
-    session = load_session(base_path=base_path, session_filename=session_filename)
-    updated_session = {
+    cookies = load_cookies(base_path=base_path, cookie_filename=cookie_filename)
+    updated_cookies = {
         "access_token": access_token,
         "refresh_token": refresh_token,
         "user_id": user_id,
         "email": email,
     }
     if email is None:
-        updated_session["email"] = session.get("email")
+        updated_cookies["email"] = cookies.get("email")
 
-    updated_session = encrypt(fernet, updated_session)
+    updated_cookies = encrypt(fernet, updated_cookies)
 
-    with open(base_path + session_filename + ".json", "w") as f:
-        json.dump(updated_session, f, indent=4)
+    with open(base_path + cookie_filename + ".json", "w") as f:
+        json.dump(updated_cookies, f, indent=4)
 
 
-def load_session(
-    base_path: str, session_filename: str, fernet=None, check_email: str = None
+def load_cookies(
+    base_path: str, cookie_filename: str, fernet=None, check_email: str = None
 ):
-    if not os.path.exists(base_path + session_filename + ".json"):
+    if not os.path.exists(base_path + cookie_filename + ".json"):
         return None
 
-    with open(base_path + session_filename + ".json", "r") as f:
-        session = json.load(f)
+    with open(base_path + cookie_filename + ".json", "r") as f:
+        cookies = json.load(f)
 
     result = all(
-        key in session for key in ("access_token", "refresh_token", "user_id", "email")
+        key in cookies for key in ("access_token", "refresh_token", "user_id", "email")
     )
-    session = None if result is False else session
+    cookies = None if result is False else cookies
 
-    if check_email is not None and session is not None:
-        session = None if check_email != session["email"] else session
+    if check_email is not None and cookies is not None:
+        cookies = None if check_email != cookies["email"] else cookies
 
-    if fernet is not None and session is not None:
-        session = decrypt(fernet, session)
+    if fernet is not None and cookies is not None:
+        cookies = decrypt(fernet, cookies)
 
-    return session
+    return cookies
 
 
 def signed_info_calculating(uuid: str, timestamp: int, shared_key: bool = False) -> str:
