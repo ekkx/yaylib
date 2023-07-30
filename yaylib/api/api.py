@@ -40,7 +40,7 @@ from ..errors import (
     RateLimitError,
     YayServerError,
 )
-from ..utils import Configs, generate_uuid, load_session, save_session, encrypt, decrypt
+from ..utils import Configs, generate_uuid, load_cookies, save_cookies, encrypt, decrypt
 
 
 current_path = os.path.abspath(os.getcwd())
@@ -56,8 +56,8 @@ class API:
         timeout=30,
         err_lang="ja",
         base_path=current_path + "/config/",
-        save_session=True,
-        session_filename="session",
+        save_cookies=True,
+        cookie_filename="cookies",
         loglevel=logging.INFO,
     ):
         self.yaylib_version = Configs.YAYLIB_VERSION
@@ -77,8 +77,8 @@ class API:
         self.timeout = timeout
         self.err_lang = err_lang
         self.base_path = base_path
-        self.save_session = save_session
-        self.session_filename = session_filename
+        self.save_cookies = save_cookies
+        self.cookie_filename = cookie_filename
         self._cookies = {}
 
         self._generate_all_uuids()
@@ -146,9 +146,9 @@ class API:
                 method, endpoint, params=params, json=payload, headers=headers
             )
 
-            if self.save_session is True and response.status_code == 401:
+            if self.save_cookies is True and response.status_code == 401:
                 if "/api/v1/oauth/token" in endpoint:
-                    os.remove(self.base_path + self.session_filename + ".json")
+                    os.remove(self.base_path + self.cookie_filename + ".json")
                     message = "Refresh token expired. Try logging in again."
                     raise AuthenticationError(message)
 
@@ -156,21 +156,21 @@ class API:
                 self.logger.debug("Access token expired. Refreshing tokens...")
 
                 if auth_retry_count < max_auth_retries:
-                    session = load_session(
-                        base_path=self.base_path, session_filename=self.session_filename
+                    cookies = load_cookies(
+                        base_path=self.base_path, cookie_filename=self.cookie_filename
                     )
 
-                    if session is not None and self.fernet is not None:
-                        session = decrypt(fernet=self.fernet, session=session)
-                        refresh_token = session["refresh_token"]
+                    if cookies is not None and self.fernet is not None:
+                        cookies = decrypt(fernet=self.fernet, cookies=cookies)
+                        refresh_token = cookies["refresh_token"]
                         response = get_token(
                             self,
                             grant_type="refresh_token",
                             refresh_token=refresh_token,
                         )
-                        save_session(
+                        save_cookies(
                             base_path=self.base_path,
-                            session_filename=self.session_filename,
+                            cookie_filename=self.cookie_filename,
                             fernet=self.fernet,
                             access_token=response.access_token,
                             refresh_token=response.refresh_token,
@@ -182,7 +182,7 @@ class API:
                         continue
 
                 else:
-                    os.remove(self.base_path + self.session_filename + ".json")
+                    os.remove(self.base_path + self.cookie_filename + ".json")
                     message = (
                         "Maximum authentication retries exceeded. Try logging in again."
                     )
@@ -274,7 +274,7 @@ class API:
                 data = data_type(data)
         return data
 
-    def _reset_session(self):
+    def _reset_cookies(self):
         self.cookies = {}
 
     def _check_authorization(self, access_token) -> None:
