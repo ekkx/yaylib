@@ -179,7 +179,7 @@ def logout(self, access_token: str = None):
             payload={"uuid": self.uuid},
             access_token=access_token,
         )
-        self.cookies = {}
+        self._cookies = {}
         self.session.headers.pop("Authorization", None)
         self.logger.info("User has logged out.")
         return response

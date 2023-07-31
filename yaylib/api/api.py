@@ -253,7 +253,7 @@ class API:
     def cookies(self, cookies):
         result = all(key in cookies for key in Configs.COOKIE_PROPERTIES)
         if result is False:
-            raise ValueError("Invalid cookies.")
+            raise ValueError("Invalid cookie properties.")
         self._cookies = cookies
 
     @property
