@@ -29,6 +29,7 @@ import json
 import logging
 import os
 import time
+import uuid
 import httpx
 
 from .login import get_token
@@ -42,7 +43,6 @@ from ..errors import (
     RateLimitError,
     YayServerError,
 )
-from ..utils import generate_uuid
 
 
 try:
@@ -307,6 +307,14 @@ class API:
         return cookies
 
     @staticmethod
+    def generate_uuid(uuid_type=True):
+        generated_uuid = str(uuid.uuid4())
+        if uuid_type:
+            return generated_uuid
+        else:
+            return generated_uuid.replace("-", "")
+
+    @staticmethod
     def generate_signed_info(uuid, timestamp, shared_key=False):
         shared_key = Configs.YAY_SHARED_KEY if shared_key is True else ""
         return hashlib.md5(
@@ -368,9 +376,6 @@ class API:
                 data = data_type(data)
         return data
 
-    def _reset_cookies(self):
-        self._cookies = {}
-
     def _check_authorization(self, access_token) -> None:
         if self.session.headers.get("Authorization") is None and access_token is None:
             message = "Authorization is not present in the header."
@@ -412,5 +417,5 @@ class API:
             return response
 
     def _generate_all_uuids(self):
-        self.device_uuid = generate_uuid(True)
-        self.uuid = generate_uuid(True)
+        self.device_uuid = self.generate_uuid(True)
+        self.uuid = self.generate_uuid(True)

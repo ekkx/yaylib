@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import uuid
 from datetime import datetime
 
 
@@ -43,14 +42,6 @@ def console_print(*args):
     for arg in args:
         print(arg)
     print("\n")
-
-
-def generate_uuid(uuid_type: bool = True) -> tuple:
-    generated_uuid = str(uuid.uuid4())
-    if uuid_type:
-        return generated_uuid
-    else:
-        return generated_uuid.replace("-", "")
 
 
 def parse_datetime(timestamp: int) -> str:
