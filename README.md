@@ -48,7 +48,7 @@
 
 ## [<img src="https://github.com/qvco/yaylib/assets/77382767/2f632349-0cbc-4c81-bc19-11d24c8c142b" width="30" height="30" />](https://github.com/qvco) Installation
 
-**※ Python 3.10 かそれ以上のバージョンが必要です。**
+**※ Python 3.10 以上のバージョンが必要です。**
 
 「yaylib」をインストールするには、以下のコマンドを実行します:
 
