@@ -250,8 +250,11 @@ class API:
         return self._cookies
 
     @cookies.setter
-    def cookies(self, value):
-        self._cookies = value
+    def cookies(self, cookies):
+        result = all(key in cookies for key in Configs.COOKIE_PROPERTIES)
+        if result is False:
+            raise ValueError("Invalid cookies.")
+        self._cookies = cookies
 
     @property
     def access_token(self):
@@ -338,10 +341,7 @@ class API:
         with open(self.base_path + self.cookie_filename + ".json", "r") as f:
             cookies = json.load(f)
 
-        result = all(
-            key in cookies
-            for key in ("access_token", "refresh_token", "user_id", "email")
-        )
+        result = all(key in cookies for key in Configs.COOKIE_PROPERTIES)
         if result is False:
             raise ValueError("Invalid cookies.")
 
