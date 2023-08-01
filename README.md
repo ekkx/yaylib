@@ -50,7 +50,7 @@
 
 **※ Python 3.10 以上のバージョンが必要です。**
 
-「yaylib」をインストールするには、以下のコマンドを実行します:
+「yaylib」をインストールするには、以下のコマンドをターミナル上で実行します:
 
 ```bash
 pip install yaylib
@@ -77,7 +77,7 @@ pip install -e .
 
 ## [<img src="https://github.com/qvco/yaylib/assets/77382767/dc7dcea0-c581-4039-8fc2-3994884d2ba3" width="30" height="30" />](https://github.com/qvco) Quick Example
 
-### yaylib 利用で実現できること
+<!-- ### yaylib 利用で実現できること
 
 <table>
     <tr>
@@ -124,7 +124,7 @@ pip install -e .
             <li>Yay! Bot開発</li>
         </td>
 	</tr>
-</table>
+</table> -->
 
 #### ✨ 投稿を作成する
 
