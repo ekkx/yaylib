@@ -340,8 +340,8 @@ class Client(API):
         - timeout: int - (optional)
         - err_lang: str - (optional)
         - base_path: str - (optional)
-        - save_session: bool - (optional)
-        - session_filename: str - (optional)
+        - save_cookie_file: bool - (optional)
+        - cookie_filename: str - (optional)
         - loglevel: int - (optional)
 
     <https://github.com/qvco/yaylib>
