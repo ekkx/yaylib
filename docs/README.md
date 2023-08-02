@@ -31,18 +31,21 @@
 
 ## インストール / Install
 
-**※ Python 3.11 かそれ以上のバージョンが必要です。**
+**※ Python 3.10 以上のバージョンが必要です。**
 
-「yaylib」をインストールするには、以下のコマンドを実行します:
+「yaylib」をインストールするには、以下のコマンドをターミナル上で実行します:
 
 ```bash
 pip install yaylib
 ```
 
-開発バージョンをインストールする場合は、以下の手順を実行します:
+<br>
+
+> **Note**
+> 開発バージョンをインストールする場合は、以下の手順を実行します:
 
 ```bash
-git clone https://github.com/qvco/yaylib
+git clone https://github.com/qvco/yaylib.git
 
 cd yaylib
 
