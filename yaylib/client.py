@@ -269,6 +269,7 @@ from .models import (
     CreateGroupQuota,
     Footprint,
     GifImageCategory,
+    Group,
     Message,
     Post,
     PresignedUrl,
@@ -1171,7 +1172,7 @@ class Client(API):
         """
         return get_create_group_quota(self, access_token)
 
-    def get_group(self, group_id: int, access_token: str = None) -> GroupResponse:
+    def get_group(self, group_id: int, access_token: str = None) -> Group:
         """
 
         サークルの詳細を取得します

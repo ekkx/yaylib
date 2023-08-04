@@ -686,7 +686,6 @@ class Group:
         self.only_mobile_verified = data.get("only_mobile_verified")
         self.call_timeline_display = data.get("call_timeline_display")
         self.updated_at = data.get("updated_at")
-        self.updated_at_parsed = parse_datetime(data.get("updated_at"))
         self.group_icon = data.get("group_icon")
         self.group_icon_thumbnail = data.get("group_icon_thumbnail")
         self.cover_image = data.get("cover_image")

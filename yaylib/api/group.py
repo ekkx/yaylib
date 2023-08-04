@@ -27,6 +27,7 @@ from typing import List
 
 from ..config import Endpoints
 from ..models import CreateGroupQuota
+from ..models import Group
 from ..responses import (
     CreateGroupResponse,
     GroupCategoriesResponse,
@@ -287,13 +288,13 @@ def get_create_group_quota(self, access_token: str = None) -> CreateGroupQuota:
     ).create
 
 
-def get_group(self, group_id: int, access_token: str = None) -> GroupResponse:
+def get_group(self, group_id: int, access_token: str = None) -> Group:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}",
         data_type=GroupResponse,
         access_token=access_token,
-    )
+    ).group
 
 
 def get_groups(self, access_token: str = None, **params) -> GroupsResponse:
