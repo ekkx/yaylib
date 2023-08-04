@@ -30,23 +30,28 @@ class Activity:
         "data",
         "id",
         "created_at",
-        "created_at_parsed",
         "type",
         "user",
         "from_post",
         "to_post",
         "group",
         "followers",
+        "followers_count",
         "from_post_ids",
         "vip_reward",
         "is_bulk_invitation",
+        "content_preview",
+        "title",
+        "body",
+        "url",
+        "birthday_users",
+        "birthday_users_count",
     )
 
     def __init__(self, data):
         self.data = data
         self.id = data.get("id")
         self.created_at = data.get("created_at")
-        self.created_at_parsed = parse_datetime(data.get("created_at"))
         self.type = data.get("type")
 
         self.user = data.get("user")
@@ -69,9 +74,22 @@ class Activity:
         if self.followers is not None:
             self.followers = [User(follower) for follower in self.followers]
 
+        self.followers_count = data.get("followers_count")
         self.from_post_ids = data.get("from_post_ids")
         self.vip_reward = data.get("vip_reward")
         self.is_bulk_invitation = data.get("is_bulk_invitation")
+        self.content_preview = data.get("content_preview")
+        self.title = data.get("title")
+        self.body = data.get("body")
+        self.url = data.get("url")
+
+        self.birthday_users = data.get("birthday_users")
+        if self.birthday_users is not None:
+            self.birthday_users = [
+                User(birthday_user) for birthday_user in self.birthday_users
+            ]
+
+        self.birthday_users_count = data.get("birthday_users_count")
 
     def __repr__(self):
         return f"Activity(data={self.data})"
@@ -614,7 +632,6 @@ class Group:
         "only_mobile_verified",
         "call_timeline_display",
         "updated_at",
-        "updated_at_parsed",
         "group_icon",
         "group_icon_thumbnail",
         "cover_image",
