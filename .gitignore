@@ -2,11 +2,8 @@ Pipfile
 .idea
 
 nanameue/
-audio_files/
-agorartc/
-agora/
-test_agora.py
-.py
+_.py
+_config.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
