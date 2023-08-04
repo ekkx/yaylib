@@ -597,15 +597,16 @@ class Group:
         "id",
         "topic",
         "description",
-        "user_id",
         "groups_users_count",
         "posts_count",
+        "user_id",
         "threads_count",
         "highlighted_count",
         "views_count",
         "related_count",
         "secret",
         "gender",
+        "place",
         "hide_reported_posts",
         "hide_conference_call",
         "is_private",
@@ -614,6 +615,8 @@ class Group:
         "call_timeline_display",
         "updated_at",
         "updated_at_parsed",
+        "group_icon",
+        "group_icon_thumbnail",
         "cover_image",
         "cover_image_thumbnail",
         "generation_groups_limit",
@@ -621,6 +624,7 @@ class Group:
         "is_joined",
         "is_pending",
         "group_category_id",
+        "homepage",
         "unread_counts",
         "moderator_ids",
         "seizable",
@@ -657,6 +661,7 @@ class Group:
         self.related_count = data.get("related_count")
         self.secret = data.get("secret")
         self.gender = data.get("gender")
+        self.place = data.get("place")
         self.hide_reported_posts = data.get("hide_reported_posts")
         self.hide_conference_call = data.get("hide_conference_call")
         self.is_private = data.get("is_private")
@@ -665,6 +670,8 @@ class Group:
         self.call_timeline_display = data.get("call_timeline_display")
         self.updated_at = data.get("updated_at")
         self.updated_at_parsed = parse_datetime(data.get("updated_at"))
+        self.group_icon = data.get("group_icon")
+        self.group_icon_thumbnail = data.get("group_icon_thumbnail")
         self.cover_image = data.get("cover_image")
         self.cover_image_thumbnail = data.get("cover_image_thumbnail")
         self.generation_groups_limit = data.get("generation_groups_limit")
@@ -676,6 +683,7 @@ class Group:
         self.is_joined = data.get("is_joined")
         self.is_pending = data.get("is_pending")
         self.group_category_id = data.get("group_category_id")
+        self.homepage = data.get("homepage")
         self.unread_counts = data.get("unread_counts")
         self.moderator_ids = data.get("moderator_ids")
         self.seizable = data.get("seizable")
