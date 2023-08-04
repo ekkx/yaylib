@@ -161,9 +161,10 @@ class API:
                     raise AuthenticationError(message)
 
                 auth_retry_count += 1
-                self.logger.debug("Access token expired. Refreshing tokens...")
 
                 if auth_retry_count < max_auth_retries:
+                    self.logger.debug("Access token expired. Refreshing tokens...")
+
                     cookies = self.load_cookies()
 
                     if cookies is not None and self.fernet is not None:
