@@ -188,11 +188,8 @@ class API:
                                 "user_id": response.user_id,
                             }
                         )
-                        self.save_cookies(
-                            access_token=response.access_token,
-                            refresh_token=response.refresh_token,
-                            user_id=response.user_id,
-                        )
+                        self.save_cookies(self.cookies)
+
                         self.session.headers[
                             "Authorization"
                         ] = f"Bearer {response.access_token}"
@@ -352,7 +349,8 @@ class API:
 
         result = all(key in cookies for key in Configs.COOKIE_PROPERTIES)
         if result is False:
-            raise ValueError("Invalid cookies.")
+            os.remove(self.base_path + self.cookie_filename + ".json")
+            raise ValueError("Invalid cookie properties.")
 
         # check if the provided email matches the stored email in cookies
         # if not, set cookies to none
@@ -362,21 +360,18 @@ class API:
             cookies = self.decrypt_cookies(self.fernet, cookies)
         return cookies
 
-    def save_cookies(self, access_token, refresh_token, user_id, email=None):
-        updated_cookies = {
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "user_id": user_id,
-            "email": email,
-        }
+    def save_cookies(self, cookies):
+        if cookies.get("email") is None:
+            cookies["email"] = self.load_cookies().get("email")
 
-        if email is None:
-            updated_cookies["email"] = self.load_cookies().get("email")
+        result = all(key in cookies for key in Configs.COOKIE_PROPERTIES)
+        if result is False:
+            raise ValueError("Invalid cookie properties.")
 
-        updated_cookies = self.encrypt_cookies(self.fernet, updated_cookies)
+        cookies = self.encrypt_cookies(self.fernet, cookies)
 
         with open(self.base_path + self.cookie_filename + ".json", "w") as f:
-            json.dump(updated_cookies, f, indent=4)
+            json.dump(cookies, f, indent=4)
 
     @staticmethod
     def _construct_response(data, data_type):

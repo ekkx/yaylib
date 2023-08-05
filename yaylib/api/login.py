@@ -160,12 +160,7 @@ def login_with_email(
             "email": email,
         }
 
-        self.save_cookies(
-            access_token=response.access_token,
-            refresh_token=response.refresh_token,
-            user_id=response.user_id,
-            email=email,
-        )
+        self.save_cookies(self.cookies)
 
     return response
 
