@@ -92,7 +92,7 @@ class API:
         self.session = httpx.Client(proxies=self.proxy, timeout=self.timeout)
         self.session.headers.update(Configs.REQUEST_HEADERS)
         self.session.headers.update({"X-Device-Uuid": self.device_uuid})
-        if access_token:
+        if access_token is not None:
             self.session.headers.setdefault("Authorization", f"Bearer {access_token}")
 
         self.logger = logging.getLogger("yaylib version: " + self.yaylib_version)
@@ -104,6 +104,8 @@ class API:
         ch.setLevel(loglevel)
         ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
+        # check if a stream handler is already present in the logger
+        # to avoid adding duplicate handlers
         handler_existed = False
         for handler in self.logger.handlers:
             if isinstance(handler, logging.StreamHandler):
@@ -138,6 +140,7 @@ class API:
         auth_retry_count = 0
         max_auth_retries = 2
 
+        # retry the request based on max_retries
         for i in range(self.max_retries):
             time.sleep(backoff_duration)
 
@@ -154,14 +157,19 @@ class API:
             )
 
             if self.save_cookie_file is True and response.status_code == 401:
+                # remove the cookie file and stop the proccessing if refresh token has expired
+                # (/api/v1/oauth/token in the endpoint which means already retried but failed)
                 if "/api/v1/oauth/token" in endpoint:
                     os.remove(self.base_path + self.cookie_filename + ".json")
-                    message = "Refresh token expired. Try logging in again."
-                    raise AuthenticationError(message)
+                    raise AuthenticationError(
+                        "Refresh token expired. Try logging in again."
+                    )
 
                 auth_retry_count += 1
 
                 if auth_retry_count < max_auth_retries:
+                    # refresh access token using the stored refresh token
+
                     self.logger.debug("Access token expired. Refreshing tokens...")
 
                     cookies = self.load_cookies()
@@ -188,14 +196,15 @@ class API:
                         self.session.headers[
                             "Authorization"
                         ] = f"Bearer {response.access_token}"
+
+                        # continue to the next retry iteration
                         continue
 
                 else:
                     os.remove(self.base_path + self.cookie_filename + ".json")
-                    message = (
+                    raise AuthenticationError(
                         "Maximum authentication retries exceeded. Try logging in again."
                     )
-                    raise AuthenticationError(message)
 
             if response.status_code not in self.retry_statuses:
                 break
@@ -345,6 +354,8 @@ class API:
         if result is False:
             raise ValueError("Invalid cookies.")
 
+        # check if the provided email matches the stored email in cookies
+        # if not, set cookies to none
         if email is not None and email != cookies.get("email"):
             cookies = None if email != cookies.get("email") else cookies
         if self.fernet is not None and cookies is not None:
