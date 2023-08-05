@@ -199,11 +199,6 @@ def upload_image(
         - image_path: str - (required): "画像のパス
 
     """
-    valid_types = ["post", "user_avatar"]
-    if image_type not in valid_types:
-        message = f"Invalid post type. Must be one of {valid_types}"
-        raise ValueError(message)
-
     date = datetime.now()
     timestamp = int(date.timestamp() * 1000)
     filename, ext = os.path.splitext(image_path)
