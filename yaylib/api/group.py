@@ -679,7 +679,7 @@ def update_group(
     allow_members_to_post_url: bool = None,
     guidelines: str = None,
     access_token: str = None,
-) -> GroupResponse:
+) -> Group:
     self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
@@ -713,7 +713,7 @@ def update_group(
         },
         data_type=GroupResponse,
         access_token=access_token,
-    )
+    ).group
     self.logger.info("Group details have been updated.")
     return response
 

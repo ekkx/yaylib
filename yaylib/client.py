@@ -1477,7 +1477,7 @@ class Client(API):
         allow_members_to_post_url: bool = None,
         guidelines: str = None,
         access_token: str = None,
-    ) -> GroupResponse:
+    ) -> Group:
         """
 
         サークルを編集します
