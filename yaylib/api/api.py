@@ -44,7 +44,6 @@ from ..errors import (
     YayServerError,
 )
 
-
 try:
     from json.decoder import JSONDecodeError
 except ImportError:
