@@ -1704,7 +1704,7 @@ class Client(API):
 
         Parameteres
         -----------
-            - image_type: str - (required): "post", "user_avatar" のどちらか
+            - image_type: str - (required): 画像の種類
             - image_path: str - (required): "画像のパス
 
         """
