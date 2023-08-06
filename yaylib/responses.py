@@ -105,7 +105,7 @@ class ActiveFollowingsResponse:
 
 
 class ActivitiesResponse:
-    __slots__ = ("data", "activities", "last_timestamp", "parsed_last_timestamp")
+    __slots__ = ("data", "activities", "last_timestamp")
 
     def __init__(self, data):
         self.data = data
@@ -115,7 +115,6 @@ class ActivitiesResponse:
             self.activities = [Activity(activity) for activity in self.activities]
 
         self.last_timestamp = data.get("last_timestamp")
-        self.parsed_last_timestamp = parse_datetime(data.get("last_timestamp"))
 
     def __repr__(self):
         return f"ActivitiesResponse(data={self.data})"

@@ -123,7 +123,7 @@ class Bgm:
 
 
 class CallGiftHistory:
-    __slots__ = ("data", "gifts_count", "sent_at", "sent_at_parsed", "sender")
+    __slots__ = ("data", "gifts_count", "sent_at", "sender")
 
     def __init__(self, data):
         self.data = data
@@ -135,7 +135,6 @@ class CallGiftHistory:
             ]
 
         self.sent_at = data.get("sent_at")
-        self.sent_at_parsed = parse_datetime(data.get("sent_at"))
 
         self.sender = data.get("sender")
         if self.sender is not None:
@@ -151,7 +150,6 @@ class ChatRoom:
         "id",
         "unread_count",
         "updated_at",
-        "updated_at_parsed",
         "members",
         "background",
         "last_message",
@@ -167,7 +165,6 @@ class ChatRoom:
         self.id = data.get("id")
         self.unread_count = data.get("unread_count")
         self.updated_at = data.get("updated_at")
-        self.updated_at_parsed = parse_datetime(data.get("updated_at"))
 
         self.members = data.get("members")
         if self.members is not None:
@@ -469,7 +466,7 @@ class Error:
 
 
 class Footprint:
-    __slots__ = ("data", "user", "visited_at", "visited_at_parsed", "id")
+    __slots__ = ("data", "user", "visited_at", "id")
 
     def __init__(self, data):
         self.data = data
@@ -479,7 +476,6 @@ class Footprint:
             self.user = User(self.user)
 
         self.visited_at = data.get("visited_at")
-        self.visited_at_parsed = parse_datetime(data.get("visited_at"))
         self.id = data.get("id")
 
     def __repr__(self):
@@ -942,9 +938,7 @@ class Post:
         "likes_count",
         "created_at",
         "updated_at",
-        "updated_at_parsed",
         "edited_at",
-        "edited_at_parsed",
         "liked",
         "tag",
         "reposts_count",
@@ -1001,9 +995,7 @@ class Post:
         self.likes_count = data.get("likes_count")
         self.created_at = data.get("created_at")
         self.updated_at = data.get("updated_at")
-        self.updated_at_parsed = parse_datetime(data.get("updated_at"))
         self.edited_at = data.get("edited_at")
-        self.edited_at_parsed = parse_datetime(data.get("edited_at"))
         self.liked = data.get("liked")
         self.tag = data.get("tag")
         self.reposts_count = data.get("reposts_count")
@@ -1216,7 +1208,6 @@ class Review:
         "user",
         "reviewer",
         "created_at",
-        "created_at_parsed",
         "mutual_review",
     )
 
@@ -1232,7 +1223,6 @@ class Review:
 
         self.reviewer = data.get("reviewer")
         self.created_at = data.get("created_at")
-        self.created_at_parsed = parse_datetime(data.get("created_at"))
         self.mutual_review = data.get("mutual_review")
 
     def __repr__(self):
@@ -1542,9 +1532,7 @@ class ThreadInfo:
         "unread_count",
         "posts_count",
         "created_at",
-        "created_at_parsed",
         "updated_at",
-        "updated_at_parsed",
         "thread_icon",
         "is_joined",
         "new_updates",
@@ -1566,9 +1554,7 @@ class ThreadInfo:
         self.unread_count = data.get("unread_count")
         self.posts_count = data.get("posts_count")
         self.created_at = data.get("created_at")
-        self.created_at_parsed = parse_datetime(data.get("created_at"))
         self.updated_at = data.get("updated_at")
-        self.updated_at_parsed = parse_datetime(data.get("updated_at"))
         self.thread_icon = data.get("thread_icon")
         self.is_joined = data.get("is_joined")
         self.new_updates = data.get("new_updates")
@@ -1589,9 +1575,7 @@ class User:
         "gender",
         "generation",
         "last_logged_in_at",
-        "last_logged_in_at_parsed",
         "created_at",
-        "created_at_parsed",
         "badge",
         "followers_count",
         "followings_count",
@@ -1625,7 +1609,6 @@ class User:
         "connected_by",
         "contact_phones",
         "updated_time_millis",
-        "updated_time_millis_parsed",
     )
 
     def __init__(self, data):
@@ -1637,9 +1620,7 @@ class User:
         self.gender = data.get("gender")
         self.generation = data.get("generation")
         self.last_logged_in_at = data.get("last_logged_in_at")
-        self.last_logged_in_at_parsed = parse_datetime(data.get("last_logged_in_at"))
         self.created_at = data.get("created_at")
-        self.created_at_parsed = parse_datetime(data.get("created_at"))
         self.badge = data.get("title")
         self.followers_count = data.get("followers_count")
         self.followings_count = data.get("followings_count")
@@ -1679,9 +1660,6 @@ class User:
         self.connected_by = data.get("connected_by")
         self.contact_phones = data.get("contact_phones")
         self.updated_time_millis = data.get("updated_time_millis")
-        self.updated_time_millis_parsed = parse_datetime(
-            data.get("updated_time_millis")
-        )
 
     def __repr__(self):
         return f"User(data={self.data})"
@@ -1769,7 +1747,6 @@ class WalletTransaction:
         self.data = data
         self.id = data.get("id")
         self.created_at = data.get("created_at")
-        self.created_at_parsed = parse_datetime(data.get("created_at"))
         self.description = data.get("description")
         self.amount = data.get("amount")
 

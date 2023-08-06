@@ -295,7 +295,6 @@ from .responses import (
     GamesResponse,
     GenresResponse,
     GroupCategoriesResponse,
-    GroupResponse,
     GroupsRelatedResponse,
     GroupsResponse,
     GroupThreadListResponse,
