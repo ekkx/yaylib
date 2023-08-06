@@ -221,7 +221,7 @@ class Attachment:
 
 
 def upload_image(
-    self, image_type: str, image_path: str, access_token: str = None
+    self, image_paths: List[str], image_type: str, access_token: str = None
 ) -> str:
     """
 
@@ -236,38 +236,72 @@ def upload_image(
     if image_type not in Configs.UPLOAD_ITEM_TYPES:
         raise TypeError("Invalid image type.")
 
-    filename, extension = os.path.splitext(image_path)
+    _files = []
+    error = ""
 
-    if not is_valid_image_format(extension):
-        raise ValueError("Invalid image format.")
+    for key, image_path in enumerate(image_paths):
+        filename, extension = os.path.splitext(image_path)
 
-    image = Image.open(image_path)
+        if not is_valid_image_format(extension):
+            raise ValueError("Invalid image format.")
 
-    natural_width, natural_height = image.size
-    resized_image = image
+        image = Image.open(image_path)
+        natural_width, natural_height = image.size
+        resized_image = image
 
-    if extension != "gif":
-        resized_image.thumbnail((450, 450))
+        if extension != "gif":
+            resized_image.thumbnail((450, 450))
 
-    original_attachment = Attachment(
-        image=image,
-        file_name="",
-        original_file_name=filename,
-        original_file_extension=extension,
-        natural_width=natural_width,
-        natural_height=natural_height,
-        is_thumb=False,
-    )
+        original_attachment = Attachment(
+            image=image,
+            file_name="",
+            original_file_name=filename,
+            original_file_extension=extension,
+            natural_width=natural_width,
+            natural_height=natural_height,
+            is_thumb=False,
+        )
 
-    thumbnail_attachment = Attachment(
-        image=resized_image,
-        file_name="",
-        original_file_name=filename,
-        original_file_extension=extension,
-        natural_width=natural_width,
-        natural_height=natural_height,
-        is_thumb=False,
-    )
+        thumbnail_attachment = Attachment(
+            image=resized_image,
+            file_name="",
+            original_file_name=filename,
+            original_file_extension=extension,
+            natural_width=natural_width,
+            natural_height=natural_height,
+            is_thumb=True,
+        )
+
+        uuid = self.generate_uuid()[:8]
+
+        original_attachment.filename = get_hashed_filename(
+            original_attachment, image_type, key, uuid
+        )
+        thumbnail_attachment.filename = get_hashed_filename(
+            thumbnail_attachment, image_type, key, uuid
+        )
+
+        _files.append(original_attachment)
+        _files.append(thumbnail_attachment)
+
+    file_names = [x.filename for x in _files]
+    res_presigned_url = get_file_upload_presigned_urls(self, file_names)
+
+    res_upload = []
+
+    for x in _files:
+        p_url = next(
+            (p.url for p in res_presigned_url if p.filename == x.filename), None
+        )
+        if not p_url:
+            continue
+
+        response = httpx.put(p_url, data=x.file)
+        response.raise_for_status()
+
+        res_upload.append(x)
+
+    return res_upload
 
     # date = datetime.now()
     # timestamp = int(date.timestamp() * 1000)
