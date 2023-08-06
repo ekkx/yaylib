@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import re
 from datetime import datetime
 
 
@@ -50,8 +51,9 @@ def parse_datetime(timestamp: int) -> str:
     return timestamp
 
 
-def get_filename_and_extension(file):
-    pass
+def is_valid_image_format(format):
+    is_valid = bool(re.match(r".jpg|.jpeg|.png|.gif", format))
+    return is_valid
 
 
 def get_hashed_filename(att, type, key, uuid):

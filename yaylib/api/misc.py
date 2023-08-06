@@ -29,7 +29,7 @@ from PIL import Image
 from datetime import datetime
 from typing import List
 
-from ..config import Endpoints
+from ..config import Endpoints, Configs
 from ..models import PresignedUrl
 from ..responses import (
     EmailGrantTokenResponse,
@@ -40,6 +40,7 @@ from ..responses import (
     VerifyDeviceResponse,
     WebSocketTokenResponse,
 )
+from ..utils import is_valid_image_format, get_hashed_filename
 
 
 def accept_policy_agreement(self, type: str, access_token: str = None):
@@ -186,6 +187,39 @@ def verify_device(
     return response
 
 
+class Attachment:
+    __slots__ = (
+        "image_path",
+        "filename",
+        "original_file_name",
+        "original_file_extension",
+        "natural_width",
+        "natural_height",
+        "is_thumb",
+    )
+
+    def __init__(
+        self,
+        image,
+        filename,
+        original_file_name,
+        original_file_extension,
+        natural_width,
+        natural_height,
+        is_thumb: bool,
+    ) -> None:
+        self.image = image
+        self.filename = filename
+        self.original_file_name = original_file_name
+        self.original_file_extension = original_file_extension
+        self.natural_width = natural_width
+        self.natural_height = natural_height
+        self.is_thumb = is_thumb
+
+    def __repr__(self):
+        return f"Attachment(filename={self.filename})"
+
+
 def upload_image(
     self, image_type: str, image_path: str, access_token: str = None
 ) -> str:
@@ -199,34 +233,68 @@ def upload_image(
         - image_path: str - (required): "画像のパス
 
     """
+    if image_type not in Configs.UPLOAD_ITEM_TYPES:
+        raise TypeError("Invalid image type.")
 
-    date = datetime.now()
-    timestamp = int(date.timestamp() * 1000)
-    filename, ext = os.path.splitext(image_path)
+    filename, extension = os.path.splitext(image_path)
 
-    with Image.open(image_path) as image:
-        width, height = image.size
+    if not is_valid_image_format(extension):
+        raise ValueError("Invalid image format.")
 
-    base_url = f"{image_type}/{date.year}/{date.month}/{date.day}"
-    mid_url = f"{filename}_{timestamp}_0_size_"
-    original_url = f"{base_url}/{mid_url}{width}x{height}{ext}"
-    thumb_url = f"{base_url}/thumb_{mid_url}{width}x{height}{ext}"
+    image = Image.open(image_path)
 
-    presigned_urls = get_file_upload_presigned_urls(
-        self, [original_url, thumb_url], access_token=access_token
+    natural_width, natural_height = image.size
+    resized_image = image
+
+    if extension != "gif":
+        resized_image.thumbnail((450, 450))
+
+    original_attachment = Attachment(
+        image=image,
+        file_name="",
+        original_file_name=filename,
+        original_file_extension=extension,
+        natural_width=natural_width,
+        natural_height=natural_height,
+        is_thumb=False,
     )
 
-    with open(image_path, "rb") as f:
-        response = httpx.put(presigned_urls[0].url, data=f.read())
-        response.raise_for_status()
+    thumbnail_attachment = Attachment(
+        image=resized_image,
+        file_name="",
+        original_file_name=filename,
+        original_file_extension=extension,
+        natural_width=natural_width,
+        natural_height=natural_height,
+        is_thumb=False,
+    )
 
-    with open(image_path, "rb") as f:
-        response = httpx.put(presigned_urls[1].url, data=f.read())
-        response.raise_for_status()
+    # date = datetime.now()
+    # timestamp = int(date.timestamp() * 1000)
 
-    self.logger.info(f"Image '{filename}{ext}' is uploaded")
+    # with Image.open(image_path) as image:
+    #     width, height = image.size
 
-    return presigned_urls[0].filename
+    # base_url = f"{image_type}/{date.year}/{date.month}/{date.day}"
+    # mid_url = f"{filename}_{timestamp}_0_size_"
+    # original_url = f"{base_url}/{mid_url}{width}x{height}{extension}"
+    # thumb_url = f"{base_url}/thumb_{mid_url}{width}x{height}{extension}"
+
+    # presigned_urls = get_file_upload_presigned_urls(
+    #     self, [original_url, thumb_url], access_token=access_token
+    # )
+
+    # with open(image_path, "rb") as f:
+    #     response = httpx.put(presigned_urls[0].url, data=f.read())
+    #     response.raise_for_status()
+
+    # with open(image_path, "rb") as f:
+    #     response = httpx.put(presigned_urls[1].url, data=f.read())
+    #     response.raise_for_status()
+
+    # self.logger.info(f"Image '{filename}{extension}' is uploaded")
+
+    # return presigned_urls[0].filename
 
 
 def upload_video(self, video_path: str, access_token: str = None):
