@@ -186,7 +186,7 @@ def verify_device(
     return response
 
 
-def upload_image(self, image_paths: List[str], image_type: str) -> List[str]:
+def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachment]:
     """
 
     画像をアップロードして、サーバー上のファイル名のリストを返します。
@@ -203,14 +203,14 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[str]:
     投稿に画像を付与する場合
 
     >>> # サーバー上にアップロード
-    >>> filenames = api.upload_image(
+    >>> attachments = api.upload_image(
     >>>     image_type=yaylib.IMAGE_TYPE_POST,
     >>>     image_paths=["./test.jpg"],
     >>> )
     >>> # サーバー上のファイル名を指定
     >>> api.create_post(
     >>>     "Hello with yaylib!",
-    >>>     attachment_filename=filenames[0]
+    >>>     attachment_filename=attachments[0].filename
     >>> )
 
     """
@@ -284,7 +284,7 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[str]:
             response = httpx.put(p_url, data=image_data.read())
             response.raise_for_status()
 
-        res_upload.append(x.filename)
+        res_upload.append(x)
 
     return res_upload
 

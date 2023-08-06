@@ -263,6 +263,7 @@ from .api.user import (
     unhide_users,
 )
 from .models import (
+    Attachment,
     Bgm,
     ChatRoom,
     ConferenceCall,
@@ -1722,7 +1723,7 @@ class Client(API):
         """
         return get_web_socket_token(self, headers, access_token)
 
-    def upload_image(self, image_paths: List[str], image_type: str) -> List[str]:
+    def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachment]:
         """
 
         画像をアップロードして、サーバー上のファイル名のリストを返します。
@@ -1739,14 +1740,14 @@ class Client(API):
         投稿に画像を付与する場合
 
         >>> # サーバー上にアップロード
-        >>> filenames = api.upload_image(
+        >>> attachments = api.upload_image(
         >>>     image_type=yaylib.IMAGE_TYPE_POST,
         >>>     image_paths=["./test.jpg"],
         >>> )
         >>> # サーバー上のファイル名を指定
         >>> api.create_post(
         >>>     "Hello with yaylib!",
-        >>>     attachment_filename=filenames[0]
+        >>>     attachment_filename=attachments[0].filename
         >>> )
 
         """
