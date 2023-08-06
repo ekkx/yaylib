@@ -432,7 +432,7 @@ def refresh_counter(self, counter: str, access_token: str = None):
     return response
 
 
-def register_user(
+def register(
     self,
     email: str,
     email_grant_token: str,

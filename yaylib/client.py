@@ -240,7 +240,7 @@ from .api.user import (
     get_user_without_leaving_footprint,
     get_users,
     refresh_counter,
-    register_user,
+    register,
     remove_user_avatar,
     remove_user_cover,
     report_user,
@@ -2952,7 +2952,7 @@ class Client(API):
         """
         return refresh_counter(self, counter, access_token)
 
-    def register_user(
+    def register(
         self,
         email: str,
         email_grant_token: str,
@@ -2974,7 +2974,7 @@ class Client(API):
         Register user
 
         """
-        return register_user(
+        return register(
             self,
             email,
             email_grant_token,

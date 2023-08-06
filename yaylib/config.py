@@ -246,6 +246,7 @@ class ErrorType(Enum):
     PasswordTooLong = -408
     PasswordNotAllowed = -409
     CommonPassword = -410
+    EmailNotAuthorized = -411
     UnableToMovePostToThread = -412
     UnableToPostUrl = -413
     UnableToSetCall = -977
@@ -349,6 +350,7 @@ class ErrorMessage(Enum):
     PasswordTooLong = "パスワードが長すぎます"
     PasswordNotAllowed = "他のパスワードを使用してください。無効な文字列が含まれています"
     CommonPassword = "他のパスワードを使用してください。文字列や数字、または記号などの組み合わせをお試しください"
+    EmailNotAuthorized = "このメールアドレスを使用するには承認される必要があります"
     UnableToMovePostToThread = "投稿をスレッドに移動できません"
     UnableToPostUrl = "URLを投稿できません"
     UnableToSetCall = "通話を開始できませんでした"
