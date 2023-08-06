@@ -203,14 +203,14 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[str]:
     投稿に画像を付与する場合
 
     >>> # サーバー上にアップロード
-    >>> filename = api.upload_image(
+    >>> filenames = api.upload_image(
     >>>     image_type=yaylib.IMAGE_TYPE_POST,
     >>>     image_paths=["./test.jpg"],
     >>> )
     >>> # サーバー上のファイル名を指定
     >>> api.create_post(
     >>>     "Hello with yaylib!",
-    >>>     attachment_filename=filename[0]
+    >>>     attachment_filename=filenames[0]
     >>> )
 
     """
