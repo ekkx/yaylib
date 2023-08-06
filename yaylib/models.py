@@ -97,7 +97,7 @@ class Activity:
 
 class Attachment:
     __slots__ = (
-        "image_path",
+        "file",
         "filename",
         "original_file_name",
         "original_file_extension",
@@ -108,7 +108,7 @@ class Attachment:
 
     def __init__(
         self,
-        image,
+        file,
         filename,
         original_file_name,
         original_file_extension,
@@ -116,7 +116,7 @@ class Attachment:
         natural_height,
         is_thumb: bool,
     ):
-        self.image = image
+        self.file = file
         self.filename = filename
         self.original_file_name = original_file_name
         self.original_file_extension = original_file_extension

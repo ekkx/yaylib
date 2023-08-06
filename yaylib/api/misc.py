@@ -24,8 +24,8 @@ SOFTWARE.
 
 import os
 import httpx
-
 from PIL import Image
+from io import BytesIO
 from typing import List
 
 from ..config import Endpoints, Configs
@@ -218,8 +218,8 @@ def upload_image(
             resized_image.thumbnail((450, 450))
 
         original_attachment = Attachment(
-            image=image,
-            file_name="",
+            file=image,
+            filename="",
             original_file_name=filename,
             original_file_extension=extension,
             natural_width=natural_width,
@@ -228,8 +228,8 @@ def upload_image(
         )
 
         thumbnail_attachment = Attachment(
-            image=resized_image,
-            file_name="",
+            file=resized_image,
+            filename="",
             original_file_name=filename,
             original_file_extension=extension,
             natural_width=natural_width,
@@ -261,39 +261,17 @@ def upload_image(
         if not p_url:
             continue
 
-        response = httpx.put(p_url, data=x.file)
-        response.raise_for_status()
+        image_data = BytesIO()
+        image.save(image_data, format=x.file.format)
+        image_data.seek(0)
+
+        with open(image_path, "rb") as f:
+            response = httpx.put(p_url, data=image_data.read())
+            response.raise_for_status()
 
         res_upload.append(x)
 
     return res_upload
-
-    # date = datetime.now()
-    # timestamp = int(date.timestamp() * 1000)
-
-    # with Image.open(image_path) as image:
-    #     width, height = image.size
-
-    # base_url = f"{image_type}/{date.year}/{date.month}/{date.day}"
-    # mid_url = f"{filename}_{timestamp}_0_size_"
-    # original_url = f"{base_url}/{mid_url}{width}x{height}{extension}"
-    # thumb_url = f"{base_url}/thumb_{mid_url}{width}x{height}{extension}"
-
-    # presigned_urls = get_file_upload_presigned_urls(
-    #     self, [original_url, thumb_url], access_token=access_token
-    # )
-
-    # with open(image_path, "rb") as f:
-    #     response = httpx.put(presigned_urls[0].url, data=f.read())
-    #     response.raise_for_status()
-
-    # with open(image_path, "rb") as f:
-    #     response = httpx.put(presigned_urls[1].url, data=f.read())
-    #     response.raise_for_status()
-
-    # self.logger.info(f"Image '{filename}{extension}' is uploaded")
-
-    # return presigned_urls[0].filename
 
 
 def upload_video(self, video_path: str, access_token: str = None):
