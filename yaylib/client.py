@@ -1723,7 +1723,7 @@ class Client(API):
         return get_web_socket_token(self, headers, access_token)
 
     def upload_image(
-        self, image_type: str, image_path: str, access_token: str = None
+        self, image_paths: List[str], image_type: str, access_token: str = None
     ) -> str:
         """
 
@@ -1735,7 +1735,7 @@ class Client(API):
             - image_path: str - (required): "画像のパス
 
         """
-        return upload_image(self, image_type, image_path, access_token)
+        return upload_image(self, image_paths, image_type, access_token)
 
     # -POST
 
