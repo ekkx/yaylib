@@ -75,8 +75,8 @@ class API:
 
         self.proxy = {}
         if proxy is not None:
-            self.proxy["http"] = proxy
-            self.proxy["https"] = proxy
+            self.proxy["http://"] = proxy
+            self.proxy["https://"] = proxy
 
         self.max_retries = max_retries
         self.retry_statuses = [500, 502, 503, 504]
