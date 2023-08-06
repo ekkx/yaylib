@@ -199,6 +199,7 @@ def upload_image(
         - image_path: str - (required): "画像のパス
 
     """
+
     date = datetime.now()
     timestamp = int(date.timestamp() * 1000)
     filename, ext = os.path.splitext(image_path)

@@ -48,3 +48,11 @@ def parse_datetime(timestamp: int) -> str:
     if timestamp is not None:
         return str(datetime.fromtimestamp(timestamp))
     return timestamp
+
+
+def get_filename_and_extension(file):
+    pass
+
+
+def get_hashed_filename(att, type, key, uuid):
+    pass

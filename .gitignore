@@ -5,6 +5,8 @@ nanameue/
 _.py
 _config.py
 
+*.jpg
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
