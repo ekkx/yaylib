@@ -163,7 +163,7 @@ filenames = api.upload_image(
 )
 
 # サーバー上のファイル名を指定する
-# filenamesが一つ飛ばしなのはオリジナルの画像のみを指定するため
+# filenamesが一つ飛ばしなのはオリジナル品質の画像のみを指定するため
 api.create_post(
     "Hello with yaylib!",
     attachment_filename=filenames[0],
