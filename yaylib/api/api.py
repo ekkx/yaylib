@@ -169,7 +169,6 @@ class API:
 
                 if auth_retry_count < max_auth_retries:
                     # refresh access token using the stored refresh token
-
                     self.logger.debug("Access token expired. Refreshing tokens...")
 
                     cookies = self.load_cookies()
@@ -358,6 +357,7 @@ class API:
             cookies = None if email != cookies.get("email") else cookies
         if self.fernet is not None and cookies is not None:
             cookies = self.decrypt_cookies(self.fernet, cookies)
+
         return cookies
 
     def save_cookies(self, cookies):
@@ -405,6 +405,7 @@ class API:
             raise YayServerError(formatted_response)
         if response.status_code and not 200 <= response.status_code < 300:
             raise HTTPError(formatted_response)
+
         return formatted_response
 
     def _translate_error_message(self, response):
