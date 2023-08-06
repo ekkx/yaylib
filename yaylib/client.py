@@ -321,6 +321,26 @@ from .responses import (
 )
 
 
+IMAGE_TYPE_POST = "post"
+r""" post: 投稿に画像をアップロードする際の画像タイプ"""
+IMAGE_TYPE_CHAT_MESSAGE = "chat_message"
+r""" chat_message: 個人チャットに画像をアップロードする際の画像タイプ"""
+IMAGE_TYPE_CHAT_BACKGROUND = "chat_background"
+r""" chat_background: 個人チャットの背景用に画像をアップロードする際の画像タイプ"""
+IMAGE_TYPE_REPORT = "report"
+r""" report: 通報用の画像をアップロードする際の画像タイプ"""
+IMAGE_TYPE_USER_AVATAR = "user_avatar"
+r""" user_avatar: プロフィール画像をアップロードする際の画像タイプ"""
+IMAGE_TYPE_USER_COVER = "user_cover"
+r""" user_cover: プロフィールの背景画像をアップロードする際の画像タイプ"""
+IMAGE_TYPE_GROUP_COVER = "group_cover"
+r""" group_cover: グループの背景画像をアップロードする際の画像タイプ"""
+IMAGE_TYPE_GROUP_THREAD_ICON = "group_thread_icon"
+r""" group_thread_icon: グループ内のスレッド用アイコンをアップロードする際の画像タイプ"""
+IMAGE_TYPE_GROUP_ICON = "group_icon"
+r""" group_icon: グループのアイコンをアップロードする際の画像タイプ"""
+
+
 class Client(API):
     """
 
