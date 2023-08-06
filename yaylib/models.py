@@ -95,6 +95,39 @@ class Activity:
         return f"Activity(data={self.data})"
 
 
+class Attachment:
+    __slots__ = (
+        "image_path",
+        "filename",
+        "original_file_name",
+        "original_file_extension",
+        "natural_width",
+        "natural_height",
+        "is_thumb",
+    )
+
+    def __init__(
+        self,
+        image,
+        filename,
+        original_file_name,
+        original_file_extension,
+        natural_width,
+        natural_height,
+        is_thumb: bool,
+    ):
+        self.image = image
+        self.filename = filename
+        self.original_file_name = original_file_name
+        self.original_file_extension = original_file_extension
+        self.natural_width = natural_width
+        self.natural_height = natural_height
+        self.is_thumb = is_thumb
+
+    def __repr__(self):
+        return f"Attachment(filename={self.filename})"
+
+
 class BanWord:
     __slots__ = ("data", "id", "type", "word")
 

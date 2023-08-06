@@ -26,11 +26,10 @@ import os
 import httpx
 
 from PIL import Image
-from datetime import datetime
 from typing import List
 
 from ..config import Endpoints, Configs
-from ..models import PresignedUrl
+from ..models import Attachment, PresignedUrl
 from ..responses import (
     EmailGrantTokenResponse,
     EmailVerificationPresignedUrlResponse,
@@ -187,39 +186,6 @@ def verify_device(
     return response
 
 
-class Attachment:
-    __slots__ = (
-        "image_path",
-        "filename",
-        "original_file_name",
-        "original_file_extension",
-        "natural_width",
-        "natural_height",
-        "is_thumb",
-    )
-
-    def __init__(
-        self,
-        image,
-        filename,
-        original_file_name,
-        original_file_extension,
-        natural_width,
-        natural_height,
-        is_thumb: bool,
-    ) -> None:
-        self.image = image
-        self.filename = filename
-        self.original_file_name = original_file_name
-        self.original_file_extension = original_file_extension
-        self.natural_width = natural_width
-        self.natural_height = natural_height
-        self.is_thumb = is_thumb
-
-    def __repr__(self):
-        return f"Attachment(filename={self.filename})"
-
-
 def upload_image(
     self, image_paths: List[str], image_type: str, access_token: str = None
 ) -> str:
@@ -237,7 +203,6 @@ def upload_image(
         raise TypeError("Invalid image type.")
 
     _files = []
-    error = ""
 
     for key, image_path in enumerate(image_paths):
         filename, extension = os.path.splitext(image_path)
