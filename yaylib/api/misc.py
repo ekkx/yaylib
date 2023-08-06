@@ -280,9 +280,8 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
         image.save(image_data, format=x.file.format)
         image_data.seek(0)
 
-        with open(image_path, "rb") as f:
-            response = httpx.put(p_url, data=image_data.read())
-            response.raise_for_status()
+        response = httpx.put(p_url, data=image_data.read())
+        response.raise_for_status()
 
         res_upload.append(x)
 
