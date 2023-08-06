@@ -25,6 +25,8 @@ SOFTWARE.
 import re
 from datetime import datetime
 
+from .models import Attachment
+
 
 class Colors:
     HEADER = "\033[95m"
@@ -56,5 +58,14 @@ def is_valid_image_format(format):
     return is_valid
 
 
-def get_hashed_filename(att, type, key, uuid):
-    pass
+def get_hashed_filename(att: Attachment, type, key, uuid):
+    today = datetime.now()
+    full_date = today.strftime("%Y/%m/%d")
+    thumbnail = "thumb_" if att.is_thumb else ""
+    file_name = f"{thumbnail}{uuid}_{int(today.timestamp())}_{key}"
+    sizes = f"_size_{att.natural_width}x{att.natural_height}"
+    extension = f"{att.original_file_extension}"
+
+    hashed_filename = f"{type}/{full_date}/{file_name}{sizes}{extension}"
+
+    return hashed_filename
