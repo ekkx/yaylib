@@ -156,12 +156,20 @@ import yaylib
 api = yaylib.Client()
 api.login(email="メールアドレス", password="パスワード")
 
-filename = api.upload_image(
-    image_type="post", # 画像の使い道を指定
-    image_path="./path/to/image" # ローカルにある画像のパス
+# サーバー上にアップロード
+filenames = api.upload_image(
+    image_type=yaylib.IMAGE_TYPE_POST,
+    image_paths=["./test1.jpg", "./test2.jpg", "./test3.jpg"],
 )
 
-api.create_post("Hello with yaylib!", attachment_filename=filename)
+# サーバー上のファイル名を指定する
+# filenamesが一つ飛ばしなのはオリジナルの画像のみを指定するため
+api.create_post(
+    "Hello with yaylib!",
+    attachment_filename=filenames[0],
+    attachment_2_filename=filenames[2],
+    attachment_3_filename=filenames[4],
+)
 ```
 
 #### ✨ 投稿に返信する
