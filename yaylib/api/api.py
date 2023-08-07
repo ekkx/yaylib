@@ -171,20 +171,17 @@ class API:
                     # refresh access token using the stored refresh token
                     self.logger.debug("Access token expired. Refreshing tokens...")
 
-                    cookies = self.load_cookies()
-
-                    if cookies is not None and self.fernet is not None:
-                        cookies = self.decrypt_cookies(self.fernet, cookies)
+                    if self.fernet is not None:
                         response = get_token(
                             self,
                             grant_type="refresh_token",
-                            refresh_token=cookies.get("refresh_token"),
+                            refresh_token=self.refresh_token,
                         )
                         self.cookies = {
                             "access_token": response.access_token,
                             "refresh_token": response.refresh_token,
                             "user_id": response.user_id,
-                            "email": cookies.get("email"),
+                            "email": self.cookies.get("email"),
                         }
                         self.save_cookies(self.cookies)
 
@@ -276,6 +273,10 @@ class API:
     @property
     def user_id(self):
         return self.cookies.get("user_id")
+
+    @property
+    def email(self):
+        return self.cookies.get("email")
 
     @property
     def secret_key(self):
