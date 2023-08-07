@@ -104,15 +104,7 @@ class API:
         ch.setLevel(loglevel)
         ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
-        # check if a stream handler is already present in the logger
-        # to avoid adding duplicate handlers
-        handler_existed = False
-        for handler in self.logger.handlers:
-            if isinstance(handler, logging.StreamHandler):
-                handler_existed = True
-                break
-        if not handler_existed:
-            self.logger.addHandler(ch)
+        self.logger.addHandler(ch)
         self.logger.setLevel(logging.DEBUG)
 
         self.logger.info("yaylib version: " + self.yaylib_version + " started")
