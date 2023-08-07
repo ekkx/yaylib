@@ -229,7 +229,7 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
         natural_width, natural_height = image.size
         resized_image = image
 
-        if extension != "gif":
+        if extension != ".gif":
             resized_image.thumbnail((450, 450))
 
         original_attachment = Attachment(
