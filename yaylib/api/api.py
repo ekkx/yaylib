@@ -181,7 +181,7 @@ class API:
                             "access_token": response.access_token,
                             "refresh_token": response.refresh_token,
                             "user_id": response.user_id,
-                            "email": self.cookies.get("email"),
+                            "email": self.email,
                         }
                         self.save_cookies(self.cookies)
 
