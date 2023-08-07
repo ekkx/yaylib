@@ -267,7 +267,6 @@ class ErrorType(Enum):
 
 class ErrorMessage(Enum):
     Unknown = "原因不明"
-    # InvalidParameter = "引数が不正です"
     RegisteredUser = "このアカウントはすでに登録されています"
     AccessTokenExpired = "アクセストークンの有効期限切れ"
     ScreenNameAlreadyBeenTaken = "このIDはすでに使われています"

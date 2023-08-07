@@ -180,13 +180,12 @@ class API:
                             grant_type="refresh_token",
                             refresh_token=cookies.get("refresh_token"),
                         )
-                        self._cookies.update(
-                            {
-                                "access_token": response.access_token,
-                                "refresh_token": response.refresh_token,
-                                "user_id": response.user_id,
-                            }
-                        )
+                        self.cookies = {
+                            "access_token": response.access_token,
+                            "refresh_token": response.refresh_token,
+                            "user_id": response.user_id,
+                            "email": cookies.get("email"),
+                        }
                         self.save_cookies(self.cookies)
 
                         self.session.headers[
