@@ -26,7 +26,7 @@ from enum import Enum
 
 
 class Configs:
-    YAYLIB_VERSION = "1.0.11"
+    YAYLIB_VERSION = "1.0.12"
     YAY_API_VERSION = "3.21"
     YAY_VERSION_NAME = "3.21.0"
     YAY_API_VERSION_KEY = "c687e24f6a454896891acd68868c7979"
