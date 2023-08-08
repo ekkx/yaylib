@@ -61,6 +61,9 @@ class WebSocketBaseHandler(object):
         )
         self.ws.run_forever()
 
+    def stop(self):
+        self.ws.keep_running = False
+
 
 class MessageEventHandler(WebSocketBaseHandler):
     """
