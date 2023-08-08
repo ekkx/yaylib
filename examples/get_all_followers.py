@@ -1,5 +1,6 @@
 import yaylib
 
+
 api = yaylib.Client()
 
 # フォロワーを取得する対象のユーザーID

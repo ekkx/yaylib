@@ -1,5 +1,6 @@
 import yaylib
 
+
 api = yaylib.Client()
 
 api.login(email="", password="")

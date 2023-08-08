@@ -1,5 +1,6 @@
 import yaylib
 
+
 api = yaylib.Client()
 
 email = ""
@@ -9,7 +10,6 @@ api.login(email, password)
 
 
 class ChatBot(yaylib.ChatRoomEventHandler):
-
     def on_request(self, total_count: int):
         # チャットリクエストを承認する
         chat_room = api.get_chat_requests(number=1).chat_rooms[0]
