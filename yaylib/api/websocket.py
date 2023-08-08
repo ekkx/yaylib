@@ -45,8 +45,8 @@ class WebSocketBaseHandler(object):
     def _on_error(self, ws, error):
         print(error)
 
-    def _on_close(self, ws):
-        print("WebSocket Closed.")
+    def _on_close(self, ws, close_status_code, close_msg):
+        pass
 
     def on_connect(self, sid: str):
         pass
