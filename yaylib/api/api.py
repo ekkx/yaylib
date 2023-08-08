@@ -150,7 +150,6 @@ class API:
 
             if self.save_cookie_file is True and response.status_code == 401:
                 # remove the cookie file and stop the proccessing if refresh token has expired
-                # (/api/v1/oauth/token in the endpoint which means already retried but failed)
                 if "/api/v1/oauth/token" in endpoint:
                     os.remove(self.base_path + self.cookie_filename + ".json")
                     raise AuthenticationError(
@@ -343,10 +342,9 @@ class API:
             os.remove(self.base_path + self.cookie_filename + ".json")
             raise ValueError("Invalid cookie properties.")
 
-        # check if the provided email matches the stored email in cookies
-        # if not, set cookies to none
         if email is not None and email != cookies.get("email"):
             cookies = None if email != cookies.get("email") else cookies
+
         if self.fernet is not None and cookies is not None:
             cookies = self.decrypt_cookies(self.fernet, cookies)
 
