@@ -44,6 +44,15 @@
   </ol>
 </details>
 
+<!-- Buy me a coffee -->
+
+## Buy me a coffee
+
+このライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">**リポジトリにスターをお願いします</a>(⭐)**  
+また、Buy Me a Coffee からご支援いただけますと幸いです。
+
+<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+
 <!-- インストール -->
 
 ## [<img src="https://github.com/qvco/yaylib/assets/77382767/2f632349-0cbc-4c81-bc19-11d24c8c142b" width="30" height="30" />](https://github.com/qvco) Installation
@@ -76,55 +85,6 @@ pip install -e .
 <!-- 使用例 -->
 
 ## [<img src="https://github.com/qvco/yaylib/assets/77382767/dc7dcea0-c581-4039-8fc2-3994884d2ba3" width="30" height="30" />](https://github.com/qvco) Quick Example
-
-<!-- ### yaylib 利用で実現できること
-
-<table>
-    <tr>
-        <th>カテゴリ</th>
-        <th>「yaylib」で自動化できること</th>
-        <th>応用先</th>
-    </tr>
-    <tr>
-		<td>データ収集の効率化</td>
-		<td>
-            <li>投稿情報取得</li>
-            <li>ユーザー情報取得</li>
-            <li>人気のワード取得</li>
-            <li>フォロー/フォロワー情報取得</li>
-        </td>
-		<td>
-            <li>SNSデータマーケティング</li>
-            <li>トレンド解析</li>
-            <li>ニーズ調査</li>
-        </td>
-	</tr>
-    <tr>
-		<td>アカウント操作<br>(投稿関連)</td>
-		<td>
-            <li>投稿する</li>
-            <li>リツイートする</li>
-            <li>いいねする</li>
-        </td>
-		<td>
-            <li>Yay! 自動運用</li>
-            <li>Yay! Bot開発</li>
-        </td>
-	</tr>
-    <tr>
-		<td>アカウント操作<br>(ユーザー関連)</td>
-		<td>
-            <li>フォローする/フォロー解除する</li>
-            <li>ブロックする/ブロック解除する</li>
-            <li>ミュートする/ミュート解除する</li>
-            <li>DMを送る</li>
-        </td>
-		<td>
-            <li>Yay! 自動運用</li>
-            <li>Yay! Bot開発</li>
-        </td>
-	</tr>
-</table> -->
 
 #### ✨ 投稿を作成する
 
@@ -170,21 +130,6 @@ api.create_post(
     attachment_filename=attachments[0].filename,
     attachment_2_filename=attachments[2].filename,
     attachment_3_filename=attachments[4].filename,
-)
-```
-
-#### ✨ 投稿に返信する
-
-```python
-import yaylib
-
-api = yaylib.Client()
-api.login(email="メールアドレス", password="パスワード")
-
-api.create_post(
-    "Hello with yaylib!",
-    in_reply_to=返信先の投稿ID,
-    mention_ids=[返信先のユーザーID]
 )
 ```
 
@@ -315,15 +260,6 @@ bot.run(ws_token)
 - <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com にメールを送信する</a>
 
 のいずれかの方法で繋がりましょう。詳しくは[こちらから](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)！
-
-<!-- Buy me a coffee -->
-
-## Buy me a coffee
-
-このライブラリが気に入っていただけたら、**リポジトリに<a href="https://github.com/qvco/yaylib/">スターをお願いします</a>(⭐)**  
-また、Buy Me a Coffee からご支援いただけますと幸いです。
-
-<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 <!-- 免責事項 -->
 

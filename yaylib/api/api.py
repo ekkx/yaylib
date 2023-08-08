@@ -282,6 +282,15 @@ class API:
         return Configs.YAY_VERSION_NAME
 
     @staticmethod
+    def _construct_response(data, data_type):
+        if data_type is not None:
+            if isinstance(data, list):
+                data = [data_type(result) for result in data]
+            elif data is not None:
+                data = data_type(data)
+        return data
+
+    @staticmethod
     def encrypt_cookies(fernet, cookies):
         access_token = cookies.get("access_token")
         refresh_token = cookies.get("refresh_token")
@@ -362,15 +371,6 @@ class API:
 
         with open(self.base_path + self.cookie_filename + ".json", "w") as f:
             json.dump(cookies, f, indent=4)
-
-    @staticmethod
-    def _construct_response(data, data_type):
-        if data_type is not None:
-            if isinstance(data, list):
-                data = [data_type(result) for result in data]
-            elif data is not None:
-                data = data_type(data)
-        return data
 
     def _check_authorization(self, access_token) -> None:
         if self.session.headers.get("Authorization") is None and access_token is None:
