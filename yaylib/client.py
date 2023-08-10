@@ -337,6 +337,9 @@ r""" video: ビデオを含める投稿タイプ"""
 POST_TYPE_SURVEY = "survey"
 r""" survey: アンケートを含める投稿タイプ"""
 
+POST_TYPE_CALL = "call"
+r""" call: 通話用の投稿タイプ"""
+
 POST_TYPE_SHAREABLE_URL = "shareable_url"
 r""" shareable_url: サークルやスレッド共有用の投稿タイプ"""
 
