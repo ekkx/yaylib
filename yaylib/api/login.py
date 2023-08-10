@@ -121,8 +121,9 @@ def login_with_email(
             return LoginUserResponse(cookies)
 
         elif cookies is not None:
-            message = f"{Colors.WARNING}Cookie file found. The 'secret_key' must be provided to decrypt the credentials.{Colors.RESET}"
-            console_print(message)
+            console_print(
+                f"{Colors.WARNING}Cookie データが見つかりました。「secret_key」を設定することにより、ログインレート制限を回避できます。{Colors.RESET}"
+            )
 
     response = self._make_request(
         "POST",
