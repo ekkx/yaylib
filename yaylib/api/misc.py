@@ -215,7 +215,7 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
 
     """
     if image_type not in Configs.UPLOAD_ITEM_TYPES:
-        raise TypeError("Invalid image type.")
+        raise TypeError(f"Invalid image type. [{image_type}]")
 
     _files = []
 
@@ -223,7 +223,7 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
         filename, extension = os.path.splitext(image_path)
 
         if not is_valid_image_format(extension):
-            raise ValueError("Invalid image format.")
+            raise ValueError(f"Invalid image format. [{filename + extension}]")
 
         image = Image.open(image_path)
         natural_width, natural_height = image.size
