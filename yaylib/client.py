@@ -322,6 +322,25 @@ from .responses import (
 )
 
 
+POST_TYPE_TEXT = "text"
+r""" text: テキストのみ投稿タイプ"""
+
+POST_TYPE_MEDIA = "media"
+r""" media: メディアを含める投稿タイプ"""
+
+POST_TYPE_IMAGE = "image"
+r""" image: 画像を含める投稿タイプ"""
+
+POST_TYPE_VIDEO = "video"
+r""" video: ビデオを含める投稿タイプ"""
+
+POST_TYPE_SURVEY = "survey"
+r""" survey: アンケートを含める投稿タイプ"""
+
+POST_TYPE_SHAREABLE_URL = "shareable_url"
+r""" shareable_url: 埋め込みリンクを含める投稿タイプ"""
+
+
 IMAGE_TYPE_POST = "post"
 r""" post: 投稿に画像をアップロードする際の画像タイプ"""
 
@@ -348,6 +367,10 @@ r""" group_thread_icon: グループ内のスレッド用アイコンをアッ�
 
 IMAGE_TYPE_GROUP_ICON = "group_icon"
 r""" group_icon: グループのアイコンをアップロードする際の画像タイプ"""
+
+
+CALL_TYPE_VOICE = "voice"
+r""" voice: 音声のみの通話タイプ"""
 
 
 class Client(API):
