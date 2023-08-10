@@ -4,7 +4,7 @@ from yaylib import __version__
 name = "yaylib"
 author = "Qvco, Konn"
 author_email = "nikola.desuga@gmail.com"
-description = "同世代と趣味の通話コミュニティ - Yay! (イェイ) で、投稿やタイムラインの取得、リツイートやいいねの実行、フォローや投稿の検索など様々な機能を利用可能なAPIクライアントツールです。"
+description = "同世代と趣味の通話コミュニティ - Yay! (イェイ) で投稿やタイムラインの取得、リツイートやいいねの実行、フォローや投稿の検索など様々な機能をPythonプログラムから利用可能なAPIクライアントツールです。"
 long_description_content_type = "text/markdown"
 license = "MIT"
 url = "https://github.com/qvco/yaylib"
