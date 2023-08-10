@@ -338,7 +338,7 @@ POST_TYPE_SURVEY = "survey"
 r""" survey: アンケートを含める投稿タイプ"""
 
 POST_TYPE_SHAREABLE_URL = "shareable_url"
-r""" shareable_url: 埋め込みリンクを含める投稿タイプ"""
+r""" shareable_url: サークルやスレッド共有用の投稿タイプ"""
 
 
 IMAGE_TYPE_POST = "post"
@@ -370,7 +370,17 @@ r""" group_icon: グループのアイコンをアップロードする際の画
 
 
 CALL_TYPE_VOICE = "voice"
-r""" voice: 音声のみの通話タイプ"""
+r""" voice: 音声通話用の通話タイプ"""
+
+CALL_TYPE_VIDEO = "vdo"
+r""" vdo: ビデオ通話用の通話タイプ"""
+
+
+SHAREABLE_TYPE_GROUP = "group"
+r""" group: サークル用の共有タイプ"""
+
+SHAREABLE_TYPE_THREAD = "thread"
+r""" thread: スレッド用の共有タイプ"""
 
 
 class Client(API):
