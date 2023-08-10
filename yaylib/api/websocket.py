@@ -52,6 +52,15 @@ class WebSocketBaseHandler(object):
         pass
 
     def run(self, ws_token: str):
+        """
+
+        WebSocket接続を開始します。
+
+        Parameters
+        ----------
+            ws_token (str): WebSocketのトークン。
+
+        """
         self.ws = websocket.WebSocketApp(
             url=f"wss://{Configs.YAY_CABLE_HOST}/?token={ws_token}&app_version={Configs.YAY_VERSION_NAME}",
             on_open=self._on_open,
@@ -62,6 +71,7 @@ class WebSocketBaseHandler(object):
         self.ws.run_forever()
 
     def stop(self):
+        """WebSocket接続を停止します。"""
         self.ws.keep_running = False
 
 
