@@ -148,7 +148,7 @@ class API:
                 method, endpoint, params=params, json=payload, headers=headers
             )
 
-            if self.save_cookie_file is True and response.status_code == 401:
+            if response.status_code == 401 and self.save_cookie_file is True:
                 # remove the cookie file and stop the proccessing if refresh token has expired
                 if "/api/v1/oauth/token" in endpoint:
                     os.remove(self.base_path + self.cookie_filename + ".json")
