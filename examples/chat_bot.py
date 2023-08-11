@@ -3,10 +3,7 @@ import yaylib
 
 api = yaylib.Client()
 
-email = ""
-password = ""
-
-api.login(email, password)
+api.login(email="your_email", password="your_password")
 
 
 class ChatBot(yaylib.ChatRoomEventHandler):

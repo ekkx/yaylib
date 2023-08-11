@@ -3,7 +3,7 @@ import yaylib
 
 api = yaylib.Client()
 
-api.login(email="", password="")
+api.login(email="your_email", password="your_password")
 
 
 # 3枚の画像をアップロード

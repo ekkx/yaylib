@@ -45,8 +45,8 @@ class LikeBot:
 
 
 if __name__ == "__main__":
-    email = "メールアドレス"
-    password = "パスワード"
+    email = "your_email"
+    password = "your_password"
     secret_token = None
 
     bot = LikeBot(email, password, secret_token)
