@@ -149,6 +149,7 @@ from .api.misc import (
     upload_image,
     upload_video,
     get_app_config,
+    get_popular_words,
 )
 from .api.post import (
     add_bookmark,
@@ -276,6 +277,7 @@ from .models import (
     Message,
     Post,
     PresignedUrl,
+    PopularWord,
     SharedUrl,
     StickerPack,
     Survey,
@@ -1790,9 +1792,12 @@ class Client(API):
 
         """
         return upload_image(self, image_paths, image_type)
-    
+
     def get_app_config(self) -> ApplicationConfig:
         return get_app_config(self)
+
+    def get_popular_words(self, country_code: str = "jp") -> List[PopularWord]:
+        return get_popular_words(self, country_code)
 
     # -POST
 

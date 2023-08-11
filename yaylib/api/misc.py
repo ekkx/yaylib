@@ -29,7 +29,7 @@ from io import BytesIO
 from typing import List
 
 from ..config import Endpoints, Configs
-from ..models import ApplicationConfig, Attachment, PresignedUrl
+from ..models import ApplicationConfig, Attachment, PresignedUrl, PopularWord
 from ..responses import (
     EmailGrantTokenResponse,
     EmailVerificationPresignedUrlResponse,
@@ -40,7 +40,7 @@ from ..responses import (
     WebSocketTokenResponse,
     ApplicationConfigResponse,
     # BanWordsResponse,
-    # PopularWordsResponse,
+    PopularWordsResponse,
 )
 from ..utils import is_valid_image_format, get_hashed_filename
 
@@ -316,10 +316,10 @@ def get_app_config(self) -> ApplicationConfig:
 #     return response
 
 
-# def get_popular_words(self, country_code: str = "ja"):
-#     response = self._make_request(
-#         "GET",
-#         endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/apps/yay/popular_words",
-#         data_type=PopularWordsResponse,
-#     )
-#     return response
+def get_popular_words(self, country_code: str = "jp") -> List[PopularWord]:
+    response = self._make_request(
+        "GET",
+        endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/apps/yay/popular_words",
+        data_type=PopularWordsResponse,
+    ).popular_words
+    return response

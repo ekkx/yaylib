@@ -1244,3 +1244,19 @@ class ApplicationConfigResponse:
 
     def __repr__(self):
         return f"ApplicationConfigResponse(data={self.data})"
+
+
+class PopularWordsResponse:
+    __slots__ = ("data", "popular_words")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.popular_words = data.get("popular_words")
+        if self.popular_words is not None:
+            self.popular_words = [
+                PopularWord(popular_word) for popular_word in self.popular_words
+            ]
+
+    def __repr__(self):
+        return f"PopularWordsResponse(data={self.data})"
