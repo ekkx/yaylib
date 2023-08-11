@@ -1796,12 +1796,27 @@ class Client(API):
         return upload_image(self, image_paths, image_type)
 
     def get_app_config(self) -> ApplicationConfig:
+        """
+
+        アプリケーションの設定情報を取得します
+
+        """
         return get_app_config(self)
 
     def get_banned_words(self, country_code: str = "jp") -> List[BanWord]:
+        """
+
+        禁止ワードの一覧を取得します
+
+        """
         return get_banned_words(self, country_code)
 
     def get_popular_words(self, country_code: str = "jp") -> List[PopularWord]:
+        """
+
+        人気のワードの一覧を取得します
+
+        """
         return get_popular_words(self, country_code)
 
     # -POST
