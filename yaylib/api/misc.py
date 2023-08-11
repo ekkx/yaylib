@@ -290,3 +290,10 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
 
 def upload_video(self, video_path: str, access_token: str = None):
     pass
+
+
+# config
+
+
+def get_app_config(self):
+    return

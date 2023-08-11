@@ -40,6 +40,7 @@ class Configs:
     YAY_STAGING_HOST_1 = "stg.yay.space"
     YAY_STAGING_HOST_2 = "cas.yay.space"
     YAY_CABLE_HOST = "cable.yay.space"
+    YAY_SETTINGS_HOST = "settings.yay.space"
     YAY_PRODUCTION_HOST = "api.yay.space"
     ID_CARD_CHECK_HOST_PRODUCTION = "idcardcheck.com"
     ID_CARD_CHECK_HOST_STAGING = "stg.idcardcheck.com"
