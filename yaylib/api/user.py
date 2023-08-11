@@ -586,7 +586,7 @@ def search_users(self, access_token: str = None, **params) -> UsersResponse:
     """
     return self._make_request(
         "GET",
-        endpoint=f"{Endpoints.USERS_V1}/search",
+        endpoint=f"{Endpoints.WEB_V1}/users/search",
         params=params,
         data_type=UsersResponse,
         access_token=access_token,
