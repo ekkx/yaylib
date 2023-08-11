@@ -296,4 +296,9 @@ def upload_video(self, video_path: str, access_token: str = None):
 
 
 def get_app_config(self):
-    return
+    response = self._make_request(
+        "GET",
+        endpoint=f"https://{Configs.YAY_CONFIG_HOST}/api/apps/yay",
+        data_type=ApplicationConfigResponse,
+    )
+    return response
