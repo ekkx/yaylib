@@ -302,3 +302,12 @@ def get_app_config(self):
         data_type=ApplicationConfigResponse,
     )
     return response
+
+
+def get_banned_words(self, country_code: str = "ja"):
+    response = self._make_request(
+        "GET",
+        endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/v2/banned_words",
+        data_type=BanWordsResponse,
+    )
+    return response
