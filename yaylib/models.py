@@ -1781,7 +1781,7 @@ class User:
         self.biography = data.get("biography")
         self.gender = data.get("gender")
         self.generation = data.get("generation")
-        self.last_logged_in_at = data.get("last_logged_in_at")
+        self.last_logged_in_at = data.get("last_loggedin_at")
         self.created_at = data.get("created_at")
         self.badge = data.get("title")
         self.followers_count = data.get("followers_count")
