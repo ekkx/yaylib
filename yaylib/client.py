@@ -149,6 +149,7 @@ from .api.misc import (
     upload_image,
     upload_video,
     get_app_config,
+    get_banned_words,
     get_popular_words,
 )
 from .api.post import (
@@ -267,6 +268,7 @@ from .api.user import (
 from .models import (
     ApplicationConfig,
     Attachment,
+    BanWord,
     Bgm,
     ChatRoom,
     ConferenceCall,
@@ -1795,6 +1797,9 @@ class Client(API):
 
     def get_app_config(self) -> ApplicationConfig:
         return get_app_config(self)
+
+    def get_banned_words(self, country_code: str = "jp") -> List[BanWord]:
+        return get_banned_words(self, country_code)
 
     def get_popular_words(self, country_code: str = "jp") -> List[PopularWord]:
         return get_popular_words(self, country_code)

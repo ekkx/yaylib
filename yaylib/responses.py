@@ -1246,6 +1246,20 @@ class ApplicationConfigResponse:
         return f"ApplicationConfigResponse(data={self.data})"
 
 
+class BanWordsResponse:
+    __slots__ = ("data", "ban_words")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.ban_words = data.get("ban_words")
+        if self.ban_words is not None:
+            self.ban_words = [BanWord(ban_word) for ban_word in self.ban_words]
+
+    def __repr__(self):
+        return f"BanWordsResponse(data={self.data})"
+
+
 class PopularWordsResponse:
     __slots__ = ("data", "popular_words")
 
