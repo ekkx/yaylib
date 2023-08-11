@@ -122,6 +122,108 @@ class ApplicationConfig:
         return f"ApplicationConfig(data={self.data})"
 
 
+class ApplicationConfigSettings:
+    __slots__ = (
+        "data",
+        "minimum_app_version_required",
+        "minimum_android_app_version_required",
+        "line_official_account_id",
+        "use_random_message_refresh_rate",
+        "id_card_check_required_group_category_ids",
+        "is_id_card_check_required_blocker_view_enabled",
+        "support_email_address",
+        "minimum_ios_app_version_required",
+        "is_id_card_and_phone_verification_check_for_review_enabled",
+        "minimum_android_version_supported",
+        "is_maintenanced",
+        "promotion_sticker_pack_ids",
+        "minimum_ios_version_supported",
+        "is_direct_vip_purchase_enabled",
+        "is_speed_test_enabled",
+        "is_initial_post_enabled",
+        "is_phone_verification_required_blocker_view_enabled",
+        "latest_android_app_version",
+        "is_web_phone_verification_enabled",
+        "latest_ios_app_version",
+        "max_image_frame_count",
+        "localized_maintenance_url",
+        "ad_tester_user_ids",
+        "should_append_user_id_to_news_url",
+        "is_star_enabled",
+        "news_version",
+        "localized_news_title",
+        "is_chat_websocket_enabled",
+        "is_oauth_enabled",
+        "is_call_moderator_enabled",
+        "is_gift_features_enabled",
+        "is_call_chat_deletion_enabled",
+        "twitter_official_account_id",
+        "is_web_subscription_enabled",
+        "localized_news_url",
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.minimum_app_version_required = data.get("minimum_app_version_required")
+        self.minimum_android_app_version_required = data.get(
+            "minimum_android_app_version_required"
+        )
+        self.line_official_account_id = data.get("line_official_account_id")
+        self.use_random_message_refresh_rate = data.get(
+            "use_random_message_refresh_rate"
+        )
+        self.id_card_check_required_group_category_ids = data.get(
+            "id_card_check_required_group_category_ids"
+        )
+        self.is_id_card_check_required_blocker_view_enabled = data.get(
+            "is_id_card_check_required_blocker_view_enabled"
+        )
+        self.support_email_address = data.get("support_email_address")
+        self.minimum_ios_app_version_required = data.get(
+            "minimum_ios_app_version_required"
+        )
+        self.is_id_card_and_phone_verification_check_for_review_enabled = data.get(
+            "is_id_card_and_phone_verification_check_for_review_enabled"
+        )
+        self.minimum_android_version_supported = data.get(
+            "minimum_android_version_supported"
+        )
+        self.is_maintenanced = data.get("is_maintenanced")
+        self.promotion_sticker_pack_ids = data.get("promotion_sticker_pack_ids")
+        self.minimum_ios_version_supported = data.get("minimum_ios_version_supported")
+        self.is_direct_vip_purchase_enabled = data.get("is_direct_vip_purchase_enabled")
+        self.is_speed_test_enabled = data.get("is_speed_test_enabled")
+        self.is_initial_post_enabled = data.get("is_initial_post_enabled")
+        self.is_phone_verification_required_blocker_view_enabled = data.get(
+            "is_phone_verification_required_blocker_view_enabled"
+        )
+        self.latest_android_app_version = data.get("latest_android_app_version")
+        self.is_web_phone_verification_enabled = data.get(
+            "is_web_phone_verification_enabled"
+        )
+        self.latest_ios_app_version = data.get("latest_ios_app_version")
+        self.max_image_frame_count = data.get("max_image_frame_count")
+        self.localized_maintenance_url = data.get("localized_maintenance_url")
+        self.ad_tester_user_ids = data.get("ad_tester_user_ids")
+        self.should_append_user_id_to_news_url = data.get(
+            "should_append_user_id_to_news_url"
+        )
+        self.is_star_enabled = data.get("is_star_enabled")
+        self.news_version = data.get("news_version")
+        self.localized_news_title = data.get("localized_news_title")
+        self.is_chat_websocket_enabled = data.get("is_chat_websocket_enabled")
+        self.is_oauth_enabled = data.get("is_oauth_enabled")
+        self.is_call_moderator_enabled = data.get("is_call_moderator_enabled")
+        self.is_gift_features_enabled = data.get("is_gift_features_enabled")
+        self.is_call_chat_deletion_enabled = data.get("is_call_chat_deletion_enabled")
+        self.twitter_official_account_id = data.get("twitter_official_account_id")
+        self.is_web_subscription_enabled = data.get("is_web_subscription_enabled")
+        self.localized_news_url = data.get("localized_news_url")
+
+    def __repr__(self):
+        return f"ApplicationConfigSettings(data={self.data})"
+
+
 class Attachment:
     __slots__ = (
         "file",
