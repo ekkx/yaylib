@@ -25,6 +25,7 @@ SOFTWARE.
 from .models import (
     Activity,
     ApplicationConfig,
+    ApplicationConfigSettings,
     BanWord,
     Bgm,
     CallGiftHistory,

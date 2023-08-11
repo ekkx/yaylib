@@ -148,6 +148,7 @@ from .api.misc import (
     verify_device,
     upload_image,
     upload_video,
+    get_app_config,
 )
 from .api.post import (
     add_bookmark,
@@ -263,6 +264,7 @@ from .api.user import (
     unhide_users,
 )
 from .models import (
+    ApplicationConfig,
     Attachment,
     Bgm,
     ChatRoom,
@@ -1788,6 +1790,9 @@ class Client(API):
 
         """
         return upload_image(self, image_paths, image_type)
+    
+    def get_app_config(self) -> ApplicationConfig:
+        return get_app_config(self)
 
     # -POST
 
