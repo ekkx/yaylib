@@ -95,6 +95,33 @@ class Activity:
         return f"Activity(data={self.data})"
 
 
+class ApplicationConfig:
+    __slots__ = (
+        "data",
+        "id",
+        "name",
+        "server_name",
+        "description",
+        "itunes_app_id",
+        "settings",
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.id = data.get("id")
+        self.name = data.get("name")
+        self.server_name = data.get("server_name")
+        self.description = data.get("description")
+        self.itunes_app_id = data.get("itunes_app_id")
+
+        self.settings = data.get("settings")
+        if self.settings is not None:
+            self.settings = ApplicationConfigSettings(self.settings)
+
+    def __repr__(self):
+        return f"ApplicationConfig(data={self.data})"
+
+
 class Attachment:
     __slots__ = (
         "file",

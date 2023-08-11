@@ -24,6 +24,7 @@ SOFTWARE.
 
 from .models import (
     Activity,
+    ApplicationConfig,
     BanWord,
     Bgm,
     CallGiftHistory,
@@ -1228,3 +1229,17 @@ class WebSocketTokenResponse:
 
     def __repr__(self):
         return f"WebSocketTokenResponse(data={self.data})"
+
+
+class ApplicationConfigResponse:
+    __slots__ = ("data", "app")
+
+    def __init__(self, data):
+        self.data = data
+
+        self.app = data.get("app")
+        if self.app is not None:
+            self.app = ApplicationConfig(self.app)
+
+    def __repr__(self):
+        return f"ApplicationConfigResponse(data={self.data})"
