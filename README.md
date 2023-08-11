@@ -92,7 +92,7 @@ pip install -e .
 import yaylib
 
 api = yaylib.Client()
-api.login(email="メールアドレス", password="パスワード")
+api.login(email="your_email", password="your_password")
 
 api.create_post("Hello with yaylib!")
 ```
@@ -103,7 +103,7 @@ api.create_post("Hello with yaylib!")
 import yaylib
 
 api = yaylib.Client()
-api.login(email="メールアドレス", password="パスワード")
+api.login(email="your_email", password="your_password")
 
 api.create_post("Hello with yaylib!", shared_url="https://github.com/qvco/yaylib")
 ```
@@ -114,7 +114,7 @@ api.create_post("Hello with yaylib!", shared_url="https://github.com/qvco/yaylib
 import yaylib
 
 api = yaylib.Client()
-api.login(email="メールアドレス", password="パスワード")
+api.login(email="your_email", password="your_password")
 
 # サーバー上にアップロード
 attachments = api.upload_image(
@@ -122,9 +122,8 @@ attachments = api.upload_image(
     image_paths=["./test1.jpg", "./test2.jpg", "./test3.jpg"],
 )
 
-
 # サーバー上のファイル名を指定する
-# attachmentsが一つ飛ばしなのはオリジナルの画像のみを指定するため
+# attachmentsが一つ飛ばしなのはオリジナル品質の画像のみを指定するため
 api.create_post(
     "Hello with yaylib!",
     attachment_filename=attachments[0].filename,
@@ -156,7 +155,7 @@ for post in timeline.posts:
 import yaylib
 
 api = yaylib.Client()
-api.login(email="メールアドレス", password="パスワード")
+api.login(email="your_email", password="your_password")
 
 timeline = api.get_timeline_by_keyword(
     keyword="プログラミング",
@@ -164,22 +163,21 @@ timeline = api.get_timeline_by_keyword(
 )
 
 for post in timeline.posts:
-    response = api.like(post.id)
-    print(post.id, response.data) # 実行結果を出力
+    api.like(post.id)
 ```
 
-#### ✨ タイムラインのユーザーをフォローする
+#### ✨ 新規ユーザーをフォローする
 
 ```python
 import yaylib
 
 api = yaylib.Client()
-api.login(email="メールアドレス", password="パスワード")
+api.login(email="your_email", password="your_password")
 
-timeline = api.get_timeline(number=15)
+new_users = api.search_users(recently_created=True)
 
-for post in timeline.posts:
-    api.follow_user(post.user.id)
+for new_user in new_users.users:
+    api.follow_user(new_user.id)
 ```
 
 #### ✨ リアルタイムでチャットを取得する
@@ -188,11 +186,10 @@ for post in timeline.posts:
 import yaylib
 
 api = yaylib.Client()
-api.login(email="メールアドレス", password="パスワード")
+api.login(email="your_email", password="your_password")
 
 
 class ChatBot(yaylib.ChatRoomEventHandler):
-
     def on_request(self, total_count: int):
         # チャットリクエストを承認する
         chat_room = api.get_chat_requests(number=1).chat_rooms[0]
