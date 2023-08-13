@@ -356,7 +356,7 @@ class API:
         if email is not None and email != cookies.get("email"):
             cookies = None if email != cookies.get("email") else cookies
 
-        if self.fernet is not None and cookies is not None:
+        if self.encrypt_cookie and cookies is not None:
             cookies = self.decrypt_cookies(self.fernet, cookies)
 
         return cookies
@@ -369,7 +369,8 @@ class API:
         if result is False:
             raise ValueError("Invalid cookie properties.")
 
-        cookies = self.encrypt_cookies(self.fernet, cookies)
+        if self.encrypt_cookie:
+            cookies = self.encrypt_cookies(self.fernet, cookies)
 
         with open(self.base_path + self.cookie_filename + ".json", "w") as f:
             json.dump(cookies, f, indent=4)
