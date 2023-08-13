@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import hashlib
 from datetime import datetime
 from cryptography.fernet import Fernet
 
@@ -115,27 +116,32 @@ def login_with_email(
 
     """
     if self.save_cookie_file:
-        loaded_cookies = self.load_cookies(email)
+        loaded_cookies = self.load_cookies()
+        hashed_email = hashlib.sha256(email.encode()).hexdigest()
 
-        if loaded_cookies is not None:
+        if loaded_cookies is not None and loaded_cookies.get("email") == hashed_email:
             if not self.encrypt_cookie:
                 self.cookies = loaded_cookies
+                # the email is reassigned here because it's hashed
+                self.email = email
                 self.session.headers.setdefault(
                     "Authorization", f"Bearer {self.access_token}"
                 )
                 self.logger.info(f"Successfully logged in as '{self.user_id}'")
-                return LoginUserResponse(loaded_cookies)
+                return LoginUserResponse(self.cookies)
 
             if secret_key is not None:
                 self.encrypt_cookie = True
                 self.secret_key = secret_key
                 self.fernet = Fernet(secret_key)
                 self.cookies = self.decrypt_cookies(self.fernet, loaded_cookies)
+                # the email is reassigned here because it's hashed
+                self.email = email
                 self.session.headers.setdefault(
                     "Authorization", f"Bearer {self.access_token}"
                 )
                 self.logger.info(f"Successfully logged in as '{self.user_id}'")
-                return LoginUserResponse(loaded_cookies)
+                return LoginUserResponse(self.cookies)
 
             console_print(
                 f"{Colors.WARNING}Cookie データが見つかりました。「secret_key」を設定することにより、ログインレート制限を回避できます。{Colors.RESET}"

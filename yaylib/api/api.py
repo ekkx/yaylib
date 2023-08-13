@@ -271,6 +271,10 @@ class API:
     def email(self):
         return self.cookies.get("email")
 
+    @email.setter
+    def email(self, email):
+        self._cookies["email"] = email
+
     @property
     def secret_key(self):
         return self._secret_key
@@ -341,7 +345,7 @@ class API:
             ).digest()
         ).decode("utf-8")
 
-    def load_cookies(self, email=None):
+    def load_cookies(self):
         if not os.path.exists(self.base_path + self.cookie_filename + ".json"):
             return None
 
@@ -353,9 +357,6 @@ class API:
             os.remove(self.base_path + self.cookie_filename + ".json")
             raise ValueError("Invalid cookie properties.")
 
-        if email is not None and email != loaded_cookies.get("email"):
-            return None
-
         if self.encrypt_cookie and self.fernet is not None:
             loaded_cookies = self.decrypt_cookies(self.fernet, loaded_cookies)
 
@@ -364,7 +365,10 @@ class API:
     def save_cookies(self, cookies):
         self.cookies = cookies.copy()
 
-        if cookies.get("email") is None:
+        email = cookies.get("email")
+        if email is not None:
+            cookies["email"] = hashlib.sha256(email.encode()).hexdigest()
+        else:
             cookies["email"] = self.load_cookies().get("email")
 
         result = all(key in cookies for key in Configs.COOKIE_PROPERTIES)
