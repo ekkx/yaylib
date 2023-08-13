@@ -153,7 +153,7 @@ def login_with_email(
     if response.access_token is None:
         raise ForbiddenError("Invalid email or password.")
 
-    self.session.headers.setdefault("Authorization", f"Bearer a")
+    self.session.headers.setdefault("Authorization", f"Bearer {response.access_token}")
     self.logger.info(f"Successfully logged in as '{response.user_id}'")
 
     if self.save_cookie_file:
@@ -169,7 +169,7 @@ def login_with_email(
             )
 
         self.cookies = {
-            "access_token": "a",
+            "access_token": response.access_token,
             "refresh_token": response.refresh_token,
             "user_id": response.user_id,
             "email": email,

@@ -362,6 +362,8 @@ class API:
         return loaded_cookies
 
     def save_cookies(self, cookies):
+        self.cookies = cookies.copy()
+
         if cookies.get("email") is None:
             cookies["email"] = self.load_cookies().get("email")
 
