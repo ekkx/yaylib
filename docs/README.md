@@ -87,6 +87,7 @@ api.login(email, password)
 そうすると、初回実行時に`secret_key`という鍵がターミナルに表示されます。
 
 ![image](https://github.com/qvco/yaylib/assets/77382767/32b3f6c6-833c-4e81-abbe-30a73b0233b9)
+
 ※ 緑色の文字列が`secret_key`。
 
 保存した認証情報を復号化し、再利用するには`secret_key`を`login()`メソッドの引数に設定します。
