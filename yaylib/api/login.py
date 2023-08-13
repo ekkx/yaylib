@@ -184,7 +184,8 @@ def login_with_email(
             "email": email,
         }
 
-        self.save_cookies(self.cookies)
+        cookies = self.cookies.copy()
+        self.save_cookies(cookies)
 
     return response
 

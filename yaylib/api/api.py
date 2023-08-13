@@ -176,7 +176,9 @@ class API:
                         "user_id": response.user_id,
                         "email": self.email,
                     }
-                    self.save_cookies(self.cookies)
+
+                    cookies = self.cookies.copy()
+                    self.save_cookies(cookies)
 
                     self.session.headers[
                         "Authorization"
@@ -363,8 +365,6 @@ class API:
         return loaded_cookies
 
     def save_cookies(self, cookies):
-        self.cookies = cookies.copy()
-
         email = cookies.get("email")
         if email is not None:
             cookies["email"] = hashlib.sha256(email.encode()).hexdigest()
