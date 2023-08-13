@@ -61,43 +61,62 @@ pip install -e .
 ```python
 import yaylib
 
+api = yaylib.Client()
+
 email = "メールアドレス"
 password = "パスワード"
 
-api = yaylib.Client()
 api.login(email, password)
 ```
 
-「yaylib」ではログインのレート制限を回避するために、ローカルストレージに保存された認証情報を再利用します。
+「yaylib」ではログインの回数制限を回避するために、ローカルストレージに保存された認証情報を再利用します。
 
-その時に必要になるのが、認証情報を復号化するための`secret_key`という鍵です。
+他人に見られる可能性のある開発環境下などで、認証情報を暗号化して保存したい場合は、`Client`クラスを初期化する際に、`encrypt_cookie`引数を`True`に設定します。
 
 ```python
 import yaylib
 
+api = yaylib.Client(encrypt_cookie=True)
+
 email = "メールアドレス"
 password = "パスワード"
-secret_key = "wFTwqRSddPzcfs_U2D1NIxFueWwPToVxjA3woDopKWk="
 
-api = yaylib.Client()
+api.login(email, password)
+```
+
+そうすると、初回実行時に`secret_key`という鍵がターミナルに表示されます。
+
+![image](https://github.com/qvco/yaylib/assets/77382767/32b3f6c6-833c-4e81-abbe-30a73b0233b9)
+※ 緑色の文字列が`secret_key`。
+
+保存した認証情報を復号化し、再利用するには`secret_key`を`login()`メソッドの引数に設定します。
+
+```python
+import yaylib
+
+api = yaylib.Client(encrypt_cookie=True)
+
+email = "メールアドレス"
+password = "パスワード"
+secret_key = "lCo3vhaCQOaBxRdMe-ZyTUiTUjiRkrPX7vQR2nDezxc="
+
 api.login(email, password, secret_key)
 ```
 
-`secret_key`は初回ログイン時にターミナルに表示されます。
-
-また、Client クラスの secret_key フィールドにアクセスすることで取得できます。
+また、`secret_key`を取得する代替方法として、`Client`クラスの`secret_key`プロパティにアクセスすることで取得することも出来ます。
 
 ```python
 import yaylib
 
+api = yaylib.Client(encrypt_cookie=True)
+
 email = "メールアドレス"
 password = "パスワード"
 
-api = yaylib.Client()
 api.login(email, password)
 
 api.secret_key # ログインした後にsecret_keyを取得
->>> wFTwqRSddPzcfs_U2D1NIxFueWwPToVxjA3woDopKWk=
+>>> lCo3vhaCQOaBxRdMe-ZyTUiTUjiRkrPX7vQR2nDezxc=
 ```
 
 ### Client クラスについて
