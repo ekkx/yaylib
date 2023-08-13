@@ -107,20 +107,33 @@ def is_valid_token(self, access_token: str):
 def login_with_email(
     self, email: str, password: str, secret_key: str = None
 ) -> LoginUserResponse:
+    """
+
+    ローカルストレージのトークンの暗号化を利用するには、`Client` クラスの `encrypt_cookie` 引数を`True` に設定してください。
+
+    """
     if self.save_cookie_file:
-        cookies = self.load_cookies(email)
+        loaded_cookies = self.load_cookies(email)
 
-        if cookies is not None and secret_key is not None:
-            self.secret_key = secret_key
-            self.fernet = Fernet(secret_key)
-            self.cookies = self.decrypt_cookies(self.fernet, cookies)
-            self.session.headers.setdefault(
-                "Authorization", f"Bearer {self.access_token}"
-            )
-            self.logger.info(f"Successfully logged in as '{self.user_id}'")
-            return LoginUserResponse(cookies)
+        if loaded_cookies is not None:
+            if not self.encrypt_cookie:
+                self.cookies = loaded_cookies
+                self.session.headers.setdefault(
+                    "Authorization", f"Bearer {self.access_token}"
+                )
+                self.logger.info(f"Successfully logged in as '{self.user_id}'")
+                return LoginUserResponse(loaded_cookies)
 
-        elif cookies is not None:
+            if secret_key is not None:
+                self.secret_key = secret_key
+                self.fernet = Fernet(secret_key)
+                self.cookies = self.decrypt_cookies(self.fernet, loaded_cookies)
+                self.session.headers.setdefault(
+                    "Authorization", f"Bearer {self.access_token}"
+                )
+                self.logger.info(f"Successfully logged in as '{self.user_id}'")
+                return LoginUserResponse(loaded_cookies)
+
             console_print(
                 f"{Colors.WARNING}Cookie データが見つかりました。「secret_key」を設定することにより、ログインレート制限を回避できます。{Colors.RESET}"
             )
@@ -140,22 +153,23 @@ def login_with_email(
     if response.access_token is None:
         raise ForbiddenError("Invalid email or password.")
 
-    self.session.headers.setdefault("Authorization", f"Bearer {response.access_token}")
+    self.session.headers.setdefault("Authorization", f"Bearer a")
     self.logger.info(f"Successfully logged in as '{response.user_id}'")
 
     if self.save_cookie_file:
-        secret_key = Fernet.generate_key()
-        self.secret_key = secret_key.decode()
-        self.fernet = Fernet(secret_key)
+        if self.encrypt_cookie:
+            secret_key = Fernet.generate_key()
+            self.secret_key = secret_key.decode()
+            self.fernet = Fernet(secret_key)
 
-        console_print(
-            f"Your 'secret_key' for {Colors.BOLD + email + Colors.RESET} is: {Colors.OKGREEN + secret_key.decode() + Colors.RESET}",
-            "Please copy and securely store this key in a safe location.",
-            "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
-        )
+            console_print(
+                f"Your 'secret_key' for {Colors.BOLD + email + Colors.RESET} is: {Colors.OKGREEN + secret_key.decode() + Colors.RESET}",
+                "Please copy and securely store this key in a safe location.",
+                "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
+            )
 
         self.cookies = {
-            "access_token": response.access_token,
+            "access_token": "a",
             "refresh_token": response.refresh_token,
             "user_id": response.user_id,
             "email": email,

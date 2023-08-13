@@ -164,26 +164,26 @@ class API:
                     # refresh access token using the stored refresh token
                     self.logger.debug("Access token expired. Refreshing tokens...")
 
-                    if self.fernet is not None:
-                        response = get_token(
-                            self,
-                            grant_type="refresh_token",
-                            refresh_token=self.refresh_token,
-                        )
-                        self.cookies = {
-                            "access_token": response.access_token,
-                            "refresh_token": response.refresh_token,
-                            "user_id": response.user_id,
-                            "email": self.email,
-                        }
-                        self.save_cookies(self.cookies)
+                    response = get_token(
+                        self,
+                        grant_type="refresh_token",
+                        refresh_token=self.refresh_token,
+                    )
 
-                        self.session.headers[
-                            "Authorization"
-                        ] = f"Bearer {response.access_token}"
+                    self.cookies = {
+                        "access_token": response.access_token,
+                        "refresh_token": response.refresh_token,
+                        "user_id": response.user_id,
+                        "email": self.email,
+                    }
+                    self.save_cookies(self.cookies)
 
-                        # continue to the next retry iteration
-                        continue
+                    self.session.headers[
+                        "Authorization"
+                    ] = f"Bearer {response.access_token}"
+
+                    # continue to the next retry iteration
+                    continue
 
                 else:
                     os.remove(self.base_path + self.cookie_filename + ".json")
@@ -346,20 +346,20 @@ class API:
             return None
 
         with open(self.base_path + self.cookie_filename + ".json", "r") as f:
-            cookies = json.load(f)
+            loaded_cookies = json.load(f)
 
-        result = all(key in cookies for key in Configs.COOKIE_PROPERTIES)
+        result = all(key in loaded_cookies for key in Configs.COOKIE_PROPERTIES)
         if result is False:
             os.remove(self.base_path + self.cookie_filename + ".json")
             raise ValueError("Invalid cookie properties.")
 
-        if email is not None and email != cookies.get("email"):
-            cookies = None if email != cookies.get("email") else cookies
+        if email is not None and email != loaded_cookies.get("email"):
+            return None
 
-        if self.encrypt_cookie and cookies is not None:
-            cookies = self.decrypt_cookies(self.fernet, cookies)
+        if self.encrypt_cookie and self.fernet is not None:
+            loaded_cookies = self.decrypt_cookies(self.fernet, loaded_cookies)
 
-        return cookies
+        return loaded_cookies
 
     def save_cookies(self, cookies):
         if cookies.get("email") is None:
@@ -369,7 +369,7 @@ class API:
         if result is False:
             raise ValueError("Invalid cookie properties.")
 
-        if self.encrypt_cookie:
+        if self.encrypt_cookie and self.fernet is not None:
             cookies = self.encrypt_cookies(self.fernet, cookies)
 
         with open(self.base_path + self.cookie_filename + ".json", "w") as f:
