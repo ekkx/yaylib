@@ -2,18 +2,22 @@ import yaylib
 
 
 api = yaylib.Client()
-
 api.login(email="your_email", password="your_password")
 
+# 画像のパスを指定
+image_paths = [
+    "./test1.jpg",
+    "./test2.jpg",
+    "./test3.jpg",
+]
 
-# 3枚の画像をアップロード
+# サーバー上にアップロード
 attachments = api.upload_image(
     image_type=yaylib.IMAGE_TYPE_POST,
-    image_paths=["./test1.jpg", "./test2.jpg", "./test3.jpg"],
+    image_paths=image_paths,
 )
 
-
-# 投稿や設定する際にサーバー上のファイル名をそれぞれ指定する
+# サーバー上のファイル名を指定する
 # attachmentsが一つ飛ばしなのはオリジナル品質の画像のみを指定するため
 api.create_post(
     "Hello with yaylib!",
