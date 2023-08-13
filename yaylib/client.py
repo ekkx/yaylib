@@ -412,6 +412,7 @@ class Client(API):
         - err_lang: str - (optional)
         - base_path: str - (optional)
         - save_cookie_file: bool - (optional)
+        - encrypt_cookie: bool - (optional)
         - cookie_filename: str - (optional)
         - loglevel: int - (optional)
 

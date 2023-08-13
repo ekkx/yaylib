@@ -109,6 +109,8 @@ def login_with_email(
 ) -> LoginUserResponse:
     """
 
+    メールアドレスでログインします
+
     ローカルストレージのトークンの暗号化を利用するには、`Client` クラスの `encrypt_cookie` 引数を`True` に設定してください。
 
     """

@@ -160,6 +160,12 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>クッキーを保存するか否か</td>
 	</tr>
     <tr>
+		<td><code>encrypt_cookie</code></td>
+		<td><code>bool</code></td>
+		<td><code>False</code></td>
+		<td>暗号化してクッキーを保存するか否か</td>
+	</tr>
+    <tr>
 		<td><code>cookie_filename</code></td>
 		<td><code>str</code></td>
 		<td><code>cookies</code></td>
