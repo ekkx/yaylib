@@ -64,6 +64,7 @@ class API:
         err_lang="ja",
         base_path=current_path + "/config/",
         save_cookie_file=True,
+        encrypt_cookie=False,
         cookie_filename="cookies",
         loglevel=logging.INFO,
     ):
@@ -85,6 +86,7 @@ class API:
         self.err_lang = err_lang
         self.base_path = base_path
         self.save_cookie_file = save_cookie_file
+        self.encrypt_cookie = encrypt_cookie
         self.cookie_filename = cookie_filename
         self._cookies = {}
 
@@ -282,15 +284,6 @@ class API:
         return Configs.YAY_VERSION_NAME
 
     @staticmethod
-    def _construct_response(data, data_type):
-        if data_type is not None:
-            if isinstance(data, list):
-                data = [data_type(result) for result in data]
-            elif data is not None:
-                data = data_type(data)
-        return data
-
-    @staticmethod
     def encrypt_cookies(fernet, cookies):
         access_token = cookies.get("access_token")
         refresh_token = cookies.get("refresh_token")
@@ -313,6 +306,15 @@ class API:
             }
         )
         return cookies
+
+    @staticmethod
+    def _construct_response(data, data_type):
+        if data_type is not None:
+            if isinstance(data, list):
+                data = [data_type(result) for result in data]
+            elif data is not None:
+                data = data_type(data)
+        return data
 
     @staticmethod
     def generate_uuid(uuid_type=True):
