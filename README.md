@@ -116,10 +116,17 @@ import yaylib
 api = yaylib.Client()
 api.login(email="your_email", password="your_password")
 
+# 画像のパスを指定
+image_paths = [
+    "./test1.jpg",
+    "./test2.jpg",
+    "./test3.jpg",
+]
+
 # サーバー上にアップロード
 attachments = api.upload_image(
     image_type=yaylib.IMAGE_TYPE_POST,
-    image_paths=["./test1.jpg", "./test2.jpg", "./test3.jpg"],
+    image_paths=image_paths,
 )
 
 # サーバー上のファイル名を指定する
@@ -192,9 +199,10 @@ api.login(email="your_email", password="your_password")
 class ChatBot(yaylib.ChatRoomEventHandler):
     def on_request(self, total_count: int):
         # チャットリクエストを承認する
-        chat_room = api.get_chat_requests(number=1).chat_rooms[0]
-        api.accept_chat_requests(chat_room_ids=[chat_room.id])
-        self.on_message(chat_room)
+        chat_rooms = api.get_chat_requests()
+        for room in chat_rooms.chat_rooms:
+            api.accept_chat_requests(chat_room_ids=[room.id])
+        self.on_message(chat_rooms.chat_rooms[0])
 
     def on_message(self, chat_room):
         # メッセージを出力する
