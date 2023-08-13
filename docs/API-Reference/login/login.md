@@ -2,7 +2,9 @@
 
 ログインするメソッドです。戻り値として認証情報が渡されます。
 
-認証情報はローカルストレージに暗号化された状態で保存され、次回のログイン処理を省略します。
+認証情報はローカルストレージに保存され、次回のログイン処理を省略します。
+
+認証情報を暗号化して保存するには、`Client`クラスを初期化する際に、`encrypt_cookie`引数を`True`に設定してください。
 
 認証情報を復号化するには、初回ログイン時に生成される`secret_key`を引数に設定します。
 
@@ -41,22 +43,47 @@
 
 ### Examples
 
-初回実行時:
+- 認証情報を暗号化しない場合
 
 ```python
-email = "hello@example.com"
-password = "password"
+import yaylib
+
+api = yaylib.Client()
+
+email = "your_email"
+password = "your_password"
 
 api.login(email, password)
 
->>> Your 'secret_key' for hello@example.com is: wFTwqRSddPzcfs_U2D1NIxFueWwPToVxjA3woDopKWk=
+>>> INFO - Successfully logged in as '1826393'
+```
+
+- 認証情報を暗号化する場合
+
+初回実行時:
+
+```python
+import yaylib
+
+api = yaylib.Client(encrypt_cookie=True)
+
+email = "your_email"
+password = "your_password"
+
+api.login(email, password)
+
+>>> Your 'secret_key' for your_email is: wFTwqRSddPzcfs_U2D1NIxFueWwPToVxjA3woDopKWk=
 ```
 
 以降は`secret_key`を引数に設定します。
 
 ```python
-email = "hello@example.com"
-password = "password"
+import yaylib
+
+api = yaylib.Client(encrypt_cookie=True)
+
+email = "your_email"
+password = "your_password"
 secret_key = "wFTwqRSddPzcfs_U2D1NIxFueWwPToVxjA3woDopKWk="
 
 api.login(email, password, secret_key)
