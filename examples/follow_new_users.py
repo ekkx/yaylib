@@ -1,8 +1,15 @@
+# 新規ユーザーをフォローするサンプルコード
+
+
+email = "your_email"
+password = "your_password"
+
+
 import yaylib
 
 api = yaylib.Client()
 
-api.login(email="your_email", password="your_password")
+api.login(email, password)
 
 new_users = api.search_users(recently_created=True)
 

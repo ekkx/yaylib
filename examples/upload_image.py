@@ -1,8 +1,16 @@
+# ローカルの画像をアップロードするサンプルコード
+# 例): 画像を添付して投稿する場合
+
+
+email = "your_email"
+password = "your_password"
+
+
 import yaylib
 
 
 api = yaylib.Client()
-api.login(email="your_email", password="your_password")
+api.login(email, password)
 
 # 画像のパスを指定
 image_paths = [
@@ -11,11 +19,11 @@ image_paths = [
     "./test3.jpg",
 ]
 
+# 画像の使い道を指定
+image_type = yaylib.IMAGE_TYPE_POST
+
 # サーバー上にアップロード
-attachments = api.upload_image(
-    image_type=yaylib.IMAGE_TYPE_POST,
-    image_paths=image_paths,
-)
+attachments = api.upload_image(image_paths, image_type)
 
 # サーバー上のファイル名を指定する
 # attachmentsが一つ飛ばしなのはオリジナル品質の画像のみを指定するため

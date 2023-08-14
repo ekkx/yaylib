@@ -1,3 +1,10 @@
+# タイムラインのいいねボット用のサンプルコード
+
+
+email = "your_email"
+password = "your_password"
+
+
 import time
 import yaylib
 
@@ -45,9 +52,5 @@ class LikeBot:
 
 
 if __name__ == "__main__":
-    email = "your_email"
-    password = "your_password"
-    secret_token = None
-
-    bot = LikeBot(email, password, secret_token)
+    bot = LikeBot(email, password)
     bot.run()

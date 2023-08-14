@@ -1,11 +1,15 @@
-import yaylib
+# 投稿でユーザーをメンションするサンプルコード
+# 例): ユーザーIDが 12345 のユーザーをメンションする場合
 
+
+email = "your_email"
+password = "your_password"
+
+
+import yaylib
 
 api = yaylib.Client()
 
-api.login(email="your_email", password="your_password")
+api.login(email, password)
 
-api.create_post(
-    # IDが 123 のユーザーをメンションする場合
-    text=f"{api.mention(123)}さん、お元気ですか？"
-)
+api.create_post(f"{api.mention(12345)}さん、お元気ですか？")
