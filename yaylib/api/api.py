@@ -177,6 +177,7 @@ class API:
                         "email": self.email,
                     }
 
+                    # copy the cookies to ensure its value remains unchanged during encryption
                     cookies = self.cookies.copy()
                     self.save_cookies(cookies)
 
