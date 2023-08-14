@@ -131,7 +131,6 @@ def login_with_email(
                 return LoginUserResponse(self.cookies)
 
             if secret_key is not None:
-                self.encrypt_cookie = True
                 self.secret_key = secret_key
                 self.fernet = Fernet(secret_key)
                 self.cookies = self.decrypt_cookies(self.fernet, loaded_cookies)
