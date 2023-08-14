@@ -25,12 +25,12 @@ SOFTWARE.
 import base64
 import hashlib
 import hmac
+import httpx
 import json
 import logging
 import os
 import time
 import uuid
-import httpx
 
 from .login import get_token
 from ..config import Configs, ErrorType, ErrorMessage
@@ -121,7 +121,7 @@ class API:
         headers=None,
         access_token=None,
     ):
-        headers = headers or self.session.headers
+        headers = headers or self.session.headers.copy()
 
         if access_token is not None:
             headers["Authorization"] = f"Bearer {access_token}"
