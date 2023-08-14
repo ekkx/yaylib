@@ -24,9 +24,10 @@ SOFTWARE.
 
 import os
 import httpx
-from PIL import Image
 from io import BytesIO
+from PIL import Image
 from typing import List
+from urllib import parse
 
 from ..config import Endpoints, Configs
 from ..models import ApplicationConfig, Attachment, BanWord, PresignedUrl, PopularWord
@@ -287,7 +288,7 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
 
     for x in _files:
         p_url = next(
-            (p.url for p in res_presigned_url if p.filename == x.filename), None
+            (p.url for p in res_presigned_url if x.filename in p.filename), None
         )
         if not p_url:
             continue
@@ -298,6 +299,8 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
 
         response = httpx.put(p_url, data=image_data.read())
         response.raise_for_status()
+
+        x.filename = parse.urlsplit(p_url).path.replace("/uploads/", "")
 
         res_upload.append(x)
 
