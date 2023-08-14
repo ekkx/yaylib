@@ -45,17 +45,6 @@ class Configs:
     ID_CARD_CHECK_HOST_PRODUCTION = "idcardcheck.com"
     ID_CARD_CHECK_HOST_STAGING = "stg.idcardcheck.com"
     COOKIE_PROPERTIES = ["access_token", "refresh_token", "user_id", "email"]
-    UPLOAD_ITEM_TYPES = [
-        "post",
-        "chat_message",
-        "chat_background",
-        "report",
-        "user_avatar",
-        "user_cover",
-        "group_cover",
-        "group_thread_icon",
-        "group_icon",
-    ]
     USER_AGENT = "android 11 (3.5x 1440x2960 Galaxy S9)"
     REQUEST_HEADERS = {
         "Host": YAY_PRODUCTION_HOST,

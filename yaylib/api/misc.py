@@ -45,6 +45,19 @@ from ..responses import (
 from ..utils import is_valid_image_format, get_hashed_filename
 
 
+upload_item_types = [
+    "post",
+    "chat_message",
+    "chat_background",
+    "report",
+    "user_avatar",
+    "user_cover",
+    "group_cover",
+    "group_thread_icon",
+    "group_icon",
+]
+
+
 def accept_policy_agreement(self, type: str, access_token: str = None):
     response = self._make_request(
         "POST",
@@ -217,7 +230,7 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
     >>> )
 
     """
-    if image_type not in Configs.UPLOAD_ITEM_TYPES:
+    if image_type not in upload_item_types:
         raise TypeError(f"Invalid image type. [{image_type}]")
 
     _files = []
