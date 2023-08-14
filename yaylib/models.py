@@ -253,17 +253,6 @@ class Attachment:
         self.natural_height = natural_height
         self.is_thumb = is_thumb
 
-    def to_dict(self):
-        return {
-            "file": self.file,
-            "filename": self.filename,
-            "original_file_name": self.original_file_name,
-            "original_file_extension": self.original_file_extension,
-            "natural_width": self.natural_width,
-            "natural_height": self.natural_height,
-            "is_thumb": self.is_thumb,
-        }
-
     def __repr__(self):
         return f"Attachment(filename={self.filename})"
 
