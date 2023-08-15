@@ -294,7 +294,10 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
             continue
 
         image_data = BytesIO()
-        image.save(image_data, format=x.file.format)
+        if x.file.format == "GIF" and x.file.is_animated:
+            x.file.save(image_data, format=x.file.format, save_all=True)
+        else:
+            x.file.save(image_data, format=x.file.format)
         image_data.seek(0)
 
         response = httpx.put(p_url, data=image_data.read())

@@ -23,7 +23,6 @@ def get_all_followings(api):
 
 
 def unfollow_user(api, user_id, max_retries=7):
-    # フォロー解除が成功するまで同じユーザーに対して繰り返しリトライ
     retries = 0
     success = False
     while not success and retries < max_retries:

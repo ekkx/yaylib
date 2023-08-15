@@ -6,6 +6,7 @@ _.py
 _config.py
 
 *.jpg
+*.gif
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
