@@ -127,7 +127,6 @@ from .api.login import (
     change_email,
     change_password,
     get_token,
-    is_valid_token,
     login_with_email,
     logout,
     resend_confirm_email,
@@ -1600,14 +1599,6 @@ class Client(API):
         return withdraw_ownership_offer(self, group_id, user_id, access_token)
 
     # -LOGIN
-
-    def is_valid_token(self, access_token: str):
-        """
-
-        アクセストークンが有効か検証します
-
-        """
-        return is_valid_token(self, access_token)
 
     def change_password(
         self, current_password: str, new_password: str, access_token: str = None

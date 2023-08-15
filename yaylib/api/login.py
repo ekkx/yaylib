@@ -95,16 +95,6 @@ def get_token(
     )
 
 
-def is_valid_token(self, access_token: str):
-    headers = self.session.headers
-    headers.setdefault("Authorization", f"Bearer {access_token}")
-    try:
-        self.get_web_socket_token(headers)
-        return True
-    except AuthenticationError:
-        return False
-
-
 def login_with_email(
     self, email: str, password: str, secret_key: str = None
 ) -> LoginUserResponse:

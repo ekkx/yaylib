@@ -43,6 +43,7 @@ from ..errors import (
     RateLimitError,
     YayServerError,
 )
+from ..utils import Colors
 
 try:
     from json.decoder import JSONDecodeError
@@ -121,7 +122,7 @@ class API:
         headers=None,
         access_token=None,
     ):
-        headers = headers or self.session.headers.copy()
+        headers = headers or self.session.headers
 
         if access_token is not None:
             headers["Authorization"] = f"Bearer {access_token}"
@@ -140,7 +141,7 @@ class API:
 
             self.logger.debug(
                 "Making API request:\n\n"
-                f"{method}: {endpoint}\n\n"
+                f"{Colors.HEADER}{method}: {endpoint}{Colors.RESET}\n\n"
                 f"Parameters: {params}\n\n"
                 f"Headers: {headers}\n\n"
                 f"Body: {payload}\n"
@@ -148,6 +149,13 @@ class API:
 
             response = self.session.request(
                 method, endpoint, params=params, json=payload, headers=headers
+            )
+
+            self.logger.debug(
+                "Received API response:\n\n"
+                f"Status Code: {response.status_code}\n\n"
+                f"Headers: {response.headers}\n\n"
+                f"Response: {response.text}\n"
             )
 
             if response.status_code == 401 and self.save_cookie_file is True:
@@ -209,13 +217,6 @@ class API:
 
         if response is None:
             return None
-
-        self.logger.debug(
-            "Received API response:\n\n"
-            f"Status Code: {response.status_code}\n\n"
-            f"Headers: {response.headers}\n\n"
-            f"Response: {response.text}\n"
-        )
 
         try:
             formatted_response = response.json()
