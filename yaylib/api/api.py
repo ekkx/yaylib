@@ -122,7 +122,7 @@ class API:
         headers=None,
         access_token=None,
     ):
-        headers = headers or self.session.headers
+        headers = headers or self.session.headers.copy()
 
         if access_token is not None:
             headers["Authorization"] = f"Bearer {access_token}"
@@ -188,6 +188,9 @@ class API:
                     # copy the cookies to ensure its value remains unchanged during encryption
                     cookies = self.cookies.copy()
                     self.save_cookies(cookies)
+
+                    # for the next retry
+                    headers["Authorization"] = f"Bearer {response.access_token}"
 
                     self.session.headers[
                         "Authorization"
