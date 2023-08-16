@@ -269,7 +269,7 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
             is_thumb=True,
         )
 
-        uuid = self.generate_uuid()[:8]
+        uuid = self.generate_uuid(False)[:16]
 
         original_attachment.filename = get_hashed_filename(
             original_attachment, image_type, key, uuid
