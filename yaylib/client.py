@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import hashlib
+
+from cryptography.fernet import Fernet
 from typing import Dict, List, Union
 
 from .api import API
@@ -264,6 +267,7 @@ from .api.user import (
     hide_user,
     unhide_users,
 )
+from .errors import ForbiddenError
 from .models import (
     ApplicationConfig,
     Attachment,
@@ -325,6 +329,7 @@ from .responses import (
     UsersByTimestampResponse,
     UserTimestampResponse,
 )
+from .utils import Colors, console_print
 
 
 POST_TYPE_TEXT = "text"
@@ -1636,7 +1641,75 @@ class Client(API):
 
 
         """
-        return login_with_email(self, email, password, secret_key)
+        if self.save_cookie_file:
+            loaded_cookies = self.load_cookies()
+            hashed_email = hashlib.sha256(email.encode()).hexdigest()
+
+            if (
+                loaded_cookies is not None
+                and loaded_cookies.get("email") == hashed_email
+            ):
+                if not self.encrypt_cookie:
+                    self.cookies = loaded_cookies
+                    # email property is reassigned here because it's hashed
+                    self.email = email
+                    self.session.headers.setdefault(
+                        "Authorization", f"Bearer {self.access_token}"
+                    )
+                    self.logger.info(f"Successfully logged in as '{self.user_id}'")
+                    return LoginUserResponse(self.cookies)
+
+                if secret_key is not None:
+                    self.secret_key = secret_key
+                    self.fernet = Fernet(secret_key)
+                    self.cookies = self.decrypt_cookies(self.fernet, loaded_cookies)
+                    # email property is reassigned here because it's hashed
+                    self.email = email
+                    self.session.headers.setdefault(
+                        "Authorization", f"Bearer {self.access_token}"
+                    )
+                    self.logger.info(f"Successfully logged in as '{self.user_id}'")
+                    return LoginUserResponse(self.cookies)
+
+                console_print(
+                    f"{Colors.WARNING}Cookie データが見つかりました。"
+                    + f"「secret_key」を設定することにより、ログインレート制限を回避できます。{Colors.RESET}"
+                )
+
+        response = login_with_email(self, email, password)
+
+        if response.access_token is None:
+            raise ForbiddenError("Invalid email or password.")
+
+        self.session.headers.setdefault(
+            "Authorization", f"Bearer {response.access_token}"
+        )
+        self.logger.info(f"Successfully logged in as '{response.user_id}'")
+
+        self.cookies = {
+            "access_token": response.access_token,
+            "refresh_token": response.refresh_token,
+            "user_id": response.user_id,
+            "email": email,
+        }
+
+        if self.save_cookie_file:
+            if self.encrypt_cookie:
+                secret_key = Fernet.generate_key()
+                self.secret_key = secret_key.decode()
+                self.fernet = Fernet(secret_key)
+
+                console_print(
+                    f"Your 'secret_key' for {Colors.BOLD + email + Colors.RESET} is: {Colors.OKGREEN + secret_key.decode() + Colors.RESET}",
+                    "Please copy and securely store this key in a safe location.",
+                    "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
+                )
+
+            # copy the cookies to ensure its value remains unchanged during encryption
+            cookies = self.cookies.copy()
+            self.save_cookies(cookies)
+
+        return response
 
     def logout(self, access_token: str = None) -> dict:
         """
