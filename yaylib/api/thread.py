@@ -37,6 +37,7 @@ def add_post_to_thread(
         "PUT",
         endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread/{thread_id}",
         data_type=ThreadInfo,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Post '{post_id}' added to the thread '{thread_id}'.")
@@ -56,6 +57,7 @@ def convert_post_to_thread(
         endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread",
         payload={"title": title, "thread_icon_filename": thread_icon_filename},
         data_type=ThreadInfo,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Post has been converted to a thread.")
@@ -75,6 +77,7 @@ def create_thread(
             "thread_icon_filename": thread_icon_filename,
         },
         data_type=ThreadInfo,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("A new thread has been created.")
@@ -112,6 +115,7 @@ def get_thread_joined_statuses(self, ids: List[int], access_token: str = None) -
         "GET",
         endpoint=f"{Endpoints.THREADS_V1}/joined_statuses",
         params={"ids[]": ids},
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -145,6 +149,7 @@ def join_thread(self, thread_id: int, user_id: int, access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Joined the thread '{thread_id}'.")
@@ -156,6 +161,7 @@ def leave_thread(self, thread_id: int, user_id: int, access_token: str = None):
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Left the thread.")
@@ -167,6 +173,7 @@ def remove_thread(self, thread_id: int, access_token: str = None):
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Thread '{thread_id}' has been removed.")
@@ -185,6 +192,7 @@ def update_thread(
         "PUT",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
         payload={"title": title, "thread_icon_filename": thread_icon_filename},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Thread '{thread_id}' has been updated.")
