@@ -177,7 +177,6 @@ class API:
                     )
                     time.sleep(retry_after + 1)  # sleep for extra sec
                     continue
-
                 else:
                     raise RateLimitError("Maximum rate limit retries exceeded.")
 

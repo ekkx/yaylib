@@ -8,7 +8,6 @@ password = "your_password"
 import time
 import random
 import yaylib
-from yaylib.errors import BadRequestError
 
 
 class LikeBot:
@@ -48,7 +47,7 @@ class LikeBot:
 
             liked += len(ids)
             self.api.logger.info(f"いいね数: {liked}")
-            ids.clear
+            ids.clear()
 
         self.api.logger.info(f"合計{liked}個の投稿にいいねしました。")
 

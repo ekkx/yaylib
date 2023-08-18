@@ -458,7 +458,6 @@ class Client(API):
     def get_call_invitable_users(
         self, call_id: int, from_timestamp: int = None, access_token: str = None
     ) -> UsersByTimestampResponse:
-        # @Nullable @Query("user[nickname]")
         """
 
         通話に招待可能なユーザーを取得します
@@ -2479,7 +2478,6 @@ class Client(API):
         return get_timeline_by_keyword(self, keyword, access_token, **params)
 
     def get_timeline(self, access_token: str = None, **params) -> PostsResponse:
-        # - from: str - (optional)
         """
 
         タイムラインを取得します
@@ -3141,7 +3139,6 @@ class Client(API):
         prefecture: str = None,
         profile_icon_filename: str = None,
         cover_image_filename: str = None,
-        # @Nullable @Part("sns_info") SignUpSnsInfoRequest signUpSnsInfoRequest,
         en: int = None,
         vn: int = None,
     ):
