@@ -13,7 +13,7 @@ from yaylib.errors import BadRequestError
 
 class LikeBot:
     def __init__(self, email=None, password=None, secret_token=None):
-        self.api = yaylib.Client(wait_on_rate_limit=True)
+        self.api = yaylib.Client()
         self.api.login(email, password, secret_token)
 
     def delay(self):

@@ -29,4 +29,4 @@ if __name__ == "__main__":
 
     for following in followings:
         if not following.is_followed_by:
-            api.unfollow_user(api, following.id)
+            api.unfollow_user(following.id)
