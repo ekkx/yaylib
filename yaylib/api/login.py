@@ -121,6 +121,7 @@ def logout(self, access_token: str = None):
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/logout",
             payload={"uuid": self.uuid},
+            auth_required=True,
             access_token=access_token,
         )
         self._cookies = {}
