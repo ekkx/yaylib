@@ -131,8 +131,8 @@ class API:
         if not user_auth and "Authorization" in headers:
             del headers["Authorization"]
 
-        if auth_required and headers["Authorization"] is None:
-            raise AuthenticationError("Authentication is required!")
+        if auth_required and "Authorization" not in headers:
+            raise AuthenticationError("Access Denied – Authentication Required!")
 
         response = None
         backoff_duration = 0
