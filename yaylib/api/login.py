@@ -24,6 +24,7 @@ SOFTWARE.
 
 from datetime import datetime
 from ..config import Endpoints
+from ..errors import ForbiddenError
 from ..responses import LoginUserResponse, LoginUpdateResponse, TokenResponse
 
 
@@ -96,7 +97,7 @@ def login_with_email(self, email: str, password: str) -> LoginUserResponse:
     メールアドレスでログインします
 
     """
-    return self._make_request(
+    response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V3}/login_with_email",
         payload={
@@ -107,6 +108,9 @@ def login_with_email(self, email: str, password: str) -> LoginUserResponse:
         },
         data_type=LoginUserResponse,
     )
+    if response.access_token is None:
+        raise ForbiddenError("Invalid email or password.")
+    self.logger.info(f"Successfully logged in as '{response.user_id}'")
 
 
 def logout(self, access_token: str = None):

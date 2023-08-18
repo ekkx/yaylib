@@ -267,7 +267,6 @@ from .api.user import (
     hide_user,
     unhide_users,
 )
-from .errors import ForbiddenError
 from .models import (
     ApplicationConfig,
     Attachment,
@@ -1678,13 +1677,9 @@ class Client(API):
 
         response = login_with_email(self, email, password)
 
-        if response.access_token is None:
-            raise ForbiddenError("Invalid email or password.")
-
         self.session.headers.setdefault(
             "Authorization", f"Bearer {response.access_token}"
         )
-        self.logger.info(f"Successfully logged in as '{response.user_id}'")
 
         self.cookies = {
             "access_token": response.access_token,
