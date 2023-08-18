@@ -62,9 +62,6 @@ def delete_footprint(self, user_id: int, footprint_id: int, access_token: str = 
 
 
 def destroy_user(self, access_token: str = None):
-    answer = input("Are you sure you want to delete your account? Y/N")
-    if answer.lower() != "y":
-        return
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",

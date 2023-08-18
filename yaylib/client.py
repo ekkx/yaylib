@@ -2862,6 +2862,9 @@ class Client(API):
         アカウントを削除します
 
         """
+        answer = input("Are you sure you want to delete your account? Y/N")
+        if answer.lower() != "y":
+            return
         return destroy_user(self, access_token)
 
     def follow_user(self, user_id: int, access_token: str = None) -> dict:
