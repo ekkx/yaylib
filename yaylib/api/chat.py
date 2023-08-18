@@ -46,6 +46,7 @@ def accept_chat_requests(self, chat_room_ids: List[int], access_token: str = Non
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
         payload={"chat_room_ids": chat_room_ids},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Accepted chat requests")
@@ -61,6 +62,7 @@ def check_unread_status(
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/unread_status",
         params={"from_time": from_time},
         data_type=UnreadStatusResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -84,6 +86,7 @@ def create_group_chat(
             "background_filename": background_filename,
         },
         data_type=CreateChatRoomResponse,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Group chat '{name}' has been created.")
@@ -107,6 +110,7 @@ def create_private_chat(
             "hima_chat": hima_chat,
         },
         data_type=CreateChatRoomResponse,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Created a private chatroom with '{with_user_id}'.")
@@ -118,6 +122,7 @@ def delete_background(self, room_id: int, access_token: str = None):
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{room_id}/background",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Background image of the chatroom has been deleted.")
@@ -129,6 +134,7 @@ def delete_message(self, room_id: int, message_id: int, access_token: str = None
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/messages/{message_id}/delete",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Message has been deleted.")
@@ -152,6 +158,7 @@ def edit_chat_room(
             "icon_filename": icon_filename,
             "background_filename": background_filename,
         },
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Chatroom has been updated.")
@@ -176,6 +183,7 @@ def get_chatable_users(
             "order_by": order_by,
         },
         data_type=FollowUsersResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -186,6 +194,7 @@ def get_gifs_data(self, access_token: str = None) -> List[GifImageCategory]:
         "GET",
         endpoint=f"{Endpoints.HIDDEN_V1}/chats",
         data_type=GifsDataResponse,
+        auth_required=True,
         access_token=access_token,
     ).gif_categories
 
@@ -208,6 +217,7 @@ def get_hidden_chat_rooms(
         endpoint=f"{Endpoints.HIDDEN_V1}/chats",
         params=params,
         data_type=ChatRoomsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -224,6 +234,7 @@ def get_main_chat_rooms(
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/main_list",
         params=params,
         data_type=ChatRoomsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -245,6 +256,7 @@ def get_messages(
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages",
         params=params,
         data_type=MessagesResponse,
+        auth_required=True,
         access_token=access_token,
     ).messages
 
@@ -268,6 +280,7 @@ def get_request_chat_rooms(
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/request_list",
         params=params,
         data_type=ChatRoomsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -278,6 +291,7 @@ def get_chat_room(self, chat_room_id: int, access_token: str = None) -> ChatRoom
         "GET",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}",
         data_type=ChatRoomResponse,
+        auth_required=True,
         access_token=access_token,
     ).chat
 
@@ -287,6 +301,7 @@ def get_sticker_packs(self, access_token: str = None) -> List[StickerPack]:
         "GET",
         endpoint=Endpoints.STICKER_PACKS_V2,
         data_type=StickerPacksResponse,
+        auth_required=True,
         access_token=access_token,
     ).sticker_packs
 
@@ -297,6 +312,7 @@ def get_total_chat_requests(self, access_token: str = None) -> int:
         "GET",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/total_chat_request",
         data_type=TotalChatRequestResponse,
+        auth_required=True,
         access_token=access_token,
     ).total
 
@@ -307,6 +323,7 @@ def hide_chat(self, chat_room_id: int, access_token: str = None):
         "POST",
         endpoint=f"{Endpoints.HIDDEN_V1}/chats",
         payload={"chat_room_id": chat_room_id},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Chatroom '{chat_room_id}' has been hidden.")
@@ -321,6 +338,7 @@ def invite_to_chat(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/invite",
         payload={"with_user_ids": user_ids},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Invited users to the chatroom.")
@@ -335,6 +353,7 @@ def kick_users_from_chat(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/kick",
         payload={"with_user_ids[]": user_ids},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Users have been kicked from the chatroom.")
@@ -346,6 +365,7 @@ def pin_chat(self, room_id: int, access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/pinned",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Pinned the chatroom.")
@@ -357,6 +377,7 @@ def read_message(self, chat_room_id: int, message_id: int, access_token: str = N
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages/{message_id}/read",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Message has been read.")
@@ -375,6 +396,7 @@ def refresh_chat_rooms(
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/update",
         params=params,
         data_type=ChatRoomsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -386,6 +408,7 @@ def remove_chat_rooms(self, chat_room_ids: List[int], access_token: str = None):
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/mass_destroy",
         payload={"chat_room_ids": chat_room_ids},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Chatrooms have been removed.")
@@ -418,6 +441,7 @@ def report_chat_room(
             "screenshot_3_filename": screenshot_3_filename,
             "screenshot_4_filename": screenshot_4_filename,
         },
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Chatroom '{chat_room_id}' has been reported.")
@@ -454,6 +478,7 @@ def send_message(
             "video_file_name": video_file_name,
         },
         data_type=MessageResponse,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Your message has been sent.")
@@ -466,6 +491,7 @@ def unhide_chat(self, chat_room_ids: int, access_token: str = None):
         "DELETE",
         endpoint=f"{Endpoints.HIDDEN_V1}/chats",
         params={"chat_room_ids": chat_room_ids},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Unhid the chatrooms")
@@ -477,6 +503,7 @@ def unpin_chat(self, chat_room_id: int, access_token: str = None):
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/pinned",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Unpinned the chatroom")

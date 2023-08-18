@@ -394,11 +394,6 @@ class API:
         with open(self.base_path + self.cookie_filename + ".json", "w") as f:
             json.dump(cookies, f, indent=4)
 
-    def _check_authorization(self, access_token) -> None:
-        if self.session.headers.get("Authorization") is None and access_token is None:
-            message = "Authorization is not present in the header."
-            raise AuthenticationError(message)
-
     def _handle_response(self, response, formatted_response):
         if isinstance(formatted_response, dict):
             formatted_response = self._translate_error_message(formatted_response)
