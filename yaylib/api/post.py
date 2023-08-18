@@ -49,6 +49,7 @@ def add_bookmark(
         "PUT",
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
         data_type=BookmarkPostResponse,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Post has been added to the bookmarks.")
@@ -67,6 +68,7 @@ def add_group_highlight_post(
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Post has been added to the group highlight.")
@@ -131,6 +133,7 @@ def create_call_post(
             "attachment_9_filename": attachment_9_filename,
         },
         data_type=CreatePostResponse,
+        auth_required=True,
         access_token=access_token,
     ).conference_call
     self.logger.info("Call post has been created.")
@@ -143,6 +146,7 @@ def create_group_pin_post(self, post_id: int, group_id: int, access_token: str =
         "PUT",
         endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
         payload={"post_id": post_id, "group_id": group_id},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Pinned the post in the group.")
@@ -155,6 +159,7 @@ def create_pin_post(self, post_id: int, access_token: str = None):
         "POST",
         endpoint=f"{Endpoints.PINNED_V1}/posts",
         payload={"id": post_id},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Pinned post.")
@@ -295,6 +300,7 @@ def create_post(
         },
         data_type=Post,
         headers=headers,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Post has been created.")
@@ -382,6 +388,7 @@ def create_repost(
         },
         data_type=CreatePostResponse,
         headers=headers,
+        auth_required=True,
         access_token=access_token,
     ).post
     self.logger.info("Repost has been created.")
@@ -416,6 +423,7 @@ def create_share_post(
             "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
         data_type=Post,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Share post has been created.")
@@ -503,6 +511,7 @@ def create_thread_post(
         },
         data_type=Post,
         headers=headers,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Thread post has been created.")
@@ -515,6 +524,7 @@ def delete_all_post(self, access_token: str = None):
         response = self._make_request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V1}/delete_all_post",
+            auth_required=True,
             access_token=access_token,
         )
         self.logger.info("Post deletion request has been sent.")
@@ -529,6 +539,7 @@ def delete_group_pin_post(self, group_id: int, access_token: str = None):
         "DELETE",
         endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
         payload={"group_id": group_id},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Unpinned post in the group.")
@@ -540,6 +551,7 @@ def delete_pin_post(self, post_id: int, access_token: str = None):
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.PINNED_V1}/posts/{post_id}",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Unpinned post.")
@@ -558,6 +570,7 @@ def get_bookmark(
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks",
         params=params,
         data_type=PostsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -647,6 +660,7 @@ def get_following_call_timeline(
         endpoint=f"{Endpoints.POSTS_V2}/call_followers_timeline",
         params=params,
         data_type=PostsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -672,6 +686,7 @@ def get_following_timeline(self, access_token: str = None, **params) -> PostsRes
         endpoint=f"{Endpoints.POSTS_V2}/following_timeline",
         params=params,
         data_type=PostsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -790,6 +805,7 @@ def get_my_posts(self, access_token: str = None, **params) -> PostsResponse:
         endpoint=f"{Endpoints.POSTS_V2}/mine",
         params=params,
         data_type=PostsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -942,6 +958,7 @@ def get_timeline(
         endpoint=endpoint,
         params=params,
         data_type=PostsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -988,6 +1005,7 @@ def like_posts(
         endpoint=f"{Endpoints.POSTS_V2}/like",
         payload={"post_ids": post_ids},
         data_type=LikePostsResponse,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Posts have been liked.")
@@ -999,6 +1017,7 @@ def remove_bookmark(self, user_id: int, post_id: int, access_token: str = None):
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Bookmark has been removed.")
@@ -1012,6 +1031,7 @@ def remove_group_highlight_post(
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Group hightlight post removed.")
@@ -1024,6 +1044,7 @@ def remove_posts(self, post_ids: List[int], access_token: str = None):
         "POST",
         endpoint=f"{Endpoints.POSTS_V2}/mass_destroy",
         payload={"posts_ids": post_ids},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Posts have been removed.")
@@ -1055,6 +1076,7 @@ def report_post(
             "screenshot_3_filename": screenshot_3_filename,
             "screenshot_4_filename": screenshot_4_filename,
         },
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Post has been reported.")
@@ -1066,6 +1088,7 @@ def unlike_post(self, post_id: int, access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V1}/{post_id}/unlike",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Post has been unliked.")
@@ -1100,6 +1123,7 @@ def update_post(
             "timestamp": timestamp,
             "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Post has been updated.")
@@ -1125,6 +1149,7 @@ def vote_survey(
         endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",
         payload={"choice_id": choice_id},
         data_type=ValidationPostResponse,
+        auth_required=True,
         access_token=access_token,
     ).survey
     self.logger.info("Voted.")
