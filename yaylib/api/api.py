@@ -189,7 +189,7 @@ class API:
                     cookies = self.cookies.copy()
                     self.save_cookies(cookies)
 
-                    # for the next retry
+                    # only for the next retry
                     headers["Authorization"] = f"Bearer {response.access_token}"
 
                     self.session.headers[
@@ -289,10 +289,6 @@ class API:
     @secret_key.setter
     def secret_key(self, value):
         self._secret_key = value
-
-    @property
-    def client_version(self):
-        return Configs.YAY_VERSION_NAME
 
     @staticmethod
     def encrypt_cookies(fernet, cookies):
