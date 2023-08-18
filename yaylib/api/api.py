@@ -61,7 +61,7 @@ class API:
         proxy: str = None,
         max_retries=3,
         backoff_factor=1.0,
-        wait_on_rate_limit=False,
+        wait_on_rate_limit=True,
         timeout=30,
         err_lang="ja",
         base_path=current_path + "/config/",
@@ -166,7 +166,7 @@ class API:
                 f"Response: {response.text}\n"
             )
 
-            if self.wait_on_rate_limit and response.status_code == 429:
+            if response.status_code == 429 and self.wait_on_rate_limit:
                 # continue attempting request until successful
                 # or maximum number of retries is reached
                 rate_limit_retry_count += 1
