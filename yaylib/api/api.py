@@ -166,7 +166,7 @@ class API:
                 f"Response: {response.text}\n"
             )
 
-            if response.status_code == 429 and self.wait_on_rate_limit:
+            if self._is_rate_limit(response) and self.wait_on_rate_limit:
                 # continue attempting request until successful
                 # or maximum number of retries is reached
                 rate_limit_retry_count += 1
@@ -346,15 +346,6 @@ class API:
         return cookies
 
     @staticmethod
-    def _construct_response(data, data_type):
-        if data_type is not None:
-            if isinstance(data, list):
-                data = [data_type(result) for result in data]
-            elif data is not None:
-                data = data_type(data)
-        return data
-
-    @staticmethod
     def generate_uuid(uuid_type=True):
         generated_uuid = str(uuid.uuid4())
         if uuid_type:
@@ -378,6 +369,28 @@ class API:
                 hashlib.sha256,
             ).digest()
         ).decode("utf-8")
+
+    @staticmethod
+    def _is_rate_limit(response: httpx.Response):
+        if response.status_code == 429:
+            return True
+        if response.status_code == 400:
+            try:
+                json_response = response.json()
+                if json_response.get("error_code") == -343:
+                    return True
+            except JSONDecodeError:
+                return False
+        return False
+
+    @staticmethod
+    def _construct_response(data, data_type):
+        if data_type is not None:
+            if isinstance(data, list):
+                data = [data_type(result) for result in data]
+            elif data is not None:
+                data = data_type(data)
+        return data
 
     def load_cookies(self):
         if not os.path.exists(self.base_path + self.cookie_filename + ".json"):
