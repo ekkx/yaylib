@@ -61,6 +61,7 @@ class API:
         proxy: str = None,
         max_retries=3,
         backoff_factor=1.0,
+        wait_on_rate_limit=False,
         timeout=30,
         err_lang="ja",
         base_path=current_path + "/config/",
@@ -83,6 +84,7 @@ class API:
         self.max_retries = max_retries
         self.retry_statuses = [500, 502, 503, 504]
         self.backoff_factor = backoff_factor
+        self.wait_on_rate_limit = wait_on_rate_limit
         self.timeout = timeout
         self.err_lang = err_lang
         self.base_path = base_path
@@ -136,6 +138,8 @@ class API:
 
         response = None
         backoff_duration = 0
+        rate_limit_retry_count = 0
+        max_rate_limit_retries = 15  # roughly equivalent to 60 mins, plus extra 15 mins
         auth_retry_count = 0
         max_auth_retries = 2
 
@@ -161,6 +165,21 @@ class API:
                 f"Headers: {response.headers}\n\n"
                 f"Response: {response.text}\n"
             )
+
+            if self.wait_on_rate_limit and response.status_code == 429:
+                # continue attempting request until successful
+                # or maximum number of retries is reached
+                rate_limit_retry_count += 1
+                if rate_limit_retry_count < max_rate_limit_retries:
+                    retry_after = 60 * 5
+                    self.logger.info(
+                        f"Rate limit exceeded. Waiting for {retry_after} seconds..."
+                    )
+                    time.sleep(retry_after + 1)  # sleep for extra sec
+                    continue
+
+                else:
+                    raise RateLimitError("Maximum rate limit retries exceeded.")
 
             if response.status_code == 401 and self.save_cookie_file is True:
                 # remove the cookie file and stop the proccessing if refresh token has expired
