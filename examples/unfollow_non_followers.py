@@ -6,9 +6,7 @@ email = "your_email"
 password = "your_password"
 
 
-import time
 import yaylib
-from yaylib.errors import BadRequestError
 
 
 def get_all_followings(api):
@@ -22,22 +20,6 @@ def get_all_followings(api):
     return followings
 
 
-def unfollow_user(api, user_id, max_retries=7):
-    retries = 0
-    success = False
-    while not success and retries < max_retries:
-        try:
-            api.unfollow_user(user_id)
-            success = True
-        except BadRequestError:
-            print("この機能の上限回数に達しました。10分間待機しています...")
-            time.sleep(60 * 10)
-            retries += 1
-
-    if not success:
-        print(f"フォロー解除ができませんでした。ユーザーID: {user_id}")
-
-
 if __name__ == "__main__":
     api = yaylib.Client()
 
@@ -47,4 +29,4 @@ if __name__ == "__main__":
 
     for following in followings:
         if not following.is_followed_by:
-            unfollow_user(api, following.id)
+            api.unfollow_user(api, following.id)
