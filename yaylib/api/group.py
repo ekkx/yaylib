@@ -43,7 +43,6 @@ from ..responses import (
 
 
 def accept_moderator_offer(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize",
@@ -55,7 +54,6 @@ def accept_moderator_offer(self, group_id: int, access_token: str = None):
 
 
 def accept_ownership_offer(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer",
@@ -69,7 +67,6 @@ def accept_ownership_offer(self, group_id: int, access_token: str = None):
 def accept_group_join_request(
     self, group_id: int, user_id: int, access_token: str = None
 ):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/accept/{user_id}",
@@ -88,7 +85,6 @@ def add_related_groups(
     関連サークルを追加する
 
     """
-    self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
@@ -101,7 +97,6 @@ def add_related_groups(
 
 
 def ban_group_user(self, group_id: int, user_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban/{user_id}",
@@ -115,7 +110,6 @@ def ban_group_user(self, group_id: int, user_id: int, access_token: str = None):
 def check_unread_status(
     self, from_time: int = None, access_token: str = None
 ) -> UnreadStatusResponse:
-    self._check_authorization(access_token)
     params = {}
     if from_time:
         params["from_time"] = from_time
@@ -153,7 +147,6 @@ def create_group(
     guidelines: str = None,
     access_token: str = None,
 ) -> CreateGroupResponse:
-    self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -193,7 +186,6 @@ def create_group(
 
 
 def create_pin_group(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.PINNED_V1}/groups",
@@ -206,7 +198,6 @@ def create_pin_group(self, group_id: int, access_token: str = None):
 
 
 def decline_moderator_offer(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize",
@@ -218,7 +209,6 @@ def decline_moderator_offer(self, group_id: int, access_token: str = None):
 
 
 def decline_ownership_offer(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer",
@@ -232,7 +222,6 @@ def decline_ownership_offer(self, group_id: int, access_token: str = None):
 def decline_group_join_request(
     self, group_id: int, user_id: int, access_token: str = None
 ):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/decline/{user_id}",
@@ -244,7 +233,6 @@ def decline_group_join_request(
 
 
 def delete_pin_group(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.PINNED_V1}/groups/{group_id}",
@@ -258,7 +246,6 @@ def delete_pin_group(self, group_id: int, access_token: str = None):
 def get_banned_group_members(
     self, group_id: int, page: int = None, access_token: str = None
 ) -> UsersResponse:
-    self._check_authorization(access_token)
     params = {}
     if page:
         params["page"] = page
@@ -353,7 +340,6 @@ def get_invitable_users(
 
 
 def get_joined_statuses(self, ids: List[int], access_token: str = None) -> dict:
-    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.GROUPS_V1}/joined_statuses",
@@ -402,7 +388,6 @@ def get_group_members(
 def get_my_groups(
     self, from_timestamp: None, access_token: str = None
 ) -> GroupsResponse:
-    self._check_authorization(access_token)
     params = {}
     if from_timestamp:
         params["from_timestamp"] = from_timestamp
@@ -482,7 +467,6 @@ def get_user_groups(self, access_token: str = None, **params) -> GroupsResponse:
 def invite_users_to_group(
     self, group_id: int, user_ids: List[int], access_token: str = None
 ):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/invite",
@@ -495,7 +479,6 @@ def invite_users_to_group(
 
 
 def join_group(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/join",
@@ -507,7 +490,6 @@ def join_group(self, group_id: int, access_token: str = None):
 
 
 def leave_group(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/leave",
@@ -521,7 +503,6 @@ def leave_group(self, group_id: int, access_token: str = None):
 def post_gruop_social_shared(
     self, group_id: int, sns_name: str, access_token: str = None
 ):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/social_shared",
@@ -534,7 +515,6 @@ def post_gruop_social_shared(
 
 
 def remove_group_cover(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/remove_cover",
@@ -546,7 +526,6 @@ def remove_group_cover(self, group_id: int, access_token: str = None):
 
 
 def remove_moderator(self, group_id: int, user_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/fire/{user_id}",
@@ -560,7 +539,6 @@ def remove_moderator(self, group_id: int, user_id: int, access_token: str = None
 def remove_related_groups(
     self, group_id: int, related_group_ids: List[int], access_token: str = None
 ):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
@@ -584,7 +562,6 @@ def report_group(
     screenshot_4_filename: str = None,
     access_token: str = None,
 ):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/report",
@@ -607,7 +584,6 @@ def report_group(
 def send_moderator_offers(
     self, group_id: int, user_ids: List[int], access_token: str = None
 ):
-    self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -627,7 +603,6 @@ def send_moderator_offers(
 
 
 def send_ownership_offer(self, group_id: int, user_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -647,7 +622,6 @@ def send_ownership_offer(self, group_id: int, user_id: int, access_token: str = 
 
 
 def set_group_title(self, group_id: int, title: str, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/set_title",
@@ -660,7 +634,6 @@ def set_group_title(self, group_id: int, title: str, access_token: str = None):
 
 
 def take_over_group_ownership(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/take_over",
@@ -672,7 +645,6 @@ def take_over_group_ownership(self, group_id: int, access_token: str = None):
 
 
 def unban_group_member(self, group_id: int, user_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/unban/{user_id}",
@@ -708,7 +680,6 @@ def update_group(
     guidelines: str = None,
     access_token: str = None,
 ) -> Group:
-    self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -750,7 +721,6 @@ def update_group(
 def withdraw_moderator_offer(
     self, group_id: int, user_id: int, access_token: str = None
 ):
-    self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize/{user_id}/withdraw",
@@ -764,7 +734,6 @@ def withdraw_moderator_offer(
 def withdraw_ownership_offer(
     self, group_id: int, user_id: int, access_token: str = None
 ):
-    self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer/withdraw",

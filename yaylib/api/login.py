@@ -116,7 +116,6 @@ def login_with_email(self, email: str, password: str) -> LoginUserResponse:
 
 def logout(self, access_token: str = None):
     try:
-        self._check_authorization(access_token)
         response = self._make_request(
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/logout",

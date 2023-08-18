@@ -44,7 +44,6 @@ from ..responses import (
 def add_bookmark(
     self, user_id: int, post_id: int, access_token: str = None
 ) -> BookmarkPostResponse:
-    self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
@@ -64,7 +63,6 @@ def add_group_highlight_post(
     投稿をグループのまとめに追加します
 
     """
-    self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
@@ -97,8 +95,6 @@ def create_call_post(
     attachment_9_filename: str = None,
     access_token: str = None,
 ) -> ConferenceCall:
-    self._check_authorization(access_token)
-
     if text is not None:
         if "@:start:" in text and ":end:" in text:
             text, message_tags = parse_mention_format(self, text)
@@ -141,7 +137,6 @@ def create_call_post(
 
 
 def create_group_pin_post(self, post_id: int, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "PUT",
         endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
@@ -154,7 +149,6 @@ def create_group_pin_post(self, post_id: int, group_id: int, access_token: str =
 
 
 def create_pin_post(self, post_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.PINNED_V1}/posts",
@@ -244,7 +238,6 @@ def create_post(
     video_file_name: str = None,
     access_token: str = None,
 ) -> Post:
-    self._check_authorization(access_token)
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
 
@@ -331,7 +324,6 @@ def create_repost(
     video_file_name: str = None,
     access_token: str = None,
 ) -> Post:
-    self._check_authorization(access_token)
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
 
@@ -405,7 +397,6 @@ def create_share_post(
     group_id: int = None,
     access_token: str = None,
 ) -> Post:
-    self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -454,7 +445,6 @@ def create_thread_post(
     video_file_name: str = None,
     access_token: str = None,
 ) -> Post:
-    self._check_authorization(access_token)
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
 
@@ -519,7 +509,6 @@ def create_thread_post(
 
 
 def delete_all_post(self, access_token: str = None):
-    self._check_authorization(access_token)
     try:
         response = self._make_request(
             "POST",
@@ -534,7 +523,6 @@ def delete_all_post(self, access_token: str = None):
 
 
 def delete_group_pin_post(self, group_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
@@ -547,7 +535,6 @@ def delete_group_pin_post(self, group_id: int, access_token: str = None):
 
 
 def delete_pin_post(self, post_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.PINNED_V1}/posts/{post_id}",
@@ -561,7 +548,6 @@ def delete_pin_post(self, post_id: int, access_token: str = None):
 def get_bookmark(
     self, user_id: int, from_str: str = None, access_token: str = None
 ) -> PostsResponse:
-    self._check_authorization(access_token)
     params = {}
     if from_str:
         params = {"from": from_str}
@@ -654,7 +640,6 @@ def get_following_call_timeline(
         - exclude_recent_gomimushi: bool = None
 
     """
-    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.POSTS_V2}/call_followers_timeline",
@@ -680,7 +665,6 @@ def get_following_timeline(self, access_token: str = None, **params) -> PostsRes
         - custom_generation_range: bool = None
 
     """
-    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.POSTS_V2}/following_timeline",
@@ -799,7 +783,6 @@ def get_my_posts(self, access_token: str = None, **params) -> PostsResponse:
         - include_group_post: bool - (optional)
 
     """
-    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.POSTS_V2}/mine",
@@ -951,7 +934,6 @@ def get_timeline(
     """
     endpoint = f"{Endpoints.POSTS_V2}/timeline"
     if "noreply_mode" in params and params["noreply_mode"] is True:
-        self._check_authorization(access_token)
         endpoint = f"{Endpoints.POSTS_V2}/noreply_timeline"
     return self._make_request(
         "GET",
@@ -999,7 +981,6 @@ def get_user_timeline(
 def like_posts(
     self, post_ids: List[int], access_token: str = None
 ) -> LikePostsResponse:
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V2}/like",
@@ -1013,7 +994,6 @@ def like_posts(
 
 
 def remove_bookmark(self, user_id: int, post_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
@@ -1027,7 +1007,6 @@ def remove_bookmark(self, user_id: int, post_id: int, access_token: str = None):
 def remove_group_highlight_post(
     self, group_id: int, post_id: int, access_token: str = None
 ):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
@@ -1039,7 +1018,6 @@ def remove_group_highlight_post(
 
 
 def remove_posts(self, post_ids: List[int], access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V2}/mass_destroy",
@@ -1063,7 +1041,6 @@ def report_post(
     screenshot_4_filename: str = None,
     access_token: str = None,
 ):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V3}/{post_id}/report",
@@ -1084,7 +1061,6 @@ def report_post(
 
 
 def unlike_post(self, post_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V1}/{post_id}/unlike",
@@ -1104,8 +1080,6 @@ def update_post(
     message_tags: str = "[]",
     access_token: str = None,
 ) -> Post:
-    self._check_authorization(access_token)
-
     if "@:start:" in text and ":end:" in text:
         text, message_tags = parse_mention_format(self, text)
 
@@ -1143,7 +1117,6 @@ def view_video(self, video_id: int, access_token: str = None):
 def vote_survey(
     self, survey_id: int, choice_id: int, access_token: str = None
 ) -> Survey:
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",

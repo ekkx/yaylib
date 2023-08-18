@@ -30,7 +30,6 @@ from ..responses import ReviewsResponse
 
 
 def create_review(self, user_id: int, comment: str, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
@@ -43,7 +42,6 @@ def create_review(self, user_id: int, comment: str, access_token: str = None):
 
 
 def create_reviews(self, user_ids: List[int], comment: str, access_token: str = None):
-    self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -66,7 +64,6 @@ def create_reviews(self, user_ids: List[int], comment: str, access_token: str = 
 
 
 def delete_reviews(self, review_ids: List[int], access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V1}/reviews",
@@ -88,7 +85,6 @@ def get_my_reviews(self, access_token: str = None, **params) -> ReviewsResponse:
         - number: int = (optional)
 
     """
-    self._check_authorization(access_token)
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/reviews/mine",
@@ -122,7 +118,6 @@ def get_reviews(
 
 
 def pin_review(self, review_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.PINNED_V1}/reviews",
@@ -135,7 +130,6 @@ def pin_review(self, review_id: int, access_token: str = None):
 
 
 def unpin_review(self, review_id: int, access_token: str = None):
-    self._check_authorization(access_token)
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.PINNED_V1}/reviews{review_id}",
