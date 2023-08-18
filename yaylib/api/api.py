@@ -120,6 +120,7 @@ class API:
         payload=None,
         user_auth=True,
         headers=None,
+        auth_required=False,
         access_token=None,
     ):
         headers = headers or self.session.headers.copy()
@@ -129,6 +130,9 @@ class API:
 
         if not user_auth and "Authorization" in headers:
             del headers["Authorization"]
+
+        if auth_required and headers["Authorization"] is None:
+            raise AuthenticationError("Authentication is required!")
 
         response = None
         backoff_duration = 0
@@ -237,10 +241,18 @@ class API:
         data_type=None,
         user_auth=True,
         headers=None,
+        auth_required=False,
         access_token=None,
     ):
         response = self._request(
-            method, endpoint, params, payload, user_auth, headers, access_token
+            method,
+            endpoint,
+            params,
+            payload,
+            user_auth,
+            headers,
+            auth_required,
+            access_token,
         )
         if data_type:
             return self._construct_response(response, data_type)
