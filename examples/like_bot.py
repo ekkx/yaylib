@@ -13,7 +13,7 @@ from yaylib.errors import BadRequestError
 
 class LikeBot:
     def __init__(self, email=None, password=None, secret_token=None):
-        self.api = yaylib.Client()
+        self.api = yaylib.Client(wait_on_rate_limit=True)
         self.api.login(email, password, secret_token)
 
     def delay(self):
@@ -29,32 +29,26 @@ class LikeBot:
         while liked < amount:
             ids = []
 
-            try:
-                self.api.logger.info("投稿を取得しています...")
+            self.api.logger.info("投稿を取得しています...")
 
-                while len(ids) < min_collect:
-                    timeline = self.api.get_timeline(number=100)
+            while len(ids) < min_collect:
+                timeline = self.api.get_timeline(number=100)
 
-                    new_ids = [post.id for post in timeline.posts if not post.liked]
+                new_ids = [post.id for post in timeline.posts if not post.liked]
 
-                    ids.extend(new_ids)
-                    self.api.logger.info(f"取得済み投稿数: {len(ids)}")
+                ids.extend(new_ids)
+                self.api.logger.info(f"取得済み投稿数: {len(ids)}")
 
-                    if len(ids) < min_collect:
-                        time.sleep(5)
+                if len(ids) < min_collect:
+                    time.sleep(5)
 
-                for id in ids:
-                    self.api.like(id)
-                    self.delay()
+            for id in ids:
+                self.api.like(id)
+                self.delay()
 
-                liked += len(ids)
-                self.api.logger.info(f"いいね数: {liked}")
-                ids.clear()
-
-            except BadRequestError:
-                print("この機能の上限回数に達しました。30分ほど時間を置いて再実行します。")
-                ids.clear()
-                time.sleep(60 * 30 + 1)
+            liked += len(ids)
+            self.api.logger.info(f"いいね数: {liked}")
+            ids.clear
 
         self.api.logger.info(f"合計{liked}個の投稿にいいねしました。")
 
