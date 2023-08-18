@@ -156,6 +156,12 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>リトライ待機時間の増加割合を指定する係数</td>
 	</tr>
     <tr>
+		<td><code>wait_on_rate_limit</code></td>
+		<td><code>bool</code></td>
+		<td><code>True</code></td>
+		<td>レート制限を待機するかどうか</td>
+	</tr>
+    <tr>
 		<td><code>timeout</code></td>
 		<td><code>int</code></td>
 		<td><code>30</code></td>
@@ -177,13 +183,13 @@ Client クラスは、API クライアントのメインクラスです。
 		<td><code>save_cookie_file</code></td>
 		<td><code>bool</code></td>
 		<td><code>True</code></td>
-		<td>クッキーを保存するか否か</td>
+		<td>クッキーを保存するかどうか</td>
 	</tr>
     <tr>
 		<td><code>encrypt_cookie</code></td>
 		<td><code>bool</code></td>
 		<td><code>False</code></td>
-		<td>暗号化してクッキーを保存するか否か</td>
+		<td>暗号化してクッキーを保存するかどうか</td>
 	</tr>
     <tr>
 		<td><code>cookie_filename</code></td>

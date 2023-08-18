@@ -411,6 +411,7 @@ class Client(API):
         - proxy: str - (optional)
         - max_retries: int - (optional)
         - backoff_factor: float - (optional)
+        - wait_on_rate_limit: bool - (optional)
         - timeout: int - (optional)
         - err_lang: str - (optional)
         - base_path: str - (optional)
