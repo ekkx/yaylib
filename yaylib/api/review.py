@@ -35,6 +35,7 @@ def create_review(self, user_id: int, comment: str, access_token: str = None):
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
         payload={"comment": comment},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Review has been sent to {user_id}.")
@@ -57,6 +58,7 @@ def create_reviews(self, user_ids: List[int], comment: str, access_token: str = 
                 self.uuid, timestamp, shared_key=True
             ),
         },
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Reviews have been sent to multiple users.")
@@ -69,6 +71,7 @@ def delete_reviews(self, review_ids: List[int], access_token: str = None):
         "DELETE",
         endpoint=f"{Endpoints.USERS_V1}/reviews",
         params={"review_ids[]": review_ids},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Reviews have been deleted.")
@@ -91,6 +94,7 @@ def get_my_reviews(self, access_token: str = None, **params) -> ReviewsResponse:
         endpoint=f"{Endpoints.USERS_V1}/reviews/mine",
         params=params,
         data_type=ReviewsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -123,6 +127,7 @@ def pin_review(self, review_id: int, access_token: str = None):
         "POST",
         endpoint=f"{Endpoints.PINNED_V1}/reviews",
         payload={"id": review_id},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Pinned the review.")
@@ -134,6 +139,7 @@ def unpin_review(self, review_id: int, access_token: str = None):
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.PINNED_V1}/reviews{review_id}",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Unpinned the review.")
