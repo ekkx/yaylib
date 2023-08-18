@@ -677,37 +677,24 @@ def update_language(self, language: str, access_token: str = None):
     return response
 
 
-def update_user(
-    self,
-    nickname: str,
-    biography: str = None,
-    prefecture: str = None,
-    gender: int = None,
-    country_code: str = None,
-    profile_icon_filename: str = None,
-    cover_image_filename: str = None,
-    username: str = None,
-    access_token: str = None,
-):
+def update_user(self, nickname: str, access_token: str = None, **params):
     self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
-    response = self._make_request(
-        "POST",
-        endpoint=f"{Endpoints.USERS_V3}/edit",
-        payload={
+    params.update(
+        {
             "nickname": nickname,
-            "biography": biography,
-            "prefecture": prefecture,
-            "gender": gender,
-            "country_code": country_code,
-            "profile_icon_filename": profile_icon_filename,
-            "cover_image_filename": cover_image_filename,
-            "username": username,
             "uuid": self.uuid,
             "api_key": self.api_key,
             "timestamp": timestamp,
-            "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
-        },
+            "signed_info": self.generate_signed_info(
+                self.uuid, timestamp, shared_key=True
+            ),
+        }
+    )
+    response = self._make_request(
+        "POST",
+        endpoint=f"{Endpoints.USERS_V3}/edit",
+        payload=params,
         access_token=access_token,
     )
     self.logger.info("User profile has been updated.")

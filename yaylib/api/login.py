@@ -111,6 +111,7 @@ def login_with_email(self, email: str, password: str) -> LoginUserResponse:
     if response.access_token is None:
         raise ForbiddenError("Invalid email or password.")
     self.logger.info(f"Successfully logged in as '{response.user_id}'")
+    return response
 
 
 def logout(self, access_token: str = None):

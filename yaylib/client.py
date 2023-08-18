@@ -3290,35 +3290,13 @@ class Client(API):
         """
         return unfollow_user(self, user_id, access_token)
 
-    def update_user(
-        self,
-        nickname: str,
-        biography: str = None,
-        prefecture: str = None,
-        gender: int = None,
-        country_code: str = None,
-        profile_icon_filename: str = None,
-        cover_image_filename: str = None,
-        username: str = None,
-        access_token: str = None,
-    ) -> dict:
+    def update_user(self, nickname: str, access_token: str = None, **params) -> dict:
         """
 
         プロフィールを更新します
 
         """
-        return update_user(
-            self,
-            nickname,
-            biography,
-            prefecture,
-            gender,
-            country_code,
-            profile_icon_filename,
-            cover_image_filename,
-            username,
-            access_token,
-        )
+        return update_user(self, nickname, access_token, **params)
 
     def block_user(self, user_id: int, access_token: str = None) -> dict:
         """
