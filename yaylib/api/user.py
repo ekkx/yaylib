@@ -55,6 +55,7 @@ def delete_footprint(self, user_id: int, footprint_id: int, access_token: str = 
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/footprints/{footprint_id}",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Footprint has been deleted.")
@@ -76,6 +77,7 @@ def destroy_user(self, access_token: str = None):
             "timestamp": timestamp,
             "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("User has been deleted.")
@@ -87,6 +89,7 @@ def follow_user(self, user_id: int, access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/follow",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Followed the user '{user_id}'.")
@@ -99,6 +102,7 @@ def follow_users(self, user_ids: List[int], access_token: str = None):
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/follow",
         params={"user_ids[]": user_ids},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Followed multiple users.")
@@ -123,6 +127,7 @@ def get_active_followings(
         endpoint=f"{Endpoints.USERS_V1}/active_followings",
         params=params,
         data_type=ActiveFollowingsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -146,6 +151,7 @@ def get_follow_recommendations(
         endpoint=f"{Endpoints.FRIENDS_V1}",
         params=params,
         data_type=FollowRecommendationsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -162,6 +168,7 @@ def get_follow_request(
         endpoint=f"{Endpoints.USERS_V2}/follow_requests",
         params=params,
         data_type=UsersByTimestampResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -172,6 +179,7 @@ def get_follow_request_count(self, access_token: str = None) -> int:
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/follow_requests_count",
         data_type=FollowRequestCountResponse,
+        auth_required=True,
         access_token=access_token,
     ).users_count
 
@@ -188,6 +196,7 @@ def get_following_users_born(
         endpoint=f"{Endpoints.USERS_V1}/following_born_today",
         params=params,
         data_type=UsersResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -209,6 +218,7 @@ def get_footprints(self, access_token: str = None, **params) -> List[Footprint]:
         endpoint=f"{Endpoints.USERS_V2}/footprints",
         params=params,
         data_type=FootprintsResponse,
+        auth_required=True,
         access_token=access_token,
     ).footprints
 
@@ -219,6 +229,7 @@ def get_fresh_user(self, user_id: int, access_token: str = None) -> UserResponse
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}",
         data_type=UserResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -239,6 +250,7 @@ def get_hima_users(self, access_token: str = None, **params) -> List[UserWrapper
         endpoint=f"{Endpoints.USERS_V2}/hima_users",
         params=params,
         data_type=HimaUsersResponse,
+        auth_required=True,
         access_token=access_token,
     ).hima_users
 
@@ -284,6 +296,7 @@ def get_refresh_counter_requests(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/reset_counters",
         data_type=RefreshCounterRequestsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -307,6 +320,7 @@ def get_social_shared_users(
         endpoint=f"{Endpoints.USERS_V2}/social_shared_users",
         params=params,
         data_type=SocialShareUsersResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -335,6 +349,7 @@ def get_user_email(self, user_id: int, access_token: str = None) -> str:
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}",
         data_type=UserEmailResponse,
+        auth_required=True,
         access_token=access_token,
     ).email
 
@@ -384,6 +399,7 @@ def get_user_followings(
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/list_followings",
         params=params,
         data_type=FollowUsersResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -523,6 +539,7 @@ def report_user(
             "screenshot_3_filename": screenshot_3_filename,
             "screenshot_4_filename": screenshot_4_filename,
         },
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Reported the user '{user_id}'")
@@ -642,7 +659,10 @@ def take_action_follow_request(
 def turn_on_hima(self, access_token: str = None):
     self._check_authorization(access_token)
     response = self._make_request(
-        "GET", endpoint=f"{Endpoints.USERS_V1}/hima", access_token=access_token
+        "GET",
+        endpoint=f"{Endpoints.USERS_V1}/hima",
+        auth_required=True,
+        access_token=access_token,
     )
     self.logger.info("Turned on 'hima now'.")
     return response
@@ -653,6 +673,7 @@ def unfollow_user(self, user_id: int, access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Unfollowed the user '{user_id}'")
@@ -713,6 +734,7 @@ def update_user(self, nickname: str, access_token: str = None, **params):
         "POST",
         endpoint=f"{Endpoints.USERS_V3}/edit",
         payload=params,
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("User profile has been updated.")
@@ -727,6 +749,7 @@ def block_user(self, user_id: int, access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/block",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Blocked the user '{user_id}'")
@@ -739,6 +762,7 @@ def get_blocked_user_ids(self, access_token: str = None) -> BlockedUserIdsRespon
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/block_ids",
         data_type=BlockedUserIdsResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -756,6 +780,7 @@ def get_blocked_users(
         endpoint=f"{Endpoints.USERS_V2}/blocked",
         params=params,
         data_type=BlockedUsersResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -765,6 +790,7 @@ def unblock_user(self, user_id: int, access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/unblock",
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"Unblocked the user '{user_id}'")
@@ -792,6 +818,7 @@ def get_hidden_users_list(
         endpoint=f"{Endpoints.HIDDEN_V1}/users",
         params=params,
         data_type=HiddenResponse,
+        auth_required=True,
         access_token=access_token,
     )
 
@@ -802,6 +829,7 @@ def hide_user(self, user_id: int, access_token: str = None):
         "POST",
         endpoint=f"{Endpoints.HIDDEN_V1}/users",
         payload={"user_id": user_id},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info(f"User '{user_id}' is hidden")
@@ -814,6 +842,7 @@ def unhide_users(self, user_ids: List[int], access_token: str = None):
         "DELETE",
         endpoint=f"{Endpoints.HIDDEN_V1}/users",
         params={"user_ids[]": user_ids},
+        auth_required=True,
         access_token=access_token,
     )
     self.logger.info("Unhid users")
