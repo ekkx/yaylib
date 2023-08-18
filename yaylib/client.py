@@ -3295,6 +3295,19 @@ class Client(API):
 
         プロフィールを更新します
 
+        Parameters
+        ----------
+
+            - nickname: str = (required)
+            - biography: str = (optional)
+            - prefecture: str = (optional)
+            - gender: int = (optional)
+            - country_code: str = (optional)
+            - profile_icon_filename: str = (optional)
+            - cover_image_filename: str = (optional)
+            - username: str = (optional)
+            - access_token: str = (optional)
+
         """
         return update_user(self, nickname, access_token, **params)
 

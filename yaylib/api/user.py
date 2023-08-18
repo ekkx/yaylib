@@ -678,6 +678,24 @@ def update_language(self, language: str, access_token: str = None):
 
 
 def update_user(self, nickname: str, access_token: str = None, **params):
+    """
+
+    プロフィールを更新します
+
+    Parameters
+    ----------
+
+        - nickname: str = (required)
+        - biography: str = (optional)
+        - prefecture: str = (optional)
+        - gender: int = (optional)
+        - country_code: str = (optional)
+        - profile_icon_filename: str = (optional)
+        - cover_image_filename: str = (optional)
+        - username: str = (optional)
+        - access_token: str = (optional)
+
+    """
     self._check_authorization(access_token)
     timestamp = int(datetime.now().timestamp())
     params.update(
