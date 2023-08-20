@@ -73,13 +73,32 @@ api.login(email, password)
 
 他人に見られる可能性のある開発環境下などで、認証情報を暗号化して保存したい場合は、`Client`クラスを初期化する際に、`encrypt_cookie`引数を`True`に設定します。
 
+また、メールアドレスやパスワードなどの機密情報を不正なアクセスから保護するために、.env ファイルなどを使用して環境変数とソースコードを分けるようにしてください。
+
+**.env**
+
+```sh
+EMAIL=メールアドレス
+PASSWORD=パスワード
+```
+
+**sample.py**
+
 ```python
 import yaylib
 
-api = yaylib.Client(encrypt_cookie=True)
+# 必要モジュールのインポート
+import os
+from dotenv import load_dotenv
 
-email = "メールアドレス"
-password = "パスワード"
+# .envファイルの内容を読み込見込む
+load_dotenv()
+
+# os.environを用いて環境変数を参照
+email = os.getenv("EMAIL")
+password = os.getenv("PASSWORD")
+
+api = yaylib.Client(encrypt_cookie=True)
 
 api.login(email, password)
 ```
@@ -92,14 +111,32 @@ api.login(email, password)
 
 保存した認証情報を復号化し、再利用するには`secret_key`を`login()`メソッドの引数に設定します。
 
+**.env**
+
+```sh
+EMAIL=メールアドレス
+PASSWORD=パスワード
+SECRET_KEY=lCo3vhaCQOaBxRdMe-ZyTUiTUjiRkrPX7vQR2nDezxc=
+```
+
+**sample.py**
+
 ```python
 import yaylib
 
-api = yaylib.Client(encrypt_cookie=True)
+# 必要モジュールのインポート
+import os
+from dotenv import load_dotenv
 
-email = "メールアドレス"
-password = "パスワード"
-secret_key = "lCo3vhaCQOaBxRdMe-ZyTUiTUjiRkrPX7vQR2nDezxc="
+# .envファイルの内容を読み込見込む
+load_dotenv()
+
+# os.environを用いて環境変数を参照
+email = os.getenv("EMAIL")
+password = os.getenv("PASSWORD")
+secret_key = os.getenv("SECRET_KEY")
+
+api = yaylib.Client(encrypt_cookie=True)
 
 api.login(email, password, secret_key)
 ```
@@ -107,16 +144,10 @@ api.login(email, password, secret_key)
 また、`secret_key`を取得する代替方法として、`Client`クラスの`secret_key`プロパティにアクセスすることで取得することも出来ます。
 
 ```python
-import yaylib
-
-api = yaylib.Client(encrypt_cookie=True)
-
-email = "メールアドレス"
-password = "パスワード"
-
 api.login(email, password)
 
-api.secret_key # ログインした後にsecret_keyを取得
+# ログインした後にsecret_keyを取得
+api.secret_key
 >>> lCo3vhaCQOaBxRdMe-ZyTUiTUjiRkrPX7vQR2nDezxc=
 ```
 
