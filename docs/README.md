@@ -91,12 +91,12 @@ import yaylib
 import os
 from dotenv import load_dotenv
 
-# .envファイルの内容を読み込見込む
+# .envファイルの内容を読み込む
 load_dotenv()
 
 # os.environを用いて環境変数を参照
-email = os.getenv("EMAIL")
-password = os.getenv("PASSWORD")
+email = os.environ.get("EMAIL")
+password = os.environ.get("PASSWORD")
 
 api = yaylib.Client(encrypt_cookie=True)
 
@@ -128,13 +128,13 @@ import yaylib
 import os
 from dotenv import load_dotenv
 
-# .envファイルの内容を読み込見込む
+# .envファイルの内容を読み込む
 load_dotenv()
 
 # os.environを用いて環境変数を参照
-email = os.getenv("EMAIL")
-password = os.getenv("PASSWORD")
-secret_key = os.getenv("SECRET_KEY")
+email = os.environ.get("EMAIL")
+password = os.environ.get("PASSWORD")
+secret_key = os.environ.get("SECRET_KEY")
 
 api = yaylib.Client(encrypt_cookie=True)
 
