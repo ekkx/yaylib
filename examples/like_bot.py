@@ -6,7 +6,6 @@ password = "your_password"
 
 
 import time
-import random
 import yaylib
 
 
@@ -14,11 +13,6 @@ class LikeBot:
     def __init__(self, email=None, password=None):
         self.api = yaylib.Client()
         self.api.login(email, password)
-
-    def delay(self):
-        # レート制限を緩和するために遅延を挿入する
-        sleep_time = random.uniform(0.2, 1.0)
-        time.sleep(sleep_time)
 
     def run(self):
         min_collect = 30
@@ -42,7 +36,6 @@ class LikeBot:
 
             for id in ids:
                 self.api.like(id)
-                self.delay()
 
             liked += len(ids)
             self.api.logger.info(f"いいね数: {liked}")
