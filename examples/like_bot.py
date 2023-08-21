@@ -11,9 +11,9 @@ import yaylib
 
 
 class LikeBot:
-    def __init__(self, email=None, password=None, secret_token=None):
+    def __init__(self, email=None, password=None):
         self.api = yaylib.Client()
-        self.api.login(email, password, secret_token)
+        self.api.login(email, password)
 
     def delay(self):
         # レート制限を緩和するために遅延を挿入する
