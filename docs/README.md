@@ -193,6 +193,18 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>レート制限を待機するかどうか</td>
 	</tr>
     <tr>
+		<td><code>min_delay</code></td>
+		<td><code>float</code></td>
+		<td><code>0.3</code></td>
+		<td>最短遅延時間</td>
+	</tr>
+    <tr>
+		<td><code>max_delay</code></td>
+		<td><code>float</code></td>
+		<td><code>1.5</code></td>
+		<td>最長遅延時間</td>
+	</tr>
+    <tr>
 		<td><code>timeout</code></td>
 		<td><code>int</code></td>
 		<td><code>30</code></td>

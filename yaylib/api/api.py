@@ -64,7 +64,7 @@ class API:
         backoff_factor=1.0,
         wait_on_rate_limit=True,
         min_delay=0.3,
-        max_delay=1.0,
+        max_delay=1.5,
         timeout=30,
         err_lang="ja",
         base_path=current_path + "/config/",

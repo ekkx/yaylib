@@ -412,6 +412,8 @@ class Client(API):
         - max_retries: int - (optional)
         - backoff_factor: float - (optional)
         - wait_on_rate_limit: bool - (optional)
+        - min_delay: float - (optional)
+        - max_delay: float - (optional)
         - timeout: int - (optional)
         - err_lang: str - (optional)
         - base_path: str - (optional)
