@@ -29,6 +29,7 @@ import httpx
 import json
 import logging
 import os
+import random
 import time
 import uuid
 
@@ -62,6 +63,8 @@ class API:
         max_retries=3,
         backoff_factor=1.0,
         wait_on_rate_limit=True,
+        min_delay=0.3,
+        max_delay=1.0,
         timeout=30,
         err_lang="ja",
         base_path=current_path + "/config/",
@@ -85,6 +88,8 @@ class API:
         self.retry_statuses = [500, 502, 503, 504]
         self.backoff_factor = backoff_factor
         self.wait_on_rate_limit = wait_on_rate_limit
+        self.min_delay = min_delay
+        self.max_delay = max_delay
         self.timeout = timeout
         self.err_lang = err_lang
         self.base_path = base_path
@@ -158,6 +163,9 @@ class API:
             response = self.session.request(
                 method, endpoint, params=params, json=payload, headers=headers
             )
+
+            # inserting delays to relax rate limits
+            self._delay(self.min_delay, self.max_delay)
 
             self.logger.debug(
                 "Received API response:\n\n"
@@ -365,6 +373,11 @@ class API:
                 hashlib.sha256,
             ).digest()
         ).decode("utf-8")
+
+    @staticmethod
+    def _delay(min_delay, max_delay):
+        sleep_time = random.uniform(min_delay, max_delay)
+        time.sleep(sleep_time)
 
     @staticmethod
     def _is_rate_limit(response: httpx.Response):
