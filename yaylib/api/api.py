@@ -240,9 +240,6 @@ class API:
 
             backoff_duration = self.backoff_factor * (2**i)
 
-        if response is None:
-            return None
-
         try:
             formatted_response = response.json()
         except JSONDecodeError:

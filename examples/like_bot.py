@@ -20,12 +20,11 @@ class LikeBot:
         sleep_time = random.uniform(0.2, 1.0)
         time.sleep(sleep_time)
 
-    def run(self, amount=None):
-        amount = float("inf") if amount is None else amount
+    def run(self):
         min_collect = 30
         liked = 0
 
-        while liked < amount:
+        while True:
             ids = []
 
             self.api.logger.info("投稿を取得しています...")
@@ -48,8 +47,6 @@ class LikeBot:
             liked += len(ids)
             self.api.logger.info(f"いいね数: {liked}")
             ids.clear()
-
-        self.api.logger.info(f"合計{liked}個の投稿にいいねしました。")
 
 
 if __name__ == "__main__":
