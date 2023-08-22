@@ -209,10 +209,15 @@ class API:
                     )
 
                     self.cookies = {
-                        "access_token": response.access_token,
-                        "refresh_token": response.refresh_token,
-                        "user_id": response.user_id,
-                        "email": self.email,
+                        "authentication": {
+                            "access_token": response.access_token,
+                            "refresh_token": response.refresh_token,
+                        },
+                        "user": {
+                            "user_id": response.user_id,
+                            "email": self.email,
+                        },
+                        "device": {"device_uuid": self.device_uuid},
                     }
 
                     # copy the cookies to ensure its value remains unchanged during encryption
@@ -287,35 +292,31 @@ class API:
 
     @cookies.setter
     def cookies(self, cookies):
-        result = all(key in cookies for key in Configs.COOKIE_PROPERTIES)
-        if result is False:
-            raise ValueError("Invalid cookie properties.")
         self._cookies = cookies
 
     @property
     def access_token(self):
         auth_header = self.session.headers.get("Authorization")
         if auth_header is not None:
-            return self.cookies.get("access_token") or auth_header.replace(
-                "Bearer ", ""
-            )
-        return self.cookies.get("access_token")
+            return auth_header.replace("Bearer ", "")
+        return self.cookies.get("authentication", {}).get("access_token")
 
     @property
     def refresh_token(self):
-        return self.cookies.get("refresh_token")
+        return self.cookies.get("authentication", {}).get("refresh_token")
 
     @property
     def user_id(self):
-        return self.cookies.get("user_id")
+        return self.cookies.get("user", {}).get("user_id")
 
     @property
     def email(self):
-        return self.cookies.get("email")
+        return self.cookies.get("user", {}).get("email")
 
     @email.setter
     def email(self, email):
-        self._cookies["email"] = email
+        self._cookies["user"] = self._cookies.get("user", {})
+        self._cookies["user"]["email"] = email
 
     @property
     def secret_key(self):
@@ -327,24 +328,34 @@ class API:
 
     @staticmethod
     def encrypt_cookies(fernet, cookies):
-        access_token = cookies.get("access_token")
-        refresh_token = cookies.get("refresh_token")
+        access_token = cookies.get("authentication", {}).get("access_token")
+        refresh_token = cookies.get("authentication", {}).get("refresh_token")
+        device_uuid = cookies.get("device", {}).get("device_uuid")
         cookies.update(
             {
-                "access_token": fernet.encrypt(access_token.encode()).decode(),
-                "refresh_token": fernet.encrypt(refresh_token.encode()).decode(),
+                "authentication": {
+                    "access_token": fernet.encrypt(access_token.encode()).decode(),
+                    "refresh_token": fernet.encrypt(refresh_token.encode()).decode(),
+                },
+                "device": {
+                    "device_uuid": fernet.encrypt(device_uuid.encode()).decode()
+                },
             }
         )
         return cookies
 
     @staticmethod
     def decrypt_cookies(fernet, cookies):
-        access_token = cookies.get("access_token")
-        refresh_token = cookies.get("refresh_token")
+        access_token = cookies.get("authentication", {}).get("access_token")
+        refresh_token = cookies.get("authentication", {}).get("refresh_token")
+        device_uuid = cookies.get("device", {}).get("device_uuid")
         cookies.update(
             {
-                "access_token": fernet.decrypt(access_token).decode(),
-                "refresh_token": fernet.decrypt(refresh_token).decode(),
+                "authentication": {
+                    "access_token": fernet.decrypt(access_token).decode(),
+                    "refresh_token": fernet.decrypt(refresh_token).decode(),
+                },
+                "device": {"device_uuid": fernet.decrypt(device_uuid).decode()},
             }
         )
         return cookies
@@ -408,26 +419,17 @@ class API:
         with open(self.base_path + self.cookie_filename + ".json", "r") as f:
             loaded_cookies = json.load(f)
 
-        result = all(key in loaded_cookies for key in Configs.COOKIE_PROPERTIES)
-        if result is False:
-            os.remove(self.base_path + self.cookie_filename + ".json")
-            raise ValueError("Invalid cookie properties.")
-
         if self.encrypt_cookie and self.fernet is not None:
             loaded_cookies = self.decrypt_cookies(self.fernet, loaded_cookies)
 
         return loaded_cookies
 
     def save_cookies(self, cookies):
-        email = cookies.get("email")
+        email = cookies.get("user", {}).get("email")
         if email is not None:
-            cookies["email"] = hashlib.sha256(email.encode()).hexdigest()
+            cookies["user"]["email"] = hashlib.sha256(email.encode()).hexdigest()
         else:
-            cookies["email"] = self.load_cookies().get("email")
-
-        result = all(key in cookies for key in Configs.COOKIE_PROPERTIES)
-        if result is False:
-            raise ValueError("Invalid cookie properties.")
+            cookies["user"]["email"] = self.load_cookies().get("user", {}).get("email")
 
         if self.encrypt_cookie and self.fernet is not None:
             cookies = self.encrypt_cookies(self.fernet, cookies)

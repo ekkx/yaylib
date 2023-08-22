@@ -1648,7 +1648,7 @@ class Client(API):
 
             if (
                 loaded_cookies is not None
-                and loaded_cookies.get("email") == hashed_email
+                and loaded_cookies.get("user", {}).get("email") == hashed_email
             ):
                 if not self.encrypt_cookie:
                     self.cookies = loaded_cookies
@@ -1658,7 +1658,14 @@ class Client(API):
                         "Authorization", f"Bearer {self.access_token}"
                     )
                     self.logger.info(f"Successfully logged in as '{self.user_id}'")
-                    return LoginUserResponse(self.cookies)
+                    return LoginUserResponse(
+                        {
+                            "access_token": self.access_token,
+                            "refresh_token": self.refresh_token,
+                            "user_id": self.user_id,
+                            "email": self.email,
+                        }
+                    )
 
                 if secret_key is not None:
                     self.secret_key = secret_key
@@ -1670,7 +1677,14 @@ class Client(API):
                         "Authorization", f"Bearer {self.access_token}"
                     )
                     self.logger.info(f"Successfully logged in as '{self.user_id}'")
-                    return LoginUserResponse(self.cookies)
+                    return LoginUserResponse(
+                        {
+                            "access_token": self.access_token,
+                            "refresh_token": self.refresh_token,
+                            "user_id": self.user_id,
+                            "email": self.email,
+                        }
+                    )
 
                 console_print(
                     f"{Colors.WARNING}Cookie データが見つかりました。"
@@ -1684,10 +1698,15 @@ class Client(API):
         )
 
         self.cookies = {
-            "access_token": response.access_token,
-            "refresh_token": response.refresh_token,
-            "user_id": response.user_id,
-            "email": email,
+            "authentication": {
+                "access_token": response.access_token,
+                "refresh_token": response.refresh_token,
+            },
+            "user": {
+                "user_id": response.user_id,
+                "email": email,
+            },
+            "device": {"device_uuid": self.device_uuid},
         }
 
         if self.save_cookie_file:
