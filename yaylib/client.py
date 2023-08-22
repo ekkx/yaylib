@@ -1657,6 +1657,9 @@ class Client(API):
                     self.session.headers.setdefault(
                         "Authorization", f"Bearer {self.access_token}"
                     )
+                    self.session.headers["x-device-uuid"] = loaded_cookies.get(
+                        "device", {}
+                    ).get("device_uuid")
                     self.logger.info(f"Successfully logged in as '{self.user_id}'")
                     return LoginUserResponse(
                         {
@@ -1676,6 +1679,9 @@ class Client(API):
                     self.session.headers.setdefault(
                         "Authorization", f"Bearer {self.access_token}"
                     )
+                    self.session.headers["x-device-uuid"] = loaded_cookies.get(
+                        "device", {}
+                    ).get("device_uuid")
                     self.logger.info(f"Successfully logged in as '{self.user_id}'")
                     return LoginUserResponse(
                         {
