@@ -319,6 +319,15 @@ class API:
         self._cookies["user"]["email"] = email
 
     @property
+    def device_uuid(self):
+        return self.cookies.get("device", {}).get("device_uuid")
+
+    @device_uuid.setter
+    def device_uuid(self, device_uuid):
+        self._cookies["device"] = self._cookies.get("device", {})
+        self._cookies["device"]["device_uuid"] = device_uuid
+
+    @property
     def secret_key(self):
         return self._secret_key
 
