@@ -159,6 +159,41 @@ def restore_user(self, user_id: int, access_token: str = None) -> LoginUserRespo
     return response
 
 
+def register_device_token(
+    self,
+    device_token: str,
+    device_type: str,
+    os_version: str,
+    app_version: str,
+    screen_resolution: str,
+    screen_density: str,
+    device_model: str,
+    appsflyer_id: str,
+    advertising_id: str = None,
+    access_token: str = None,
+):
+    response = self._make_request(
+        "POST",
+        endpoint=f"{Endpoints.USERS_V2}/device_tokens/new",
+        payload={
+            "device_token": device_token,
+            "device_type": device_type,
+            "uuid": self.uuid,
+            "os_version": os_version,
+            "app_version": app_version,
+            "screen_resolution": screen_resolution,
+            "screen_density": screen_density,
+            "device_model": device_model,
+            "appsflyer_id": appsflyer_id,
+            "advertising_id": advertising_id,
+        },
+        data_type=RegisterDeviceTokenResponse,
+        access_token=access_token,
+    )
+    self.logger.info("Device token has been registered.")
+    return response
+
+
 def revoke_tokens(self, access_token: str = None):
     response = self._make_request(
         "DELETE",
