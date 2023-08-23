@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 from enum import Enum
+from .models import Device
 
 
 class Configs:
@@ -44,14 +45,26 @@ class Configs:
     YAY_PRODUCTION_HOST = "api.yay.space"
     ID_CARD_CHECK_HOST_PRODUCTION = "idcardcheck.com"
     ID_CARD_CHECK_HOST_STAGING = "stg.idcardcheck.com"
-    USER_AGENT = "android 11 (3.5x 1440x2960 Galaxy S9)"
+    DEVICE = Device(
+        {
+            "device_type": "android",
+            "os_version": "11",
+            "screen_density": "3.5",
+            "screen_size": "1440x2960",
+            "model": "Galaxy S9",
+        }
+    )
+    USER_AGENT = f"{DEVICE.device_type} {DEVICE.os_version} ({DEVICE.screen_density}x {DEVICE.screen_size} {DEVICE.model})"
     REQUEST_HEADERS = {
         "Host": YAY_PRODUCTION_HOST,
         "User-Agent": USER_AGENT,
+        "X-Timestamp": "",
         "X-App-Version": YAY_API_VERSION,
-        "X-Device-Info": f"yay {YAY_VERSION_NAME} {USER_AGENT}",
+        "X-Device-Info": "yay " + YAY_VERSION_NAME + " " + USER_AGENT,
         "X-Device-UUID": "",
+        "X-Client-IP": "",
         "X-Connection-Type": "wifi",
+        "X-Connection-Speed": "",
         "Accept-Language": "ja",
         "Content-Type": "application/json;charset=UTF-8",
     }
