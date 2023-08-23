@@ -92,6 +92,7 @@ def get_token(
             "refresh_token": refresh_token,
         },
         data_type=TokenResponse,
+        bypass_delay=True,
         access_token=access_token,
     )
 

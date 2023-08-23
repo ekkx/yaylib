@@ -123,6 +123,7 @@ def get_email_verification_presigned_url(
             "intent": intent,
         },
         data_type=EmailVerificationPresignedUrlResponse,
+        bypass_delay=True,
         access_token=access_token,
     )
 
@@ -135,6 +136,7 @@ def get_file_upload_presigned_urls(
         endpoint=f"{Endpoints.BUCKETS_V1}/presigned_urls",
         params={"file_names[]": file_names},
         data_type=PresignedUrlsResponse,
+        bypass_delay=True,
         access_token=access_token,
     ).presigned_urls
 
@@ -151,6 +153,7 @@ def get_id_checker_presigned_url(
         endpoint=f"{Endpoints.ID_CHECK_V1}/{model}/{action}",
         params=params,
         data_type=IdCheckerPresignedUrlResponse,
+        bypass_delay=True,
         access_token=access_token,
     ).presigned_url
 
@@ -163,6 +166,7 @@ def get_old_file_upload_presigned_url(
         endpoint=f"{Endpoints.USERS_V1}/presigned_url",
         params={"video_file_name": video_file_name},
         data_type=PresignedUrlResponse,
+        bypass_delay=True,
         access_token=access_token,
     ).presigned_url
 
