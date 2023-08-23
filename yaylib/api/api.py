@@ -133,6 +133,7 @@ class API:
         user_auth=True,
         headers=None,
         auth_required=False,
+        bypass_next_delay=False,
         access_token=None,
     ):
         headers = headers or self.session.headers.copy()
@@ -266,6 +267,9 @@ class API:
 
         self.last_req_ts = int(datetime.datetime.now().timestamp())
 
+        if bypass_next_delay:
+            self.last_req_ts = None
+
         try:
             formatted_response = response.json()
         except JSONDecodeError:
@@ -283,6 +287,7 @@ class API:
         user_auth=True,
         headers=None,
         auth_required=False,
+        bypass_next_delay=False,
         access_token=None,
     ):
         response = self._request(
@@ -293,6 +298,7 @@ class API:
             user_auth,
             headers,
             auth_required,
+            bypass_next_delay,
             access_token,
         )
         if data_type:
