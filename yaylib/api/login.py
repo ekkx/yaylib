@@ -25,7 +25,12 @@ SOFTWARE.
 from datetime import datetime
 from ..config import Endpoints
 from ..errors import ForbiddenError
-from ..responses import LoginUserResponse, LoginUpdateResponse, TokenResponse
+from ..responses import (
+    LoginUserResponse,
+    LoginUpdateResponse,
+    RegisterDeviceTokenResponse,
+    TokenResponse,
+)
 
 
 def change_email(
@@ -171,7 +176,7 @@ def register_device_token(
     appsflyer_id: str,
     advertising_id: str = None,
     access_token: str = None,
-):
+) -> RegisterDeviceTokenResponse:
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/device_tokens/new",
