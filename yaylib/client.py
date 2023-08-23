@@ -1656,12 +1656,12 @@ class Client(API):
                     self.cookies = loaded_cookies
                     # email property is reassigned here because it's hashed
                     self.email = email
-                    self.session.headers.setdefault(
-                        "Authorization", f"Bearer {self.access_token}"
+                    self.session.headers.update(
+                        {
+                            "Authorization": "Bearer " + self.access_token,
+                            "X-Device-UUID": self.device_uuid,
+                        }
                     )
-                    self.session.headers["x-device-uuid"] = loaded_cookies.get(
-                        "device", {}
-                    ).get("device_uuid")
                     self.logger.info(f"Successfully logged in as '{self.user_id}'")
                     return LoginUserResponse(
                         {
@@ -1678,12 +1678,12 @@ class Client(API):
                     self.cookies = self.decrypt_cookies(self.fernet, loaded_cookies)
                     # email property is reassigned here because it's hashed
                     self.email = email
-                    self.session.headers.setdefault(
-                        "Authorization", f"Bearer {self.access_token}"
+                    self.session.headers.update(
+                        {
+                            "Authorization": "Bearer " + self.access_token,
+                            "X-Device-UUID": self.device_uuid,
+                        }
                     )
-                    self.session.headers["x-device-uuid"] = loaded_cookies.get(
-                        "device", {}
-                    ).get("device_uuid")
                     self.logger.info(f"Successfully logged in as '{self.user_id}'")
                     return LoginUserResponse(
                         {
@@ -1701,9 +1701,7 @@ class Client(API):
 
         response = login_with_email(self, email, password)
 
-        self.session.headers.setdefault(
-            "Authorization", f"Bearer {response.access_token}"
-        )
+        self.session.headers["Authorization"] = "Bearer " + response.access_token
 
         self.cookies = {
             "authentication": {

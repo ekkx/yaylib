@@ -106,7 +106,7 @@ class API:
         self.session.headers.update(Configs.REQUEST_HEADERS)
         self.session.headers.update({"X-Device-UUID": self.device_uuid})
         if access_token is not None:
-            self.session.headers.setdefault("Authorization", f"Bearer {access_token}")
+            self.session.headers.setdefault("Authorization", "Bearer " + access_token)
 
         self.logger = logging.getLogger("yaylib version: " + self.yaylib_version)
 
@@ -139,7 +139,7 @@ class API:
         headers = headers or self.session.headers.copy()
 
         if access_token is not None:
-            headers["Authorization"] = f"Bearer {access_token}"
+            headers["Authorization"] = "Bearer " + access_token
 
         if not user_auth and "Authorization" in headers:
             del headers["Authorization"]
@@ -237,11 +237,11 @@ class API:
                     self.save_cookies(cookies)
 
                     # only for the next retry
-                    headers["Authorization"] = f"Bearer {response.access_token}"
+                    headers["Authorization"] = "Bearer " + response.access_token
 
-                    self.session.headers[
-                        "Authorization"
-                    ] = f"Bearer {response.access_token}"
+                    self.session.headers["Authorization"] = (
+                        "Bearer " + response.access_token
+                    )
 
                     # continue to the next retry iteration
                     continue
