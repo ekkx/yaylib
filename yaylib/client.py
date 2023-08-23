@@ -134,6 +134,7 @@ from .api.login import (
     logout,
     resend_confirm_email,
     restore_user,
+    register_device_token,
     revoke_tokens,
     save_account_with_email,
 )
@@ -318,6 +319,7 @@ from .responses import (
     PostTagsResponse,
     LikePostsResponse,
     RefreshCounterRequestsResponse,
+    RegisterDeviceTokenResponse,
     ReviewsResponse,
     SocialShareUsersResponse,
     TokenResponse,
@@ -1756,6 +1758,38 @@ class Client(API):
 
         """
         return restore_user(self, user_id, access_token)
+
+    def register_device_token(
+        self,
+        device_token: str,
+        device_type: str,
+        os_version: str,
+        app_version: str,
+        screen_resolution: str,
+        screen_density: str,
+        device_model: str,
+        appsflyer_id: str,
+        advertising_id: str = None,
+        access_token: str = None,
+    ) -> RegisterDeviceTokenResponse:
+        """
+
+        デバイストークンを登録します
+
+        """
+        return register_device_token(
+            self,
+            device_token,
+            device_type,
+            os_version,
+            app_version,
+            screen_resolution,
+            screen_density,
+            device_model,
+            appsflyer_id,
+            advertising_id,
+            access_token,
+        )
 
     def revoke_tokens(self, access_token: str = None) -> dict:
         """
