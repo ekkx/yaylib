@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 import base64
+import datetime
 import hashlib
 import hmac
 import httpx
@@ -34,6 +35,7 @@ import time
 import uuid
 
 from .login import get_token
+from .user import get_timestamp
 from ..config import Configs, ErrorType, ErrorMessage
 from ..errors import (
     HTTPError,
@@ -84,6 +86,7 @@ class API:
             self.proxy["http://"] = "http://" + proxy
             self.proxy["https://"] = "http://" + proxy
 
+        self.last_req_ts = None
         self.max_retries = max_retries
         self.retry_statuses = [500, 502, 503, 504]
         self.backoff_factor = backoff_factor
@@ -101,7 +104,7 @@ class API:
         self._generate_all_uuids()
         self.session = httpx.Client(proxies=self.proxy, timeout=self.timeout)
         self.session.headers.update(Configs.REQUEST_HEADERS)
-        self.session.headers.update({"X-Device-Uuid": self.device_uuid})
+        self.session.headers.update({"X-Device-UUID": self.device_uuid})
         if access_token is not None:
             self.session.headers.setdefault("Authorization", f"Bearer {access_token}")
 
@@ -116,6 +119,8 @@ class API:
 
         self.logger.addHandler(ch)
         self.logger.setLevel(logging.DEBUG)
+
+        self._set_x_client_ip()
 
         self.logger.info("yaylib version: " + self.yaylib_version + " started")
 
@@ -139,7 +144,7 @@ class API:
             del headers["Authorization"]
 
         if auth_required and "Authorization" not in headers:
-            raise AuthenticationError("Access Denied – Authentication Required!")
+            raise AuthenticationError("Access Denied - Authentication Required!")
 
         response = None
         backoff_duration = 0
@@ -151,6 +156,10 @@ class API:
         # retry the request based on max_retries
         for i in range(self.max_retries):
             time.sleep(backoff_duration)
+
+            current_ts = int(datetime.datetime.now().timestamp())
+
+            headers.update({"X-Timestamp": str(current_ts)})
 
             self.logger.debug(
                 "Making API request:\n\n"
@@ -164,8 +173,10 @@ class API:
                 method, endpoint, params=params, json=payload, headers=headers
             )
 
-            # inserting delays to relax rate limits
-            self._delay(self.min_delay, self.max_delay)
+            if self.last_req_ts is not None and current_ts - self.last_req_ts < 1:
+                # insert delays if interval between last request
+                # and current request is less than a sec
+                self._delay(self.min_delay, self.max_delay)
 
             self.logger.debug(
                 "Received API response:\n\n"
@@ -252,6 +263,8 @@ class API:
                 self.logger.error("Request failed. Retrying...")
 
             backoff_duration = self.backoff_factor * (2**i)
+
+        self.last_req_ts = int(datetime.datetime.now().timestamp())
 
         try:
             formatted_response = response.json()
@@ -485,3 +498,7 @@ class API:
     def _generate_all_uuids(self):
         self.device_uuid = self.generate_uuid(True)
         self.uuid = self.generate_uuid(True)
+
+    def _set_x_client_ip(self):
+        response = get_timestamp(self)
+        self.session.headers.update({"X-Client-IP": response.ip_address})

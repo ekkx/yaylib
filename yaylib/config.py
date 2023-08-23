@@ -64,7 +64,7 @@ class Configs:
         "X-Device-UUID": "",
         "X-Client-IP": "",
         "X-Connection-Type": "wifi",
-        "X-Connection-Speed": "",
+        "X-Connection-Speed": "0",
         "Accept-Language": "ja",
         "Content-Type": "application/json;charset=UTF-8",
     }
