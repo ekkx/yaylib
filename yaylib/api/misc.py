@@ -174,6 +174,7 @@ def get_web_socket_token(self, headers: dict = None, access_token: str = None) -
         data_type=WebSocketTokenResponse,
         headers=headers,
         auth_required=True,
+        bypass_next_delay=True,
         access_token=access_token,
     ).token
 
