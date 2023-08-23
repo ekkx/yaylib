@@ -66,7 +66,7 @@ class API:
         backoff_factor=1.0,
         wait_on_rate_limit=True,
         min_delay=0.3,
-        max_delay=0.8,
+        max_delay=1.2,
         timeout=30,
         err_lang="ja",
         base_path=current_path + "/config/",
@@ -265,9 +265,9 @@ class API:
 
             backoff_duration = self.backoff_factor * (2**i)
 
-        self.last_req_ts = int(datetime.datetime.now().timestamp())
-
-        if bypass_delay:
+        if not bypass_delay:
+            self.last_req_ts = int(datetime.datetime.now().timestamp())
+        else:
             self.last_req_ts = None
 
         try:

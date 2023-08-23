@@ -201,7 +201,7 @@ Client クラスは、API クライアントのメインクラスです。
     <tr>
 		<td><code>max_delay</code></td>
 		<td><code>float</code></td>
-		<td><code>0.8</code></td>
+		<td><code>1.2</code></td>
 		<td>最長遅延時間</td>
 	</tr>
     <tr>
