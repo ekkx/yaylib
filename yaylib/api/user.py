@@ -313,7 +313,7 @@ def get_timestamp(self, access_token: str = None) -> UserTimestampResponse:
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/timestamp",
         data_type=UserTimestampResponse,
-        bypass_next_delay=True,
+        bypass_delay=True,
         access_token=access_token,
     )
 

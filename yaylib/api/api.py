@@ -120,7 +120,7 @@ class API:
         self.logger.addHandler(ch)
         self.logger.setLevel(logging.DEBUG)
 
-        self._set_x_client_ip()
+        self._set_client_ip()
 
         self.logger.info("yaylib version: " + self.yaylib_version + " started")
 
@@ -133,7 +133,7 @@ class API:
         user_auth=True,
         headers=None,
         auth_required=False,
-        bypass_next_delay=False,
+        bypass_delay=False,
         access_token=None,
     ):
         headers = headers or self.session.headers.copy()
@@ -267,7 +267,7 @@ class API:
 
         self.last_req_ts = int(datetime.datetime.now().timestamp())
 
-        if bypass_next_delay:
+        if bypass_delay:
             self.last_req_ts = None
 
         try:
@@ -287,7 +287,7 @@ class API:
         user_auth=True,
         headers=None,
         auth_required=False,
-        bypass_next_delay=False,
+        bypass_delay=False,
         access_token=None,
     ):
         response = self._request(
@@ -298,7 +298,7 @@ class API:
             user_auth,
             headers,
             auth_required,
-            bypass_next_delay,
+            bypass_delay,
             access_token,
         )
         if data_type:
@@ -505,6 +505,6 @@ class API:
         self.device_uuid = self.generate_uuid(True)
         self.uuid = self.generate_uuid(True)
 
-    def _set_x_client_ip(self):
+    def _set_client_ip(self):
         response = get_timestamp(self)
         self.session.headers.update({"X-Client-IP": response.ip_address})
