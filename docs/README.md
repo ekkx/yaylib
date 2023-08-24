@@ -177,13 +177,13 @@ Client クラスは、API クライアントのメインクラスです。
     <tr>
 		<td><code>max_retries</code></td>
 		<td><code>int</code></td>
-		<td><code>None</code></td>
+		<td><code>3</code></td>
 		<td>リクエストに失敗した際のリトライ回数</td>
 	</tr>
     <tr>
 		<td><code>backoff_factor</code></td>
 		<td><code>float</code></td>
-		<td><code>None</code></td>
+		<td><code>1.5</code></td>
 		<td>リトライ待機時間の増加割合を指定する係数</td>
 	</tr>
     <tr>

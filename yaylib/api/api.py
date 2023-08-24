@@ -63,7 +63,7 @@ class API:
         access_token: str = None,
         proxy: str = None,
         max_retries=3,
-        backoff_factor=1.0,
+        backoff_factor=1.5,
         wait_on_rate_limit=True,
         min_delay=0.3,
         max_delay=1.2,
@@ -164,10 +164,10 @@ class API:
 
             self.logger.debug(
                 "Making API request:\n\n"
-                f"{Colors.HEADER}{method}: {endpoint}{Colors.RESET}\n\n"
-                f"Parameters: {params}\n\n"
-                f"Headers: {headers}\n\n"
-                f"Body: {payload}\n"
+                + f"{Colors.HEADER}{method}: {endpoint}{Colors.RESET}\n\n"
+                + f"Parameters: {params}\n\n"
+                + f"Headers: {headers}\n\n"
+                + f"Body: {payload}\n"
             )
 
             response = self.session.request(
@@ -181,9 +181,9 @@ class API:
 
             self.logger.debug(
                 "Received API response:\n\n"
-                f"Status Code: {response.status_code}\n\n"
-                f"Headers: {response.headers}\n\n"
-                f"Response: {response.text}\n"
+                + f"Status code: {response.status_code}\n\n"
+                + f"Headers: {response.headers}\n\n"
+                + f"Response: {response.text}\n"
             )
 
             if self._is_rate_limit(response) and self.wait_on_rate_limit:
@@ -240,7 +240,6 @@ class API:
                         "Bearer " + response.access_token
                     )
 
-                    # continue to the next retry iteration
                     continue
 
                 else:
