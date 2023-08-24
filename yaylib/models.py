@@ -500,7 +500,7 @@ class ConferenceCall:
         "max_participants",
         "conference_call_users",
         "bump_params",
-        "conference_call_users_role",
+        "conference_call_user_roles",
     )
 
     def __init__(self, data):
@@ -537,11 +537,11 @@ class ConferenceCall:
         # if self.bump_params is not None:
         #     self.bump_params = BumpParams(self.bump_params)
 
-        self.conference_call_users_role = data.get("conference_call_usersRole")
-        if self.conference_call_users_role is not None:
-            self.conference_call_users_role = [
+        self.conference_call_user_roles = data.get("conference_call_user_roles")
+        if self.conference_call_user_roles is not None:
+            self.conference_call_user_roles = [
                 ConferenceCallUserRole(conference_call_user_role)
-                for conference_call_user_role in self.conference_call_users_role
+                for conference_call_user_role in self.conference_call_user_roles
             ]
 
     def __repr__(self):
