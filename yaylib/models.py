@@ -225,16 +225,6 @@ class ApplicationConfigSettings:
 
 
 class Attachment:
-    __slots__ = (
-        "file",
-        "filename",
-        "original_file_name",
-        "original_file_extension",
-        "natural_width",
-        "natural_height",
-        "is_thumb",
-    )
-
     def __init__(
         self,
         file,
@@ -592,21 +582,25 @@ class CreateGroupQuota:
 
     def __repr__(self):
         return f"CreateGroupQuota(data={self.data})"
-    
+
 
 class Device:
-    __slots__ = ("data", "device_type", "os_version", "screen_density", "screen_size", "model")
-
-    def __init__(self, data):
-        self.data = data
-        self.device_type = data.get("device_type")
-        self.os_version = data.get("os_version")
-        self.screen_density = data.get("screen_density")
-        self.screen_size = data.get("screen_size")
-        self.model = data.get("model")
+    def __init__(
+        self,
+        device_type: str,
+        os_version: str,
+        screen_density: str,
+        screen_size: str,
+        model: str,
+    ):
+        self.device_type = device_type
+        self.os_version = os_version
+        self.screen_density = screen_density
+        self.screen_size = screen_size
+        self.model = model
 
     def __repr__(self):
-        return f"Device(data={self.data})"
+        return f"Device(device_type={self.device_type})"
 
 
 class TimelineSettings:

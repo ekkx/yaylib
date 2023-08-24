@@ -46,13 +46,11 @@ class Configs:
     ID_CARD_CHECK_HOST_PRODUCTION = "idcardcheck.com"
     ID_CARD_CHECK_HOST_STAGING = "stg.idcardcheck.com"
     DEVICE = Device(
-        {
-            "device_type": "android",
-            "os_version": "11",
-            "screen_density": "3.5",
-            "screen_size": "1440x2960",
-            "model": "Galaxy S9",
-        }
+        device_type="android",
+        os_version="11",
+        screen_density="3.5",
+        screen_size="1440x2960",
+        model="Galaxy S9",
     )
     USER_AGENT = f"{DEVICE.device_type} {DEVICE.os_version} ({DEVICE.screen_density}x {DEVICE.screen_size} {DEVICE.model})"
     REQUEST_HEADERS = {
