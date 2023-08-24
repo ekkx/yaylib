@@ -220,17 +220,14 @@ class API:
                         refresh_token=self.refresh_token,
                     )
 
-                    self.cookies = {
-                        "authentication": {
-                            "access_token": response.access_token,
-                            "refresh_token": response.refresh_token,
-                        },
-                        "user": {
-                            "user_id": response.user_id,
-                            "email": self.email,
-                        },
-                        "device": {"device_uuid": self.device_uuid},
-                    }
+                    self.cookies.update(
+                        {
+                            "authentication": {
+                                "access_token": response.access_token,
+                                "refresh_token": response.refresh_token,
+                            }
+                        }
+                    )
 
                     # copy the cookies to ensure its value remains unchanged during encryption
                     cookies = self.cookies.copy()
