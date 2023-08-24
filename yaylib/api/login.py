@@ -70,7 +70,7 @@ def change_password(
         data_type=LoginUpdateResponse,
         access_token=access_token,
     )
-    self.logger.info("Your password has been changed..")
+    self.logger.info("Your password has been updated.")
     return response
 
 
@@ -116,7 +116,7 @@ def login_with_email(self, email: str, password: str) -> LoginUserResponse:
     )
     if response.access_token is None:
         raise ForbiddenError("Invalid email or password.")
-    self.logger.info(f"Successfully logged in as '{response.user_id}'")
+    self.logger.info(f"Successfully logged in as '{response.user_id}'.")
     return response
 
 

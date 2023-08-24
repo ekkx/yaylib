@@ -48,7 +48,7 @@ def accept_chat_requests(self, chat_room_ids: List[int], access_token: str = Non
         auth_required=True,
         access_token=access_token,
     )
-    self.logger.info("Accepted chat requests")
+    self.logger.info("Accepted chat requests.")
     return response
 
 
@@ -469,7 +469,7 @@ def unhide_chat(self, chat_room_ids: int, access_token: str = None):
         auth_required=True,
         access_token=access_token,
     )
-    self.logger.info("Unhid the chatrooms")
+    self.logger.info("Unhid the chatrooms.")
     return response
 
 
@@ -480,5 +480,5 @@ def unpin_chat(self, chat_room_id: int, access_token: str = None):
         auth_required=True,
         access_token=access_token,
     )
-    self.logger.info("Unpinned the chatroom")
+    self.logger.info("Unpinned the chatroom.")
     return response

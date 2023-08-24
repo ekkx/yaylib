@@ -257,7 +257,7 @@ def set_call(
         },
         access_token=access_token,
     )
-    self.logger.info("Started a call")
+    self.logger.info("Started a call.")
     return response
 
 

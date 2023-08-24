@@ -1662,7 +1662,7 @@ class Client(API):
                             "X-Device-UUID": self.device_uuid,
                         }
                     )
-                    self.logger.info(f"Successfully logged in as '{self.user_id}'")
+                    self.logger.info(f"Successfully logged in as '{self.user_id}'.")
                     return LoginUserResponse(
                         {
                             "access_token": self.access_token,
@@ -1684,7 +1684,7 @@ class Client(API):
                             "X-Device-UUID": self.device_uuid,
                         }
                     )
-                    self.logger.info(f"Successfully logged in as '{self.user_id}'")
+                    self.logger.info(f"Successfully logged in as '{self.user_id}'.")
                     return LoginUserResponse(
                         {
                             "access_token": self.access_token,

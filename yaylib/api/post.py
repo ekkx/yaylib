@@ -263,7 +263,7 @@ def create_post(
                 url=shared_url, access_token=access_token
             ).data
         except ForbiddenError:
-            self.logger.error("Unable to get the URL metadata")
+            self.logger.error("Unable to get the URL metadata.")
             shared_url = None
 
     response = self._make_request(
@@ -349,7 +349,7 @@ def create_repost(
                 url=shared_url, access_token=access_token
             ).data
         except ForbiddenError:
-            self.logger.error("Unable to get the URL metadata")
+            self.logger.error("Unable to get the URL metadata.")
             shared_url = None
 
     response = self._make_request(
@@ -470,7 +470,7 @@ def create_thread_post(
                 url=shared_url, access_token=access_token
             ).data
         except ForbiddenError:
-            self.logger.error("Unable to get the URL metadata")
+            self.logger.error("Unable to get the URL metadata.")
             shared_url = None
 
     response = self._make_request(

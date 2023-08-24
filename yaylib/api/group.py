@@ -92,7 +92,7 @@ def add_related_groups(
         auth_required=True,
         access_token=access_token,
     )
-    self.logger.info("Group has been added to the related groups")
+    self.logger.info("Group has been added to the related groups.")
     return response
 
 
@@ -640,7 +640,7 @@ def take_over_group_ownership(self, group_id: int, access_token: str = None):
         auth_required=True,
         access_token=access_token,
     )
-    self.logger.info(f"Took over the group ownership of {group_id}")
+    self.logger.info(f"Took over the group ownership of {group_id}.")
     return response
 
 
@@ -727,7 +727,7 @@ def withdraw_moderator_offer(
         auth_required=True,
         access_token=access_token,
     )
-    self.logger.info("Group moderator offer has been withdrawn")
+    self.logger.info("Group moderator offer has been withdrawn.")
     return response
 
 
@@ -741,5 +741,5 @@ def withdraw_ownership_offer(
         auth_required=True,
         access_token=access_token,
     )
-    self.logger.info("Group ownership offer has been withdrawn")
+    self.logger.info("Group ownership offer has been withdrawn.")
     return response
