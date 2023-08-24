@@ -122,7 +122,7 @@ class API:
 
         self._set_client_ip()
 
-        self.logger.info("yaylib version: " + self.yaylib_version + " started")
+        self.logger.info("yaylib version: " + self.yaylib_version + " started.")
 
     def _request(
         self,
@@ -262,10 +262,10 @@ class API:
 
             backoff_duration = self.backoff_factor * (2**i)
 
+        self.last_req_ts = None
+
         if not bypass_delay:
             self.last_req_ts = int(datetime.datetime.now().timestamp())
-        else:
-            self.last_req_ts = None
 
         try:
             formatted_response = response.json()
