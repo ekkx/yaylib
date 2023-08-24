@@ -17,6 +17,7 @@ class LikeBot:
     def run(self):
         min_collect = 30
         liked = 0
+        collected_ids = set()
 
         while True:
             ids = []
@@ -26,20 +27,28 @@ class LikeBot:
             while len(ids) < min_collect:
                 timeline = self.api.get_timeline(number=100)
 
-                new_ids = [post.id for post in timeline.posts if not post.liked]
+                new_ids = [
+                    post.id
+                    for post in timeline.posts
+                    if not post.liked and post.id not in collected_ids
+                ]
 
                 ids.extend(new_ids)
+                collected_ids.update(new_ids)
+
                 self.api.logger.info(f"取得済み投稿数: {len(ids)}")
 
                 if len(ids) < min_collect:
-                    time.sleep(5)
+                    time.sleep(10)
 
             for id in ids:
                 self.api.like(id)
 
             liked += len(ids)
             self.api.logger.info(f"いいね数: {liked}")
+
             ids.clear()
+            collected_ids.clear()
 
 
 if __name__ == "__main__":
