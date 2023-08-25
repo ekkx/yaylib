@@ -145,7 +145,7 @@ class API:
         access_token=None,
     ):
         headers = headers or self.session.headers.copy()
-        self._prepare_auth(headers, access_token, user_auth, auth_required)
+        headers = self._prepare_auth(headers, access_token, user_auth, auth_required)
 
         response, backoff_duration = None, 0
         max_rate_limit_retries = 15  # roughly equivalent to 60 mins, plus extra 15 mins
@@ -175,7 +175,7 @@ class API:
                 rate_limit_retry_count = 0
 
                 while rate_limit_retry_count < max_rate_limit_retries:
-                    retry_after = 0
+                    retry_after = 60 * 5
                     self.logger.info(
                         f"Rate limit exceeded. Waiting for {retry_after} seconds..."
                     )
@@ -232,15 +232,8 @@ class API:
 
             backoff_duration = self.backoff_factor * (2**i)
 
-        self.last_req_ts = None
-
-        if not bypass_delay:
-            self.last_req_ts = int(datetime.datetime.now().timestamp())
-
-        try:
-            formatted_response = response.json()
-        except JSONDecodeError:
-            formatted_response = response.text
+        self._update_last_req_ts(bypass_delay)
+        formatted_response = self._format_response(response)
 
         return self._handle_response(response, formatted_response)
 
@@ -253,6 +246,8 @@ class API:
 
         if auth_required and "Authorization" not in headers:
             raise AuthenticationError("Access Denied - Authentication Required!")
+
+        return headers
 
     def _prepare_headers(self, headers):
         current_ts = int(datetime.datetime.now().timestamp())
@@ -305,7 +300,19 @@ class API:
 
         return headers
 
-    def _handle_response(self, response, formatted_response):
+    def _update_last_req_ts(self, bypass_delay):
+        self.last_req_ts = None
+        if not bypass_delay:
+            self.last_req_ts = int(datetime.datetime.now().timestamp())
+
+    def _format_response(self, response: httpx.Response):
+        try:
+            formatted_response = response.json()
+        except JSONDecodeError:
+            formatted_response = response.text
+        return formatted_response
+
+    def _handle_response(self, response: httpx.Response, formatted_response):
         if isinstance(formatted_response, dict):
             formatted_response = self._translate_error_message(formatted_response)
 
