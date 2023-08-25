@@ -174,8 +174,8 @@ class API:
             if self._is_rate_limit(response) and self.wait_on_rate_limit:
                 # continue attempting request until successful
                 # or maximum number of retries is reached
-                rate_limit_retry_count = 0
-                while rate_limit_retry_count < max_rate_limit_retries - 1:
+                rate_limit_retry_count = 1
+                while rate_limit_retry_count < max_rate_limit_retries:
                     retry_after = 60 * 5
                     self.logger.info(
                         f"Rate limit exceeded. Waiting for {retry_after} seconds..."
