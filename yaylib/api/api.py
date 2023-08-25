@@ -148,6 +148,7 @@ class API:
         headers = self._prepare_auth(headers, access_token, user_auth, auth_required)
 
         response, backoff_duration = None, 0
+        rate_limit_retry_count = 0
         max_rate_limit_retries = 15  # roughly equivalent to 60 mins, plus extra 15 mins
         auth_retry_count, max_auth_retries = 0, 2
 
@@ -172,8 +173,7 @@ class API:
             if self._is_rate_limit(response) and self.wait_on_rate_limit:
                 # continue attempting request until successful
                 # or maximum number of retries is reached
-                rate_limit_retry_count = 0
-
+                rate_limit_retry_count += 1
                 while rate_limit_retry_count < max_rate_limit_retries:
                     retry_after = 60 * 5
                     self.logger.info(
