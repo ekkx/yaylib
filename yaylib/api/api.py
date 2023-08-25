@@ -124,6 +124,14 @@ class API:
 
         self.logger.info("yaylib version: " + self.yaylib_version + " started.")
 
+    def _generate_all_uuids(self):
+        self.device_uuid = self.generate_uuid(True)
+        self.uuid = self.generate_uuid(True)
+
+    def _set_client_ip(self):
+        response = get_timestamp(self)
+        self.session.headers.update({"X-Client-IP": response.ip_address})
+
     def _request(
         self,
         method,
@@ -137,38 +145,18 @@ class API:
         access_token=None,
     ):
         headers = headers or self.session.headers.copy()
+        self._prepare_auth(headers, access_token, user_auth, auth_required)
 
-        if access_token is not None:
-            headers["Authorization"] = "Bearer " + access_token
-
-        if not user_auth and "Authorization" in headers:
-            del headers["Authorization"]
-
-        if auth_required and "Authorization" not in headers:
-            raise AuthenticationError("Access Denied - Authentication Required!")
-
-        response = None
-        backoff_duration = 0
-        rate_limit_retry_count = 0
+        response, backoff_duration = None, 0
         max_rate_limit_retries = 15  # roughly equivalent to 60 mins, plus extra 15 mins
-        auth_retry_count = 0
-        max_auth_retries = 2
+        auth_retry_count, max_auth_retries = 0, 2
 
         # retry the request based on max_retries
         for i in range(self.max_retries):
             time.sleep(backoff_duration)
+            current_ts, headers = self._prepare_headers(headers)
 
-            current_ts = int(datetime.datetime.now().timestamp())
-
-            headers.update({"X-Timestamp": str(current_ts)})
-
-            self.logger.debug(
-                "Making API request:\n\n"
-                + f"{Colors.HEADER}{method}: {endpoint}{Colors.RESET}\n\n"
-                + f"Parameters: {params}\n\n"
-                + f"Headers: {headers}\n\n"
-                + f"Body: {payload}\n"
-            )
+            self._log_request_info(method, endpoint, params, headers, payload)
 
             response = self.session.request(
                 method, endpoint, params=params, json=payload, headers=headers
@@ -179,28 +167,38 @@ class API:
                 # and current request is less than a sec
                 self._delay(self.min_delay, self.max_delay)
 
-            self.logger.debug(
-                "Received API response:\n\n"
-                + f"Status code: {response.status_code}\n\n"
-                + f"Headers: {response.headers}\n\n"
-                + f"Response: {response.text}\n"
-            )
+            self._log_response_info(response)
 
             if self._is_rate_limit(response) and self.wait_on_rate_limit:
                 # continue attempting request until successful
                 # or maximum number of retries is reached
-                rate_limit_retry_count += 1
-                if rate_limit_retry_count < max_rate_limit_retries:
-                    retry_after = 60 * 5
+                rate_limit_retry_count = 0
+                while rate_limit_retry_count < max_rate_limit_retries:
+                    retry_after = 0
                     self.logger.info(
                         f"Rate limit exceeded. Waiting for {retry_after} seconds..."
                     )
                     time.sleep(retry_after + 1)  # sleep for extra sec
-                    continue
-                else:
+
+                    current_ts, headers = self._prepare_headers(headers)
+
+                    self._log_request_info(method, endpoint, params, headers, payload)
+
+                    response = self.session.request(
+                        method, endpoint, params=params, json=payload, headers=headers
+                    )
+
+                    self._log_response_info(response)
+
+                    if not self._is_rate_limit(response):
+                        break
+
+                    rate_limit_retry_count += 1
+
+                if rate_limit_retry_count >= max_rate_limit_retries:
                     raise RateLimitError("Maximum rate limit retries exceeded.")
 
-            if response.status_code == 401 and self.save_cookie_file is True:
+            if response.status_code == 401 and self.save_cookie_file:
                 # remove the cookie file and stop the proccessing if refresh token has expired
                 if "/api/v1/oauth/token" in endpoint:
                     os.remove(self.base_path + self.cookie_filename + ".json")
@@ -272,6 +270,76 @@ class API:
             formatted_response = response.text
 
         return self._handle_response(response, formatted_response)
+
+    def _prepare_auth(self, headers, access_token, user_auth, auth_required):
+        if access_token is not None:
+            headers["Authorization"] = "Bearer " + access_token
+
+        if not user_auth and "Authorization" in headers:
+            del headers["Authorization"]
+
+        if auth_required and "Authorization" not in headers:
+            raise AuthenticationError("Access Denied - Authentication Required!")
+
+    def _prepare_headers(self, headers):
+        current_ts = int(datetime.datetime.now().timestamp())
+        headers.update({"X-Timestamp": str(current_ts)})
+        return current_ts, headers
+
+    def _log_request_info(self, method, endpoint, params, headers, payload):
+        request_info = (
+            f"Making API request:\n\n"
+            f"{Colors.HEADER}{method}: {endpoint}{Colors.RESET}\n\n"
+            f"Parameters: {params}\n\n"
+            f"Headers: {headers}\n\n"
+            f"Body: {payload}\n"
+        )
+        self.logger.debug(request_info)
+
+    def _log_response_info(self, response: httpx.Response):
+        response_info = (
+            f"Received API response:\n\n"
+            f"Status code: {response.status_code}\n\n"
+            f"Headers: {response.headers}\n\n"
+            f"Response: {response.text}\n"
+        )
+        self.logger.debug(response_info)
+
+    def _handle_response(self, response, formatted_response):
+        if isinstance(formatted_response, dict):
+            formatted_response = self._translate_error_message(formatted_response)
+
+        if response.status_code == 400:
+            raise BadRequestError(formatted_response)
+        if response.status_code == 401:
+            raise AuthenticationError(formatted_response)
+        if response.status_code == 403:
+            raise ForbiddenError(formatted_response)
+        if response.status_code == 404:
+            raise NotFoundError(formatted_response)
+        if response.status_code == 429:
+            raise RateLimitError(formatted_response)
+        if response.status_code == 500:
+            raise YayServerError(formatted_response)
+        if response.status_code and not 200 <= response.status_code < 300:
+            raise HTTPError(formatted_response)
+
+        return formatted_response
+
+    def _translate_error_message(self, response):
+        if self.err_lang == "ja":
+            try:
+                error_code = response.get("error_code", None)
+                if error_code is not None:
+                    error_type = ErrorType(error_code)
+                    if error_type.name in ErrorMessage.__members__:
+                        error_message = ErrorMessage[error_type.name].value
+                        response["message"] = error_message
+                return response
+            except ValueError:
+                return response
+        else:
+            return response
 
     def _make_request(
         self,
@@ -460,47 +528,3 @@ class API:
 
         with open(self.base_path + self.cookie_filename + ".json", "w") as f:
             json.dump(cookies, f, indent=4)
-
-    def _handle_response(self, response, formatted_response):
-        if isinstance(formatted_response, dict):
-            formatted_response = self._translate_error_message(formatted_response)
-
-        if response.status_code == 400:
-            raise BadRequestError(formatted_response)
-        if response.status_code == 401:
-            raise AuthenticationError(formatted_response)
-        if response.status_code == 403:
-            raise ForbiddenError(formatted_response)
-        if response.status_code == 404:
-            raise NotFoundError(formatted_response)
-        if response.status_code == 429:
-            raise RateLimitError(formatted_response)
-        if response.status_code == 500:
-            raise YayServerError(formatted_response)
-        if response.status_code and not 200 <= response.status_code < 300:
-            raise HTTPError(formatted_response)
-
-        return formatted_response
-
-    def _translate_error_message(self, response):
-        if self.err_lang == "ja":
-            try:
-                error_code = response.get("error_code", None)
-                if error_code is not None:
-                    error_type = ErrorType(error_code)
-                    if error_type.name in ErrorMessage.__members__:
-                        error_message = ErrorMessage[error_type.name].value
-                        response["message"] = error_message
-                return response
-            except ValueError:
-                return response
-        else:
-            return response
-
-    def _generate_all_uuids(self):
-        self.device_uuid = self.generate_uuid(True)
-        self.uuid = self.generate_uuid(True)
-
-    def _set_client_ip(self):
-        response = get_timestamp(self)
-        self.session.headers.update({"X-Client-IP": response.ip_address})
