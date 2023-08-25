@@ -36,6 +36,7 @@ import uuid
 
 from .login import get_token
 from .user import get_timestamp
+
 from ..config import Configs, ErrorType, ErrorMessage
 from ..errors import (
     HTTPError,
@@ -86,6 +87,7 @@ class API:
             self.proxy["http://"] = "http://" + proxy
             self.proxy["https://"] = "http://" + proxy
 
+        self.current_ts = None
         self.last_req_ts = None
         self.max_retries = max_retries
         self.retry_statuses = [500, 502, 503, 504]
@@ -148,14 +150,13 @@ class API:
         headers = self._prepare_auth(headers, access_token, user_auth, auth_required)
 
         response, backoff_duration = None, 0
-        rate_limit_retry_count = 0
         max_rate_limit_retries = 15  # roughly equivalent to 60 mins, plus extra 15 mins
         auth_retry_count, max_auth_retries = 0, 2
 
         # retry the request based on max_retries
         for i in range(self.max_retries):
             time.sleep(backoff_duration)
-            current_ts, headers = self._prepare_headers(headers)
+            headers = self._prepare_headers(headers)
 
             self._log_request_info(method, endpoint, params, headers, payload)
 
@@ -163,7 +164,7 @@ class API:
                 method, endpoint, params=params, json=payload, headers=headers
             )
 
-            if self.last_req_ts is not None and current_ts - self.last_req_ts < 1:
+            if self.last_req_ts is not None and self.current_ts - self.last_req_ts < 1:
                 # insert delays if interval between last request
                 # and current request is less than a sec
                 self._delay(self.min_delay, self.max_delay)
@@ -173,15 +174,15 @@ class API:
             if self._is_rate_limit(response) and self.wait_on_rate_limit:
                 # continue attempting request until successful
                 # or maximum number of retries is reached
-                rate_limit_retry_count += 1
-                while rate_limit_retry_count < max_rate_limit_retries:
+                rate_limit_retry_count = 0
+                while rate_limit_retry_count < max_rate_limit_retries - 1:
                     retry_after = 60 * 5
                     self.logger.info(
                         f"Rate limit exceeded. Waiting for {retry_after} seconds..."
                     )
                     time.sleep(retry_after + 1)  # sleep for extra sec
 
-                    current_ts, headers = self._prepare_headers(headers)
+                    headers = self._prepare_headers(headers)
 
                     self._log_request_info(method, endpoint, params, headers, payload)
 
@@ -250,9 +251,9 @@ class API:
         return headers
 
     def _prepare_headers(self, headers):
-        current_ts = int(datetime.datetime.now().timestamp())
-        headers.update({"X-Timestamp": str(current_ts)})
-        return current_ts, headers
+        self._update_current_ts()
+        headers.update({"X-Timestamp": str(self.current_ts)})
+        return headers
 
     def _log_request_info(self, method, endpoint, params, headers, payload):
         request_info = (
@@ -299,6 +300,9 @@ class API:
         self.session.headers["Authorization"] = "Bearer " + response.access_token
 
         return headers
+
+    def _update_current_ts(self):
+        self.current_ts = int(datetime.datetime.now().timestamp())
 
     def _update_last_req_ts(self, bypass_delay):
         self.last_req_ts = None
