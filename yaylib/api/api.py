@@ -173,6 +173,7 @@ class API:
                 # continue attempting request until successful
                 # or maximum number of retries is reached
                 rate_limit_retry_count = 0
+
                 while rate_limit_retry_count < max_rate_limit_retries:
                     retry_after = 0
                     self.logger.info(
@@ -209,35 +210,7 @@ class API:
                 auth_retry_count += 1
 
                 if auth_retry_count < max_auth_retries:
-                    # refresh access token using the stored refresh token
-                    self.logger.debug("Access token expired. Refreshing tokens...")
-
-                    response = get_token(
-                        self,
-                        grant_type="refresh_token",
-                        refresh_token=self.refresh_token,
-                    )
-
-                    self.cookies.update(
-                        {
-                            "authentication": {
-                                "access_token": response.access_token,
-                                "refresh_token": response.refresh_token,
-                            }
-                        }
-                    )
-
-                    # copy the cookies to ensure its value remains unchanged during encryption
-                    cookies = self.cookies.copy()
-                    self.save_cookies(cookies)
-
-                    # only for the next retry
-                    headers["Authorization"] = "Bearer " + response.access_token
-
-                    self.session.headers["Authorization"] = (
-                        "Bearer " + response.access_token
-                    )
-
+                    headers = self._refresh_access_token(headers)
                     continue
 
                 else:
@@ -304,6 +277,33 @@ class API:
             f"Response: {response.text}\n"
         )
         self.logger.debug(response_info)
+
+    def _refresh_access_token(self, headers):
+        self.logger.debug("Access token expired. Refreshing tokens...")
+
+        response = get_token(
+            self, grant_type="refresh_token", refresh_token=self.refresh_token
+        )
+
+        self.cookies.update(
+            {
+                "authentication": {
+                    "access_token": response.access_token,
+                    "refresh_token": response.refresh_token,
+                }
+            }
+        )
+
+        # copy the cookies to ensure its value remains unchanged during encryption
+        cookies = self.cookies.copy()
+        self.save_cookies(cookies)
+
+        # only for the next retry
+        headers["Authorization"] = "Bearer " + response.access_token
+
+        self.session.headers["Authorization"] = "Bearer " + response.access_token
+
+        return headers
 
     def _handle_response(self, response, formatted_response):
         if isinstance(formatted_response, dict):
