@@ -87,7 +87,7 @@ class API:
             self.proxy["http://"] = "http://" + proxy
             self.proxy["https://"] = "http://" + proxy
 
-        self.current_ts = None
+        self._current_ts = None
         self.last_req_ts = None
         self.max_retries = max_retries
         self.retry_statuses = [500, 502, 503, 504]
@@ -251,7 +251,6 @@ class API:
         return headers
 
     def _prepare_headers(self, headers):
-        self._update_current_ts()
         headers.update({"X-Timestamp": str(self.current_ts)})
         return headers
 
@@ -300,9 +299,6 @@ class API:
         self.session.headers["Authorization"] = "Bearer " + response.access_token
 
         return headers
-
-    def _update_current_ts(self):
-        self.current_ts = int(datetime.datetime.now().timestamp())
 
     def _update_last_req_ts(self, bypass_delay):
         self.last_req_ts = None
@@ -428,6 +424,11 @@ class API:
     @secret_key.setter
     def secret_key(self, value):
         self._secret_key = value
+
+    @property
+    def current_ts(self):
+        self._current_ts = int(datetime.datetime.now().timestamp())
+        return self._current_ts
 
     @staticmethod
     def encrypt_cookies(fernet, cookies):
