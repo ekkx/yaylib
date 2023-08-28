@@ -22,8 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from __future__ import annotations
+
 from datetime import datetime
-from typing import List
 
 from ..config import Endpoints
 from ..responses import ReviewsResponse
@@ -41,7 +42,7 @@ def create_review(self, user_id: int, comment: str, access_token: str = None):
     return response
 
 
-def create_reviews(self, user_ids: List[int], comment: str, access_token: str = None):
+def create_reviews(self, user_ids: list[int], comment: str, access_token: str = None):
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(
         "POST",
@@ -63,7 +64,7 @@ def create_reviews(self, user_ids: List[int], comment: str, access_token: str = 
     return response
 
 
-def delete_reviews(self, review_ids: List[int], access_token: str = None):
+def delete_reviews(self, review_ids: list[int], access_token: str = None):
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V1}/reviews",

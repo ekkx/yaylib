@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import List
+from __future__ import annotations
 
 from ..config import Endpoints
 from ..models import Bgm, ConferenceCall, Post
@@ -64,7 +64,7 @@ def get_user_active_call(self, user_id: int, access_token: str = None) -> Post:
     ).post
 
 
-def get_bgms(self, access_token: str = None) -> List[Bgm]:
+def get_bgms(self, access_token: str = None) -> list[Bgm]:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.CALLS_V1}/bgm",
@@ -115,7 +115,7 @@ def get_games(self, access_token: str = None, **params) -> GamesResponse:
     Parameters
     ----------
         - number: int - (optional)
-        - ids: List[int] - (optional)
+        - ids: list[int] - (optional)
         - from_id: int - (optional)
 
     """
@@ -191,14 +191,14 @@ def invite_to_call_bulk(
 
 
 def invite_users_to_call(
-    self, call_id: int, user_ids: List[int], access_token: str = None
+    self, call_id: int, user_ids: list[int], access_token: str = None
 ):
     """
 
     Parameters
     ----------
         - call_id: int - (required)
-        - user_ids: List[int] - (required)
+        - user_ids: list[int] - (required)
 
     """
     response = self._make_request(

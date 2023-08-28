@@ -22,8 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from __future__ import annotations
+
 from datetime import datetime
-from typing import List
 
 from ..config import Endpoints
 from ..models import CreateGroupQuota
@@ -78,7 +79,7 @@ def accept_group_join_request(
 
 
 def add_related_groups(
-    self, group_id: int, related_group_id: List[int], access_token: str = None
+    self, group_id: int, related_group_id: list[int], access_token: str = None
 ):
     """
 
@@ -339,7 +340,7 @@ def get_invitable_users(
     )
 
 
-def get_joined_statuses(self, ids: List[int], access_token: str = None) -> dict:
+def get_joined_statuses(self, ids: list[int], access_token: str = None) -> dict:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.GROUPS_V1}/joined_statuses",
@@ -465,7 +466,7 @@ def get_user_groups(self, access_token: str = None, **params) -> GroupsResponse:
 
 
 def invite_users_to_group(
-    self, group_id: int, user_ids: List[int], access_token: str = None
+    self, group_id: int, user_ids: list[int], access_token: str = None
 ):
     response = self._make_request(
         "POST",
@@ -537,7 +538,7 @@ def remove_moderator(self, group_id: int, user_id: int, access_token: str = None
 
 
 def remove_related_groups(
-    self, group_id: int, related_group_ids: List[int], access_token: str = None
+    self, group_id: int, related_group_ids: list[int], access_token: str = None
 ):
     response = self._make_request(
         "DELETE",
@@ -582,7 +583,7 @@ def report_group(
 
 
 def send_moderator_offers(
-    self, group_id: int, user_ids: List[int], access_token: str = None
+    self, group_id: int, user_ids: list[int], access_token: str = None
 ):
     timestamp = int(datetime.now().timestamp())
     response = self._make_request(

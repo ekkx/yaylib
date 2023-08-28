@@ -22,10 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import hashlib
+from __future__ import annotations
 
+import hashlib
 from cryptography.fernet import Fernet
-from typing import Dict, List, Union
 
 from .api import API
 from .api.call import (
@@ -444,7 +444,7 @@ class Client(API):
         """
         return get_user_active_call(self, user_id, access_token)
 
-    def get_bgms(self, access_token: str = None) -> List[Bgm]:
+    def get_bgms(self, access_token: str = None) -> list[Bgm]:
         """
 
         通話のBGMを取得します
@@ -488,7 +488,7 @@ class Client(API):
         Parameters
         ----------
             - number: int - (optional)
-            - ids: List[int] - (optional)
+            - ids: list[int] - (optional)
             - from_id: int - (optional)
 
         """
@@ -538,7 +538,7 @@ class Client(API):
         return invite_to_call_bulk(self, call_id, group_id, access_token)
 
     def invite_users_to_call(
-        self, call_id: int, user_ids: List[int], access_token: str = None
+        self, call_id: int, user_ids: list[int], access_token: str = None
     ) -> dict:
         """
 
@@ -547,7 +547,7 @@ class Client(API):
         Parameters
         ----------
             - call_id: int - (required)
-            - user_ids: List[int] - (required)
+            - user_ids: list[int] - (required)
 
         """
         return invite_users_to_call(self, call_id, user_ids, access_token)
@@ -692,7 +692,7 @@ class Client(API):
     # -CHAT
 
     def accept_chat_requests(
-        self, chat_room_ids: List[int], access_token: str = None
+        self, chat_room_ids: list[int], access_token: str = None
     ) -> dict:
         """
 
@@ -701,7 +701,7 @@ class Client(API):
         Parameters
         ----------
 
-            - chat_room_ids: List[int] - (required)
+            - chat_room_ids: list[int] - (required)
 
         """
         return accept_chat_requests(self, chat_room_ids, access_token)
@@ -719,7 +719,7 @@ class Client(API):
     def create_group_chat(
         self,
         name: str,
-        with_user_ids: List[int],
+        with_user_ids: list[int],
         icon_filename: str = None,
         background_filename: str = None,
         access_token: str = None,
@@ -732,7 +732,7 @@ class Client(API):
         ----------
 
             - name: str - (required)
-            - with_user_ids: List[int] - (required)
+            - with_user_ids: list[int] - (required)
             - icon_filename: str - (optional)
             - background_filename: str - (optional)
 
@@ -826,7 +826,7 @@ class Client(API):
             from_follow_id, from_timestamp, order_by, access_token
         )
 
-    def get_gifs_data(self, access_token: str = None) -> List[GifImageCategory]:
+    def get_gifs_data(self, access_token: str = None) -> list[GifImageCategory]:
         """
 
         チャットルームのGIFデータを取得します
@@ -862,7 +862,7 @@ class Client(API):
 
     def get_messages(
         self, chat_room_id: int, access_token: str = None, **params
-    ) -> List[Message]:
+    ) -> list[Message]:
         """
 
         メッセージを取得します
@@ -900,7 +900,7 @@ class Client(API):
         """
         return get_chat_room(self, chat_room_id, access_token)
 
-    def get_sticker_packs(self, access_token: str = None) -> List[StickerPack]:
+    def get_sticker_packs(self, access_token: str = None) -> list[StickerPack]:
         """
 
         スタンプを取得します
@@ -925,7 +925,7 @@ class Client(API):
         return hide_chat(self, chat_room_id, access_token)
 
     def invite_to_chat(
-        self, chat_room_id: int, user_ids: List[int], access_token: str = None
+        self, chat_room_id: int, user_ids: list[int], access_token: str = None
     ) -> dict:
         """
 
@@ -935,7 +935,7 @@ class Client(API):
         return invite_to_chat(self, chat_room_id, user_ids, access_token)
 
     def kick_users_from_chat(
-        self, chat_room_id: int, user_ids: List[int], access_token: str = None
+        self, chat_room_id: int, user_ids: list[int], access_token: str = None
     ) -> dict:
         """
 
@@ -973,7 +973,7 @@ class Client(API):
         return refresh_chat_rooms(self, from_time, access_token)
 
     def remove_chat_rooms(
-        self, chat_room_ids: List[int], access_token: str = None
+        self, chat_room_ids: list[int], access_token: str = None
     ) -> dict:
         """
 
@@ -1091,7 +1091,7 @@ class Client(API):
         return accept_group_join_request(self, group_id, user_id, access_token)
 
     def add_related_groups(
-        self, group_id: int, related_group_id: List[int], access_token: str = None
+        self, group_id: int, related_group_id: list[int], access_token: str = None
     ) -> dict:
         """
 
@@ -1290,7 +1290,7 @@ class Client(API):
         """
         return get_invitable_users(self, group_id, access_token, **params)
 
-    def get_joined_statuses(self, ids: List[int], access_token: str = None) -> dict:
+    def get_joined_statuses(self, ids: list[int], access_token: str = None) -> dict:
         """
 
         サークルの参加ステータスを取得します
@@ -1388,7 +1388,7 @@ class Client(API):
         return get_user_groups(self, access_token, **params)
 
     def invite_users_to_group(
-        self, group_id: int, user_ids: List[int], access_token: str = None
+        self, group_id: int, user_ids: list[int], access_token: str = None
     ) -> dict:
         """
 
@@ -1442,7 +1442,7 @@ class Client(API):
         return remove_moderator(self, group_id, user_id, access_token)
 
     def remove_related_groups(
-        self, group_id: int, related_group_ids: List[int], access_token: str = None
+        self, group_id: int, related_group_ids: list[int], access_token: str = None
     ) -> dict:
         """
 
@@ -1482,7 +1482,7 @@ class Client(API):
         )
 
     def send_moderator_offers(
-        self, group_id: int, user_ids: List[int], access_token: str = None
+        self, group_id: int, user_ids: list[int], access_token: str = None
     ) -> dict:
         """
 
@@ -1850,8 +1850,8 @@ class Client(API):
         )
 
     def get_file_upload_presigned_urls(
-        self, file_names: List[str], access_token: str = None
-    ) -> List[PresignedUrl]:
+        self, file_names: list[str], access_token: str = None
+    ) -> list[PresignedUrl]:
         """
 
         ファイルアップロード用の署名付きURLを取得します
@@ -1887,7 +1887,7 @@ class Client(API):
         """
         return get_web_socket_token(self, headers, access_token)
 
-    def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachment]:
+    def upload_image(self, image_paths: list[str], image_type: str) -> list[Attachment]:
         """
 
         画像をアップロードして、サーバー上のファイル名のリストを返します。
@@ -1895,7 +1895,7 @@ class Client(API):
         Parameteres
         -----------
 
-            - image_path: List[str] - (required): 画像パスのリスト
+            - image_path: list[str] - (required): 画像パスのリスト
             - image_type: str - (required): 画像の種類
 
         Examples
@@ -1925,7 +1925,7 @@ class Client(API):
         """
         return get_app_config(self)
 
-    def get_banned_words(self, country_code: str = "jp") -> List[BanWord]:
+    def get_banned_words(self, country_code: str = "jp") -> list[BanWord]:
         """
 
         禁止ワードの一覧を取得します
@@ -1933,7 +1933,7 @@ class Client(API):
         """
         return get_banned_words(self, country_code)
 
-    def get_popular_words(self, country_code: str = "jp") -> List[PopularWord]:
+    def get_popular_words(self, country_code: str = "jp") -> list[PopularWord]:
         """
 
         人気のワードの一覧を取得します
@@ -2046,8 +2046,8 @@ class Client(API):
         color: int = 0,
         in_reply_to: int = None,
         group_id: int = None,
-        mention_ids: List[int] = None,
-        choices: List[str] = None,
+        mention_ids: list[int] = None,
+        choices: list[str] = None,
         shared_url: str = None,
         message_tags: str = "[]",
         attachment_filename: str = None,
@@ -2099,9 +2099,9 @@ class Client(API):
         color: int = None,
         in_reply_to: int = None,
         group_id: int = None,
-        mention_ids: List[int] = None,
-        choices: List[str] = None,
-        shared_url: Dict[str, Union[str, int]] = None,
+        mention_ids: list[int] = None,
+        choices: list[str] = None,
+        shared_url: dict[str, str | int] = None,
         message_tags: str = "[]",
         attachment_filename: str = None,
         attachment_2_filename: str = None,
@@ -2179,9 +2179,9 @@ class Client(API):
         color: int = None,
         in_reply_to: int = None,
         group_id: int = None,
-        mention_ids: List[int] = None,
-        choices: List[str] = None,
-        shared_url: Dict[str, Union[str, int]] = None,
+        mention_ids: list[int] = None,
+        choices: list[str] = None,
+        shared_url: dict[str, str | int] = None,
         message_tags: str = "[]",
         attachment_filename: str = None,
         attachment_2_filename: str = None,
@@ -2301,7 +2301,7 @@ class Client(API):
         return get_conversation(self, conversation_id, access_token, **params)
 
     def get_conversation_root_posts(
-        self, post_ids: List[int], access_token: str = None
+        self, post_ids: list[int], access_token: str = None
     ) -> PostsResponse:
         """
 
@@ -2482,7 +2482,7 @@ class Client(API):
         """
         return get_post_reposts(self, post_id, access_token, **params)
 
-    def get_posts(self, post_ids: List[int], access_token: str = None) -> PostsResponse:
+    def get_posts(self, post_ids: list[int], access_token: str = None) -> PostsResponse:
         """
 
         複数の投稿を取得します
@@ -2585,7 +2585,7 @@ class Client(API):
         """
         return get_user_timeline(self, user_id, access_token, **params)
 
-    def like(self, post_ids: List[int], access_token: str = None) -> LikePostsResponse:
+    def like(self, post_ids: list[int], access_token: str = None) -> LikePostsResponse:
         """
 
         投稿にいいねします
@@ -2615,7 +2615,7 @@ class Client(API):
         """
         return remove_group_highlight_post(self, group_id, post_id, access_token)
 
-    def remove_posts(self, post_ids: List[int], access_token: str = None) -> dict:
+    def remove_posts(self, post_ids: list[int], access_token: str = None) -> dict:
         """
 
         複数の投稿を削除します
@@ -2710,7 +2710,7 @@ class Client(API):
         return create_review(self, user_id, comment, access_token)
 
     def create_reviews(
-        self, user_ids: List[int], comment: str, access_token: str = None
+        self, user_ids: list[int], comment: str, access_token: str = None
     ) -> dict:
         """
 
@@ -2719,7 +2719,7 @@ class Client(API):
         """
         return create_reviews(self, user_ids, comment, access_token)
 
-    def delete_reviews(self, review_ids: List[int], access_token: str = None) -> dict:
+    def delete_reviews(self, review_ids: list[int], access_token: str = None) -> dict:
         """
 
         レターを削除します
@@ -2834,7 +2834,7 @@ class Client(API):
         return get_group_thread_list(self, group_id, from_str, access_token, **params)
 
     def get_thread_joined_statuses(
-        self, ids: List[int], access_token: str = None
+        self, ids: list[int], access_token: str = None
     ) -> dict:
         """
 
@@ -2933,7 +2933,7 @@ class Client(API):
         """
         return follow_user(self, user_id, access_token)
 
-    def follow_users(self, user_ids: List[int], access_token: str = None) -> dict:
+    def follow_users(self, user_ids: list[int], access_token: str = None) -> dict:
         """
 
         複数のユーザーをフォローします
@@ -2969,7 +2969,7 @@ class Client(API):
 
             - from_timestamp: int = None,
             - number: int = None,
-            - sources: List[str] = None
+            - sources: list[str] = None
 
         """
         return get_follow_recommendations(self, access_token, **params)
@@ -3002,7 +3002,7 @@ class Client(API):
         """
         return get_following_users_born(self, birthdate, access_token)
 
-    def get_footprints(self, access_token: str = None, **params) -> List[Footprint]:
+    def get_footprints(self, access_token: str = None, **params) -> list[Footprint]:
         """
 
         足跡を取得します
@@ -3025,7 +3025,7 @@ class Client(API):
         """
         return get_fresh_user(self, user_id, access_token)
 
-    def get_hima_users(self, access_token: str = None, **params) -> List[UserWrapper]:
+    def get_hima_users(self, access_token: str = None, **params) -> list[UserWrapper]:
         """
 
         暇なユーザーを取得します
@@ -3170,7 +3170,7 @@ class Client(API):
         """
         return get_user_without_leaving_footprint(self, user_id, access_token)
 
-    def get_users(self, user_ids: List[int], access_token: str = None) -> UsersResponse:
+    def get_users(self, user_ids: list[int], access_token: str = None) -> UsersResponse:
         """
 
         複数のユーザーの情報を取得します
@@ -3406,7 +3406,7 @@ class Client(API):
         return unblock_user(self, user_id, access_token)
 
     def get_hidden_users_list(
-        self, access_token: str = None, **params: Union[str, int]
+        self, access_token: str = None, **params
     ) -> HiddenResponse:
         """
 
@@ -3429,7 +3429,7 @@ class Client(API):
         """
         return hide_user(self, user_id, access_token)
 
-    def unhide_users(self, user_ids: List[int], access_token: str = None) -> dict:
+    def unhide_users(self, user_ids: list[int], access_token: str = None) -> dict:
         """
 
         ユーザーの非表示を解除します

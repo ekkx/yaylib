@@ -22,8 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from __future__ import annotations
+
 from datetime import datetime
-from typing import Union, List
 
 from ..config import Configs, Endpoints
 from ..models import Footprint, User, UserWrapper
@@ -90,7 +91,7 @@ def follow_user(self, user_id: int, access_token: str = None):
     return response
 
 
-def follow_users(self, user_ids: List[int], access_token: str = None):
+def follow_users(self, user_ids: list[int], access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/follow",
@@ -134,7 +135,7 @@ def get_follow_recommendations(
 
         - from_timestamp: int = None,
         - number: int = None,
-        - sources: List[str] = None
+        - sources: list[str] = None
 
     """
     return self._make_request(
@@ -189,7 +190,7 @@ def get_following_users_born(
     )
 
 
-def get_footprints(self, access_token: str = None, **params) -> List[Footprint]:
+def get_footprints(self, access_token: str = None, **params) -> list[Footprint]:
     """
 
     Parameters:
@@ -220,7 +221,7 @@ def get_fresh_user(self, user_id: int, access_token: str = None) -> UserResponse
     )
 
 
-def get_hima_users(self, access_token: str = None, **params) -> List[UserWrapper]:
+def get_hima_users(self, access_token: str = None, **params) -> list[UserWrapper]:
     """
 
     Parameters:
@@ -406,7 +407,7 @@ def get_user_without_leaving_footprint(
     )
 
 
-def get_users(self, user_ids: List[int], access_token: str = None) -> UsersResponse:
+def get_users(self, user_ids: list[int], access_token: str = None) -> UsersResponse:
     headers = self.session.headers
     headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
     return self._make_request(
@@ -774,9 +775,7 @@ def unblock_user(self, user_id: int, access_token: str = None):
 # HiddenApi
 
 
-def get_hidden_users_list(
-    self, access_token: str = None, **params: Union[str, int]
-) -> HiddenResponse:
+def get_hidden_users_list(self, access_token: str = None, **params) -> HiddenResponse:
     """
 
     Parameters:
@@ -808,7 +807,7 @@ def hide_user(self, user_id: int, access_token: str = None):
     return response
 
 
-def unhide_users(self, user_ids: List[int], access_token: str = None):
+def unhide_users(self, user_ids: list[int], access_token: str = None):
     response = self._make_request(
         "DELETE",
         endpoint=f"{Endpoints.HIDDEN_V1}/users",

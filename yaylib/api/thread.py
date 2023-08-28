@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import List
+from __future__ import annotations
 
 from ..config import Endpoints
 from ..models import ThreadInfo
@@ -106,7 +106,7 @@ def get_group_thread_list(
     )
 
 
-def get_thread_joined_statuses(self, ids: List[int], access_token: str = None) -> dict:
+def get_thread_joined_statuses(self, ids: list[int], access_token: str = None) -> dict:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.THREADS_V1}/joined_statuses",

@@ -22,11 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from __future__ import annotations
+
 import os
 import httpx
 from io import BytesIO
 from PIL import Image
-from typing import List
 from urllib import parse
 
 from ..config import Endpoints, Configs
@@ -129,8 +130,8 @@ def get_email_verification_presigned_url(
 
 
 def get_file_upload_presigned_urls(
-    self, file_names: List[str], access_token: str = None
-) -> List[PresignedUrl]:
+    self, file_names: list[str], access_token: str = None
+) -> list[PresignedUrl]:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.BUCKETS_V1}/presigned_urls",
@@ -208,7 +209,7 @@ def verify_device(
     return response
 
 
-def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachment]:
+def upload_image(self, image_paths: list[str], image_type: str) -> list[Attachment]:
     """
 
     画像をアップロードして、サーバー上のファイル名のリストを返します。
@@ -216,7 +217,7 @@ def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachme
     Parameteres
     -----------
 
-        - image_path: List[str] - (required): 画像パスのリスト
+        - image_path: list[str] - (required): 画像パスのリスト
         - image_type: str - (required): 画像の種類
 
     Examples
@@ -331,7 +332,7 @@ def get_app_config(self) -> ApplicationConfig:
     return response
 
 
-def get_banned_words(self, country_code: str = "jp") -> List[BanWord]:
+def get_banned_words(self, country_code: str = "jp") -> list[BanWord]:
     response = self._make_request(
         "GET",
         endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/v2/banned_words",
@@ -340,7 +341,7 @@ def get_banned_words(self, country_code: str = "jp") -> List[BanWord]:
     return response
 
 
-def get_popular_words(self, country_code: str = "jp") -> List[PopularWord]:
+def get_popular_words(self, country_code: str = "jp") -> list[PopularWord]:
     response = self._make_request(
         "GET",
         endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/apps/yay/popular_words",

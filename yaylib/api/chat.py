@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import List
+from __future__ import annotations
 
 from ..config import Endpoints
 from ..models import ChatRoom, GifImageCategory, Message, StickerPack
@@ -40,7 +40,7 @@ from ..responses import (
 )
 
 
-def accept_chat_requests(self, chat_room_ids: List[int], access_token: str = None):
+def accept_chat_requests(self, chat_room_ids: list[int], access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
@@ -68,7 +68,7 @@ def check_unread_status(
 def create_group_chat(
     self,
     name: str,
-    with_user_ids: List[int],
+    with_user_ids: list[int],
     icon_filename: str = None,
     background_filename: str = None,
     access_token: str = None,
@@ -180,7 +180,7 @@ def get_chatable_users(
     )
 
 
-def get_gifs_data(self, access_token: str = None) -> List[GifImageCategory]:
+def get_gifs_data(self, access_token: str = None) -> list[GifImageCategory]:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.HIDDEN_V1}/chats",
@@ -230,7 +230,7 @@ def get_main_chat_rooms(
 
 def get_messages(
     self, chat_room_id: int, access_token: str = None, **params
-) -> List[Message]:
+) -> list[Message]:
     """
 
     Parameters:
@@ -282,7 +282,7 @@ def get_chat_room(self, chat_room_id: int, access_token: str = None) -> ChatRoom
     ).chat
 
 
-def get_sticker_packs(self, access_token: str = None) -> List[StickerPack]:
+def get_sticker_packs(self, access_token: str = None) -> list[StickerPack]:
     return self._make_request(
         "GET",
         endpoint=Endpoints.STICKER_PACKS_V2,
@@ -315,7 +315,7 @@ def hide_chat(self, chat_room_id: int, access_token: str = None):
 
 
 def invite_to_chat(
-    self, chat_room_id: int, user_ids: List[int], access_token: str = None
+    self, chat_room_id: int, user_ids: list[int], access_token: str = None
 ):
     response = self._make_request(
         "POST",
@@ -329,7 +329,7 @@ def invite_to_chat(
 
 
 def kick_users_from_chat(
-    self, chat_room_id: int, user_ids: List[int], access_token: str = None
+    self, chat_room_id: int, user_ids: list[int], access_token: str = None
 ):
     response = self._make_request(
         "POST",
@@ -380,7 +380,7 @@ def refresh_chat_rooms(
     )
 
 
-def remove_chat_rooms(self, chat_room_ids: List[int], access_token: str = None):
+def remove_chat_rooms(self, chat_room_ids: list[int], access_token: str = None):
     chat_room_ids = [chat_room_ids] if isinstance(chat_room_ids, int) else chat_room_ids
     response = self._make_request(
         "POST",

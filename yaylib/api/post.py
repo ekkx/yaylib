@@ -22,9 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from __future__ import annotations
+
 import json
 from datetime import datetime
-from typing import Union, Dict, List
 
 from ..config import Endpoints
 from ..errors import ForbiddenError, NotFoundError
@@ -222,8 +223,8 @@ def create_post(
     color: int = 0,
     in_reply_to: int = None,
     group_id: int = None,
-    mention_ids: List[int] = None,
-    choices: List[str] = None,
+    mention_ids: list[int] = None,
+    choices: list[str] = None,
     shared_url: str = None,
     message_tags: str = "[]",
     attachment_filename: str = None,
@@ -308,9 +309,9 @@ def create_repost(
     color: int = None,
     in_reply_to: int = None,
     group_id: int = None,
-    mention_ids: List[int] = None,
-    choices: List[str] = None,
-    shared_url: Dict[str, Union[str, int]] = None,
+    mention_ids: list[int] = None,
+    choices: list[str] = None,
+    shared_url: dict[str, str | int] = None,
     message_tags: str = "[]",
     attachment_filename: str = None,
     attachment_2_filename: str = None,
@@ -429,9 +430,9 @@ def create_thread_post(
     color: int = None,
     in_reply_to: int = None,
     group_id: int = None,
-    mention_ids: List[int] = None,
-    choices: List[str] = None,
-    shared_url: Dict[str, Union[str, int]] = None,
+    mention_ids: list[int] = None,
+    choices: list[str] = None,
+    shared_url: dict[str, str | int] = None,
     message_tags: str = "[]",
     attachment_filename: str = None,
     attachment_2_filename: str = None,
@@ -613,7 +614,7 @@ def get_conversation(
 
 
 def get_conversation_root_posts(
-    self, post_ids: List[int], access_token: str = None
+    self, post_ids: list[int], access_token: str = None
 ) -> PostsResponse:
     return self._make_request(
         "GET",
@@ -845,7 +846,7 @@ def get_post_reposts(
     )
 
 
-def get_posts(self, post_ids: List[int], access_token: str = None) -> PostsResponse:
+def get_posts(self, post_ids: list[int], access_token: str = None) -> PostsResponse:
     return self._make_request(
         "GET",
         endpoint=f"{Endpoints.POSTS_V2}/multiple",
@@ -979,7 +980,7 @@ def get_user_timeline(
 
 
 def like_posts(
-    self, post_ids: List[int], access_token: str = None
+    self, post_ids: list[int], access_token: str = None
 ) -> LikePostsResponse:
     response = self._make_request(
         "POST",
@@ -1017,7 +1018,7 @@ def remove_group_highlight_post(
     return response
 
 
-def remove_posts(self, post_ids: List[int], access_token: str = None):
+def remove_posts(self, post_ids: list[int], access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V2}/mass_destroy",
