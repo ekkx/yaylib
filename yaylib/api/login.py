@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 import hashlib
+
 from cryptography.fernet import Fernet
 from datetime import datetime
 
