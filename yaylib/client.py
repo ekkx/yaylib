@@ -147,6 +147,7 @@ from .api.misc import (
     get_file_upload_presigned_urls,
     get_id_checker_presigned_url,
     get_old_file_upload_presigned_url,
+    get_policy_agreements,
     get_web_socket_token,
     verify_device,
     upload_image,
@@ -314,6 +315,7 @@ from .responses import (
     LoginUserResponse,
     LoginUpdateResponse,
     MessageResponse,
+    PolicyAgreementsResponse,
     PostsResponse,
     PostLikersResponse,
     PostTagsResponse,
@@ -1821,6 +1823,14 @@ class Client(API):
 
     # -MISC
 
+    def accept_policy_agreement(self, type: str, access_token: str = None):
+        """
+
+        利用規約、ポリシー同意書に同意します
+
+        """
+        return accept_policy_agreement(self, type, access_token)
+
     def send_verification_code(self, email: str):
         """
 
@@ -1876,6 +1886,14 @@ class Client(API):
 
         """
         return get_old_file_upload_presigned_url(self, video_file_name, access_token)
+
+    def get_policy_agreements(self, access_token: str = None) -> PolicyAgreementsResponse:
+        """
+
+        利用規約、ポリシー同意書に同意しているかどうかを取得します
+
+        """
+        return get_policy_agreements(self, access_token)
 
     def get_web_socket_token(
         self, headers: dict = None, access_token: str = None

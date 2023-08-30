@@ -42,6 +42,7 @@ from ..responses import (
     ApplicationConfigResponse,
     BanWordsResponse,
     PopularWordsResponse,
+    PolicyAgreementsResponse,
 )
 from ..utils import is_valid_image_format, get_hashed_filename
 
@@ -169,6 +170,15 @@ def get_old_file_upload_presigned_url(
         bypass_delay=True,
         access_token=access_token,
     ).presigned_url
+
+
+def get_policy_agreements(self, access_token: str = None) -> PolicyAgreementsResponse:
+    return self._make_request(
+        "GET",
+        endpoint=f"{Endpoints.USERS_V1}/policy_agreements",
+        data_type=PolicyAgreementsResponse,
+        access_token=access_token,
+    )
 
 
 def get_web_socket_token(self, headers: dict = None, access_token: str = None) -> str:
