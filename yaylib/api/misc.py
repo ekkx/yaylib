@@ -65,9 +65,10 @@ def accept_policy_agreement(self, type: str, access_token: str = None):
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/policy_agreements/{type}",
+        bypass_delay=True,
         access_token=access_token,
     )
-    self.logger.info("Accepted to policy agreement.")
+    self.logger.info(f"Accepted to {type}.")
     return response
 
 
@@ -178,6 +179,7 @@ def get_policy_agreements(self, access_token: str = None) -> PolicyAgreementsRes
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/policy_agreements",
         data_type=PolicyAgreementsResponse,
+        bypass_delay=True,
         access_token=access_token,
     )
 
