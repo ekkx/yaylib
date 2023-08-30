@@ -24,9 +24,6 @@ SOFTWARE.
 
 from __future__ import annotations
 
-import hashlib
-from cryptography.fernet import Fernet
-
 from .api import API
 from .api.call import (
     bump_call,
@@ -130,7 +127,7 @@ from .api.login import (
     change_email,
     change_password,
     get_token,
-    login_with_email,
+    login_flow,
     logout,
     resend_confirm_email,
     restore_user,
@@ -1644,96 +1641,16 @@ class Client(API):
 
         ※ ローカルストレージのトークンの暗号化を利用するには、`Client` クラスの `encrypt_cookie` 引数を`True` に設定してください。
 
-
         """
-        if self.save_cookie_file:
-            loaded_cookies = self.load_cookies()
-            hashed_email = hashlib.sha256(email.encode()).hexdigest()
+        login_response = login_flow(self, email, password, secret_key)
 
-            if (
-                loaded_cookies is not None
-                and loaded_cookies.get("user", {}).get("email") == hashed_email
-            ):
-                if not self.encrypt_cookie:
-                    self.cookies = loaded_cookies
-                    # email property is reassigned here because it's hashed
-                    self.email = email
-                    self.session.headers.update(
-                        {
-                            "Authorization": "Bearer " + self.access_token,
-                            "X-Device-UUID": self.device_uuid,
-                        }
-                    )
-                    self.logger.info(f"Successfully logged in as '{self.user_id}'.")
-                    return LoginUserResponse(
-                        {
-                            "access_token": self.access_token,
-                            "refresh_token": self.refresh_token,
-                            "user_id": self.user_id,
-                            "email": self.email,
-                        }
-                    )
+        policy_response = get_policy_agreements(self)
+        if not policy_response.latest_privacy_policy_agreed:
+            accept_policy_agreement(self, type="privacy_policy")
+        if not policy_response.latest_terms_of_use_agreed:
+            accept_policy_agreement(self, type="terms_of_use")
 
-                if secret_key is not None:
-                    self.secret_key = secret_key
-                    self.fernet = Fernet(secret_key)
-                    self.cookies = self.decrypt_cookies(self.fernet, loaded_cookies)
-                    # email property is reassigned here because it's hashed
-                    self.email = email
-                    self.session.headers.update(
-                        {
-                            "Authorization": "Bearer " + self.access_token,
-                            "X-Device-UUID": self.device_uuid,
-                        }
-                    )
-                    self.logger.info(f"Successfully logged in as '{self.user_id}'.")
-                    return LoginUserResponse(
-                        {
-                            "access_token": self.access_token,
-                            "refresh_token": self.refresh_token,
-                            "user_id": self.user_id,
-                            "email": self.email,
-                        }
-                    )
-
-                console_print(
-                    f"{Colors.WARNING}Cookie データが見つかりました。"
-                    + f"「secret_key」を設定することにより、ログインレート制限を回避できます。{Colors.RESET}"
-                )
-
-        response = login_with_email(self, email, password)
-
-        self.session.headers["Authorization"] = "Bearer " + response.access_token
-
-        self.cookies = {
-            "authentication": {
-                "access_token": response.access_token,
-                "refresh_token": response.refresh_token,
-            },
-            "user": {
-                "user_id": response.user_id,
-                "email": email,
-            },
-            "device": {"device_uuid": self.device_uuid},
-        }
-
-        if self.save_cookie_file:
-            if self.encrypt_cookie:
-                secret_key = Fernet.generate_key()
-                self.secret_key = secret_key.decode()
-                self.fernet = Fernet(secret_key)
-
-                console_print(
-                    f"Your 'secret_key' for {Colors.BOLD + email + Colors.RESET} is: {Colors.OKGREEN + secret_key.decode() + Colors.RESET}",
-                    "Please copy and securely store this key in a safe location.",
-                    "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
-                )
-
-            # copy the cookies to ensure its value remains unchanged during encryption
-            cookies = self.cookies.copy()
-            self.save_cookies(cookies)
-
-        return response
+        return login_response
 
     def logout(self, access_token: str = None) -> dict:
         """
@@ -1887,7 +1804,9 @@ class Client(API):
         """
         return get_old_file_upload_presigned_url(self, video_file_name, access_token)
 
-    def get_policy_agreements(self, access_token: str = None) -> PolicyAgreementsResponse:
+    def get_policy_agreements(
+        self, access_token: str = None
+    ) -> PolicyAgreementsResponse:
         """
 
         利用規約、ポリシー同意書に同意しているかどうかを取得します
