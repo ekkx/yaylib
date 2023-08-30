@@ -37,21 +37,12 @@
     <li><a href="#-installation">インストール</a></li>
     <li><a href="#-quick-example">使用例</a></li>
     <li><a href="#crown-yaylib-で誕生したロボットたち">yaylib で誕生したロボットたち</a></li>
-    <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
     <li><a href="#handshake-共同開発について">共同開発について</a></li>
+    <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
     <li><a href="#免責事項">免責事項</a></li>
     <li><a href="#利用許諾">利用許諾</a></li>
   </ol>
 </details>
-
-<!-- Buy me a coffee -->
-
-## Buy me a coffee
-
-このライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">**リポジトリにスターをお願いします</a>(⭐)**  
-また、Buy Me a Coffee からご支援いただけますと幸いです。
-
-<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 <!-- インストール -->
 
@@ -123,11 +114,11 @@ image_paths = [
     "./test3.jpg",
 ]
 
+# 画像の使い道を指定
+image_type = yaylib.IMAGE_TYPE_POST
+
 # サーバー上にアップロード
-attachments = api.upload_image(
-    image_type=yaylib.IMAGE_TYPE_POST,
-    image_paths=image_paths,
-)
+attachments = api.upload_image(image_paths, image_type)
 
 # サーバー上のファイル名を指定する
 # attachmentsが一つ飛ばしなのはオリジナル品質の画像のみを指定するため
@@ -192,26 +183,34 @@ for new_user in new_users.users:
 ```python
 import yaylib
 
-api = yaylib.Client()
-api.login(email="your_email", password="your_password")
-
 
 class ChatBot(yaylib.ChatRoomEventHandler):
+    def __init__(self, api: yaylib.Client):
+        self.api = api
+
     def on_request(self, total_count: int):
         # チャットリクエストを承認する
-        chat_rooms = api.get_chat_requests()
+        chat_rooms = self.api.get_chat_requests()
         for room in chat_rooms.chat_rooms:
-            api.accept_chat_requests(chat_room_ids=[room.id])
+            self.api.accept_chat_requests(chat_room_ids=[room.id])
         self.on_message(chat_rooms.chat_rooms[0])
 
     def on_message(self, chat_room):
-        # メッセージを出力する
-        print(chat_room.last_message.text)
+        # 受信したメッセージをオウム返しする
+        self.api.send_message(
+            chat_room_id=chat_room.id,
+            message_type=chat_room.last_message.message_type,
+            text=chat_room.last_message.text,
+            font_size=chat_room.last_message.font_size,
+        )
 
+
+api = yaylib.Client()
+api.login(email="your_email", password="your_password")
 
 ws_token = api.get_web_socket_token()
 
-bot = ChatBot()
+bot = ChatBot(api)
 bot.run(ws_token)
 ```
 
@@ -265,6 +264,15 @@ bot.run(ws_token)
 - <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com にメールを送信する</a>
 
 のいずれかの方法で繋がりましょう。詳しくは[こちらから](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)！
+
+<!-- Buy me a coffee -->
+
+## Buy me a coffee
+
+このライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">**リポジトリにスターをお願いします</a>(⭐)**  
+また、Buy Me a Coffee からご支援いただけますと幸いです。
+
+<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 <!-- 免責事項 -->
 
