@@ -291,7 +291,7 @@ yaylib は、API の公式なサポートやメンテナンスを提供するも
 </p>
 
 <p align="center">
-  <strong>MIT © <a href="https://github.com/qvco">Qvco</a> & <a href="https://github.com/konn-koko">Konn</a></strong>
+  <strong>MIT © <a href="https://github.com/qvco">qvco</a></strong>
 </p>
 
 フルライセンスは [こちら](https://github.com/qvco/yaylib/blob/master/LICENSE) からご確認いただけます。  

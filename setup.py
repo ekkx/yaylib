@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from yaylib import __version__
 
 name = "yaylib"
-author = "Qvco, Konn"
+author = "qvco"
 author_email = "nikola.desuga@gmail.com"
 description = "同世代と趣味の通話コミュニティ - Yay! (イェイ) で投稿やタイムラインの取得、リツイートやいいねの実行、フォローや投稿の検索など様々な機能をPythonプログラムから利用可能なAPIクライアントツールです。"
 long_description_content_type = "text/markdown"
