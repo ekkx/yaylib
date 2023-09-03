@@ -146,7 +146,6 @@ class API:
         bypass_delay=False,
         access_token=None,
     ):
-        headers = headers or self.session.headers.copy()
         headers = self._prepare_auth(headers, access_token, user_auth, auth_required)
 
         response, backoff_duration = None, 0
@@ -239,6 +238,8 @@ class API:
         return self._handle_response(response, formatted_response)
 
     def _prepare_auth(self, headers, access_token, user_auth, auth_required):
+        headers = headers or self.session.headers.copy()
+
         if access_token is not None:
             headers["Authorization"] = "Bearer " + access_token
 
