@@ -155,7 +155,8 @@ class API:
         # retry the request based on max_retries
         for i in range(self.max_retries):
             time.sleep(backoff_duration)
-            headers = self._prepare_headers(headers)
+
+            headers.update({"X-Timestamp": str(self.current_ts)})
 
             self._log_request_info(method, endpoint, params, headers, payload)
 
@@ -174,6 +175,7 @@ class API:
                 # continue attempting request until successful
                 # or maximum number of retries is reached
                 rate_limit_retry_count = 1
+
                 while rate_limit_retry_count < max_rate_limit_retries:
                     retry_after = 60 * 5
                     self.logger.info(
@@ -181,7 +183,7 @@ class API:
                     )
                     time.sleep(retry_after + 1)  # sleep for extra sec
 
-                    headers = self._prepare_headers(headers)
+                    headers.update({"X-Timestamp": str(self.current_ts)})
 
                     self._log_request_info(method, endpoint, params, headers, payload)
 
@@ -212,7 +214,6 @@ class API:
                 if auth_retry_count < max_auth_retries:
                     headers = self._refresh_access_token(headers)
                     continue
-
                 else:
                     os.remove(self.base_path + self.cookie_filename + ".json")
                     raise AuthenticationError(
@@ -233,7 +234,11 @@ class API:
             backoff_duration = self.backoff_factor * (2**i)
 
         self._update_last_req_ts(bypass_delay)
-        formatted_response = self._format_response(response)
+
+        try:
+            formatted_response = response.json()
+        except JSONDecodeError:
+            formatted_response = response.text
 
         return self._handle_response(response, formatted_response)
 
@@ -249,10 +254,6 @@ class API:
         if auth_required and "Authorization" not in headers:
             raise AuthenticationError("Access Denied - Authentication Required!")
 
-        return headers
-
-    def _prepare_headers(self, headers):
-        headers.update({"X-Timestamp": str(self.current_ts)})
         return headers
 
     def _log_request_info(self, method, endpoint, params, headers, payload):
@@ -305,13 +306,6 @@ class API:
         self.last_req_ts = None
         if not bypass_delay:
             self.last_req_ts = int(datetime.datetime.now().timestamp())
-
-    def _format_response(self, response: httpx.Response):
-        try:
-            formatted_response = response.json()
-        except JSONDecodeError:
-            formatted_response = response.text
-        return formatted_response
 
     def _handle_response(self, response: httpx.Response, formatted_response):
         if isinstance(formatted_response, dict):
