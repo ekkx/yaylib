@@ -228,7 +228,7 @@ bot.run(ws_token)
     <thead>
         <tr>
             <th><a href="https://yay.space/user/5855987">MindReader AI</a></th>
-            <th><a href="https://yay.space/user/7293290">香ばしいボット</a></th>
+            <th><a href="https://yay.space/user/7874560">☀️気象くん☁️</a></th>
             <th><a href="https://yay.space/user/7406336">GIGAZINE</a></th>
         </tr>
     </thead>
@@ -240,9 +240,9 @@ bot.run(ws_token)
                 <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
             </td>
             <td align="center">
-                <img src="https://github.com/qvco/yaylib/assets/77382767/cbffdc25-7873-4242-b065-e6a686bade54" width="200px">
+                <img src="https://cdn.yay.space/uploads/s3/post/2023/9/4/Tqkpevs2wsVQYjr3_1693836761_0_size_450x450.jpg" width="200px">
                 <br />
-                <p>開発者: <a href="https://yay.space/user/93923">めんぶれ天然水。</a></p>
+                <p>開発者: <a href="https://yay.space/user/7520368">tori</a></p>
             </td>
             <td align="center">
                 <img src="https://github.com/qvco/yaylib/assets/77382767/65fcb885-4fbe-4170-9378-6f8d9af61ff8" width="200px">
