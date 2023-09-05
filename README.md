@@ -240,7 +240,7 @@ bot.run(ws_token)
                 <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
             </td>
             <td align="center">
-                <img src="https://cdn.yay.space/uploads/s3/post/2023/9/4/Tqkpevs2wsVQYjr3_1693836761_0_size_450x450.jpg" width="200px">
+                <img src="https://github.com/qvco/yaylib/assets/77382767/4fd728a0-9b3a-427f-ac1f-70e6d6538564" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/7520368">tori</a></p>
             </td>
