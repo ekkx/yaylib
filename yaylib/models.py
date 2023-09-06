@@ -987,8 +987,10 @@ class Message:
         "data",
         "attachment",
         "attachment_android",
+        "attachment_read_count",
         "attachment_thumbnail",
         "conference_call",
+        "parent",
         "created_at",
         "font_size",
         "gif",
@@ -997,8 +999,10 @@ class Message:
         "reactions_count",
         "room_id",
         "sticker",
+        "is_sent",
+        "refresh_retry_count",
+        "is_error",
         "text",
-        "user",
         "user_id",
         "video_processed",
         "video_thumbnail_big_url",
@@ -1010,12 +1014,17 @@ class Message:
         self.data = data
         self.attachment = data.get("attachment")
         self.attachment_android = data.get("attachment_android")
+        self.attachment_read_count = data.get("attachment_read_count")
         self.attachment_thumbnail = data.get("attachment_thumbnail")
 
         self.conference_call = data.get("conference_call")
         if self.conference_call is not None:
             self.conference_call = ConferenceCall(self.conference_call)
 
+        self.parent = data.get("parent")
+        if self.parent is not None:
+            self.parent = ParentMessage(self.parent)
+        
         self.created_at = data.get("created_at")
         self.font_size = data.get("font_size")
 
@@ -1032,8 +1041,10 @@ class Message:
         if self.sticker is not None:
             self.sticker = Sticker(self.sticker)
 
+        self.is_sent = data.get("is_sent")
+        self.refresh_retry_count = data.get("refresh_retry_count")
+        self.is_error = data.get("is_error")
         self.text = data.get("text")
-        self.user = data.get("user")
         self.user_id = data.get("user_id")
         self.video_processed = data.get("video_processed")
         self.video_thumbnail_big_url = data.get("video_thumbnail_big_url")
@@ -1042,6 +1053,53 @@ class Message:
 
     def __repr__(self):
         return f"Message(data={self.data})"
+
+
+class ParentMessage:
+    __slots__ = (
+        "data",
+        "attachment",
+        "attachment_thumbnail",
+        "created_at",
+        "font_size",
+        "gif",
+        "id",
+        "message_type",
+        "room_id",
+        "sticker",
+        "text",
+        "user_id",
+        "video_thumbnail_url",
+        "video_url",
+    )
+
+    def __init__(self, data):
+        self.data = data
+        self.attachment = data.get("attachment")
+        self.attachment_thumbnail = data.get("attachment_thumbnail")
+        self.created_at = data.get("created_at")
+        self.font_size = data.get("font_size")
+
+        self.gif = data.get("gif")
+        if self.gif is not None:
+            self.gif = GifImage(self.gif)
+
+        self.id = data.get("id")
+        self.message_type = data.get("message_type")
+        self.room_id = data.get("room_id")
+
+        self.sticker = data.get("sticker")
+        if self.sticker is not None:
+            self.sticker = Sticker(self.sticker)
+
+        self.text = data.get("text")
+        self.user = data.get("user")
+        self.user_id = data.get("user_id")
+        self.video_thumbnail_url = data.get("video_thumbnail_url")
+        self.video_url = data.get("video_url")
+
+    def __repr__(self):
+        return f"ParentMessage(data={self.data})"
 
 
 class MessageTag:
