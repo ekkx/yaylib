@@ -44,7 +44,7 @@ def accept_chat_requests(self, chat_room_ids: list[int], access_token: str = Non
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
-        payload={"chat_room_ids": chat_room_ids},
+        payload={"chat_room_ids[]": chat_room_ids},
         auth_required=True,
         access_token=access_token,
     )
@@ -437,6 +437,7 @@ def send_message(
     sticker_pack_id: int = None,
     sticker_id: int = None,
     video_file_name: str = None,
+    parent_id: int = None,
     access_token: str = None,
 ) -> MessageResponse:
     response = self._make_request(
@@ -452,6 +453,7 @@ def send_message(
             "sticker_pack_id": sticker_pack_id,
             "sticker_id": sticker_id,
             "video_file_name": video_file_name,
+            "parent_id": parent_id,
         },
         data_type=MessageResponse,
         auth_required=True,

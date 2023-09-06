@@ -1023,6 +1023,7 @@ class Client(API):
         sticker_pack_id: int = None,
         sticker_id: int = None,
         video_file_name: str = None,
+        parent_id: int = None,
         access_token: str = None,
     ) -> MessageResponse:
         """
@@ -1042,6 +1043,7 @@ class Client(API):
             sticker_pack_id,
             sticker_id,
             video_file_name,
+            parent_id,
             access_token,
         )
 

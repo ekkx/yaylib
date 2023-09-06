@@ -309,7 +309,8 @@ class ChatRoom:
         "is_group",
         "owner",
         "is_request",
-        "user_setting",
+        "is_pinned",
+        "is_notification_on",
     )
 
     def __init__(self, data):
@@ -336,10 +337,8 @@ class ChatRoom:
             self.owner = User(self.owner)
 
         self.is_request = data.get("is_request")
-
-        self.user_setting = data.get("user_setting")
-        # if self.user_setting is not None:
-        #     self.user_setting = UserSetting(self.user_setting)
+        self.is_pinned = data.get("is_pinned")
+        self.is_notification_on = data.get("is_notification_on")
 
     def __repr__(self):
         return f"ChatRoom(data={self.data})"
