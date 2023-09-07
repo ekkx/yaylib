@@ -1014,38 +1014,31 @@ class Client(API):
     def send_message(
         self,
         chat_room_id: int,
-        message_type: str,
-        call_type: str = None,
-        text: str = None,
-        font_size: int = None,
-        gif_image_id: int = None,
-        attachment_file_name: str = None,
-        sticker_pack_id: int = None,
-        sticker_id: int = None,
-        video_file_name: str = None,
-        parent_id: int = None,
         access_token: str = None,
+        **params,
     ) -> MessageResponse:
         """
 
         チャットルームにメッセージを送信します
 
+        Parameters:
+        ----------
+
+            - chat_room_id: int (required)
+            - message_type: str (required)
+            - call_type: str = (optional)
+            - text: str = (optional)
+            - font_size: int = (optional)
+            - gif_image_id: int = (optional)
+            - attachment_file_name: str = (optional)
+            - sticker_pack_id: int = (optional)
+            - sticker_id: int = (optional)
+            - video_file_name: str = (optional)
+            - parent_id: int = (optional)
+            - access_token: str = (optional)
+
         """
-        return send_message(
-            self,
-            chat_room_id,
-            message_type,
-            call_type,
-            text,
-            font_size,
-            gif_image_id,
-            attachment_file_name,
-            sticker_pack_id,
-            sticker_id,
-            video_file_name,
-            parent_id,
-            access_token,
-        )
+        return send_message(self, chat_room_id, access_token, **params)
 
     def unhide_chat(self, chat_room_ids: int, access_token: str = None) -> dict:
         """

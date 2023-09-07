@@ -997,6 +997,7 @@ class Message:
         "id",
         "message_type",
         "reactions_count",
+        "reacted",
         "room_id",
         "sticker",
         "is_sent",
@@ -1024,7 +1025,7 @@ class Message:
         self.parent = data.get("parent")
         if self.parent is not None:
             self.parent = ParentMessage(self.parent)
-        
+
         self.created_at = data.get("created_at")
         self.font_size = data.get("font_size")
 
@@ -1035,6 +1036,7 @@ class Message:
         self.id = data.get("id")
         self.message_type = data.get("message_type")
         self.reactions_count = data.get("reactions_count")
+        self.reacted = data.get("reacted")
         self.room_id = data.get("room_id")
 
         self.sticker = data.get("sticker")
@@ -1059,23 +1061,30 @@ class ParentMessage:
     __slots__ = (
         "data",
         "attachment",
+        "attachment_android",
         "attachment_thumbnail",
         "created_at",
         "font_size",
         "gif",
         "id",
         "message_type",
+        "reactions_count",
         "room_id",
         "sticker",
         "text",
         "user_id",
+        "video_processed",
         "video_thumbnail_url",
+        "video_thumbnail_big_url",
         "video_url",
+        "parent_id",
+        "reacted",
     )
 
     def __init__(self, data):
         self.data = data
         self.attachment = data.get("attachment")
+        self.attachment_android = data.get("attachment_android")
         self.attachment_thumbnail = data.get("attachment_thumbnail")
         self.created_at = data.get("created_at")
         self.font_size = data.get("font_size")
@@ -1086,6 +1095,7 @@ class ParentMessage:
 
         self.id = data.get("id")
         self.message_type = data.get("message_type")
+        self.reactions_count = data.get("reactions_count")
         self.room_id = data.get("room_id")
 
         self.sticker = data.get("sticker")
@@ -1093,10 +1103,13 @@ class ParentMessage:
             self.sticker = Sticker(self.sticker)
 
         self.text = data.get("text")
-        self.user = data.get("user")
         self.user_id = data.get("user_id")
+        self.video_processed = data.get("video_processed")
         self.video_thumbnail_url = data.get("video_thumbnail_url")
+        self.video_thumbnail_big_url = data.get("video_thumbnail_big_url")
         self.video_url = data.get("video_url")
+        self.parent_id = data.get("parent_id")
+        self.reacted = data.get("reacted")
 
     def __repr__(self):
         return f"ParentMessage(data={self.data})"

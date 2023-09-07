@@ -426,35 +426,12 @@ def report_chat_room(
 
 
 def send_message(
-    self,
-    chat_room_id: int,
-    message_type: str,
-    call_type: str = None,
-    text: str = None,
-    font_size: int = None,
-    gif_image_id: int = None,
-    attachment_file_name: str = None,
-    sticker_pack_id: int = None,
-    sticker_id: int = None,
-    video_file_name: str = None,
-    parent_id: int = None,
-    access_token: str = None,
+    self, chat_room_id: int, access_token: str = None, **params
 ) -> MessageResponse:
     response = self._make_request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/messages/new",
-        payload={
-            "message_type": message_type,
-            "call_type": call_type,
-            "text": text,
-            "font_size": font_size,
-            "gif_image_id": gif_image_id,
-            "attachment_file_name": attachment_file_name,
-            "sticker_pack_id": sticker_pack_id,
-            "sticker_id": sticker_id,
-            "video_file_name": video_file_name,
-            "parent_id": parent_id,
-        },
+        payload=params,
         data_type=MessageResponse,
         auth_required=True,
         access_token=access_token,
