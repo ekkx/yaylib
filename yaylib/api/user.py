@@ -408,7 +408,7 @@ def get_user_without_leaving_footprint(
 
 
 def get_users(self, user_ids: list[int], access_token: str = None) -> UsersResponse:
-    headers = self.session.headers
+    headers = self.session.headers.copy()
     headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
     return self._make_request(
         "GET",

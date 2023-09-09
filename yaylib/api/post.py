@@ -239,7 +239,7 @@ def create_post(
     video_file_name: str = None,
     access_token: str = None,
 ) -> Post:
-    headers = self.session.headers
+    headers = self.session.headers.copy()
     headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
 
     if text is not None:
@@ -325,7 +325,7 @@ def create_repost(
     video_file_name: str = None,
     access_token: str = None,
 ) -> Post:
-    headers = self.session.headers
+    headers = self.session.headers.copy()
     headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
 
     if text is not None:
@@ -446,7 +446,7 @@ def create_thread_post(
     video_file_name: str = None,
     access_token: str = None,
 ) -> Post:
-    headers = self.session.headers
+    headers = self.session.headers.copy()
     headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
 
     if text is not None:
