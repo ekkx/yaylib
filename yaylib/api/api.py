@@ -291,9 +291,7 @@ class API:
             }
         )
 
-        # copy the cookies to ensure its value remains unchanged during encryption
-        cookies = self.cookies.copy()
-        self.save_cookies(cookies)
+        self.save_cookies(self.cookies)
 
         # only for the next retry
         headers["Authorization"] = "Bearer " + response.access_token
@@ -524,6 +522,8 @@ class API:
         return loaded_cookies
 
     def save_cookies(self, cookies):
+        cookies = cookies.copy()
+
         email = cookies.get("user", {}).get("email")
         if email is not None:
             cookies["user"]["email"] = hashlib.sha256(email.encode()).hexdigest()

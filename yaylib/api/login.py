@@ -190,9 +190,7 @@ def login_flow(
                 "For more information, visit: https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/login.md",
             )
 
-        # copy the cookies to ensure its value remains unchanged during encryption
-        cookies = self.cookies.copy()
-        self.save_cookies(cookies)
+        self.save_cookies(self.cookies)
 
     return response
 
