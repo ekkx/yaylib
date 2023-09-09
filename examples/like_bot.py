@@ -24,7 +24,7 @@ class LikeBot:
 
             self.api.logger.info("投稿を取得しています...")
 
-            while len(ids) < min_collect:
+            while True:
                 timeline = self.api.get_timeline(number=100)
 
                 new_ids = [
@@ -38,8 +38,10 @@ class LikeBot:
 
                 self.api.logger.info(f"取得済み投稿数: {len(ids)}")
 
-                if len(ids) < min_collect:
-                    time.sleep(10)
+                if len(ids) >= min_collect:
+                    break
+
+                time.sleep(10)
 
             for id in ids:
                 self.api.like(id)
