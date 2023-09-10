@@ -401,12 +401,14 @@ r""" `thread`: スレッド用の共有タイプ"""
 class Client(API):
     """
 
-    Yay!（イェイ）の API クライアント
+    Yay!（イェイ）- API クライアント
 
     #### Useage
 
+        >>> import yaylib
         >>> api = yaylib.Client()
-        >>> timeline = api.get_timeline(number=30)
+        >>> api.login(email, password)
+        >>> api.create_post("Hello with yaylib!")
 
     #### Parameters
 
@@ -3384,7 +3386,10 @@ class Client(API):
         return search_users(self, access_token, **params)
 
     def set_follow_permission_enabled(
-        self, nickname: str, is_private: Optional[bool] = None, access_token: Optional[str] = None
+        self,
+        nickname: str,
+        is_private: Optional[bool] = None,
+        access_token: Optional[str] = None,
     ) -> dict:
         """
 
