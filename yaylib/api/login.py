@@ -45,7 +45,7 @@ def change_email(
     email_grant_token: str = None,
     access_token: str = None,
 ) -> LoginUpdateResponse:
-    response = self._make_request(
+    response = self.request(
         "PUT",
         endpoint=f"{Endpoints.USERS_V1}/change_email",
         payload={
@@ -64,7 +64,7 @@ def change_email(
 def change_password(
     self, current_password: str, new_password: str, access_token: str = None
 ) -> LoginUpdateResponse:
-    response = self._make_request(
+    response = self.request(
         "PUT",
         endpoint=f"{Endpoints.USERS_V1}/change_email",
         payload={
@@ -87,7 +87,7 @@ def get_token(
     password: str = None,
     access_token: str = None,
 ) -> TokenResponse:
-    return self._make_request(
+    return self.request(
         "POST",
         endpoint=f"{Endpoints.BASE_API_URL}/api/v1/oauth/token",
         payload={
@@ -201,7 +201,7 @@ def login_with_email(self, email: str, password: str) -> LoginUserResponse:
     メールアドレスでログインします
 
     """
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V3}/login_with_email",
         payload={
@@ -220,7 +220,7 @@ def login_with_email(self, email: str, password: str) -> LoginUserResponse:
 
 def logout(self, access_token: str = None):
     try:
-        response = self._make_request(
+        response = self.request(
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/logout",
             payload={"uuid": self.uuid},
@@ -238,7 +238,7 @@ def logout(self, access_token: str = None):
 
 
 def resend_confirm_email(self, access_token: str = None):
-    return self._make_request(
+    return self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/resend_confirm_email",
         access_token=access_token,
@@ -247,7 +247,7 @@ def resend_confirm_email(self, access_token: str = None):
 
 def restore_user(self, user_id: int, access_token: str = None) -> LoginUserResponse:
     timestamp = int(datetime.now().timestamp())
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/restore",
         payload={
@@ -276,7 +276,7 @@ def register_device_token(
     advertising_id: str = None,
     access_token: str = None,
 ) -> RegisterDeviceTokenResponse:
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/device_tokens/new",
         payload={
@@ -299,7 +299,7 @@ def register_device_token(
 
 
 def revoke_tokens(self, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V1}/device_tokens",
         access_token=access_token,
@@ -316,7 +316,7 @@ def save_account_with_email(
     email_grant_token: str = None,
     access_token: str = None,
 ) -> LoginUpdateResponse:
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V3}/login_update",
         payload={

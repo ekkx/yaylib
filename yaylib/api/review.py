@@ -31,7 +31,7 @@ from ..responses import ReviewsResponse
 
 
 def create_review(self, user_id: int, comment: str, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
         payload={"comment": comment},
@@ -44,7 +44,7 @@ def create_review(self, user_id: int, comment: str, access_token: str = None):
 
 def create_reviews(self, user_ids: list[int], comment: str, access_token: str = None):
     timestamp = int(datetime.now().timestamp())
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/reviews",
         payload={
@@ -65,7 +65,7 @@ def create_reviews(self, user_ids: list[int], comment: str, access_token: str = 
 
 
 def delete_reviews(self, review_ids: list[int], access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V1}/reviews",
         params={"review_ids[]": review_ids},
@@ -86,7 +86,7 @@ def get_my_reviews(self, access_token: str = None, **params) -> ReviewsResponse:
         - number: int = (optional)
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/reviews/mine",
         params=params,
@@ -109,7 +109,7 @@ def get_reviews(
         - number: int = (optional)
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
         params=params,
@@ -119,7 +119,7 @@ def get_reviews(
 
 
 def pin_review(self, review_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.PINNED_V1}/reviews",
         payload={"id": review_id},
@@ -131,7 +131,7 @@ def pin_review(self, review_id: int, access_token: str = None):
 
 
 def unpin_review(self, review_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.PINNED_V1}/reviews{review_id}",
         auth_required=True,

@@ -32,7 +32,7 @@ from ..responses import GroupThreadListResponse, PostsResponse
 def add_post_to_thread(
     self, post_id: int, thread_id: int, access_token: str = None
 ) -> ThreadInfo:
-    response = self._make_request(
+    response = self.request(
         "PUT",
         endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread/{thread_id}",
         data_type=ThreadInfo,
@@ -50,7 +50,7 @@ def convert_post_to_thread(
     thread_icon_filename: str = None,
     access_token: str = None,
 ) -> ThreadInfo:
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread",
         payload={"title": title, "thread_icon_filename": thread_icon_filename},
@@ -65,7 +65,7 @@ def convert_post_to_thread(
 def create_thread(
     self, group_id: int, title: str, thread_icon_filename: str, access_token: str = None
 ) -> ThreadInfo:
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.THREADS_V1}",
         payload={
@@ -97,7 +97,7 @@ def get_group_thread_list(
     params["group_id"] = group_id
     if from_str:
         params["from"] = from_str
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.THREADS_V1}",
         params=params,
@@ -107,7 +107,7 @@ def get_group_thread_list(
 
 
 def get_thread_joined_statuses(self, ids: list[int], access_token: str = None) -> dict:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.THREADS_V1}/joined_statuses",
         params={"ids[]": ids},
@@ -131,7 +131,7 @@ def get_thread_posts(
     """
     if from_str:
         params["from"] = from_str
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/posts",
         params=params,
@@ -141,7 +141,7 @@ def get_thread_posts(
 
 
 def join_thread(self, thread_id: int, user_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
         auth_required=True,
@@ -152,7 +152,7 @@ def join_thread(self, thread_id: int, user_id: int, access_token: str = None):
 
 
 def leave_thread(self, thread_id: int, user_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
         auth_required=True,
@@ -163,7 +163,7 @@ def leave_thread(self, thread_id: int, user_id: int, access_token: str = None):
 
 
 def remove_thread(self, thread_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
         auth_required=True,
@@ -180,7 +180,7 @@ def update_thread(
     thread_icon_filename: str,
     access_token: str = None,
 ):
-    response = self._make_request(
+    response = self.request(
         "PUT",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
         payload={"title": title, "thread_icon_filename": thread_icon_filename},

@@ -36,7 +36,7 @@ def get_user_activities(self, access_token: str = None, **params) -> ActivitiesR
         - number: int - (optional)
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/user_activities",
         params=params,
@@ -57,7 +57,7 @@ def get_user_merged_activities(
         - number: int - (optional)
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/v2/user_activities",
         params=params,
@@ -71,7 +71,7 @@ def received_notification(
     self, pid: str, type: str, opened_at: int = None, access_token: str = None
 ):
     # TODO: opened_atはnullalbeか確認する
-    return self._make_request(
+    return self.request(
         "POST",
         endpoint=f"{Endpoints.BASE_API_URL}/api/received_push_notifications",
         payload={"pid": pid, "type": type, "opened_at": opened_at},

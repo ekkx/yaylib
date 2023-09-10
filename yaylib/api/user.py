@@ -52,7 +52,7 @@ from ..responses import (
 
 
 def delete_footprint(self, user_id: int, footprint_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/footprints/{footprint_id}",
         auth_required=True,
@@ -64,7 +64,7 @@ def delete_footprint(self, user_id: int, footprint_id: int, access_token: str = 
 
 def destroy_user(self, access_token: str = None):
     timestamp = int(datetime.now().timestamp())
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/destroy",
         payload={
@@ -81,7 +81,7 @@ def destroy_user(self, access_token: str = None):
 
 
 def follow_user(self, user_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/follow",
         auth_required=True,
@@ -92,7 +92,7 @@ def follow_user(self, user_id: int, access_token: str = None):
 
 
 def follow_users(self, user_ids: list[int], access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/follow",
         params={"user_ids[]": user_ids},
@@ -115,7 +115,7 @@ def get_active_followings(
         - from_loggedin_at: int = None
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/active_followings",
         params=params,
@@ -138,7 +138,7 @@ def get_follow_recommendations(
         - sources: list[str] = None
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.FRIENDS_V1}",
         params=params,
@@ -154,7 +154,7 @@ def get_follow_request(
     params = {}
     if from_timestamp:
         params["from_timestamp"] = from_timestamp
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/follow_requests",
         params=params,
@@ -165,7 +165,7 @@ def get_follow_request(
 
 
 def get_follow_request_count(self, access_token: str = None) -> int:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/follow_requests_count",
         data_type=FollowRequestCountResponse,
@@ -180,7 +180,7 @@ def get_following_users_born(
     params = {}
     if birthdate:
         params["birthdate"] = birthdate
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/following_born_today",
         params=params,
@@ -201,7 +201,7 @@ def get_footprints(self, access_token: str = None, **params) -> list[Footprint]:
         - mode: str = None
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/footprints",
         params=params,
@@ -212,7 +212,7 @@ def get_footprints(self, access_token: str = None, **params) -> list[Footprint]:
 
 
 def get_fresh_user(self, user_id: int, access_token: str = None) -> UserResponse:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}",
         data_type=UserResponse,
@@ -231,7 +231,7 @@ def get_hima_users(self, access_token: str = None, **params) -> list[UserWrapper
         - number: int = None
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/hima_users",
         params=params,
@@ -266,7 +266,7 @@ def get_user_ranking(self, mode: str) -> RankingUsersResponse:
     >>> api.get_user_ranking(mode="all_time")
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.WEB_V1}/users/ranking",
         params={"mode": mode},
@@ -277,7 +277,7 @@ def get_user_ranking(self, mode: str) -> RankingUsersResponse:
 def get_refresh_counter_requests(
     self, access_token: str = None
 ) -> RefreshCounterRequestsResponse:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/reset_counters",
         data_type=RefreshCounterRequestsResponse,
@@ -299,7 +299,7 @@ def get_social_shared_users(
         - from_id: int - (Optional)
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/social_shared_users",
         params=params,
@@ -310,7 +310,7 @@ def get_social_shared_users(
 
 
 def get_timestamp(self, access_token: str = None) -> UserTimestampResponse:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/timestamp",
         data_type=UserTimestampResponse,
@@ -320,7 +320,7 @@ def get_timestamp(self, access_token: str = None) -> UserTimestampResponse:
 
 
 def get_user(self, user_id: int, access_token: str = None) -> User:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}",
         data_type=UserResponse,
@@ -329,7 +329,7 @@ def get_user(self, user_id: int, access_token: str = None) -> User:
 
 
 def get_user_email(self, user_id: int, access_token: str = None) -> str:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}",
         data_type=UserEmailResponse,
@@ -352,7 +352,7 @@ def get_user_followers(
         - number: int - (optional)
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/followers",
         params=params,
@@ -377,7 +377,7 @@ def get_user_followings(
         - number: int - (optional)
 
     """
-    return self._make_request(
+    return self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/list_followings",
         params=params,
@@ -388,7 +388,7 @@ def get_user_followings(
 
 
 def get_user_from_qr(self, qr: str, access_token: str = None) -> UserResponse:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/qr_codes/{qr}",
         data_type=UserResponse,
@@ -399,7 +399,7 @@ def get_user_from_qr(self, qr: str, access_token: str = None) -> UserResponse:
 def get_user_without_leaving_footprint(
     self, user_id: int, access_token: str = None
 ) -> UserResponse:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/info/{user_id}",
         data_type=UserResponse,
@@ -410,7 +410,7 @@ def get_user_without_leaving_footprint(
 def get_users(self, user_ids: list[int], access_token: str = None) -> UsersResponse:
     headers = self.session.headers.copy()
     headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/list_id",
         params={"user_ids[]": user_ids},
@@ -421,7 +421,7 @@ def get_users(self, user_ids: list[int], access_token: str = None) -> UsersRespo
 
 
 def refresh_counter(self, counter: str, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/reset_counters",
         payload={"counter": counter},
@@ -449,7 +449,7 @@ def register(
     vn: int = None,
 ) -> CreateUserResponse:
     timestamp = int(datetime.now().timestamp())
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V3}/register",
         payload={
@@ -480,7 +480,7 @@ def register(
 
 
 def remove_user_avatar(self, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/remove_profile_photo",
         access_token=access_token,
@@ -490,7 +490,7 @@ def remove_user_avatar(self, access_token: str = None):
 
 
 def remove_user_cover(self, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/remove_cover_image",
         access_token=access_token,
@@ -510,7 +510,7 @@ def report_user(
     screenshot_4_filename: str = None,
     access_token: str = None,
 ):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V3}/{user_id}/report",
         payload={
@@ -531,7 +531,7 @@ def report_user(
 def reset_password(
     self, email: str, email_grant_token: str, password: str, access_token: str = None
 ):
-    response = self._make_request(
+    response = self.request(
         "PUT",
         endpoint=f"{Endpoints.USERS_V1}/reset_password",
         payload={
@@ -556,7 +556,7 @@ def search_lobi_users(self, access_token: str = None, **params) -> UsersResponse
         - from_str: str = None
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.LOBI_FRIENDS_V1}",
         params=params,
@@ -583,7 +583,7 @@ def search_users(self, access_token: str = None, **params) -> UsersResponse:
         - save_recent_search: bool = None
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.WEB_V1}/users/search",
         params=params,
@@ -596,7 +596,7 @@ def set_follow_permission_enabled(
     self, nickname: str, is_private: bool = None, access_token: str = None
 ):
     timestamp = int(datetime.now().timestamp())
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/edit",
         payload={
@@ -615,7 +615,7 @@ def set_follow_permission_enabled(
 
 
 def set_setting_follow_recommendation_enabled(self, on: bool, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/visible_on_sns_friend_recommendation_setting",
         params={"on": on},
@@ -628,7 +628,7 @@ def set_setting_follow_recommendation_enabled(self, on: bool, access_token: str 
 def take_action_follow_request(
     self, target_id: int, action: str, access_token: str = None
 ):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{target_id}/follow_request",
         payload={"action": action},
@@ -639,7 +639,7 @@ def take_action_follow_request(
 
 
 def turn_on_hima(self, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/hima",
         auth_required=True,
@@ -650,7 +650,7 @@ def turn_on_hima(self, access_token: str = None):
 
 
 def unfollow_user(self, user_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow",
         auth_required=True,
@@ -662,7 +662,7 @@ def unfollow_user(self, user_id: int, access_token: str = None):
 
 def update_language(self, language: str, access_token: str = None):
     timestamp = int(datetime.now().timestamp())
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/language",
         payload={
@@ -709,7 +709,7 @@ def update_user(self, nickname: str, access_token: str = None, **params):
             ),
         }
     )
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V3}/edit",
         payload=params,
@@ -724,7 +724,7 @@ def update_user(self, nickname: str, access_token: str = None, **params):
 
 
 def block_user(self, user_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/{user_id}/block",
         auth_required=True,
@@ -735,7 +735,7 @@ def block_user(self, user_id: int, access_token: str = None):
 
 
 def get_blocked_user_ids(self, access_token: str = None) -> BlockedUserIdsResponse:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/block_ids",
         data_type=BlockedUserIdsResponse,
@@ -751,7 +751,7 @@ def get_blocked_users(
     params = {}
     if from_id:
         params["from_id"] = from_id
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V2}/blocked",
         params=params,
@@ -762,7 +762,7 @@ def get_blocked_users(
 
 
 def unblock_user(self, user_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V2}/{user_id}/unblock",
         auth_required=True,
@@ -785,7 +785,7 @@ def get_hidden_users_list(self, access_token: str = None, **params) -> HiddenRes
         - number: int = None
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.HIDDEN_V1}/users",
         params=params,
@@ -796,7 +796,7 @@ def get_hidden_users_list(self, access_token: str = None, **params) -> HiddenRes
 
 
 def hide_user(self, user_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.HIDDEN_V1}/users",
         payload={"user_id": user_id},
@@ -808,7 +808,7 @@ def hide_user(self, user_id: int, access_token: str = None):
 
 
 def unhide_users(self, user_ids: list[int], access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.HIDDEN_V1}/users",
         params={"user_ids[]": user_ids},

@@ -62,7 +62,7 @@ upload_item_types = [
 
 
 def accept_policy_agreement(self, type: str, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/policy_agreements/{type}",
         bypass_delay=True,
@@ -82,7 +82,7 @@ def generate_sns_thumbnail(self, access_token: str = None, **params):
         - resource_id: int - (Required)
 
     """
-    response = self._make_request(
+    response = self.request(
         "GET",
         endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate",
         params=params,
@@ -93,7 +93,7 @@ def generate_sns_thumbnail(self, access_token: str = None, **params):
 
 
 def send_verification_code(self, email: str):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=self.get_email_verification_presigned_url(
             email=email, locale="ja"
@@ -105,7 +105,7 @@ def send_verification_code(self, email: str):
 
 
 def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenResponse:
-    return self._make_request(
+    return self.request(
         "POST",
         endpoint=f"{Endpoints.GET_EMAIL_GRANT_TOKEN}",
         payload={"code": code, "email": email},
@@ -116,7 +116,7 @@ def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenRespons
 def get_email_verification_presigned_url(
     self, email: str, locale: str, intent: str = None, access_token: str = None
 ) -> str:
-    return self._make_request(
+    return self.request(
         "POST",
         endpoint=f"{Endpoints.EMAIL_VERIFICATION_URL_V1}",
         payload={
@@ -134,7 +134,7 @@ def get_email_verification_presigned_url(
 def get_file_upload_presigned_urls(
     self, file_names: list[str], access_token: str = None
 ) -> list[PresignedUrl]:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.BUCKETS_V1}/presigned_urls",
         params={"file_names[]": file_names},
@@ -151,7 +151,7 @@ def get_id_checker_presigned_url(
     """
     Meow..
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.ID_CHECK_V1}/{model}/{action}",
         params=params,
@@ -164,7 +164,7 @@ def get_id_checker_presigned_url(
 def get_old_file_upload_presigned_url(
     self, video_file_name: str, access_token: str = None
 ) -> str:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/presigned_url",
         params={"video_file_name": video_file_name},
@@ -175,7 +175,7 @@ def get_old_file_upload_presigned_url(
 
 
 def get_policy_agreements(self, access_token: str = None) -> PolicyAgreementsResponse:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/policy_agreements",
         data_type=PolicyAgreementsResponse,
@@ -185,7 +185,7 @@ def get_policy_agreements(self, access_token: str = None) -> PolicyAgreementsRes
 
 
 def get_web_socket_token(self, headers: dict = None, access_token: str = None) -> str:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/ws_token",
         data_type=WebSocketTokenResponse,
@@ -205,7 +205,7 @@ def verify_device(
     access_token: str = None,
 ) -> VerifyDeviceResponse:
     # TODO: check platform, verification_string
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.GENUINE_DEVICES_V1}/verify",
         payload={
@@ -336,7 +336,7 @@ def upload_video(self, video_path: str, access_token: str = None):
 
 
 def get_app_config(self) -> ApplicationConfig:
-    response = self._make_request(
+    response = self.request(
         "GET",
         endpoint=f"https://{Configs.YAY_CONFIG_HOST}/api/apps/yay",
         data_type=ApplicationConfigResponse,
@@ -345,7 +345,7 @@ def get_app_config(self) -> ApplicationConfig:
 
 
 def get_banned_words(self, country_code: str = "jp") -> list[BanWord]:
-    response = self._make_request(
+    response = self.request(
         "GET",
         endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/v2/banned_words",
         data_type=BanWordsResponse,
@@ -354,7 +354,7 @@ def get_banned_words(self, country_code: str = "jp") -> list[BanWord]:
 
 
 def get_popular_words(self, country_code: str = "jp") -> list[PopularWord]:
-    response = self._make_request(
+    response = self.request(
         "GET",
         endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/apps/yay/popular_words",
         data_type=PopularWordsResponse,

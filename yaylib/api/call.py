@@ -44,7 +44,7 @@ def bump_call(
     params = {}
     if participant_limit:
         params["participant_limit"] = participant_limit
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bump",
         params=params,
@@ -55,7 +55,7 @@ def bump_call(
 
 
 def get_user_active_call(self, user_id: int, access_token: str = None) -> Post:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.POSTS_V1}/active_call",
         params={"user_id": user_id},
@@ -65,7 +65,7 @@ def get_user_active_call(self, user_id: int, access_token: str = None) -> Post:
 
 
 def get_bgms(self, access_token: str = None) -> list[Bgm]:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.CALLS_V1}/bgm",
         data_type=BgmsResponse,
@@ -74,7 +74,7 @@ def get_bgms(self, access_token: str = None) -> list[Bgm]:
 
 
 def get_call(self, call_id: int, access_token: str = None) -> ConferenceCall:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.CALLS_V1}/conferences/{call_id}",
         data_type=ConferenceCallResponse,
@@ -89,7 +89,7 @@ def get_call_invitable_users(
     params = {}
     if from_timestamp:
         params["from_timestamp"] = from_timestamp
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.CALLS_V1}/{call_id}/users/invitable",
         params=params,
@@ -101,7 +101,7 @@ def get_call_invitable_users(
 def get_call_status(
     self, opponent_id: int, access_token: str = None
 ) -> CallStatusResponse:
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.CALLS_V1}/phone_status/{opponent_id}",
         data_type=CallStatusResponse,
@@ -119,7 +119,7 @@ def get_games(self, access_token: str = None, **params) -> GamesResponse:
         - from_id: int - (optional)
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.GAMES_V1}/apps",
         params=params,
@@ -137,7 +137,7 @@ def get_genres(self, access_token: str = None, **params) -> GenresResponse:
         - from: int - (optional)
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.GENRES_V1}",
         params=params,
@@ -157,7 +157,7 @@ def get_group_calls(self, access_token: str = None, **params) -> PostsResponse:
         - scope: str - (optional)
 
     """
-    return self._make_request(
+    return self.request(
         "GET",
         endpoint=f"{Endpoints.POSTS_V1}/group_calls",
         params=params,
@@ -180,7 +180,7 @@ def invite_to_call_bulk(
     params = {}
     if group_id:
         params["group_id"] = group_id
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bulk_invite",
         params=params,
@@ -201,7 +201,7 @@ def invite_users_to_call(
         - user_ids: list[int] - (required)
 
     """
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/invite",
         payload={"call_id": call_id, "user_ids": user_ids},
@@ -214,7 +214,7 @@ def invite_users_to_call(
 def invite_users_to_chat_call(
     self, chat_room_id: int, room_id: int, room_url: str, access_token: str = None
 ):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.CALLS_V2}/invite",
         payload={
@@ -229,7 +229,7 @@ def invite_users_to_chat_call(
 
 
 def kick_and_ban_from_call(self, call_id: int, user_id: int, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/kick",
         payload={"user_id": user_id},
@@ -247,7 +247,7 @@ def set_call(
     category_id: str = None,
     access_token: str = None,
 ):
-    response = self._make_request(
+    response = self.request(
         "PUT",
         endpoint=f"{Endpoints.CALLS_V1}/{call_id}",
         payload={
@@ -264,7 +264,7 @@ def set_call(
 def set_user_role(
     self, call_id: int, user_id: int, role: str, access_token: str = None
 ):
-    response = self._make_request(
+    response = self.request(
         "PUT",
         endpoint=f"{Endpoints.CALLS_V1}/{call_id}/users/{user_id}",
         payload={"role": role},
@@ -277,7 +277,7 @@ def set_user_role(
 def start_call(
     self, conference_id: int, call_sid: str = None, access_token: str = None
 ) -> ConferenceCall:
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.CALLS_V1}/start_conference_call",
         payload={"conference_id": conference_id, "call_sid": call_sid},
@@ -289,7 +289,7 @@ def start_call(
 
 
 def start_anonymous_call(self, conference_id: int, agora_uid: str) -> ConferenceCall:
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/start_conference_call",
         payload={"conference_id": conference_id, "agora_uid": agora_uid},
@@ -300,7 +300,7 @@ def start_anonymous_call(self, conference_id: int, agora_uid: str) -> Conference
 
 
 def stop__anonymous_call(self, conference_id: int, agora_uid: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/leave_conference_call",
         payload={"conference_id": conference_id, "agora_uid": agora_uid},
@@ -310,7 +310,7 @@ def stop__anonymous_call(self, conference_id: int, agora_uid: str = None):
 
 
 def stop_call(self, conference_id: int, call_sid: str = None, access_token: str = None):
-    response = self._make_request(
+    response = self.request(
         "POST",
         endpoint=f"{Endpoints.CALLS_V1}/leave_conference_call",
         payload={"conference_id": conference_id, "call_sid": call_sid},

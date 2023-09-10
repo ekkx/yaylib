@@ -134,7 +134,7 @@ class API:
         response = get_timestamp(self)
         self.session.headers.update({"X-Client-IP": response.ip_address})
 
-    def _request(
+    def _make_request(
         self,
         method,
         endpoint,
@@ -341,7 +341,7 @@ class API:
         else:
             return response
 
-    def _make_request(
+    def request(
         self,
         method: str,
         endpoint: str,
@@ -354,7 +354,7 @@ class API:
         bypass_delay=False,
         access_token=None,
     ):
-        response = self._request(
+        response = self._make_request(
             method,
             endpoint,
             params,
