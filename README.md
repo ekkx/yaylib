@@ -34,15 +34,24 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
+    <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
     <li><a href="#-installation">インストール</a></li>
     <li><a href="#-quick-example">使用例</a></li>
     <li><a href="#crown-yaylib-で誕生したロボットたち">yaylib で誕生したロボットたち</a></li>
     <li><a href="#handshake-共同開発について">共同開発について</a></li>
-    <li><a href="#buy-me-a-coffee">Buy me a coffee</a></li>
     <li><a href="#免責事項">免責事項</a></li>
     <li><a href="#利用許諾">利用許諾</a></li>
   </ol>
 </details>
+
+<!-- Buy me a coffee -->
+
+## Buy me a coffee
+
+このライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">**リポジトリにスターをお願いします</a>(⭐)**  
+また、Buy Me a Coffee からご支援いただけますと幸いです。
+
+<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 <!-- インストール -->
 
@@ -70,8 +79,6 @@ pip install -r requirements.txt
 
 pip install -e .
 ```
-
-「yaylib」の始め方については、[こちら](https://github.com/qvco/yaylib/blob/master/docs/TUTORIAL.md) を確認してください。
 
 <!-- 使用例 -->
 
@@ -264,15 +271,6 @@ bot.run(ws_token)
 - <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com にメールを送信する</a>
 
 のいずれかの方法で繋がりましょう。詳しくは[こちらから](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)！
-
-<!-- Buy me a coffee -->
-
-## Buy me a coffee
-
-このライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">**リポジトリにスターをお願いします</a>(⭐)**  
-また、Buy Me a Coffee からご支援いただけますと幸いです。
-
-<a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 <!-- 免責事項 -->
 
