@@ -16,7 +16,7 @@
         あらゆる操作の自動化や、ボットの開発が可能です。
         <br />
         <br />
-        <a href="https://github.com/qvco/yaylib/blob/master/docs/README.md">
+        <a href="https://github.com/qvco/yay.js">
             <strong>Node.js版はこちらから (開発中) »</strong>
         </a>
         <br />
