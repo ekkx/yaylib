@@ -17,7 +17,7 @@
         <br />
         <br />
         <a href="https://github.com/qvco/yaylib/blob/master/docs/README.md">
-            <strong>ドキュメントはこちらから »</strong>
+            <strong>Node.js版はこちらから (開発中) »</strong>
         </a>
         <br />
         <br />
