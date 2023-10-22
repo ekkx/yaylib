@@ -17,7 +17,7 @@
         <br />
         <br />
         <a href="https://github.com/qvco/yay.js">
-            <strong>Node.js版はこちらから (開発中) »</strong>
+            <strong>Node.js 版はこちらから (推奨) »</strong>
         </a>
         <br />
         <br />
