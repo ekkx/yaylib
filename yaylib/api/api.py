@@ -26,13 +26,15 @@ import base64
 import datetime
 import hashlib
 import hmac
-import httpx
 import json
 import logging
 import os
 import random
 import time
 import uuid
+
+import httpx
+from httpx._types import TimeoutTypes
 
 from .login import get_token
 from .user import get_timestamp
@@ -61,14 +63,15 @@ current_path = os.path.abspath(os.getcwd())
 class API:
     def __init__(
         self,
-        access_token: str = None,
-        proxy: str = None,
+        *,
+        access_token: str | None = None,
+        proxy_url: str | None = None,
         max_retries=3,
         backoff_factor=1.5,
         wait_on_rate_limit=True,
         min_delay=0.3,
         max_delay=1.2,
-        timeout=30,
+        timeout: TimeoutTypes = 30,
         err_lang="ja",
         base_path=current_path + "/config/",
         save_cookie_file=True,
@@ -82,13 +85,9 @@ class API:
         self.fernet = None
         self._secret_key = None
 
-        self.proxy = {}
-        if proxy is not None:
-            self.proxy["http://"] = "http://" + proxy
-            self.proxy["https://"] = "http://" + proxy
-
         self._current_ts = None
         self.last_req_ts = None
+        self.proxy_url = proxy_url
         self.max_retries = max_retries
         self.retry_statuses = [500, 502, 503, 504]
         self.backoff_factor = backoff_factor
@@ -104,11 +103,14 @@ class API:
         self._cookies = {}
 
         self._generate_all_uuids()
-        self.session = httpx.Client(proxies=self.proxy, timeout=self.timeout)
-        self.session.headers.update(Configs.REQUEST_HEADERS)
-        self.session.headers.update({"X-Device-UUID": self.device_uuid})
+        self.session = httpx.Client(
+            headers=Configs.REQUEST_HEADERS | {"X-Device-UUID": self.device_uuid},
+            http2=True,
+            proxies=self.proxy_url,
+            timeout=self.timeout,
+        )
         if access_token is not None:
-            self.session.headers.setdefault("Authorization", "Bearer " + access_token)
+            self.session.headers.update({"Authorization": "Bearer " + access_token})
 
         self.logger = logging.getLogger("yaylib version: " + self.yaylib_version)
 
@@ -296,7 +298,9 @@ class API:
         # only for the next retry
         headers["Authorization"] = "Bearer " + response.access_token
 
-        self.session.headers["Authorization"] = "Bearer " + response.access_token
+        self.session.headers.update(
+            {"Authorization": "Bearer " + response.access_token}
+        )
 
         return headers
 

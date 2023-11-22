@@ -413,7 +413,7 @@ class Client(API):
     #### Parameters
 
         - access_token: str - (optional)
-        - proxy: str - (optional)
+        - proxy_url: str - (optional)
         - max_retries: int - (optional)
         - backoff_factor: float - (optional)
         - wait_on_rate_limit: bool - (optional)

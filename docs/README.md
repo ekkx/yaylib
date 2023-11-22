@@ -169,7 +169,7 @@ Client クラスは、API クライアントのメインクラスです。
 		<td>操作の認証に必要なアクセストークン</td>
 	</tr>
     <tr>
-		<td><code>proxy</code></td>
+		<td><code>proxy_url</code></td>
 		<td><code>str</code></td>
 		<td><code>None</code></td>
 		<td>プロキシサーバーのアドレス</td>
