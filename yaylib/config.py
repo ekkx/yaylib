@@ -28,8 +28,8 @@ from .models import Device
 
 class Configs:
     YAYLIB_VERSION = "1.3.0"
-    YAY_API_VERSION = "3.29"
-    YAY_VERSION_NAME = "3.29.0"
+    API_VERSION_NAME = "3.29"
+    VERSION_NAME = "3.29.0"
     YAY_API_VERSION_KEY = "6fa97fc2c3d04955bb8320f2d080593a"
     YAY_API_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
     YAY_SHARED_KEY = "yayZ1"
@@ -52,19 +52,7 @@ class Configs:
         model="Galaxy S9",
     )
     USER_AGENT = f"{DEVICE.device_type} {DEVICE.os_version} ({DEVICE.screen_density}x {DEVICE.screen_size} {DEVICE.model})"
-    REQUEST_HEADERS = {
-        "Host": YAY_PRODUCTION_HOST,
-        "User-Agent": USER_AGENT,
-        "X-Timestamp": "",
-        "X-App-Version": YAY_API_VERSION,
-        "X-Device-Info": "yay " + YAY_VERSION_NAME + " " + USER_AGENT,
-        "X-Device-UUID": "",
-        "X-Client-IP": "",
-        "X-Connection-Type": "wifi",
-        "X-Connection-Speed": "0",
-        "Accept-Language": "ja",
-        "Content-Type": "application/json;charset=UTF-8",
-    }
+    DEVICE_INFO = "yay " + VERSION_NAME + " " + USER_AGENT
 
 
 class Endpoints:

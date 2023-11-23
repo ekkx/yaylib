@@ -410,13 +410,66 @@ from .api.call import CallAPI
 from .api.chat import ChatAPI
 from .api.group import GroupAPI
 from .api.misc import MiscAPI
+
 # from .api.notification import NotificationAPI
 from .api.post import PostAPI
 from .api.review import ReviewAPI
 from .api.thread import ThreadAPI
 from .api.user import UserAPI
 
+from .config import Configs
+
+
 current_path = os.path.abspath(os.getcwd())
+
+
+class HeaderInterceptor(object):
+    def __init__(self, cookie: Cookie, locale: str = "ja") -> None:
+        self.__locale: str = locale
+        self.__host: str = Configs.YAY_PRODUCTION_HOST
+        self.__user_agent: str = Configs.USER_AGENT
+        self.__device_info: str = Configs.DEVICE_INFO
+        self.__app_version: str = Configs.API_VERSION_NAME
+        self.__cookie: Cookie = cookie
+        self.__client_ip: str = ""
+        self.__connection_speed: str = ""
+        self.__connection_type: str = "wifi"
+        self.__content_type = "application/json;charset=UTF-8"
+
+    def intercept(self) -> dict:
+        headers: dict = {
+            "Host": self.__host,
+            "User-Agent": self.__user_agent,
+            "X-Timestamp": datetime.now().timestamp(),
+            "X-App-Version": self.__app_version,
+            "X-Device-Info": self.__device_info,
+            "X-Device-UUID": self.__cookie.device_uuid,
+            "X-Client-IP": self.__client_ip,
+            "X-Connection-Type": self.__connection_type,
+            "X-Connection-Speed": self.__connection_speed,
+            "Accept-Language": self.__locale,
+            "Content-Type": self.__content_type,
+        }
+
+        if len(self.__client_ip):
+            headers.update({"X-Client-IP": self.__client_ip})
+
+        if len(self.__cookie.access_token):
+            headers.update({"Authorization": "Bearer " + self.__cookie.access_token})
+
+        return headers
+
+    def get_client_ip(self) -> str:
+        return self.__client_ip
+
+    def get_connection_speed(self) -> str:
+        return self.__connection_speed
+
+    def set_client_ip(self, client_ip: str) -> None:
+        self.__client_ip = client_ip
+
+    def set_connection_speed(self, connection_speed: str) -> None:
+        self.__connection_speed = connection_speed
 
 
 class BaseClient(object):
@@ -437,13 +490,25 @@ class BaseClient(object):
         cookie_filename="cookies",
         loglevel=logging.INFO,
     ) -> None:
+        self.__proxy_url = proxy_url
+        self.__max_retries = max_retries
+        self.__backoff_factor = backoff_factor
+        self.__wait_on_rate_limit = wait_on_rate_limit
+        self.__min_delay = min_delay
+        self.__max_delay = max_delay
+        self.__timeout = timeout
+        self.__err_lang = err_lang
+
         self.__cookie = Cookie(
             save_cookie_file,
             base_path + cookie_filename,
             cookie_password,
         )
-        # ヘッダー初期化
-        # 各APIクラスの初期化
+
+        self.__header_interceptor = HeaderInterceptor(self.__cookie)
+        self.__header_interceptor.set_connection_speed("0")
+
+        # self.__ws = WebSocketInteractor(self)
 
         # self.Auth = AuthAPI(self)
         self.Call = CallAPI(self)
@@ -456,7 +521,52 @@ class BaseClient(object):
         self.Thread = ThreadAPI(self)
         self.User = UserAPI(self)
 
-        # ロガーの初期化
+        self.logger = logging.getLogger("yaylib version: " + Configs.YAYLIB_VERSION)
+
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+
+        ch = logging.StreamHandler()
+        ch.setLevel(loglevel)
+        ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+
+        self.logger.addHandler(ch)
+        self.logger.setLevel(logging.DEBUG)
+
+        self.logger.info("yaylib version: " + Configs.YAYLIB_VERSION + " started.")
+
+    def __make_request(
+        self,
+        method: str,
+        endpoint: str,
+        params: dict = None,
+        payload: dict = None,
+        headers: dict = None,
+        bypass_delay: bool = False,
+    ) -> dict:
+        pass
+
+    def __construct_response(response: dict, data_type: object):
+        pass
+
+    def _request(
+        self,
+        method: str,
+        endpoint: str,
+        params: dict = None,
+        payload: dict = None,
+        data_type: object = None,
+        headers: dict = None,
+        bypass_delay: bool = False,
+    ) -> object | dict:
+        res = self.__make_request(
+            method, endpoint, params, payload, headers, bypass_delay
+        )
+        if data_type:
+            return self.__construct_response(res, data_type)
+        return res
+
+    def _prepare(self, email, password) -> LoginUserResponse:
         pass
 
     @property
@@ -465,7 +575,15 @@ class BaseClient(object):
 
     @property
     def user_id(self) -> int:
-        return self.cookie.get("user", {}).get("user_id")
+        return self.__cookie.user_id
+
+    @property
+    def uuid(self) -> str:
+        return self.__cookie.uuid
+
+    @property
+    def device_uuid(self) -> str:
+        return self.__cookie.device_uuid
 
     @staticmethod
     def parse_datetime(timestamp: int) -> str:
