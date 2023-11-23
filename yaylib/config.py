@@ -28,9 +28,9 @@ from .models import Device
 
 class Configs:
     YAYLIB_VERSION = "1.2.3"
-    YAY_API_VERSION = "3.27"
-    YAY_VERSION_NAME = "3.27.0"
-    YAY_API_VERSION_KEY = "210a770e9e0543abbab8648449d5c5f9"
+    YAY_API_VERSION = "3.29"
+    YAY_VERSION_NAME = "3.29.0"
+    YAY_API_VERSION_KEY = "6fa97fc2c3d04955bb8320f2d080593a"
     YAY_API_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
     YAY_SHARED_KEY = "yayZ1"
     YAY_STORE_KEY = "yayZ1payment"
