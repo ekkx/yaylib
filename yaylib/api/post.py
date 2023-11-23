@@ -239,9 +239,10 @@ def create_post(
     video_file_name: str = None,
     access_token: str = None,
 ) -> Post:
+    timestamp = int(datetime.now().timestamp())
     headers = self.session.headers.copy()
-    headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
-
+    headers["X-Jwt"] = self.generete_jwt(timestamp)
+    
     if text is not None:
         if "@:start:" in text and ":end:" in text:
             text, message_tags = parse_mention_format(self, text)
@@ -325,8 +326,9 @@ def create_repost(
     video_file_name: str = None,
     access_token: str = None,
 ) -> Post:
+    timestamp = int(datetime.now().timestamp())
     headers = self.session.headers.copy()
-    headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
+    headers["X-Jwt"] = self.generete_jwt(timestamp)
 
     if text is not None:
         if "@:start:" in text and ":end:" in text:
@@ -399,6 +401,7 @@ def create_share_post(
     access_token: str = None,
 ) -> Post:
     timestamp = int(datetime.now().timestamp())
+
     response = self.request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
@@ -446,8 +449,9 @@ def create_thread_post(
     video_file_name: str = None,
     access_token: str = None,
 ) -> Post:
+    timestamp = int(datetime.now().timestamp())
     headers = self.session.headers.copy()
-    headers["X-Jwt"] = self.get_web_socket_token(access_token=access_token)
+    headers["X-Jwt"] = self.generete_jwt(timestamp)
 
     if text is not None:
         if "@:start:" in text and ":end:" in text:
