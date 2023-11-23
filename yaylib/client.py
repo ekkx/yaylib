@@ -398,9 +398,13 @@ SHAREABLE_TYPE_THREAD = "thread"
 r""" `thread`: スレッド用の共有タイプ"""
 
 import os
+import time
+import random
 import logging
 
 from datetime import datetime
+
+import httpx
 from httpx._types import TimeoutTypes
 
 from .cookie import Cookie
@@ -479,7 +483,7 @@ class BaseClient(object):
         proxy_url: str | None = None,
         max_retries=3,
         backoff_factor=1.5,
-        wait_on_rate_limit=True,
+        wait_on_ratelimit=True,
         min_delay=0.3,
         max_delay=1.2,
         timeout: TimeoutTypes = 30,
@@ -490,13 +494,11 @@ class BaseClient(object):
         cookie_filename="cookies",
         loglevel=logging.INFO,
     ) -> None:
-        self.__proxy_url = proxy_url
         self.__max_retries = max_retries
         self.__backoff_factor = backoff_factor
-        self.__wait_on_rate_limit = wait_on_rate_limit
+        self.__wait_on_ratelimit = wait_on_ratelimit
         self.__min_delay = min_delay
         self.__max_delay = max_delay
-        self.__timeout = timeout
         self.__err_lang = err_lang
 
         self.__cookie = Cookie(
@@ -507,6 +509,13 @@ class BaseClient(object):
 
         self.__header_interceptor = HeaderInterceptor(self.__cookie)
         self.__header_interceptor.set_connection_speed("0")
+
+        self.__session = httpx.Client(
+            headers=self.__header_interceptor.intercept(),
+            http2=True,
+            proxies=proxy_url,
+            timeout=timeout,
+        )
 
         # self.__ws = WebSocketInteractor(self)
 
@@ -543,10 +552,26 @@ class BaseClient(object):
         payload: dict = None,
         headers: dict = None,
         bypass_delay: bool = False,
-    ) -> dict:
+    ) -> httpx.Response:
         pass
 
-    def __construct_response(response: dict, data_type: object):
+    def __delay(self, min_delay, max_delay) -> None:
+        sleep_time = random.uniform(min_delay, max_delay)
+        time.sleep(sleep_time)
+
+    def __is_access_token_expired_error(self, response: httpx.Response) -> bool:
+        pass
+
+    def __is_ratelimit_error(self, response: httpx.Response) -> bool:
+        pass
+
+    def __refresh_tokens(self) -> None:
+        pass
+
+    def __handle_response(self, response: httpx.Response) -> httpx.Response:
+        pass
+
+    def __construct_response(self, response: httpx.Response, data_type: object):
         pass
 
     def _request(
@@ -559,7 +584,7 @@ class BaseClient(object):
         headers: dict = None,
         bypass_delay: bool = False,
     ) -> object | dict:
-        res = self.__make_request(
+        res: httpx.Response = self.__make_request(
             method, endpoint, params, payload, headers, bypass_delay
         )
         if data_type:
