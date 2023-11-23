@@ -421,7 +421,22 @@ from .api.review import ReviewAPI
 from .api.thread import ThreadAPI
 from .api.user import UserAPI
 
-from .config import Configs
+from .config import Configs, ErrorType, ErrorMessage
+
+from .errors import (
+    HTTPError,
+    BadRequestError,
+    AuthenticationError,
+    ForbiddenError,
+    NotFoundError,
+    RateLimitError,
+    YayServerError,
+)
+
+try:
+    from json.decoder import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
 
 
 current_path = os.path.abspath(os.getcwd())
@@ -481,25 +496,27 @@ class BaseClient(object):
         self,
         *,
         proxy_url: str | None = None,
-        max_retries=3,
-        backoff_factor=1.5,
-        wait_on_ratelimit=True,
-        min_delay=0.3,
-        max_delay=1.2,
+        max_retries: int = 3,
+        backoff_factor: float = 1.5,
+        wait_on_ratelimit: bool = True,
+        min_delay: float = 0.3,
+        max_delay: float = 1.2,
         timeout: TimeoutTypes = 30,
-        err_lang="ja",
-        base_path=current_path + "/config/",
-        save_cookie_file=True,
+        err_lang: str = "ja",
+        base_path: str = current_path + "/config/",
+        save_cookie_file: bool = True,
         cookie_password: str | None = None,
-        cookie_filename="cookies",
-        loglevel=logging.INFO,
+        cookie_filename: str = "cookies",
+        loglevel: int = logging.INFO,
     ) -> None:
-        self.__max_retries = max_retries
-        self.__backoff_factor = backoff_factor
-        self.__wait_on_ratelimit = wait_on_ratelimit
-        self.__min_delay = min_delay
-        self.__max_delay = max_delay
-        self.__err_lang = err_lang
+        self.__max_retries: int = max_retries
+        self.__backoff_factor: float = backoff_factor
+        self.__wait_on_ratelimit: bool = wait_on_ratelimit
+        self.__last_request_timestamp: int | None = None
+        self.__min_delay: float = min_delay
+        self.__max_delay: float = max_delay
+        self.__err_lang: str = err_lang
+        self.__save_cookie_file: bool = save_cookie_file
 
         self.__cookie = Cookie(
             save_cookie_file,
@@ -552,8 +569,141 @@ class BaseClient(object):
         payload: dict = None,
         headers: dict = None,
         bypass_delay: bool = False,
-    ) -> httpx.Response:
-        pass
+    ) -> dict | str:
+        if headers is None:
+            headers = {}
+        headers.update(self.__header_interceptor.intercept())
+
+        response, backoff_duration = None, 0
+        max_ratelimit_retries = 15  # roughly equivalent to 60 mins, plus extra 15 mins
+        auth_retry_count, max_auth_retries = 0, 2
+
+        # retry the request based on max_retries
+        for i in range(self.__max_retries):
+            time.sleep(backoff_duration)
+
+            self.__log_request(method, endpoint, params, headers, payload)
+
+            response = self.__session.request(
+                method, endpoint, params=params, json=payload, headers=headers
+            )
+
+            if (
+                self.__last_request_timestamp
+                and int(datetime.now().timestamp()) - self.__last_request_timestamp < 1
+            ):
+                self.__delay(self.__min_delay, self.__max_delay)
+
+            self.__log_response(response)
+
+            if self.__wait_on_ratelimit and self.__is_ratelimit_error(response):
+                # continue attempting request until successful
+                # or maximum number of retries is reached
+                retries_performed = 0
+
+                while retries_performed <= max_ratelimit_retries:
+                    retry_after: int = 60 * 5
+
+                    self.logger.warn(f"Rate limit reached. Sleeping for: {retry_after}")
+                    time.sleep(retry_after + 1)
+
+                    headers.update(self.__header_interceptor.intercept())
+
+                    self.__log_request(method, endpoint, params, headers, payload)
+
+                    response = self.__session.request(
+                        method, endpoint, params=params, json=payload, headers=headers
+                    )
+
+                    self.__log_response(response)
+
+                    if not self.__is_ratelimit_error(response):
+                        break
+
+                    retries_performed += 1
+
+                if retries_performed >= max_ratelimit_retries:
+                    raise RateLimitError("Maximum rate limit reached.")
+
+            if response.status_code == 401 and self.__save_cookie_file:
+                # remove the cookie file and stop
+                # the proccessing if refresh token has expired
+                if "/api/v1/oauth/token" in endpoint:
+                    self.__cookie.destroy()
+                    raise AuthenticationError(
+                        "Refresh token expired. Try logging in again."
+                    )
+
+                auth_retry_count += 1
+
+                if auth_retry_count < max_auth_retries:
+                    self.__refresh_tokens()
+                    continue
+                else:
+                    self.__cookie.destroy()
+                    raise AuthenticationError(
+                        "Maximum authentication retries exceeded. Try logging in again."
+                    )
+
+            if response.status_code not in [500, 502, 503, 504]:
+                break
+
+            if response is not None:
+                self.logger.error(
+                    f"Request failed with status code {response.status_code}. Retrying...",
+                    exc_info=True,
+                )
+            else:
+                self.logger.error("Request failed. Retrying...")
+
+            backoff_duration = self.__backoff_factor * (2**i)
+
+        self.__last_request_timestamp = None
+        if not bypass_delay:
+            self.__last_request_timestamp = int(datetime.now().timestamp())
+
+        try:
+            f_response = response.json()
+        except JSONDecodeError:
+            f_response = response.text
+
+        if isinstance(f_response, dict):
+            f_response = self.__translate_error_message(f_response)
+
+        if response.status_code == 400:
+            raise BadRequestError(f_response)
+        if response.status_code == 401:
+            raise AuthenticationError(f_response)
+        if response.status_code == 403:
+            raise ForbiddenError(f_response)
+        if response.status_code == 404:
+            raise NotFoundError(f_response)
+        if response.status_code == 429:
+            raise RateLimitError(f_response)
+        if response.status_code == 500:
+            raise YayServerError(f_response)
+        if response.status_code and not 200 <= response.status_code < 300:
+            raise HTTPError(f_response)
+
+        return f_response
+
+    def __log_request(
+        self, method: str, endpoint: str, params: dict, headers: dict, payload: dict
+    ):
+        self.logger.debug(
+            f"{Colors.HEADER}Making API request: {method} {endpoint}{Colors.RESET}\n\n"
+            f"Parameters: {params}\n\n"
+            f"Headers: {headers}\n\n"
+            f"Body: {payload}\n"
+        )
+
+    def __log_response(self, response: httpx.Response):
+        self.logger.debug(
+            f"Received API response:\n\n"
+            f"Status code: {response.status_code}\n\n"
+            f"Headers: {response.headers}\n\n"
+            f"Response: {response.text}\n"
+        )
 
     def __delay(self, min_delay, max_delay) -> None:
         sleep_time = random.uniform(min_delay, max_delay)
@@ -568,8 +718,19 @@ class BaseClient(object):
     def __refresh_tokens(self) -> None:
         pass
 
-    def __handle_response(self, response: httpx.Response) -> httpx.Response:
-        pass
+    def __translate_error_message(self, f_response: dict) -> dict:
+        if not self.__err_lang == "ja":
+            return f_response
+        try:
+            error_code = f_response.get("error_code", None)
+            if error_code is not None:
+                error_type = ErrorType(error_code)
+                if error_type.name in ErrorMessage.__members__:
+                    error_message = ErrorMessage[error_type.name].value
+                    f_response["message"] = error_message
+            return f_response
+        except ValueError:
+            return f_response
 
     def __construct_response(self, response: httpx.Response, data_type: object):
         pass
@@ -591,7 +752,7 @@ class BaseClient(object):
             return self.__construct_response(res, data_type)
         return res
 
-    def _prepare(self, email, password) -> LoginUserResponse:
+    def _prepare(self, email: str, password: str) -> LoginUserResponse:
         pass
 
     @property
