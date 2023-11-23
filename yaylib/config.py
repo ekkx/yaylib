@@ -150,7 +150,7 @@ class Endpoints:
     )
 
 
-class ErrorType(Enum):
+class ErrorCode(Enum):
     Unknown = "unknown"
     InvalidParameter = -1
     RegisteredUser = -2
