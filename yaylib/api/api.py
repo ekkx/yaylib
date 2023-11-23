@@ -40,7 +40,7 @@ from httpx._types import TimeoutTypes
 from .auth import get_token
 from .user import get_timestamp
 
-from ..config import Configs, ErrorType, ErrorMessage
+from ..config import Configs
 from ..errors import (
     HTTPError,
     BadRequestError,
@@ -49,6 +49,8 @@ from ..errors import (
     NotFoundError,
     RateLimitError,
     YayServerError,
+    ErrorCode,
+    ErrorMessage,
 )
 from ..utils import Colors
 
@@ -327,7 +329,7 @@ class API:
             try:
                 error_code = response.get("error_code", None)
                 if error_code is not None:
-                    error_type = ErrorType(error_code)
+                    error_type = ErrorCode(error_code)
                     if error_type.name in ErrorMessage.__members__:
                         error_message = ErrorMessage[error_type.name].value
                         response["message"] = error_message

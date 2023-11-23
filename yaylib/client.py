@@ -421,7 +421,7 @@ from .api.review import ReviewAPI
 from .api.thread import ThreadAPI
 from .api.user import UserAPI
 
-from .config import Configs, ErrorCode, ErrorMessage
+from .config import Configs
 
 from .errors import (
     HTTPError,
@@ -431,6 +431,8 @@ from .errors import (
     NotFoundError,
     RateLimitError,
     YayServerError,
+    ErrorCode,
+    ErrorMessage
 )
 
 try:
