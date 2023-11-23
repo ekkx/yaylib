@@ -242,7 +242,7 @@ def create_post(
     timestamp = int(datetime.now().timestamp())
     headers = self.session.headers.copy()
     headers["X-Jwt"] = self.generate_jwt(timestamp)
-    
+
     if text is not None:
         if "@:start:" in text and ":end:" in text:
             text, message_tags = parse_mention_format(self, text)
