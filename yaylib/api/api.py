@@ -487,7 +487,7 @@ class API:
         ).decode("utf-8")
     
     @staticmethod
-    def generete_jwt(timestamp):
+    def generate_jwt(timestamp):
         return jwt.encode(payload={
             "exp": timestamp + 5,
             "iat": timestamp},

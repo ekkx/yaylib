@@ -410,7 +410,7 @@ def get_user_without_leaving_footprint(
 def get_users(self, user_ids: list[int], access_token: str = None) -> UsersResponse:
     timestamp = int(datetime.now().timestamp())
     headers = self.session.headers.copy()
-    headers["X-Jwt"] = self.generete_jwt(timestamp)
+    headers["X-Jwt"] = self.generate_jwt(timestamp)
     return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/list_id",

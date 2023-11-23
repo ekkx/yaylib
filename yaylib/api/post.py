@@ -241,7 +241,7 @@ def create_post(
 ) -> Post:
     timestamp = int(datetime.now().timestamp())
     headers = self.session.headers.copy()
-    headers["X-Jwt"] = self.generete_jwt(timestamp)
+    headers["X-Jwt"] = self.generate_jwt(timestamp)
     
     if text is not None:
         if "@:start:" in text and ":end:" in text:
@@ -328,7 +328,7 @@ def create_repost(
 ) -> Post:
     timestamp = int(datetime.now().timestamp())
     headers = self.session.headers.copy()
-    headers["X-Jwt"] = self.generete_jwt(timestamp)
+    headers["X-Jwt"] = self.generate_jwt(timestamp)
 
     if text is not None:
         if "@:start:" in text and ":end:" in text:
@@ -451,7 +451,7 @@ def create_thread_post(
 ) -> Post:
     timestamp = int(datetime.now().timestamp())
     headers = self.session.headers.copy()
-    headers["X-Jwt"] = self.generete_jwt(timestamp)
+    headers["X-Jwt"] = self.generate_jwt(timestamp)
 
     if text is not None:
         if "@:start:" in text and ":end:" in text:
