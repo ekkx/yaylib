@@ -29,41 +29,31 @@ from ..models import ThreadInfo
 from ..responses import GroupThreadListResponse, PostsResponse
 
 
-def add_post_to_thread(
-    self, post_id: int, thread_id: int, access_token: str = None
-) -> ThreadInfo:
+def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
     response = self.request(
         "PUT",
         endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread/{thread_id}",
         data_type=ThreadInfo,
-        auth_required=True,
-        access_token=access_token,
     )
     self.logger.info(f"Post '{post_id}' added to the thread '{thread_id}'.")
     return response
 
 
 def convert_post_to_thread(
-    self,
-    post_id: int,
-    title: str = None,
-    thread_icon_filename: str = None,
-    access_token: str = None,
+    self, post_id: int, title: str = None, thread_icon_filename: str = None
 ) -> ThreadInfo:
     response = self.request(
         "POST",
         endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread",
         payload={"title": title, "thread_icon_filename": thread_icon_filename},
         data_type=ThreadInfo,
-        auth_required=True,
-        access_token=access_token,
     )
     self.logger.info("Post has been converted to a thread.")
     return response
 
 
 def create_thread(
-    self, group_id: int, title: str, thread_icon_filename: str, access_token: str = None
+    self, group_id: int, title: str, thread_icon_filename: str
 ) -> ThreadInfo:
     response = self.request(
         "POST",
@@ -74,15 +64,13 @@ def create_thread(
             "thread_icon_filename": thread_icon_filename,
         },
         data_type=ThreadInfo,
-        auth_required=True,
-        access_token=access_token,
     )
     self.logger.info("A new thread has been created.")
     return response
 
 
 def get_group_thread_list(
-    self, group_id: int, from_str: str = None, access_token: str = None, **params
+    self, group_id: int, from_str: str = None, **params
 ) -> GroupThreadListResponse:
     """
 
@@ -102,22 +90,17 @@ def get_group_thread_list(
         endpoint=f"{Endpoints.THREADS_V1}",
         params=params,
         data_type=GroupThreadListResponse,
-        access_token=access_token,
     )
 
 
-def get_thread_joined_statuses(self, ids: list[int], access_token: str = None) -> dict:
+def get_thread_joined_statuses(self, ids: list[int]) -> dict:
     return self.request(
-        "GET",
-        endpoint=f"{Endpoints.THREADS_V1}/joined_statuses",
-        params={"ids[]": ids},
-        auth_required=True,
-        access_token=access_token,
+        "GET", endpoint=f"{Endpoints.THREADS_V1}/joined_statuses", params={"ids[]": ids}
     )
 
 
 def get_thread_posts(
-    self, thread_id: int, from_str: str = None, access_token: str = None, **params
+    self, thread_id: int, from_str: str = None, **params
 ) -> PostsResponse:
     """
 
@@ -136,56 +119,43 @@ def get_thread_posts(
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/posts",
         params=params,
         data_type=PostsResponse,
-        access_token=access_token,
     )
 
 
-def join_thread(self, thread_id: int, user_id: int, access_token: str = None):
+def join_thread(self, thread_id: int, user_id: int):
     response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
-        auth_required=True,
-        access_token=access_token,
+        "POST", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}"
     )
     self.logger.info(f"Joined the thread '{thread_id}'.")
     return response
 
 
-def leave_thread(self, thread_id: int, user_id: int, access_token: str = None):
+def leave_thread(self, thread_id: int, user_id: int):
     response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
-        auth_required=True,
-        access_token=access_token,
     )
     self.logger.info("Left the thread.")
     return response
 
 
-def remove_thread(self, thread_id: int, access_token: str = None):
+def remove_thread(
+    self,
+    thread_id: int,
+):
     response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
-        auth_required=True,
-        access_token=access_token,
     )
     self.logger.info(f"Thread '{thread_id}' has been removed.")
     return response
 
 
-def update_thread(
-    self,
-    thread_id: int,
-    title: str,
-    thread_icon_filename: str,
-    access_token: str = None,
-):
+def update_thread(self, thread_id: int, title: str, thread_icon_filename: str):
     response = self.request(
         "PUT",
         endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
         payload={"title": title, "thread_icon_filename": thread_icon_filename},
-        auth_required=True,
-        access_token=access_token,
     )
     self.logger.info(f"Thread '{thread_id}' has been updated.")
     return response

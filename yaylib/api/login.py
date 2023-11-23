@@ -39,11 +39,7 @@ from ..utils import Colors, console_print
 
 
 def change_email(
-    self,
-    email: str,
-    password: str,
-    email_grant_token: str = None,
-    access_token: str = None,
+    self, email: str, password: str, email_grant_token: str = None
 ) -> LoginUpdateResponse:
     response = self.request(
         "PUT",
@@ -55,14 +51,13 @@ def change_email(
             "email_grant_token": email_grant_token,
         },
         data_type=LoginUpdateResponse,
-        access_token=access_token,
     )
     self.logger.info("Your email has been changed.")
     return response
 
 
 def change_password(
-    self, current_password: str, new_password: str, access_token: str = None
+    self, current_password: str, new_password: str
 ) -> LoginUpdateResponse:
     response = self.request(
         "PUT",
@@ -73,7 +68,6 @@ def change_password(
             "password": new_password,
         },
         data_type=LoginUpdateResponse,
-        access_token=access_token,
     )
     self.logger.info("Your password has been updated.")
     return response
@@ -85,7 +79,6 @@ def get_token(
     refresh_token: str = None,
     email: str = None,
     password: str = None,
-    access_token: str = None,
 ) -> TokenResponse:
     return self.request(
         "POST",
@@ -98,7 +91,6 @@ def get_token(
         },
         data_type=TokenResponse,
         bypass_delay=True,
-        access_token=access_token,
     )
 
 
@@ -218,14 +210,12 @@ def login_with_email(self, email: str, password: str) -> LoginUserResponse:
     return response
 
 
-def logout(self, access_token: str = None):
+def logout(self):
     try:
         response = self.request(
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/logout",
             payload={"uuid": self.uuid},
-            auth_required=True,
-            access_token=access_token,
         )
         self._cookies = {}
         self.session.headers.pop("Authorization", None)
@@ -237,15 +227,11 @@ def logout(self, access_token: str = None):
         return None
 
 
-def resend_confirm_email(self, access_token: str = None):
-    return self.request(
-        "POST",
-        endpoint=f"{Endpoints.USERS_V2}/resend_confirm_email",
-        access_token=access_token,
-    )
+def resend_confirm_email(self):
+    return self.request("POST", endpoint=f"{Endpoints.USERS_V2}/resend_confirm_email")
 
 
-def restore_user(self, user_id: int, access_token: str = None) -> LoginUserResponse:
+def restore_user(self, user_id: int) -> LoginUserResponse:
     timestamp = int(datetime.now().timestamp())
     response = self.request(
         "POST",
@@ -257,7 +243,6 @@ def restore_user(self, user_id: int, access_token: str = None) -> LoginUserRespo
             "timestamp": timestamp,
             "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
         },
-        access_token=access_token,
     )
     self.logger.info("User has been restored.")
     return response
@@ -274,7 +259,6 @@ def register_device_token(
     device_model: str,
     appsflyer_id: str,
     advertising_id: str = None,
-    access_token: str = None,
 ) -> RegisterDeviceTokenResponse:
     response = self.request(
         "POST",
@@ -292,17 +276,15 @@ def register_device_token(
             "advertising_id": advertising_id,
         },
         data_type=RegisterDeviceTokenResponse,
-        access_token=access_token,
     )
     self.logger.info("Device token has been registered.")
     return response
 
 
-def revoke_tokens(self, access_token: str = None):
+def revoke_tokens(self):
     response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.USERS_V1}/device_tokens",
-        access_token=access_token,
     )
     self.logger.info("Token has been revoked.")
     return response
@@ -314,7 +296,6 @@ def save_account_with_email(
     password: str = None,
     current_password: str = None,
     email_grant_token: str = None,
-    access_token: str = None,
 ) -> LoginUpdateResponse:
     response = self.request(
         "POST",
@@ -327,7 +308,6 @@ def save_account_with_email(
             "email_grant_token": email_grant_token,
         },
         data_type=LoginUpdateResponse,
-        access_token=access_token,
     )
     self.logger.info("Account has been save with email.")
     return response

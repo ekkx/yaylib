@@ -26,7 +26,7 @@ from ..config import Configs, Endpoints
 from ..responses import ActivitiesResponse
 
 
-def get_user_activities(self, access_token: str = None, **params) -> ActivitiesResponse:
+def get_user_activities(self, **params) -> ActivitiesResponse:
     """
 
     Parameters
@@ -40,15 +40,11 @@ def get_user_activities(self, access_token: str = None, **params) -> ActivitiesR
         "GET",
         endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/user_activities",
         params=params,
-        data_type=ActivitiesResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=ActivitiesResponse
     )
 
 
-def get_user_merged_activities(
-    self, access_token: str = None, **params
-) -> ActivitiesResponse:
+def get_user_merged_activities(self, **params) -> ActivitiesResponse:
     """
     Parameters
     ----------
@@ -61,20 +57,14 @@ def get_user_merged_activities(
         "GET",
         endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/v2/user_activities",
         params=params,
-        data_type=ActivitiesResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=ActivitiesResponse
     )
 
 
-def received_notification(
-    self, pid: str, type: str, opened_at: int = None, access_token: str = None
-):
+def received_notification(self, pid: str, type: str, opened_at: int = None):
     # TODO: opened_atはnullalbeか確認する
     return self.request(
         "POST",
         endpoint=f"{Endpoints.BASE_API_URL}/api/received_push_notifications",
-        payload={"pid": pid, "type": type, "opened_at": opened_at},
-        auth_required=True,
-        access_token=access_token,
+        payload={"pid": pid, "type": type, "opened_at": opened_at}
     )

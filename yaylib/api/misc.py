@@ -61,18 +61,17 @@ upload_item_types = [
 ]
 
 
-def accept_policy_agreement(self, type: str, access_token: str = None):
+def accept_policy_agreement(self, type: str):
     response = self.request(
         "POST",
         endpoint=f"{Endpoints.USERS_V1}/policy_agreements/{type}",
         bypass_delay=True,
-        access_token=access_token,
     )
     self.logger.info(f"Accepted to {type}.")
     return response
 
 
-def generate_sns_thumbnail(self, access_token: str = None, **params):
+def generate_sns_thumbnail(self, **params):
     """
 
     Parameters:
@@ -83,10 +82,7 @@ def generate_sns_thumbnail(self, access_token: str = None, **params):
 
     """
     response = self.request(
-        "GET",
-        endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate",
-        params=params,
-        access_token=access_token,
+        "GET", endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate", params=params
     )
     self.logger.info("SNS thumbnail generated.")
     return response
@@ -114,7 +110,7 @@ def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenRespons
 
 
 def get_email_verification_presigned_url(
-    self, email: str, locale: str, intent: str = None, access_token: str = None
+    self, email: str, locale: str, intent: str = None
 ) -> str:
     return self.request(
         "POST",
@@ -127,26 +123,20 @@ def get_email_verification_presigned_url(
         },
         data_type=EmailVerificationPresignedUrlResponse,
         bypass_delay=True,
-        access_token=access_token,
     )
 
 
-def get_file_upload_presigned_urls(
-    self, file_names: list[str], access_token: str = None
-) -> list[PresignedUrl]:
+def get_file_upload_presigned_urls(self, file_names: list[str]) -> list[PresignedUrl]:
     return self.request(
         "GET",
         endpoint=f"{Endpoints.BUCKETS_V1}/presigned_urls",
         params={"file_names[]": file_names},
         data_type=PresignedUrlsResponse,
         bypass_delay=True,
-        access_token=access_token,
     ).presigned_urls
 
 
-def get_id_checker_presigned_url(
-    self, model: str, action: str, access_token: str = None, **params
-) -> str:
+def get_id_checker_presigned_url(self, model: str, action: str, **params) -> str:
     # TODO: @QueryMap @NotNull Map<String, String> map
     """
     Meow..
@@ -157,42 +147,35 @@ def get_id_checker_presigned_url(
         params=params,
         data_type=IdCheckerPresignedUrlResponse,
         bypass_delay=True,
-        access_token=access_token,
     ).presigned_url
 
 
-def get_old_file_upload_presigned_url(
-    self, video_file_name: str, access_token: str = None
-) -> str:
+def get_old_file_upload_presigned_url(self, video_file_name: str) -> str:
     return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/presigned_url",
         params={"video_file_name": video_file_name},
         data_type=PresignedUrlResponse,
         bypass_delay=True,
-        access_token=access_token,
     ).presigned_url
 
 
-def get_policy_agreements(self, access_token: str = None) -> PolicyAgreementsResponse:
+def get_policy_agreements(self) -> PolicyAgreementsResponse:
     return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/policy_agreements",
         data_type=PolicyAgreementsResponse,
         bypass_delay=True,
-        access_token=access_token,
     )
 
 
-def get_web_socket_token(self, headers: dict = None, access_token: str = None) -> str:
+def get_web_socket_token(self, headers: dict = None) -> str:
     return self.request(
         "GET",
         endpoint=f"{Endpoints.USERS_V1}/ws_token",
         data_type=WebSocketTokenResponse,
         headers=headers,
-        auth_required=True,
         bypass_delay=True,
-        access_token=access_token,
     ).token
 
 
@@ -202,7 +185,6 @@ def verify_device(
     device_uuid: str,
     platform: str,
     verification_string: str,
-    access_token: str = None,
 ) -> VerifyDeviceResponse:
     # TODO: check platform, verification_string
     response = self.request(
@@ -215,7 +197,6 @@ def verify_device(
             "verification_string": verification_string,
         },
         data_type=VerifyDeviceResponse,
-        access_token=access_token,
     )
     self.logger.info("Device has been verified.")
     return response
@@ -328,7 +309,7 @@ def upload_image(self, image_paths: list[str], image_type: str) -> list[Attachme
     return res_upload
 
 
-def upload_video(self, video_path: str, access_token: str = None):
+def upload_video(self, video_path: str):
     pass
 
 

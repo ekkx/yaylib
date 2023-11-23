@@ -40,28 +40,24 @@ from ..responses import (
 )
 
 
-def accept_chat_requests(self, chat_room_ids: list[int], access_token: str = None):
+def accept_chat_requests(self, chat_room_ids: list[int]):
     response = self.request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
-        payload={"chat_room_ids[]": chat_room_ids},
-        auth_required=True,
-        access_token=access_token,
+        payload={"chat_room_ids[]": chat_room_ids}
     )
     self.logger.info("Accepted chat requests.")
     return response
 
 
 def check_unread_status(
-    self, from_time: int, access_token: str = None
+    self, from_time: int
 ) -> UnreadStatusResponse:
     return self.request(
         "GET",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/unread_status",
         params={"from_time": from_time},
-        data_type=UnreadStatusResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=UnreadStatusResponse
     )
 
 
@@ -70,8 +66,7 @@ def create_group_chat(
     name: str,
     with_user_ids: list[int],
     icon_filename: str = None,
-    background_filename: str = None,
-    access_token: str = None,
+    background_filename: str = None
 ) -> CreateChatRoomResponse:
     response = self.request(
         "POST",
@@ -82,9 +77,7 @@ def create_group_chat(
             "icon_filename": icon_filename,
             "background_filename": background_filename,
         },
-        data_type=CreateChatRoomResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=CreateChatRoomResponse
     )
     self.logger.info(f"Group chat '{name}' has been created.")
     return response
@@ -94,8 +87,7 @@ def create_private_chat(
     self,
     with_user_id: int,
     matching_id: int = None,
-    hima_chat: bool = False,
-    access_token: str = None,
+    hima_chat: bool = False
 ) -> CreateChatRoomResponse:
     response = self.request(
         "POST",
@@ -105,31 +97,25 @@ def create_private_chat(
             "matching_id": matching_id,
             "hima_chat": hima_chat,
         },
-        data_type=CreateChatRoomResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=CreateChatRoomResponse
     )
     self.logger.info(f"Created a private chatroom with '{with_user_id}'.")
     return response
 
 
-def delete_background(self, room_id: int, access_token: str = None):
+def delete_background(self, room_id: int):
     response = self.request(
         "DELETE",
-        endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{room_id}/background",
-        auth_required=True,
-        access_token=access_token,
+        endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{room_id}/background"
     )
     self.logger.info("Background image of the chatroom has been deleted.")
     return response
 
 
-def delete_message(self, room_id: int, message_id: int, access_token: str = None):
+def delete_message(self, room_id: int, message_id: int):
     response = self.request(
         "DELETE",
-        endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/messages/{message_id}/delete",
-        auth_required=True,
-        access_token=access_token,
+        endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/messages/{message_id}/delete"
     )
     self.logger.info("Message has been deleted.")
     return response
@@ -140,8 +126,7 @@ def edit_chat_room(
     chat_room_id: int,
     name: str,
     icon_filename: str = None,
-    background_filename: str = None,
-    access_token: str = None,
+    background_filename: str = None
 ):
     response = self.request(
         "POST",
@@ -150,9 +135,7 @@ def edit_chat_room(
             "name": name,
             "icon_filename": icon_filename,
             "background_filename": background_filename,
-        },
-        auth_required=True,
-        access_token=access_token,
+        }
     )
     self.logger.info("Chatroom has been updated.")
     return response
@@ -163,8 +146,7 @@ def get_chatable_users(
     # @Body @Nullable SearchUsersRequest searchUsersRequest
     from_follow_id: int = None,
     from_timestamp: int = None,
-    order_by: str = None,
-    access_token: str = None,
+    order_by: str = None
 ) -> FollowUsersResponse:
     return self.request(
         "POST",
@@ -174,24 +156,20 @@ def get_chatable_users(
             "from_timestamp": from_timestamp,
             "order_by": order_by,
         },
-        data_type=FollowUsersResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=FollowUsersResponse
     )
 
 
-def get_gifs_data(self, access_token: str = None) -> list[GifImageCategory]:
+def get_gifs_data(self) -> list[GifImageCategory]:
     return self.request(
         "GET",
         endpoint=f"{Endpoints.HIDDEN_V1}/chats",
-        data_type=GifsDataResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=GifsDataResponse
     ).gif_categories
 
 
 def get_hidden_chat_rooms(
-    self, access_token: str = None, **params
+    self, **params
 ) -> ChatRoomsResponse:
     """
 
@@ -206,14 +184,12 @@ def get_hidden_chat_rooms(
         "GET",
         endpoint=f"{Endpoints.HIDDEN_V1}/chats",
         params=params,
-        data_type=ChatRoomsResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=ChatRoomsResponse
     )
 
 
 def get_main_chat_rooms(
-    self, from_timestamp: int = None, access_token: str = None
+    self, from_timestamp: int = None
 ) -> ChatRoomsResponse:
     params = {}
     if from_timestamp:
@@ -222,14 +198,12 @@ def get_main_chat_rooms(
         "GET",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/main_list",
         params=params,
-        data_type=ChatRoomsResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=ChatRoomsResponse
     )
 
 
 def get_messages(
-    self, chat_room_id: int, access_token: str = None, **params
+    self, chat_room_id: int, **params
 ) -> list[Message]:
     """
 
@@ -243,14 +217,12 @@ def get_messages(
         "GET",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages",
         params=params,
-        data_type=MessagesResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=MessagesResponse
     ).messages
 
 
 def get_request_chat_rooms(
-    self, access_token: str = None, **params
+    self, **params
 ) -> ChatRoomsResponse:
     """
 
@@ -259,113 +231,94 @@ def get_request_chat_rooms(
 
         - number: int (optional)
         - from_timestamp: int (optional)
-        - access_token: str (optional)
 
     """
     return self.request(
         "GET",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/request_list",
         params=params,
-        data_type=ChatRoomsResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=ChatRoomsResponse
     )
 
 
-def get_chat_room(self, chat_room_id: int, access_token: str = None) -> ChatRoom:
+def get_chat_room(self, chat_room_id: int) -> ChatRoom:
     return self.request(
         "GET",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}",
-        data_type=ChatRoomResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=ChatRoomResponse
     ).chat
 
 
-def get_sticker_packs(self, access_token: str = None) -> list[StickerPack]:
+def get_sticker_packs(self) -> list[StickerPack]:
     return self.request(
         "GET",
         endpoint=Endpoints.STICKER_PACKS_V2,
-        data_type=StickerPacksResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=StickerPacksResponse
     ).sticker_packs
 
 
-def get_total_chat_requests(self, access_token: str = None) -> int:
+def get_total_chat_requests(self) -> int:
     return self.request(
         "GET",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/total_chat_request",
-        data_type=TotalChatRequestResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=TotalChatRequestResponse
     ).total
 
 
-def hide_chat(self, chat_room_id: int, access_token: str = None):
+def hide_chat(self, chat_room_id: int):
     response = self.request(
         "POST",
         endpoint=f"{Endpoints.HIDDEN_V1}/chats",
-        payload={"chat_room_id": chat_room_id},
-        auth_required=True,
-        access_token=access_token,
+        payload={"chat_room_id": chat_room_id}
     )
     self.logger.info(f"Chatroom '{chat_room_id}' has been hidden.")
     return response
 
 
 def invite_to_chat(
-    self, chat_room_id: int, user_ids: list[int], access_token: str = None
+    self, chat_room_id: int, user_ids: list[int]
 ):
     response = self.request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/invite",
-        payload={"with_user_ids": user_ids},
-        auth_required=True,
-        access_token=access_token,
+        payload={"with_user_ids": user_ids}
     )
     self.logger.info("Invited users to the chatroom.")
     return response
 
 
 def kick_users_from_chat(
-    self, chat_room_id: int, user_ids: list[int], access_token: str = None
+    self, chat_room_id: int, user_ids: list[int]
 ):
     response = self.request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/kick",
-        payload={"with_user_ids[]": user_ids},
-        auth_required=True,
-        access_token=access_token,
+        payload={"with_user_ids[]": user_ids}
     )
     self.logger.info(f"Users have been kicked from the chatroom.")
     return response
 
 
-def pin_chat(self, room_id: int, access_token: str = None):
+def pin_chat(self, room_id: int):
     response = self.request(
         "POST",
-        endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/pinned",
-        auth_required=True,
-        access_token=access_token,
+        endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/pinned"
     )
     self.logger.info("Pinned the chatroom.")
     return response
 
 
-def read_message(self, chat_room_id: int, message_id: int, access_token: str = None):
+def read_message(self, chat_room_id: int, message_id: int):
     response = self.request(
         "POST",
-        endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages/{message_id}/read",
-        auth_required=True,
-        access_token=access_token,
+        endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages/{message_id}/read"
     )
     self.logger.info("Message has been read.")
     return response
 
 
 def refresh_chat_rooms(
-    self, from_time: int = None, access_token: str = None
+    self, from_time: int = None
 ) -> ChatRoomsResponse:
     params = {}
     if from_time:
@@ -374,20 +327,16 @@ def refresh_chat_rooms(
         "GET",
         endpoint=f"{Endpoints.CHAT_ROOMS_V2}/update",
         params=params,
-        data_type=ChatRoomsResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=ChatRoomsResponse
     )
 
 
-def remove_chat_rooms(self, chat_room_ids: list[int], access_token: str = None):
+def remove_chat_rooms(self, chat_room_ids: list[int]):
     chat_room_ids = [chat_room_ids] if isinstance(chat_room_ids, int) else chat_room_ids
     response = self.request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V1}/mass_destroy",
-        payload={"chat_room_ids": chat_room_ids},
-        auth_required=True,
-        access_token=access_token,
+        payload={"chat_room_ids": chat_room_ids}
     )
     self.logger.info(f"Chatrooms have been removed.")
     return response
@@ -403,7 +352,6 @@ def report_chat_room(
     screenshot_2_filename: str = None,
     screenshot_3_filename: str = None,
     screenshot_4_filename: str = None,
-    access_token: str = None,
 ):
     response = self.request(
         "POST",
@@ -417,47 +365,39 @@ def report_chat_room(
             "screenshot_2_filename": screenshot_2_filename,
             "screenshot_3_filename": screenshot_3_filename,
             "screenshot_4_filename": screenshot_4_filename,
-        },
-        auth_required=True,
-        access_token=access_token,
+        }
     )
     self.logger.info(f"Chatroom '{chat_room_id}' has been reported.")
     return response
 
 
 def send_message(
-    self, chat_room_id: int, access_token: str = None, **params
+    self, chat_room_id: int, **params
 ) -> MessageResponse:
     response = self.request(
         "POST",
         endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/messages/new",
         payload=params,
-        data_type=MessageResponse,
-        auth_required=True,
-        access_token=access_token,
+        data_type=MessageResponse
     )
     self.logger.info("Your message has been sent.")
     return response
 
 
-def unhide_chat(self, chat_room_ids: int, access_token: str = None):
+def unhide_chat(self, chat_room_ids: int):
     response = self.request(
         "DELETE",
         endpoint=f"{Endpoints.HIDDEN_V1}/chats",
-        params={"chat_room_ids": chat_room_ids},
-        auth_required=True,
-        access_token=access_token,
+        params={"chat_room_ids": chat_room_ids}
     )
     self.logger.info("Unhid the chatrooms.")
     return response
 
 
-def unpin_chat(self, chat_room_id: int, access_token: str = None):
+def unpin_chat(self, chat_room_id: int):
     response = self.request(
         "DELETE",
-        endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/pinned",
-        auth_required=True,
-        access_token=access_token,
+        endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/pinned"
     )
     self.logger.info("Unpinned the chatroom.")
     return response
