@@ -421,7 +421,7 @@ from .api.review import ReviewAPI
 from .api.thread import ThreadAPI
 from .api.user import UserAPI
 
-from .config import Configs, ErrorType, ErrorMessage
+from .config import Configs, ErrorCode, ErrorMessage
 
 from .errors import (
     HTTPError,
@@ -625,7 +625,9 @@ class BaseClient(object):
                 if retries_performed >= max_ratelimit_retries:
                     raise RateLimitError("Maximum rate limit reached.")
 
-            if response.status_code == 401 and self.__save_cookie_file:
+            if self.__save_cookie_file and self.__is_access_token_expired_error(
+                response
+            ):
                 # remove the cookie file and stop
                 # the proccessing if refresh token has expired
                 if "/api/v1/oauth/token" in endpoint:
@@ -710,21 +712,41 @@ class BaseClient(object):
         time.sleep(sleep_time)
 
     def __is_access_token_expired_error(self, response: httpx.Response) -> bool:
-        pass
+        return response.status_code == 401 and (
+            response.get("error_code") == ErrorCode.AccessTokenExpired
+            or response.get("error_code") == ErrorCode.AccessTokenInvalid
+        )
 
     def __is_ratelimit_error(self, response: httpx.Response) -> bool:
-        pass
+        if response.status_code == 429:
+            return True
+        if response.status_code == 400:
+            if response.get("error_code") == ErrorCode.QuotaLimitExceeded:
+                return True
+        return False
 
     def __refresh_tokens(self) -> None:
-        pass
+        # response = self.Auth.get_token(
+        #     grant_type="refresh_token", refresh_token=self.__cookie.refresh_token
+        # )
+        # self.__cookie.set(
+        #     {
+        #         **self.cookie,
+        #         "authentication": {
+        #             "accessToken": response["access_token"],
+        #             "refresh_token": response["refresh_token"],
+        #         },
+        #     }
+        # )
+        self.__cookie.save()
 
     def __translate_error_message(self, f_response: dict) -> dict:
         if not self.__err_lang == "ja":
             return f_response
         try:
-            error_code = f_response.get("error_code", None)
+            error_code = f_response.get("error_code")
             if error_code is not None:
-                error_type = ErrorType(error_code)
+                error_type = ErrorCode(error_code)
                 if error_type.name in ErrorMessage.__members__:
                     error_message = ErrorMessage[error_type.name].value
                     f_response["message"] = error_message
@@ -732,8 +754,13 @@ class BaseClient(object):
         except ValueError:
             return f_response
 
-    def __construct_response(self, response: httpx.Response, data_type: object):
-        pass
+    def __construct_response(self, response: dict, data_type: object) -> dict:
+        if data_type is not None:
+            if isinstance(response, list):
+                response = [data_type(result) for result in response]
+            elif response is not None:
+                response = data_type(response)
+        return response
 
     def _request(
         self,
@@ -745,7 +772,7 @@ class BaseClient(object):
         headers: dict = None,
         bypass_delay: bool = False,
     ) -> object | dict:
-        res: httpx.Response = self.__make_request(
+        res: dict | str = self.__make_request(
             method, endpoint, params, payload, headers, bypass_delay
         )
         if data_type:
