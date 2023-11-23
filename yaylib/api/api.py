@@ -144,11 +144,9 @@ class API:
         payload=None,
         user_auth=True,
         headers=None,
-        auth_required=False,
         bypass_delay=False,
-        access_token=None,
     ):
-        headers = self._prepare_auth(headers, access_token, user_auth, auth_required)
+        headers = self._prepare_auth(headers, user_auth)
 
         response, backoff_duration = None, 0
         max_rate_limit_retries = 15  # roughly equivalent to 60 mins, plus extra 15 mins
@@ -244,17 +242,11 @@ class API:
 
         return self._handle_response(response, formatted_response)
 
-    def _prepare_auth(self, headers, access_token, user_auth, auth_required):
+    def _prepare_auth(self, headers, user_auth):
         headers = headers or self.session.headers.copy()
-
-        if access_token is not None:
-            headers["Authorization"] = "Bearer " + access_token
 
         if not user_auth and "Authorization" in headers:
             del headers["Authorization"]
-
-        if auth_required and "Authorization" not in headers:
-            raise AuthenticationError("Access Denied - Authentication Required!")
 
         return headers
 
