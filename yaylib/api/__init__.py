@@ -11,11 +11,11 @@ An API wrapper for Yay! (yay.space) written in Python.
 """
 
 from .api import *
+from .auth import *
 from .call import *
-from .cassandra import *
+from .notification import *
 from .chat import *
 from .group import *
-from .login import *
 from .misc import *
 from .post import *
 from .review import *
@@ -25,9 +25,9 @@ from .websocket import *
 
 __all__ = [
     "API",
+    "auth",
     "block",
     "call",
-    "cassandra",
     "chat",
     "common",
     "config",
@@ -39,8 +39,8 @@ __all__ = [
     "hidden",
     "id_card_check",
     "internal_id_card_check",
-    "login",
     "misc",
+    "notification",
     "mute_keyword",
     "payment",
     "post",

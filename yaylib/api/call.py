@@ -24,6 +24,7 @@ SOFTWARE.
 
 from __future__ import annotations
 
+from .. import client
 from ..config import Endpoints
 from ..models import Bgm, ConferenceCall, Post
 from ..responses import (
@@ -36,6 +37,11 @@ from ..responses import (
     PostsResponse,
     UsersByTimestampResponse,
 )
+
+
+class CallAPI(object):
+    def __init__(self, base: client.BaseClient) -> None:
+        pass
 
 
 def bump_call(self, call_id: int, participant_limit: int = None):

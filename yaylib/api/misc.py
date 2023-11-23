@@ -30,6 +30,7 @@ from io import BytesIO
 from PIL import Image
 from urllib import parse
 
+from .. import client
 from ..config import Endpoints, Configs
 from ..models import ApplicationConfig, Attachment, BanWord, PresignedUrl, PopularWord
 from ..responses import (
@@ -59,6 +60,11 @@ upload_item_types = [
     "group_thread_icon",
     "group_icon",
 ]
+
+
+class MiscAPI(object):
+    def __init__(self, base: client.BaseClient) -> None:
+        pass
 
 
 def accept_policy_agreement(self, type: str):

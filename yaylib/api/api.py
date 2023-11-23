@@ -37,7 +37,7 @@ import jwt
 import httpx
 from httpx._types import TimeoutTypes
 
-from .login import get_token
+from .auth import get_token
 from .user import get_timestamp
 
 from ..config import Configs, ErrorType, ErrorMessage

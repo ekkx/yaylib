@@ -22,8 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from .. import client
 from ..config import Configs, Endpoints
 from ..responses import ActivitiesResponse
+
+
+# class NotificationAPI(object):
+#     def __init__(self, base: client.BaseClient) -> None:
+#         pass
 
 
 def get_user_activities(self, **params) -> ActivitiesResponse:

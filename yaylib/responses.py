@@ -88,7 +88,6 @@ from .models import (
     Walkthrough,
     WalletTransaction,
 )
-from .utils import parse_datetime
 
 
 class ActiveFollowingsResponse:

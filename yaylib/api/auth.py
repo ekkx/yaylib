@@ -27,6 +27,7 @@ import hashlib
 from cryptography.fernet import Fernet
 from datetime import datetime
 
+from .. import client
 from ..config import Endpoints
 from ..errors import ForbiddenError
 from ..responses import (
@@ -36,6 +37,11 @@ from ..responses import (
     TokenResponse,
 )
 from ..utils import Colors, console_print
+
+
+# class AuthAPI(object):
+#     def __init__(self, base: client.BaseClient) -> None:
+#         pass
 
 
 def change_email(

@@ -5,7 +5,9 @@ import json
 
 
 class Cookie(object):
-    def __init__(self, save_cookie_file: bool, filepath: str) -> None:
+    def __init__(
+        self, save_cookie_file: bool, filepath: str, cookie_password: str
+    ) -> None:
         pass
 
     def __is_encrypted(self, cookie: object) -> bool:

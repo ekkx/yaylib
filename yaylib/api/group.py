@@ -26,6 +26,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from .. import client
 from ..config import Endpoints
 from ..models import CreateGroupQuota
 from ..models import Group
@@ -41,6 +42,11 @@ from ..responses import (
     UsersResponse,
     UsersByTimestampResponse,
 )
+
+
+class GroupAPI(object):
+    def __init__(self, base: client.BaseClient) -> None:
+        pass
 
 
 def accept_moderator_offer(self, group_id: int):

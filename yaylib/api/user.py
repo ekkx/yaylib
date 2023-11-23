@@ -26,6 +26,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from .. import client
 from ..config import Configs, Endpoints
 from ..models import Footprint, User, UserWrapper
 from ..responses import (
@@ -49,6 +50,11 @@ from ..responses import (
     UsersByTimestampResponse,
     UserTimestampResponse,
 )
+
+
+class UserAPI(object):
+    def __init__(self, base: client.BaseClient) -> None:
+        pass
 
 
 def delete_footprint(self, user_id: int, footprint_id: int):

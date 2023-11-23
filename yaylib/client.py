@@ -27,6 +27,18 @@ from __future__ import annotations
 from typing import Optional
 
 from .api import API
+from .api.auth import (
+    change_email,
+    change_password,
+    get_token,
+    login_flow,
+    logout,
+    resend_confirm_email,
+    restore_user,
+    register_device_token,
+    revoke_tokens,
+    save_account_with_email,
+)
 from .api.call import (
     bump_call,
     get_bgms,
@@ -47,11 +59,6 @@ from .api.call import (
     start_anonymous_call,
     stop_call,
     stop__anonymous_call,
-)
-from .api.cassandra import (
-    get_user_activities,
-    get_user_merged_activities,
-    received_notification,
 )
 from .api.chat import (
     accept_chat_requests,
@@ -125,18 +132,6 @@ from .api.group import (
     withdraw_moderator_offer,
     withdraw_ownership_offer,
 )
-from .api.login import (
-    change_email,
-    change_password,
-    get_token,
-    login_flow,
-    logout,
-    resend_confirm_email,
-    restore_user,
-    register_device_token,
-    revoke_tokens,
-    save_account_with_email,
-)
 from .api.misc import (
     accept_policy_agreement,
     generate_sns_thumbnail,
@@ -154,6 +149,11 @@ from .api.misc import (
     get_app_config,
     get_banned_words,
     get_popular_words,
+)
+from .api.notification import (
+    get_user_activities,
+    get_user_merged_activities,
+    received_notification,
 )
 from .api.post import (
     add_bookmark,
@@ -403,6 +403,18 @@ import logging
 from datetime import datetime
 from httpx._types import TimeoutTypes
 
+from .cookie import Cookie
+
+# from .api.auth import AuthAPI
+from .api.call import CallAPI
+from .api.chat import ChatAPI
+from .api.group import GroupAPI
+from .api.misc import MiscAPI
+# from .api.notification import NotificationAPI
+from .api.post import PostAPI
+from .api.review import ReviewAPI
+from .api.thread import ThreadAPI
+from .api.user import UserAPI
 
 current_path = os.path.abspath(os.getcwd())
 
@@ -411,7 +423,6 @@ class BaseClient(object):
     def __init__(
         self,
         *,
-        access_token: str | None = None,
         proxy_url: str | None = None,
         max_retries=3,
         backoff_factor=1.5,
@@ -422,22 +433,39 @@ class BaseClient(object):
         err_lang="ja",
         base_path=current_path + "/config/",
         save_cookie_file=True,
-        encrypt_cookie=False,
+        cookie_password: str | None = None,
         cookie_filename="cookies",
         loglevel=logging.INFO,
     ) -> None:
-        # Cookie初期化
+        self.__cookie = Cookie(
+            save_cookie_file,
+            base_path + cookie_filename,
+            cookie_password,
+        )
         # ヘッダー初期化
         # 各APIクラスの初期化
+
+        # self.Auth = AuthAPI(self)
+        self.Call = CallAPI(self)
+        self.Chat = ChatAPI(self)
+        self.Group = GroupAPI(self)
+        self.Misc = MiscAPI(self)
+        # self.Notification = NotificationAPI(self)
+        self.Post = PostAPI(self)
+        self.Review = ReviewAPI(self)
+        self.Thread = ThreadAPI(self)
+        self.User = UserAPI(self)
+
+        # ロガーの初期化
         pass
 
     @property
-    def cookies(self):
-        pass
+    def cookie(self) -> object:
+        return self.__cookie.get()
 
     @property
-    def user_id(self):
-        pass
+    def user_id(self) -> int:
+        return self.cookie.get("user", {}).get("user_id")
 
     @staticmethod
     def parse_datetime(timestamp: int) -> str:

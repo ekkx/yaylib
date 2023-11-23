@@ -24,9 +24,15 @@ SOFTWARE.
 
 from __future__ import annotations
 
+from .. import client
 from ..config import Endpoints
 from ..models import ThreadInfo
 from ..responses import GroupThreadListResponse, PostsResponse
+
+
+class ThreadAPI(object):
+    def __init__(self, base: client.BaseClient) -> None:
+        pass
 
 
 def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:

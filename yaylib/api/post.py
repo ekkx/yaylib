@@ -27,6 +27,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 
+from .. import client
 from ..config import Endpoints
 from ..errors import ForbiddenError, NotFoundError
 from ..models import ConferenceCall, Post, SharedUrl, Survey
@@ -40,6 +41,11 @@ from ..responses import (
     LikePostsResponse,
     ValidationPostResponse,
 )
+
+
+class PostAPI(object):
+    def __init__(self, base: client.BaseClient) -> None:
+        pass
 
 
 def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:

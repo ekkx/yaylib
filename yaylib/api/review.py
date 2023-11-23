@@ -26,8 +26,14 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from .. import client
 from ..config import Endpoints
 from ..responses import ReviewsResponse
+
+
+class ReviewAPI(object):
+    def __init__(self, base: client.BaseClient) -> None:
+        pass
 
 
 def create_review(self, user_id: int, comment: str):
