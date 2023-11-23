@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 import re
+import uuid
 from datetime import datetime
 
 
@@ -45,10 +46,12 @@ def console_print(*args):
     print("\n")
 
 
-def parse_datetime(timestamp: int) -> str:
-    if timestamp is not None:
-        return str(datetime.fromtimestamp(timestamp))
-    return timestamp
+def generate_uuid(uuid_type=True):
+    generated_uuid = str(uuid.uuid4())
+    if uuid_type:
+        return generated_uuid
+    else:
+        return generated_uuid.replace("-", "")
 
 
 def is_valid_image_format(format):

@@ -397,6 +397,54 @@ r""" `group`: サークル用の共有タイプ"""
 SHAREABLE_TYPE_THREAD = "thread"
 r""" `thread`: スレッド用の共有タイプ"""
 
+import os
+import logging
+
+from datetime import datetime
+from httpx._types import TimeoutTypes
+
+
+current_path = os.path.abspath(os.getcwd())
+
+
+class BaseClient(object):
+    def __init__(
+        self,
+        *,
+        access_token: str | None = None,
+        proxy_url: str | None = None,
+        max_retries=3,
+        backoff_factor=1.5,
+        wait_on_rate_limit=True,
+        min_delay=0.3,
+        max_delay=1.2,
+        timeout: TimeoutTypes = 30,
+        err_lang="ja",
+        base_path=current_path + "/config/",
+        save_cookie_file=True,
+        encrypt_cookie=False,
+        cookie_filename="cookies",
+        loglevel=logging.INFO,
+    ) -> None:
+        # Cookie初期化
+        # ヘッダー初期化
+        # 各APIクラスの初期化
+        pass
+
+    @property
+    def cookies(self):
+        pass
+
+    @property
+    def user_id(self):
+        pass
+
+    @staticmethod
+    def parse_datetime(timestamp: int) -> str:
+        if timestamp is not None:
+            return str(datetime.fromtimestamp(timestamp))
+        return timestamp
+
 
 class Client(API):
     """
