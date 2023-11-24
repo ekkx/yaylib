@@ -200,6 +200,44 @@ from .api.thread import (
     remove_thread,
     update_thread,
 )
+
+
+import os
+import time
+import random
+import logging
+
+from datetime import datetime
+from enum import Enum
+from typing import Optional, List, Dict, Any
+
+import httpx
+from httpx._types import TimeoutTypes
+
+from .api.auth import AuthAPI
+from .api.call import CallAPI
+from .api.chat import ChatAPI
+from .api.group import GroupAPI
+from .api.misc import MiscAPI
+from .api.notification import NotificationAPI
+from .api.post import PostAPI
+from .api.review import ReviewAPI
+from .api.thread import ThreadAPI
+from .api.user import UserAPI
+
+from .config import Configs
+from .cookie import Cookie
+from .errors import (
+    HTTPError,
+    BadRequestError,
+    AuthenticationError,
+    ForbiddenError,
+    NotFoundError,
+    RateLimitError,
+    YayServerError,
+    ErrorCode,
+    ErrorMessage,
+)
 from .models import (
     ApplicationConfig,
     Attachment,
@@ -263,45 +301,8 @@ from .responses import (
     UsersByTimestampResponse,
     UserTimestampResponse,
 )
-from .utils import Colors, console_print
-
-
-import os
-import time
-import random
-import logging
-
-from datetime import datetime
-from enum import Enum
-from typing import Optional
-
-import httpx
-from httpx._types import TimeoutTypes
-
-from .api.auth import AuthAPI
-from .api.call import CallAPI
-from .api.chat import ChatAPI
-from .api.group import GroupAPI
-from .api.misc import MiscAPI
-from .api.notification import NotificationAPI
-from .api.post import PostAPI
-from .api.review import ReviewAPI
-from .api.thread import ThreadAPI
-from .api.user import UserAPI
-
-from .config import Configs
-from .cookie import Cookie
-from .errors import (
-    HTTPError,
-    BadRequestError,
-    AuthenticationError,
-    ForbiddenError,
-    NotFoundError,
-    RateLimitError,
-    YayServerError,
-    ErrorCode,
-    ErrorMessage,
-)
+from .utils import Colors
+from .ws import WebSocketInteractor
 
 try:
     from json.decoder import JSONDecodeError
@@ -382,7 +383,7 @@ class HeaderInterceptor(object):
         self.__connection_type: str = "wifi"
         self.__content_type = "application/json;charset=UTF-8"
 
-    def intercept(self) -> dict:
+    def intercept(self) -> Dict[str, str]:
         headers: dict = {
             "Host": self.__host,
             "User-Agent": self.__user_agent,
@@ -425,7 +426,7 @@ class BaseClient(object):
     def __init__(
         self,
         *,
-        proxy_url: str | None = None,
+        proxy_url: Optional[str] = None,
         max_retries: int = 3,
         backoff_factor: float = 1.5,
         wait_on_ratelimit: bool = True,
@@ -435,49 +436,51 @@ class BaseClient(object):
         err_lang: str = "ja",
         base_path: str = current_path + "/config/",
         save_cookie_file: bool = True,
-        cookie_password: str | None = None,
+        cookie_password: Optional[str] = None,
         cookie_filename: str = "cookies",
         loglevel: int = logging.INFO,
     ) -> None:
         self.__max_retries: int = max_retries
         self.__backoff_factor: float = backoff_factor
         self.__wait_on_ratelimit: bool = wait_on_ratelimit
-        self.__last_request_timestamp: int | None = None
+        self.__last_request_timestamp: Optional[int] = None
         self.__min_delay: float = min_delay
         self.__max_delay: float = max_delay
         self.__err_lang: str = err_lang
         self.__save_cookie_file: bool = save_cookie_file
 
-        self.__cookie = Cookie(
+        self.__cookie: Cookie = Cookie(
             save_cookie_file,
             base_path + cookie_filename,
             cookie_password,
         )
 
-        self.__header_interceptor = HeaderInterceptor(self.__cookie)
+        self.__header_interceptor: HeaderInterceptor = HeaderInterceptor(self.__cookie)
         self.__header_interceptor.set_connection_speed("0")
 
-        self.__session = httpx.Client(
+        self.__session: httpx.Client = httpx.Client(
             headers=self.__header_interceptor.intercept(),
             http2=True,
             proxies=proxy_url,
             timeout=timeout,
         )
 
-        # self.__ws = WebSocketInteractor(self)
+        self.__ws: WebSocketInteractor = WebSocketInteractor(self)
 
-        self.AuthAPI = AuthAPI(self)
-        self.CallAPI = CallAPI(self)
-        self.ChatAPI = ChatAPI(self)
-        self.GroupAPI = GroupAPI(self)
-        self.MiscAPI = MiscAPI(self)
-        self.NotificationAPI = NotificationAPI(self)
-        self.PostAPI = PostAPI(self)
-        self.ReviewAPI = ReviewAPI(self)
-        self.ThreadAPI = ThreadAPI(self)
-        self.UserAPI = UserAPI(self)
+        self.AuthAPI: AuthAPI = AuthAPI(self)
+        self.CallAPI: CallAPI = CallAPI(self)
+        self.ChatAPI: ChatAPI = ChatAPI(self)
+        self.GroupAPI: GroupAPI = GroupAPI(self)
+        self.MiscAPI: MiscAPI = MiscAPI(self)
+        self.NotificationAPI: NotificationAPI = NotificationAPI(self)
+        self.PostAPI: PostAPI = PostAPI(self)
+        self.ReviewAPI: ReviewAPI = ReviewAPI(self)
+        self.ThreadAPI: ThreadAPI = ThreadAPI(self)
+        self.UserAPI: UserAPI = UserAPI(self)
 
-        self.logger = logging.getLogger("yaylib version: " + Configs.YAYLIB_VERSION)
+        self.logger: logging.Logger = logging.getLogger(
+            "yaylib version: " + Configs.YAYLIB_VERSION
+        )
 
         if not os.path.exists(base_path):
             os.makedirs(base_path)
@@ -495,9 +498,9 @@ class BaseClient(object):
         self,
         method: str,
         endpoint: str,
-        params: dict = None,
-        payload: dict = None,
-        headers: dict = None,
+        params: Optional[Dict[str | Any]] = None,
+        payload: Optional[Dict[str | Any]] = None,
+        headers: Optional[Dict[str | str]] = None,
         bypass_delay: bool = False,
     ) -> dict | str:
         # Set client ip address to request header
@@ -509,12 +512,14 @@ class BaseClient(object):
             self.__header_interceptor.set_client_ip(response.ip_address)
 
         if headers is None:
-            headers = {}
+            headers: Dict[str, str] = {}
         headers.update(self.__header_interceptor.intercept())
 
-        response, backoff_duration = None, 0
-        max_ratelimit_retries = 15  # roughly equivalent to 60 mins, plus extra 15 mins
-        auth_retry_count, max_auth_retries = 0, 2
+        response = None
+        backoff_duration: int = 0
+        # roughly equivalent to 60 mins, plus extra 15 mins
+        max_ratelimit_retries: int = 15
+        auth_retry_count, max_auth_retries: int = 0, 2
 
         # retry the request based on max_retries
         for i in range(self.__max_retries):
@@ -537,7 +542,7 @@ class BaseClient(object):
             if self.__wait_on_ratelimit and self.__is_ratelimit_error(response):
                 # continue attempting request until successful
                 # or maximum number of retries is reached
-                retries_performed = 0
+                retries_performed: int = 0
 
                 while retries_performed <= max_ratelimit_retries:
                     retry_after: int = 60 * 5
@@ -761,7 +766,7 @@ class Client(BaseClient):
         - proxy_url: str - (optional)
         - max_retries: int - (optional)
         - backoff_factor: float - (optional)
-        - wait_on_rate_limit: bool - (optional)
+        - wait_on_ratelimit: bool - (optional)
         - min_delay: float - (optional)
         - max_delay: float - (optional)
         - timeout: int - (optional)
