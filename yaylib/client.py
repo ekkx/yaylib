@@ -24,8 +24,6 @@ SOFTWARE.
 
 from __future__ import annotations
 
-from typing import Optional
-
 from .api.auth import (
     change_email,
     change_password,
@@ -274,18 +272,17 @@ import random
 import logging
 
 from datetime import datetime
+from enum import Enum
+from typing import Optional
 
 import httpx
 from httpx._types import TimeoutTypes
-
-from .cookie import Cookie
 
 from .api.auth import AuthAPI
 from .api.call import CallAPI
 from .api.chat import ChatAPI
 from .api.group import GroupAPI
 from .api.misc import MiscAPI
-
 from .api.notification import NotificationAPI
 from .api.post import PostAPI
 from .api.review import ReviewAPI
@@ -293,7 +290,7 @@ from .api.thread import ThreadAPI
 from .api.user import UserAPI
 
 from .config import Configs
-
+from .cookie import Cookie
 from .errors import (
     HTTPError,
     BadRequestError,
@@ -310,9 +307,6 @@ try:
     from json.decoder import JSONDecodeError
 except ImportError:
     JSONDecodeError = ValueError
-
-
-from enum import Enum
 
 
 class PostType(Enum):
@@ -375,9 +369,6 @@ class ShareableType(Enum):
     """ `thread`: スレッド用の共有タイプ"""
 
 
-current_path = os.path.abspath(os.getcwd())
-
-
 class HeaderInterceptor(object):
     def __init__(self, cookie: Cookie, locale: str = "ja") -> None:
         self.__locale: str = locale
@@ -395,7 +386,7 @@ class HeaderInterceptor(object):
         headers: dict = {
             "Host": self.__host,
             "User-Agent": self.__user_agent,
-            "X-Timestamp": str(datetime.now().timestamp()),
+            "X-Timestamp": str(int(datetime.now().timestamp())),
             "X-App-Version": self.__app_version,
             "X-Device-Info": self.__device_info,
             "X-Device-UUID": self.__cookie.device_uuid,
@@ -425,6 +416,9 @@ class HeaderInterceptor(object):
 
     def set_connection_speed(self, connection_speed: str) -> None:
         self.__connection_speed = connection_speed
+
+
+current_path = os.path.abspath(os.getcwd())
 
 
 class BaseClient(object):
@@ -506,6 +500,7 @@ class BaseClient(object):
         headers: dict = None,
         bypass_delay: bool = False,
     ) -> dict | str:
+        # Set client ip address to request header
         if (
             not self.__header_interceptor.get_client_ip()
             and "v2/users/timestamp" not in endpoint
