@@ -25,13 +25,13 @@ SOFTWARE.
 from enum import Enum
 
 
-class YayError(Exception):
+class YaylibError(Exception):
     """Base exception for yaylib"""
 
     pass
 
 
-class HTTPError(YayError):
+class HTTPError(YaylibError):
     """HTTPError()
 
     Exception raised when an HTTP request fails
