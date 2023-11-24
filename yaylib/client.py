@@ -379,7 +379,9 @@ class BaseClient(object):
                 self.__last_request_timestamp
                 and int(datetime.now().timestamp()) - self.__last_request_timestamp < 1
             ):
-                self.__delay(self.__min_delay, self.__max_delay)
+                # insert delay if time between requests is less than 1 second
+                sleep_time = random.uniform(self.__min_delay, self.__max_delay)
+                time.sleep(sleep_time)
 
             self.__log_response(response)
 
@@ -494,10 +496,6 @@ class BaseClient(object):
             f"Response: {response.text}\n"
         )
 
-    def __delay(self, min_delay, max_delay) -> None:
-        sleep_time = random.uniform(min_delay, max_delay)
-        time.sleep(sleep_time)
-
     def __is_access_token_expired_error(self, response: httpx.Response) -> bool:
         return response.status_code == 401 and (
             response.get("error_code") == ErrorCode.AccessTokenExpired
@@ -551,6 +549,23 @@ class BaseClient(object):
                 response = data_type(response)
         return response
 
+    def _request(
+        self,
+        method: str,
+        endpoint: str,
+        params: Optional[Dict[str | Any]] = None,
+        payload: Optional[Dict[str | Any]] = None,
+        data_type: Optional[object] = None,
+        headers: Optional[Dict[str | Any]] = None,
+        bypass_delay: Optional[bool] = False,
+    ) -> object | dict:
+        res: dict | str = self.__make_request(
+            method, endpoint, params, payload, headers, bypass_delay
+        )
+        if data_type:
+            return self.__construct_response(res, data_type)
+        return res
+
     def _prepare(self, email: str, password: str) -> LoginUserResponse:
         try:
             self.__cookie.load(email)
@@ -600,23 +615,6 @@ class BaseClient(object):
             self.MiscAPI.accept_policy_agreement(type=PolicyType.terms_of_use)
 
         return response
-
-    def _request(
-        self,
-        method: str,
-        endpoint: str,
-        params: Optional[Dict[str | Any]] = None,
-        payload: Optional[Dict[str | Any]] = None,
-        data_type: Optional[object] = None,
-        headers: Optional[Dict[str | Any]] = None,
-        bypass_delay: Optional[bool] = False,
-    ) -> object | dict:
-        res: dict | str = self.__make_request(
-            method, endpoint, params, payload, headers, bypass_delay
-        )
-        if data_type:
-            return self.__construct_response(res, data_type)
-        return res
 
 
 class Client(BaseClient):
