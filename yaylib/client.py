@@ -461,7 +461,7 @@ class HeaderInterceptor(object):
         headers: dict = {
             "Host": self.__host,
             "User-Agent": self.__user_agent,
-            "X-Timestamp": datetime.now().timestamp(),
+            "X-Timestamp": str(datetime.now().timestamp()),
             "X-App-Version": self.__app_version,
             "X-Device-Info": self.__device_info,
             "X-Device-UUID": self.__cookie.device_uuid,
@@ -572,6 +572,13 @@ class BaseClient(object):
         headers: dict = None,
         bypass_delay: bool = False,
     ) -> dict | str:
+        if (
+            not self.__header_interceptor.get_client_ip()
+            and "v2/users/timestamp" not in endpoint
+        ):
+            response = self.User.get_timestamp()
+            self.__header_interceptor.set_client_ip(response.ip_address)
+
         if headers is None:
             headers = {}
         headers.update(self.__header_interceptor.intercept())
