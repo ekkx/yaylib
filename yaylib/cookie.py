@@ -7,7 +7,7 @@ import uuid
 from cryptography.fernet import Fernet
 from typing import Optional
 
-from .errors import YayError
+from .errors import YaylibError
 
 
 class CookieAuthentication(object):
@@ -34,7 +34,7 @@ class CookieDevice(object):
         self.device_uuid: str = data.get("device_uuid")
 
 
-class CookieProps(object):
+class Cookie(object):
     __slots__ = ("authentication", "user", "device")
 
     def __init__(self, data: dict) -> None:
@@ -44,8 +44,22 @@ class CookieProps(object):
         self.user: CookieUser = CookieUser(data.get("user"))
         self.device: CookieDevice = CookieDevice(data.get("device"))
 
+    def to_dict(self) -> dict:
+        return {
+            "authentication": {
+                "access_token": self.authentication.access_token,
+                "refresh_token": self.authentication.refresh_token,
+            },
+            "user": {
+                "email": self.user.email,
+                "user_id": self.user.user_id,
+                "uuid": self.user.uuid,
+            },
+            "device": {"device_uuid": self.device.device_uuid},
+        }
 
-class Cookie(object):
+
+class CookieManager(object):
     def __init__(
         self,
         save_cookie_file: bool,
@@ -65,11 +79,12 @@ class Cookie(object):
         if cookie_password is not None:
             self.__encryption_key: Fernet = self.__generate_key(cookie_password)
 
-    def __is_encrypted(self, cookie: CookieProps) -> bool:
+    def __is_encrypted(self, cookie: Cookie) -> bool:
         return cookie.authentication.access_token.startswith("encrypted:")
 
     def __generate_key(self, password: str) -> Fernet:
-        key: bytes = base64.urlsafe_b64encode(password.ljust(32))
+        hashed = hashlib.sha256(password.encode()).digest()
+        key: bytes = base64.urlsafe_b64encode(hashed[:32])
         return Fernet(key)
 
     def __hash(self, text: str) -> str:
@@ -86,20 +101,21 @@ class Cookie(object):
         decrypted: bytes = self.__encryption_key.decrypt(text)
         return decrypted.decode()
 
-    def __encrypt_cookie(self, cookie: CookieProps) -> CookieProps:
-        return CookieProps(
+    def __encrypt_cookie(self, cookie: Cookie) -> Cookie:
+        cookie_dict = cookie.to_dict()
+        return Cookie(
             {
-                **cookie,
+                **cookie_dict,
                 "user": {
-                    **cookie.user,
+                    **cookie_dict["user"],
                     "uuid": self.__encrypt(cookie.user.uuid),
                 },
                 "device": {
-                    **cookie.device,
+                    **cookie_dict["device"],
                     "device_uuid": self.__encrypt(cookie.device.device_uuid),
                 },
                 "authentication": {
-                    **cookie.authentication,
+                    **cookie_dict["authentication"],
                     "access_token": self.__encrypt(cookie.authentication.access_token),
                     "refresh_token": self.__encrypt(
                         cookie.authentication.refresh_token
@@ -108,20 +124,21 @@ class Cookie(object):
             }
         )
 
-    def __decrypt_cookie(self, cookie: CookieProps) -> CookieProps:
-        return CookieProps(
+    def __decrypt_cookie(self, cookie: Cookie) -> Cookie:
+        cookie_dict = cookie.to_dict()
+        return Cookie(
             {
-                **cookie,
+                **cookie_dict,
                 "user": {
-                    **cookie.user,
+                    **cookie_dict["user"],
                     "uuid": self.__decrypt(cookie.user.uuid),
                 },
                 "device": {
-                    **cookie.device,
+                    **cookie_dict["device"],
                     "device_uuid": self.__decrypt(cookie.device.device_uuid),
                 },
                 "authentication": {
-                    **cookie.authentication,
+                    **cookie_dict["authentication"],
                     "access_token": self.__decrypt(cookie.authentication.access_token),
                     "refresh_token": self.__decrypt(
                         cookie.authentication.refresh_token
@@ -130,8 +147,8 @@ class Cookie(object):
             }
         )
 
-    def get(self) -> CookieProps:
-        return CookieProps(
+    def get(self) -> Cookie:
+        return Cookie(
             {
                 "authentication": {
                     "access_token": self.__access_token,
@@ -146,7 +163,7 @@ class Cookie(object):
             }
         )
 
-    def set(self, cookie: Optional[CookieProps] = None) -> None:
+    def set(self, cookie: Optional[Cookie] = None) -> None:
         self.__email = cookie.user.email
         self.__user_id = cookie.user.user_id
         self.__uuid = cookie.user.uuid
@@ -154,7 +171,7 @@ class Cookie(object):
         self.__access_token = cookie.authentication.access_token
         self.__refresh_token = cookie.authentication.refresh_token
 
-    def save(self, cookie: Optional[CookieProps] = None) -> None:
+    def save(self, cookie: Optional[Cookie] = None) -> None:
         if not self.__save_cookie_file:
             return
 
@@ -166,21 +183,21 @@ class Cookie(object):
         cookie.user.email = self.__hash(cookie.user.email)
 
         with open(self.__filepath, "w") as f:
-            json.dump(cookie, f, indent=4)
+            json.dump(cookie.to_dict(), f, indent=4)
 
-    def load(self, email: str) -> CookieProps:
+    def load(self, email: str) -> Cookie:
         with open(self.__filepath, "r") as f:
-            loaded_cookie: CookieProps = json.load(f)
+            loaded_cookie: Cookie = Cookie(json.load(f))
 
         if self.__hash(email) != loaded_cookie.user.email:
-            raise YayError("クッキーのメールアドレスが一致しませんでした。")
+            raise YaylibError("クッキーのメールアドレスが一致しませんでした。")
 
         loaded_cookie.user.email = email
 
         is_encrypted: bool = self.__is_encrypted(loaded_cookie)
 
         if is_encrypted and not self.__encryption_key:
-            raise YayError("このクッキーは暗号化されています。")
+            raise YaylibError("このクッキーは暗号化されています。")
 
         if self.__encryption_key:
             if not is_encrypted:
