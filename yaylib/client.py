@@ -28,7 +28,7 @@ from .api.thread import ThreadAPI
 from .api.user import UserAPI
 
 from .config import Configs
-from .cookie import Cookie
+from .cookie import Cookie, CookieProps
 from .errors import (
     HTTPError,
     BadRequestError,
@@ -195,13 +195,14 @@ class HeaderInterceptor(object):
         self.__content_type = "application/json;charset=UTF-8"
 
     def intercept(self) -> Dict[str, str]:
+        cookie = self.__cookie.get()
         headers: dict = {
             "Host": self.__host,
             "User-Agent": self.__user_agent,
             "X-Timestamp": str(int(datetime.now().timestamp())),
             "X-App-Version": self.__app_version,
             "X-Device-Info": self.__device_info,
-            "X-Device-UUID": self.__cookie.device_uuid,
+            "X-Device-UUID": cookie.device.device_uuid,
             "X-Client-IP": self.__client_ip,
             "X-Connection-Type": self.__connection_type,
             "X-Connection-Speed": self.__connection_speed,
@@ -212,8 +213,10 @@ class HeaderInterceptor(object):
         if len(self.__client_ip):
             headers.update({"X-Client-IP": self.__client_ip})
 
-        if len(self.__cookie.access_token):
-            headers.update({"Authorization": "Bearer " + self.__cookie.access_token})
+        if len(cookie.authentication.access_token):
+            headers.update(
+                {"Authorization": "Bearer " + cookie.authentication.access_token}
+            )
 
         return headers
 
@@ -262,7 +265,7 @@ class BaseClient(object):
 
         self.__cookie: Cookie = Cookie(
             save_cookie_file,
-            base_path + cookie_filename,
+            base_path + cookie_filename + ".json",
             cookie_password,
         )
 
@@ -306,20 +309,28 @@ class BaseClient(object):
         self.logger.info("yaylib version: " + Configs.YAYLIB_VERSION + " started.")
 
     @property
-    def cookie(self) -> object:
+    def cookie(self) -> CookieProps:
         return self.__cookie.get()
 
     @property
     def user_id(self) -> int:
-        return self.__cookie.user_id
+        return self.cookie.user.user_id
+
+    @property
+    def access_token(self) -> str:
+        return self.cookie.authentication.access_token
+
+    @property
+    def refresh_token(self) -> str:
+        return self.cookie.authentication.refresh_token
 
     @property
     def uuid(self) -> str:
-        return self.__cookie.uuid
+        return self.cookie.user.uuid
 
     @property
     def device_uuid(self) -> str:
-        return self.__cookie.device_uuid
+        return self.cookie.device.device_uuid
 
     @staticmethod
     def parse_datetime(timestamp: int) -> str:
@@ -503,7 +514,7 @@ class BaseClient(object):
 
     def __refresh_tokens(self) -> None:
         response: TokenResponse = self.AuthAPI.get_token(
-            grant_type="refresh_token", refresh_token=self.__cookie.refresh_token
+            grant_type="refresh_token", refresh_token=self.refresh_token
         )
         self.__cookie.set(
             {
@@ -545,9 +556,9 @@ class BaseClient(object):
             self.__cookie.load(email)
             return LoginUserResponse(
                 {
-                    "access_token": self.__cookie.access_token,
-                    "refresh_token": self.__cookie.refresh_token,
-                    "user_id": self.__cookie.user_id,
+                    "access_token": self.access_token,
+                    "refresh_token": self.refresh_token,
+                    "user_id": self.user_id,
                 }
             )
         except:
@@ -622,7 +633,6 @@ class Client(BaseClient):
 
     #### Parameters
 
-        - access_token: str - (optional)
         - proxy_url: str - (optional)
         - max_retries: int - (optional)
         - backoff_factor: float - (optional)
@@ -633,7 +643,7 @@ class Client(BaseClient):
         - err_lang: str - (optional)
         - base_path: str - (optional)
         - save_cookie_file: bool - (optional)
-        - encrypt_cookie: bool - (optional)
+        - cookie_password: bool - (optional)
         - cookie_filename: str - (optional)
         - loglevel: int - (optional)
 
@@ -643,7 +653,7 @@ class Client(BaseClient):
 
     ### Yay! (nanameue, Inc.) API Client
 
-    Copyright (c) 2023-present qvco
+    Copyright (c) 2023 qvco
 
     """
 
