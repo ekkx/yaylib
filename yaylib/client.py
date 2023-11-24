@@ -28,7 +28,7 @@ from .api.thread import ThreadAPI
 from .api.user import UserAPI
 
 from .config import Configs
-from .cookie import Cookie, CookieProps
+from .cookie import Cookie, CookieManager
 from .errors import (
     HTTPError,
     BadRequestError,
@@ -182,20 +182,20 @@ class PolicyType(Enum):
 
 
 class HeaderInterceptor(object):
-    def __init__(self, cookie: Cookie, locale: str = "ja") -> None:
+    def __init__(self, cookie: CookieManager, locale: str = "ja") -> None:
         self.__locale: str = locale
         self.__host: str = Configs.YAY_PRODUCTION_HOST
         self.__user_agent: str = Configs.USER_AGENT
         self.__device_info: str = Configs.DEVICE_INFO
         self.__app_version: str = Configs.API_VERSION_NAME
-        self.__cookie: Cookie = cookie
+        self.__cookie: CookieManager = cookie
         self.__client_ip: str = ""
         self.__connection_speed: str = ""
         self.__connection_type: str = "wifi"
         self.__content_type = "application/json;charset=UTF-8"
 
     def intercept(self) -> Dict[str, str]:
-        cookie = self.__cookie.get()
+        cookie: Cookie = self.__cookie.get()
         headers: dict = {
             "Host": self.__host,
             "User-Agent": self.__user_agent,
@@ -263,7 +263,7 @@ class BaseClient(object):
         self.__err_lang: str = err_lang
         self.__save_cookie_file: bool = save_cookie_file
 
-        self.__cookie: Cookie = Cookie(
+        self.__cookie: CookieManager = CookieManager(
             save_cookie_file,
             base_path + cookie_filename + ".json",
             cookie_password,
@@ -309,7 +309,7 @@ class BaseClient(object):
         self.logger.info("yaylib version: " + Configs.YAYLIB_VERSION + " started.")
 
     @property
-    def cookie(self) -> CookieProps:
+    def cookie(self) -> Cookie:
         return self.__cookie.get()
 
     @property
@@ -515,13 +515,15 @@ class BaseClient(object):
             grant_type="refresh_token", refresh_token=self.refresh_token
         )
         self.__cookie.set(
-            {
-                **self.cookie,
-                "authentication": {
-                    "accessToken": response.access_token,
-                    "refresh_token": response.refresh_token,
-                },
-            }
+            Cookie(
+                {
+                    **self.cookie.to_dict(),
+                    "authentication": {
+                        "accessToken": response.access_token,
+                        "refresh_token": response.refresh_token,
+                    },
+                }
+            )
         )
         self.__cookie.save()
 
@@ -583,18 +585,20 @@ class BaseClient(object):
                 raise ForbiddenError("Invalid email or password.")
 
             self.__cookie.set(
-                {
-                    "authentication": {
-                        "access_token": response.access_token,
-                        "refresh_token": response.refresh_token,
-                    },
-                    "user": {
-                        "user_id": response.user_id,
-                        "email": email,
-                        "uuid": self.uuid,
-                    },
-                    "device": {"device_uuid": self.device_uuid},
-                }
+                Cookie(
+                    {
+                        "authentication": {
+                            "access_token": response.access_token,
+                            "refresh_token": response.refresh_token,
+                        },
+                        "user": {
+                            "user_id": response.user_id,
+                            "email": email,
+                            "uuid": self.uuid,
+                        },
+                        "device": {"device_uuid": self.device_uuid},
+                    }
+                )
             )
             self.__cookie.save()
 
@@ -1771,8 +1775,6 @@ class Client(BaseClient):
         """
 
         メールアドレスでログインします
-
-        ※ ローカルストレージのトークンの暗号化を利用するには、`Client` クラスの `encrypt_cookie` 引数を`True` に設定してください。
 
         """
         return self._prepare(email, password)
