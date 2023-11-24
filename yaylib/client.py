@@ -334,69 +334,6 @@ from .responses import (
 from .utils import Colors, console_print
 
 
-POST_TYPE_TEXT = "text"
-r""" `text`: テキストのみ投稿タイプ"""
-
-POST_TYPE_MEDIA = "media"
-r""" `media`: メディアを含める投稿タイプ"""
-
-POST_TYPE_IMAGE = "image"
-r""" `image`: 画像を含める投稿タイプ"""
-
-POST_TYPE_VIDEO = "video"
-r""" `video`: ビデオを含める投稿タイプ"""
-
-POST_TYPE_SURVEY = "survey"
-r""" `survey`: アンケートを含める投稿タイプ"""
-
-POST_TYPE_CALL = "call"
-r""" `call`: 通話用の投稿タイプ"""
-
-POST_TYPE_SHAREABLE_URL = "shareable_url"
-r""" `shareable_url`: サークルやスレッド共有用の投稿タイプ"""
-
-
-CALL_TYPE_VOICE = "voice"
-r""" `voice`: 音声通話用の通話タイプ"""
-
-CALL_TYPE_VIDEO = "vdo"
-r""" `vdo`: ビデオ通話用の通話タイプ"""
-
-
-IMAGE_TYPE_POST = "post"
-r""" `post`: 投稿に画像をアップロードする際の画像タイプ"""
-
-IMAGE_TYPE_CHAT_MESSAGE = "chat_message"
-r""" `chat_message`: 個人チャットに画像をアップロードする際の画像タイプ"""
-
-IMAGE_TYPE_CHAT_BACKGROUND = "chat_background"
-r""" `chat_background`: 個人チャットの背景用に画像をアップロードする際の画像タイプ"""
-
-IMAGE_TYPE_REPORT = "report"
-r""" `report`: 通報用の画像をアップロードする際の画像タイプ"""
-
-IMAGE_TYPE_USER_AVATAR = "user_avatar"
-r""" `user_avatar`: プロフィール画像をアップロードする際の画像タイプ"""
-
-IMAGE_TYPE_USER_COVER = "user_cover"
-r""" `user_cover`: プロフィールの背景画像をアップロードする際の画像タイプ"""
-
-IMAGE_TYPE_GROUP_COVER = "group_cover"
-r""" `group_cover`: グループの背景画像をアップロードする際の画像タイプ"""
-
-IMAGE_TYPE_GROUP_THREAD_ICON = "group_thread_icon"
-r""" `group_thread_icon`: グループ内のスレッド用アイコンをアップロードする際の画像タイプ"""
-
-IMAGE_TYPE_GROUP_ICON = "group_icon"
-r""" `group_icon`: グループのアイコンをアップロードする際の画像タイプ"""
-
-
-SHAREABLE_TYPE_GROUP = "group"
-r""" `group`: サークル用の共有タイプ"""
-
-SHAREABLE_TYPE_THREAD = "thread"
-r""" `thread`: スレッド用の共有タイプ"""
-
 import os
 import time
 import random
@@ -432,13 +369,76 @@ from .errors import (
     RateLimitError,
     YayServerError,
     ErrorCode,
-    ErrorMessage
+    ErrorMessage,
 )
 
 try:
     from json.decoder import JSONDecodeError
 except ImportError:
     JSONDecodeError = ValueError
+
+
+from enum import Enum
+
+
+class PostType(Enum):
+    """投稿の種類"""
+
+    TEXT = "text"
+    """ `text`: テキストのみ投稿タイプ"""
+    MEDIA = "media"
+    """ `media`: メディアを含める投稿タイプ"""
+    IMAGE = "image"
+    """ `image`: 画像を含める投稿タイプ"""
+    VIDEO = "video"
+    """ `video`: ビデオを含める投稿タイプ"""
+    SURVEY = "survey"
+    """ `survey`: アンケートを含める投稿タイプ"""
+    CALL = "call"
+    """ `call`: 通話用の投稿タイプ"""
+    SHAREABLE_URL = "shareable_url"
+    """ `shareable_url`: サークルやスレッド共有用の投稿タイプ"""
+
+
+class CallType(Enum):
+    """通話の種類"""
+
+    VOICE = "voice"
+    """ `voice`: 音声通話用の通話タイプ"""
+    VIDEO = "vdo"
+    """ `vdo`: ビデオ通話用の通話タイプ"""
+
+
+class ImageType(Enum):
+    """画像の種類"""
+
+    POST = "post"
+    """ `post`: 投稿に画像をアップロードする際の画像タイプ"""
+    CHAT_MESSAGE = "chat_message"
+    """ `chat_message`: 個人チャットに画像をアップロードする際の画像タイプ"""
+    CHAT_BACKGROUND = "chat_background"
+    """ `chat_background`: 個人チャットの背景用に画像をアップロードする際の画像タイプ"""
+    REPORT = "report"
+    """ `report`: 通報用の画像をアップロードする際の画像タイプ"""
+    USER_AVATAR = "user_avatar"
+    """ `user_avatar`: プロフィール画像をアップロードする際の画像タイプ"""
+    USER_COVER = "user_cover"
+    """ `user_cover`: プロフィールの背景画像をアップロードする際の画像タイプ"""
+    GROUP_COVER = "group_cover"
+    """ `group_cover`: グループの背景画像をアップロードする際の画像タイプ"""
+    GROUP_THREAD_ICON = "group_thread_icon"
+    """ `group_thread_icon`: グループ内のスレッド用アイコンをアップロードする際の画像タイプ"""
+    GROUP_ICON = "group_icon"
+    """ `group_icon`: グループのアイコンをアップロードする際の画像タイプ"""
+
+
+class ShareableType(Enum):
+    """共有の種類"""
+
+    GROUP = "group"
+    """ `group`: サークル用の共有タイプ"""
+    THREAD = "thread"
+    """ `thread`: スレッド用の共有タイプ"""
 
 
 current_path = os.path.abspath(os.getcwd())
