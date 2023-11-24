@@ -10,7 +10,6 @@ An API wrapper for Yay! (yay.space) written in Python.
 
 """
 
-from .api import *
 from .auth import *
 from .call import *
 from .notification import *
@@ -24,7 +23,6 @@ from .user import *
 from .websocket import *
 
 __all__ = [
-    "API",
     "auth",
     "block",
     "call",
