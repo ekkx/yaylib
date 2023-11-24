@@ -316,6 +316,28 @@ class BaseClient(object):
 
         self.logger.info("yaylib version: " + Configs.YAYLIB_VERSION + " started.")
 
+    @property
+    def cookie(self) -> object:
+        return self.__cookie.get()
+
+    @property
+    def user_id(self) -> int:
+        return self.__cookie.user_id
+
+    @property
+    def uuid(self) -> str:
+        return self.__cookie.uuid
+
+    @property
+    def device_uuid(self) -> str:
+        return self.__cookie.device_uuid
+
+    @staticmethod
+    def parse_datetime(timestamp: int) -> str:
+        if timestamp is not None:
+            return str(datetime.fromtimestamp(timestamp))
+        return timestamp
+
     def __make_request(
         self,
         method: str,
@@ -325,7 +347,7 @@ class BaseClient(object):
         headers: Optional[Dict[str | str]] = None,
         bypass_delay: bool = False,
     ) -> dict | str:
-        # Set client ip address to request header
+        # set client ip address to request header if not exists
         if (
             not self.__header_interceptor.get_client_ip()
             and "v2/users/timestamp" not in endpoint
@@ -527,15 +549,65 @@ class BaseClient(object):
                 response = data_type(response)
         return response
 
+    def _prepare(self, email: str, password: str) -> LoginUserResponse:
+        try:
+            self.__cookie.load(email)
+            return LoginUserResponse(
+                {
+                    "access_token": self.__cookie.access_token,
+                    "refresh_token": self.__cookie.refresh_token,
+                    "user_id": self.__cookie.user_id,
+                }
+            )
+        except Exception:
+            response = self.AuthAPI.login_with_email(email, password)
+
+            if response.access_token is not None:
+                raise ForbiddenError("Invalid email or password.")
+
+            self.__cookie.set(
+                {
+                    "authentication": {
+                        "access_token": response.access_token,
+                        "refresh_token": response.refresh_token,
+                    },
+                    "user": {
+                        "user_id": response.user_id,
+                        "email": email,
+                        "uuid": self.uuid,
+                    },
+                    "device": {"device_uuid": self.device_uuid},
+                }
+            )
+            self.__cookie.save()
+
+        self.logger.info(f"Successfully logged in as '{response.user_id}'.")
+
+        #
+        # configure intents and websocket interactor here
+        # i will do it later...
+        #
+
+        # agree to the policy stuff
+        policy_response = self.MiscAPI.get_policy_agreements()
+
+        if not policy_response.latest_privacy_policy_agreed:
+            self.MiscAPI.ccept_policy_agreement(type="privacy_policy")
+
+        if not policy_response.latest_terms_of_use_agreed:
+            self.MiscAPI.accept_policy_agreement(type="terms_of_use")
+
+        return response
+
     def _request(
         self,
         method: str,
         endpoint: str,
-        params: dict = None,
-        payload: dict = None,
-        data_type: object = None,
-        headers: dict = None,
-        bypass_delay: bool = False,
+        params: Optional[Dict[str | Any]] = None,
+        payload: Optional[Dict[str | Any]] = None,
+        data_type: Optional[object] = None,
+        headers: Optional[Dict[str | Any]] = None,
+        bypass_delay: Optional[bool] = False,
     ) -> object | dict:
         res: dict | str = self.__make_request(
             method, endpoint, params, payload, headers, bypass_delay
@@ -543,31 +615,6 @@ class BaseClient(object):
         if data_type:
             return self.__construct_response(res, data_type)
         return res
-
-    def _prepare(self, email: str, password: str) -> LoginUserResponse:
-        pass
-
-    @property
-    def cookie(self) -> object:
-        return self.__cookie.get()
-
-    @property
-    def user_id(self) -> int:
-        return self.__cookie.user_id
-
-    @property
-    def uuid(self) -> str:
-        return self.__cookie.uuid
-
-    @property
-    def device_uuid(self) -> str:
-        return self.__cookie.device_uuid
-
-    @staticmethod
-    def parse_datetime(timestamp: int) -> str:
-        if timestamp is not None:
-            return str(datetime.fromtimestamp(timestamp))
-        return timestamp
 
 
 class Client(BaseClient):
@@ -1721,9 +1768,7 @@ class Client(BaseClient):
         """
         return self.AuthAPI.get_token(grant_type, refresh_token, email, password)
 
-    def login(
-        self, email: str, password: str, secret_key: Optional[str] = None
-    ) -> LoginUserResponse:
+    def login(self, email: str, password: str) -> LoginUserResponse:
         """
 
         メールアドレスでログインします
@@ -1731,15 +1776,7 @@ class Client(BaseClient):
         ※ ローカルストレージのトークンの暗号化を利用するには、`Client` クラスの `encrypt_cookie` 引数を`True` に設定してください。
 
         """
-        login_response = self.AuthAPI.login_flow(email, password, secret_key)
-
-        policy_response = self.MiscAPI.get_policy_agreements()
-        if not policy_response.latest_privacy_policy_agreed:
-            self.MiscAPI.ccept_policy_agreement(type="privacy_policy")
-        if not policy_response.latest_terms_of_use_agreed:
-            self.MiscAPI.accept_policy_agreement(type="terms_of_use")
-
-        return login_response
+        return self._prepare(email, password)
 
     def logout(self) -> dict:
         """
