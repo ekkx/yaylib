@@ -1,26 +1,6 @@
-"""
-MIT License
-
-Copyright (c) 2023-present qvco
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
+# yaylib
+# Copyright 2023 qvco
+# See LICENSE for details.
 
 from __future__ import annotations
 
@@ -135,61 +115,70 @@ except ImportError:
 class PostType(Enum):
     """投稿の種類"""
 
-    TEXT = "text"
+    text = "text"
     """ `text`: テキストのみ投稿タイプ"""
-    MEDIA = "media"
+    media = "media"
     """ `media`: メディアを含める投稿タイプ"""
-    IMAGE = "image"
+    image = "image"
     """ `image`: 画像を含める投稿タイプ"""
-    VIDEO = "video"
+    video = "video"
     """ `video`: ビデオを含める投稿タイプ"""
-    SURVEY = "survey"
+    survey = "survey"
     """ `survey`: アンケートを含める投稿タイプ"""
-    CALL = "call"
+    call = "call"
     """ `call`: 通話用の投稿タイプ"""
-    SHAREABLE_URL = "shareable_url"
+    shareable_url = "shareable_url"
     """ `shareable_url`: サークルやスレッド共有用の投稿タイプ"""
 
 
 class CallType(Enum):
     """通話の種類"""
 
-    VOICE = "voice"
+    voice = "voice"
     """ `voice`: 音声通話用の通話タイプ"""
-    VIDEO = "vdo"
+    video = "vdo"
     """ `vdo`: ビデオ通話用の通話タイプ"""
 
 
 class ImageType(Enum):
     """画像の種類"""
 
-    POST = "post"
+    post = "post"
     """ `post`: 投稿に画像をアップロードする際の画像タイプ"""
-    CHAT_MESSAGE = "chat_message"
+    chat_message = "chat_message"
     """ `chat_message`: 個人チャットに画像をアップロードする際の画像タイプ"""
-    CHAT_BACKGROUND = "chat_background"
+    chat_background = "chat_background"
     """ `chat_background`: 個人チャットの背景用に画像をアップロードする際の画像タイプ"""
-    REPORT = "report"
+    report = "report"
     """ `report`: 通報用の画像をアップロードする際の画像タイプ"""
-    USER_AVATAR = "user_avatar"
+    user_avatar = "user_avatar"
     """ `user_avatar`: プロフィール画像をアップロードする際の画像タイプ"""
-    USER_COVER = "user_cover"
+    user_cover = "user_cover"
     """ `user_cover`: プロフィールの背景画像をアップロードする際の画像タイプ"""
-    GROUP_COVER = "group_cover"
+    group_cover = "group_cover"
     """ `group_cover`: グループの背景画像をアップロードする際の画像タイプ"""
-    GROUP_THREAD_ICON = "group_thread_icon"
+    group_thread_icon = "group_thread_icon"
     """ `group_thread_icon`: グループ内のスレッド用アイコンをアップロードする際の画像タイプ"""
-    GROUP_ICON = "group_icon"
+    group_icon = "group_icon"
     """ `group_icon`: グループのアイコンをアップロードする際の画像タイプ"""
 
 
 class ShareableType(Enum):
     """共有の種類"""
 
-    GROUP = "group"
+    group = "group"
     """ `group`: サークル用の共有タイプ"""
-    THREAD = "thread"
+    thread = "thread"
     """ `thread`: スレッド用の共有タイプ"""
+
+
+class PolicyType(Enum):
+    """利用規約の種類"""
+
+    privacy_policy = "privacy_policy"
+    """ `privacy_policy`: プライバシーポリシー"""
+    terms_of_use = "terms_of_use"
+    """ `privacy_policy`: 利用規約"""
 
 
 class HeaderInterceptor(object):
@@ -307,7 +296,7 @@ class BaseClient(object):
         if not os.path.exists(base_path):
             os.makedirs(base_path)
 
-        ch = logging.StreamHandler()
+        ch: logging.StreamHandler = logging.StreamHandler()
         ch.setLevel(loglevel)
         ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
@@ -513,15 +502,15 @@ class BaseClient(object):
         return False
 
     def __refresh_tokens(self) -> None:
-        response = self.AuthAPI.get_token(
+        response: TokenResponse = self.AuthAPI.get_token(
             grant_type="refresh_token", refresh_token=self.__cookie.refresh_token
         )
         self.__cookie.set(
             {
                 **self.cookie,
                 "authentication": {
-                    "accessToken": response["access_token"],
-                    "refresh_token": response["refresh_token"],
+                    "accessToken": response.access_token,
+                    "refresh_token": response.refresh_token,
                 },
             }
         )
@@ -541,7 +530,9 @@ class BaseClient(object):
         except ValueError:
             return f_response
 
-    def __construct_response(self, response: dict, data_type: object) -> dict:
+    def __construct_response(
+        self, response: dict, data_type: Optional[object] = None
+    ) -> dict:
         if data_type is not None:
             if isinstance(response, list):
                 response = [data_type(result) for result in response]
@@ -559,7 +550,7 @@ class BaseClient(object):
                     "user_id": self.__cookie.user_id,
                 }
             )
-        except Exception:
+        except:
             response = self.AuthAPI.login_with_email(email, password)
 
             if response.access_token is not None:
@@ -592,10 +583,10 @@ class BaseClient(object):
         policy_response = self.MiscAPI.get_policy_agreements()
 
         if not policy_response.latest_privacy_policy_agreed:
-            self.MiscAPI.ccept_policy_agreement(type="privacy_policy")
+            self.MiscAPI.accept_policy_agreement(type=PolicyType.privacy_policy)
 
         if not policy_response.latest_terms_of_use_agreed:
-            self.MiscAPI.accept_policy_agreement(type="terms_of_use")
+            self.MiscAPI.accept_policy_agreement(type=PolicyType.terms_of_use)
 
         return response
 
