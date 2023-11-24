@@ -24,10 +24,11 @@ keywords = [
 ]
 
 install_requires = [
-    "httpx>=0.17.1",
-    "Pillow>=9.3.0",
-    "cryptography>=41.0.1",
-    "websocket-client>=1.6.0",
+    "httpx[http2,socks]==0.17.1",
+    "Pillow==9.3.0",
+    "cryptography==41.0.1",
+    "websocket-client==1.6.0",
+    "PyJWT==2.8.0",
 ]
 
 classifiers = [
