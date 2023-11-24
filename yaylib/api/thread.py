@@ -32,136 +32,128 @@ from ..responses import GroupThreadListResponse, PostsResponse
 
 class ThreadAPI(object):
     def __init__(self, base: client.BaseClient) -> None:
-        pass
+        self.__base = base
 
+    def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
+        response = self.__base._request(
+            "PUT",
+            endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread/{thread_id}",
+            data_type=ThreadInfo,
+        )
+        self.logger.info(f"Post '{post_id}' added to the thread '{thread_id}'.")
+        return response
 
-def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
-    response = self.request(
-        "PUT",
-        endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread/{thread_id}",
-        data_type=ThreadInfo,
-    )
-    self.logger.info(f"Post '{post_id}' added to the thread '{thread_id}'.")
-    return response
+    def convert_post_to_thread(
+        self, post_id: int, title: str = None, thread_icon_filename: str = None
+    ) -> ThreadInfo:
+        response = self.__base._request(
+            "POST",
+            endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread",
+            payload={"title": title, "thread_icon_filename": thread_icon_filename},
+            data_type=ThreadInfo,
+        )
+        self.logger.info("Post has been converted to a thread.")
+        return response
 
+    def create_thread(
+        self, group_id: int, title: str, thread_icon_filename: str
+    ) -> ThreadInfo:
+        response = self.__base._request(
+            "POST",
+            endpoint=f"{Endpoints.THREADS_V1}",
+            payload={
+                "group_id": group_id,
+                "title": title,
+                "thread_icon_filename": thread_icon_filename,
+            },
+            data_type=ThreadInfo,
+        )
+        self.logger.info("A new thread has been created.")
+        return response
 
-def convert_post_to_thread(
-    self, post_id: int, title: str = None, thread_icon_filename: str = None
-) -> ThreadInfo:
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread",
-        payload={"title": title, "thread_icon_filename": thread_icon_filename},
-        data_type=ThreadInfo,
-    )
-    self.logger.info("Post has been converted to a thread.")
-    return response
+    def get_group_thread_list(
+        self, group_id: int, from_str: str = None, **params
+    ) -> GroupThreadListResponse:
+        """
 
+        Parameters:
+        ----------
 
-def create_thread(
-    self, group_id: int, title: str, thread_icon_filename: str
-) -> ThreadInfo:
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.THREADS_V1}",
-        payload={
-            "group_id": group_id,
-            "title": title,
-            "thread_icon_filename": thread_icon_filename,
-        },
-        data_type=ThreadInfo,
-    )
-    self.logger.info("A new thread has been created.")
-    return response
+            - group_id: int
+            - from_str: str = None
+            - join_status: str = None
 
+        """
+        params["group_id"] = group_id
+        if from_str:
+            params["from"] = from_str
+        return self.__base._request(
+            "GET",
+            endpoint=f"{Endpoints.THREADS_V1}",
+            params=params,
+            data_type=GroupThreadListResponse,
+        )
 
-def get_group_thread_list(
-    self, group_id: int, from_str: str = None, **params
-) -> GroupThreadListResponse:
-    """
+    def get_thread_joined_statuses(self, ids: list[int]) -> dict:
+        return self.__base._request(
+            "GET",
+            endpoint=f"{Endpoints.THREADS_V1}/joined_statuses",
+            params={"ids[]": ids},
+        )
 
-    Parameters:
-    ----------
+    def get_thread_posts(
+        self, thread_id: int, from_str: str = None, **params
+    ) -> PostsResponse:
+        """
 
-        - group_id: int
-        - from_str: str = None
-        - join_status: str = None
+        Parameters:
+        ----------
 
-    """
-    params["group_id"] = group_id
-    if from_str:
-        params["from"] = from_str
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.THREADS_V1}",
-        params=params,
-        data_type=GroupThreadListResponse,
-    )
+            - post_type: str
+            - number: int = None
+            - from_str: str = None
 
+        """
+        if from_str:
+            params["from"] = from_str
+        return self.__base._request(
+            "GET",
+            endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/posts",
+            params=params,
+            data_type=PostsResponse,
+        )
 
-def get_thread_joined_statuses(self, ids: list[int]) -> dict:
-    return self.request(
-        "GET", endpoint=f"{Endpoints.THREADS_V1}/joined_statuses", params={"ids[]": ids}
-    )
+    def join_thread(self, thread_id: int, user_id: int):
+        response = self.__base._request(
+            "POST", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}"
+        )
+        self.logger.info(f"Joined the thread '{thread_id}'.")
+        return response
 
+    def leave_thread(self, thread_id: int, user_id: int):
+        response = self.__base._request(
+            "DELETE",
+            endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
+        )
+        self.logger.info("Left the thread.")
+        return response
 
-def get_thread_posts(
-    self, thread_id: int, from_str: str = None, **params
-) -> PostsResponse:
-    """
+    def remove_thread(
+        self,
+        thread_id: int,
+    ):
+        response = self.__base._request(
+            "DELETE",
+            endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
+        )
+        self.logger.info(f"Thread '{thread_id}' has been removed.")
+        return response
 
-    Parameters:
-    ----------
-
-        - post_type: str
-        - number: int = None
-        - from_str: str = None
-
-    """
-    if from_str:
-        params["from"] = from_str
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/posts",
-        params=params,
-        data_type=PostsResponse,
-    )
-
-
-def join_thread(self, thread_id: int, user_id: int):
-    response = self.request(
-        "POST", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}"
-    )
-    self.logger.info(f"Joined the thread '{thread_id}'.")
-    return response
-
-
-def leave_thread(self, thread_id: int, user_id: int):
-    response = self.request(
-        "DELETE",
-        endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
-    )
-    self.logger.info("Left the thread.")
-    return response
-
-
-def remove_thread(
-    self,
-    thread_id: int,
-):
-    response = self.request(
-        "DELETE",
-        endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
-    )
-    self.logger.info(f"Thread '{thread_id}' has been removed.")
-    return response
-
-
-def update_thread(self, thread_id: int, title: str, thread_icon_filename: str):
-    response = self.request(
-        "PUT",
-        endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
-        payload={"title": title, "thread_icon_filename": thread_icon_filename},
-    )
-    self.logger.info(f"Thread '{thread_id}' has been updated.")
-    return response
+    def update_thread(self, thread_id: int, title: str, thread_icon_filename: str):
+        response = self.__base._request(
+            "PUT",
+            endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
+            payload={"title": title, "thread_icon_filename": thread_icon_filename},
+        )
+        self.logger.info(f"Thread '{thread_id}' has been updated.")
+        return response

@@ -31,48 +31,45 @@ from ..responses import ActivitiesResponse
 
 class NotificationAPI(object):
     def __init__(self, base: client.BaseClient) -> None:
-        pass
+        self.__base = base
 
+    def get_user_activities(self, **params) -> ActivitiesResponse:
+        """
 
-def get_user_activities(self, **params) -> ActivitiesResponse:
-    """
+        Parameters
+        ----------
+            - important: bool - (required)
+            - from_timestamp: int - (optional)
+            - number: int - (optional)
 
-    Parameters
-    ----------
-        - important: bool - (required)
-        - from_timestamp: int - (optional)
-        - number: int - (optional)
+        """
+        return self.__base._request(
+            "GET",
+            endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/user_activities",
+            params=params,
+            data_type=ActivitiesResponse,
+        )
 
-    """
-    return self.request(
-        "GET",
-        endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/user_activities",
-        params=params,
-        data_type=ActivitiesResponse
-    )
+    def get_user_merged_activities(self, **params) -> ActivitiesResponse:
+        """
+        Parameters
+        ----------
 
+            - from_timestamp: int - (optional)
+            - number: int - (optional)
 
-def get_user_merged_activities(self, **params) -> ActivitiesResponse:
-    """
-    Parameters
-    ----------
+        """
+        return self.__base._request(
+            "GET",
+            endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/v2/user_activities",
+            params=params,
+            data_type=ActivitiesResponse,
+        )
 
-        - from_timestamp: int - (optional)
-        - number: int - (optional)
-
-    """
-    return self.request(
-        "GET",
-        endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/v2/user_activities",
-        params=params,
-        data_type=ActivitiesResponse
-    )
-
-
-def received_notification(self, pid: str, type: str, opened_at: int = None):
-    # TODO: opened_atはnullalbeか確認する
-    return self.request(
-        "POST",
-        endpoint=f"{Endpoints.BASE_API_URL}/api/received_push_notifications",
-        payload={"pid": pid, "type": type, "opened_at": opened_at}
-    )
+    def received_notification(self, pid: str, type: str, opened_at: int = None):
+        # TODO: opened_atはnullalbeか確認する
+        return self.__base._request(
+            "POST",
+            endpoint=f"{Endpoints.BASE_API_URL}/api/received_push_notifications",
+            payload={"pid": pid, "type": type, "opened_at": opened_at},
+        )

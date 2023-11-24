@@ -512,7 +512,7 @@ class BaseClient(object):
             self.__header_interceptor.set_client_ip(response.ip_address)
 
         if headers is None:
-            headers: Dict[str, str] = {}
+            headers = {}
         headers.update(self.__header_interceptor.intercept())
 
         response = None
@@ -669,18 +669,18 @@ class BaseClient(object):
         return False
 
     def __refresh_tokens(self) -> None:
-        # response = self.Auth.get_token(
-        #     grant_type="refresh_token", refresh_token=self.__cookie.refresh_token
-        # )
-        # self.__cookie.set(
-        #     {
-        #         **self.cookie,
-        #         "authentication": {
-        #             "accessToken": response["access_token"],
-        #             "refresh_token": response["refresh_token"],
-        #         },
-        #     }
-        # )
+        response = self.AuthAPI.get_token(
+            grant_type="refresh_token", refresh_token=self.__cookie.refresh_token
+        )
+        self.__cookie.set(
+            {
+                **self.cookie,
+                "authentication": {
+                    "accessToken": response["access_token"],
+                    "refresh_token": response["refresh_token"],
+                },
+            }
+        )
         self.__cookie.save()
 
     def __translate_error_message(self, f_response: dict) -> dict:
