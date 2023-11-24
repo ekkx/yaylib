@@ -346,13 +346,13 @@ from httpx._types import TimeoutTypes
 
 from .cookie import Cookie
 
-# from .api.auth import AuthAPI
+from .api.auth import AuthAPI
 from .api.call import CallAPI
 from .api.chat import ChatAPI
 from .api.group import GroupAPI
 from .api.misc import MiscAPI
 
-# from .api.notification import NotificationAPI
+from .api.notification import NotificationAPI
 from .api.post import PostAPI
 from .api.review import ReviewAPI
 from .api.thread import ThreadAPI
@@ -538,12 +538,12 @@ class BaseClient(object):
 
         # self.__ws = WebSocketInteractor(self)
 
-        # self.Auth = AuthAPI(self)
+        self.Auth = AuthAPI(self)
         self.Call = CallAPI(self)
         self.Chat = ChatAPI(self)
         self.Group = GroupAPI(self)
         self.Misc = MiscAPI(self)
-        # self.Notification = NotificationAPI(self)
+        self.Notification = NotificationAPI(self)
         self.Post = PostAPI(self)
         self.Review = ReviewAPI(self)
         self.Thread = ThreadAPI(self)

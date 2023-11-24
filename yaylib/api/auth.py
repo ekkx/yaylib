@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from __future__ import annotations
+
 import hashlib
 
 from cryptography.fernet import Fernet
@@ -39,9 +41,9 @@ from ..responses import (
 from ..utils import Colors, console_print
 
 
-# class AuthAPI(object):
-#     def __init__(self, base: client.BaseClient) -> None:
-#         pass
+class AuthAPI(object):
+    def __init__(self, base: client.BaseClient) -> None:
+        pass
 
 
 def change_email(

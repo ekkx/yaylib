@@ -16,23 +16,23 @@ class Cookie(object):
 
     @property
     def user_id(self) -> int:
-        pass
+        return 0
 
     @property
     def uuid(self) -> str:
-        pass
+        return ''
 
     @property
     def device_uuid(self) -> str:
-        pass
+        return ''
 
     @property
     def access_token(self) -> str:
-        pass
+        return ''
 
     @property
     def refresh_token(self) -> str:
-        pass
+        return ''
 
     def __is_encrypted(self, cookie: dict) -> bool:
         pass
