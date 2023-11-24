@@ -26,7 +26,6 @@ from __future__ import annotations
 
 from typing import Optional
 
-from .api import API
 from .api.auth import (
     change_email,
     change_password,
@@ -511,7 +510,7 @@ class BaseClient(object):
             not self.__header_interceptor.get_client_ip()
             and "v2/users/timestamp" not in endpoint
         ):
-            response = self.User.get_timestamp()
+            response = self.UserAPI.get_timestamp()
             self.__header_interceptor.set_client_ip(response.ip_address)
 
         if headers is None:
@@ -3422,7 +3421,7 @@ class Client(BaseClient):
         足跡を削除します
 
         """
-        return delete_footprint(
+        return self.UserAPI.delete_footprint(
             self,
             user_id,
             footprint_id,
@@ -3437,7 +3436,7 @@ class Client(BaseClient):
         answer = input("Are you sure you want to delete your account? Y/N")
         if answer.lower() != "y":
             return
-        return destroy_user(
+        return self.UserAPI.destroy_user(
             self,
         )
 
@@ -3447,7 +3446,7 @@ class Client(BaseClient):
         ユーザーをフォローします
 
         """
-        return follow_user(
+        return self.UserAPI.follow_user(
             self,
             user_id,
         )
@@ -3458,7 +3457,7 @@ class Client(BaseClient):
         複数のユーザーをフォローします
 
         """
-        return follow_users(
+        return self.UserAPI.follow_users(
             self,
             user_ids,
         )
@@ -3475,7 +3474,7 @@ class Client(BaseClient):
             - from_loggedin_at: int = None
 
         """
-        return get_active_followings(self, **params)
+        return self.UserAPI.get_active_followings(self, **params)
 
     def get_follow_recommendations(self, **params) -> FollowRecommendationsResponse:
         """
@@ -3490,7 +3489,7 @@ class Client(BaseClient):
             - sources: list[str] = None
 
         """
-        return get_follow_recommendations(self, **params)
+        return self.UserAPI.get_follow_recommendations(self, **params)
 
     def get_follow_request(
         self, from_timestamp: Optional[int] = None
@@ -3500,7 +3499,7 @@ class Client(BaseClient):
         フォローリクエストを取得します
 
         """
-        return get_follow_request(
+        return self.UserAPI.get_follow_request(
             self,
             from_timestamp,
         )
@@ -3511,7 +3510,7 @@ class Client(BaseClient):
         フォローリクエストの数を取得します
 
         """
-        return get_follow_request_count(
+        return self.UserAPI.get_follow_request_count(
             self,
         )
 
@@ -3523,7 +3522,7 @@ class Client(BaseClient):
         フォロー中のユーザーの誕生日を取得します
 
         """
-        return get_following_users_born(
+        return self.UserAPI.get_following_users_born(
             self,
             birthdate,
         )
@@ -3541,7 +3540,7 @@ class Client(BaseClient):
             - mode: str = None
 
         """
-        return get_footprints(self, **params)
+        return self.UserAPI.get_footprints(self, **params)
 
     def get_fresh_user(self, user_id: int) -> UserResponse:
         """
@@ -3549,7 +3548,7 @@ class Client(BaseClient):
         認証情報などを含んだユーザー情報を取得します
 
         """
-        return get_fresh_user(
+        return self.UserAPI.get_fresh_user(
             self,
             user_id,
         )
@@ -3566,7 +3565,7 @@ class Client(BaseClient):
             - number: int = None
 
         """
-        return get_hima_users(self, **params)
+        return self.UserAPI.get_hima_users(self, **params)
 
     def get_user_ranking(self, mode: str) -> RankingUsersResponse:
         """
@@ -3593,7 +3592,7 @@ class Client(BaseClient):
         >>> api.get_user_ranking(mode="all_time")
 
         """
-        return get_user_ranking(self, mode)
+        return self.UserAPI.get_user_ranking(self, mode)
 
     def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
         """
@@ -3601,7 +3600,7 @@ class Client(BaseClient):
         カウンター更新のリクエストを取得します
 
         """
-        return get_refresh_counter_requests(
+        return self.UserAPI.get_refresh_counter_requests(
             self,
         )
 
@@ -3618,7 +3617,7 @@ class Client(BaseClient):
             - from_id: int - (Optional)
 
         """
-        return get_social_shared_users(self, **params)
+        return self.UserAPI.get_social_shared_users(self, **params)
 
     def get_timestamp(self) -> UserTimestampResponse:
         """
@@ -3626,7 +3625,7 @@ class Client(BaseClient):
         タイムスタンプを取得します
 
         """
-        return get_timestamp(
+        return self.UserAPI.get_timestamp(
             self,
         )
 
@@ -3636,7 +3635,7 @@ class Client(BaseClient):
         ユーザーの情報を取得します
 
         """
-        return get_user(
+        return self.UserAPI.get_user(
             self,
             user_id,
         )
@@ -3647,7 +3646,7 @@ class Client(BaseClient):
         ユーザーのメールアドレスを取得します
 
         """
-        return get_user_email(
+        return self.UserAPI.get_user_email(
             self,
             user_id,
         )
@@ -3665,7 +3664,7 @@ class Client(BaseClient):
             - followed_by_me: int = None
 
         """
-        return get_user_followers(self, user_id, **params)
+        return self.UserAPI.get_user_followers(self, user_id, **params)
 
     def get_user_followings(self, user_id: int, **params) -> FollowUsersResponse:
         """
@@ -3681,7 +3680,7 @@ class Client(BaseClient):
             - order_by: str = None
 
         """
-        return get_user_followings(self, user_id, **params)
+        return self.UserAPI.get_user_followings(self, user_id, **params)
 
     def get_user_from_qr(self, qr: str) -> UserResponse:
         """
@@ -3689,7 +3688,7 @@ class Client(BaseClient):
         QRコードからユーザーを取得します
 
         """
-        return get_user_from_qr(
+        return self.UserAPI.get_user_from_qr(
             self,
             qr,
         )
@@ -3700,7 +3699,7 @@ class Client(BaseClient):
         足跡をつけずにユーザーの情報を取得します
 
         """
-        return get_user_without_leaving_footprint(
+        return self.UserAPI.get_user_without_leaving_footprint(
             self,
             user_id,
         )
@@ -3711,7 +3710,7 @@ class Client(BaseClient):
         複数のユーザーの情報を取得します
 
         """
-        return get_users(
+        return self.UserAPI.get_users(
             self,
             user_ids,
         )
@@ -3722,7 +3721,7 @@ class Client(BaseClient):
         カウンターを更新します
 
         """
-        return refresh_counter(
+        return self.UserAPI.refresh_counter(
             self,
             counter,
         )
@@ -3748,7 +3747,7 @@ class Client(BaseClient):
         Register user
 
         """
-        return register(
+        return self.UserAPI.register(
             self,
             email,
             email_grant_token,
@@ -3771,7 +3770,7 @@ class Client(BaseClient):
         ユーザーのアイコンを削除します
 
         """
-        return remove_user_avatar(
+        return self.UserAPI.remove_user_avatar(
             self,
         )
 
@@ -3781,7 +3780,7 @@ class Client(BaseClient):
         ユーザーのカバー画像を削除します
 
         """
-        return remove_user_cover(
+        return self.UserAPI.remove_user_cover(
             self,
         )
 
@@ -3800,7 +3799,7 @@ class Client(BaseClient):
         ユーザーを通報します
 
         """
-        return report_user(
+        return self.UserAPI.report_user(
             self,
             user_id,
             category_id,
@@ -3822,7 +3821,7 @@ class Client(BaseClient):
         パスワードをリセットします
 
         """
-        return reset_password(
+        return self.UserAPI.reset_password(
             self,
             email,
             email_grant_token,
@@ -3842,7 +3841,7 @@ class Client(BaseClient):
             - from_str: str = None
 
         """
-        return search_lobi_users(self, **params)
+        return self.UserAPI.search_lobi_users(self, **params)
 
     def search_users(self, **params) -> UsersResponse:
         """
@@ -3864,7 +3863,7 @@ class Client(BaseClient):
             - save_recent_search: bool = None
 
         """
-        return search_users(self, **params)
+        return self.UserAPI.search_users(self, **params)
 
     def set_follow_permission_enabled(
         self,
@@ -3876,14 +3875,14 @@ class Client(BaseClient):
         フォローを許可制に設定します
 
         """
-        return set_follow_permission_enabled(
+        return self.UserAPI.set_follow_permission_enabled(
             self,
             nickname,
             is_private,
         )
 
     def take_action_follow_request(self, target_id: int, action: str) -> dict:
-        return take_action_follow_request(
+        return self.UserAPI.take_action_follow_request(
             self,
             target_id,
             action,
@@ -3895,7 +3894,7 @@ class Client(BaseClient):
         ひまなう
 
         """
-        return turn_on_hima(
+        return self.UserAPI.turn_on_hima(
             self,
         )
 
@@ -3905,7 +3904,7 @@ class Client(BaseClient):
         ユーザーをアンフォローします
 
         """
-        return unfollow_user(
+        return self.UserAPI.unfollow_user(
             self,
             user_id,
         )
@@ -3929,7 +3928,7 @@ class Client(BaseClient):
             - : str = (optional)
 
         """
-        return update_user(self, nickname, **params)
+        return self.UserAPI.update_user(self, nickname, **params)
 
     def block_user(self, user_id: int) -> dict:
         """
@@ -3937,7 +3936,7 @@ class Client(BaseClient):
         ユーザーをブロックします
 
         """
-        return block_user(
+        return self.UserAPI.block_user(
             self,
             user_id,
         )
@@ -3948,7 +3947,7 @@ class Client(BaseClient):
         あなたをブロックしたユーザーを取得します
 
         """
-        return get_blocked_user_ids(
+        return self.UserAPI.get_blocked_user_ids(
             self,
         )
 
@@ -3958,7 +3957,7 @@ class Client(BaseClient):
         ブロックしたユーザーを取得します
 
         """
-        return get_blocked_users(
+        return self.UserAPI.get_blocked_users(
             self,
             from_id,
         )
@@ -3969,7 +3968,7 @@ class Client(BaseClient):
         ユーザーをアンブロックします
 
         """
-        return unblock_user(
+        return self.UserAPI.unblock_user(
             self,
             user_id,
         )
@@ -3986,7 +3985,7 @@ class Client(BaseClient):
             - number: int = None
 
         """
-        return get_hidden_users_list(self, **params)
+        return self.UserAPI.get_hidden_users_list(self, **params)
 
     def hide_user(self, user_id: int) -> dict:
         """
@@ -3994,7 +3993,7 @@ class Client(BaseClient):
         ユーザーを非表示にします
 
         """
-        return hide_user(
+        return self.UserAPI.hide_user(
             self,
             user_id,
         )
@@ -4005,7 +4004,7 @@ class Client(BaseClient):
         ユーザーの非表示を解除します
 
         """
-        return unhide_users(
+        return self.UserAPI.unhide_users(
             self,
             user_ids,
         )
