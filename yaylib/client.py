@@ -132,24 +132,6 @@ from .api.group import (
     withdraw_moderator_offer,
     withdraw_ownership_offer,
 )
-from .api.misc import (
-    accept_policy_agreement,
-    generate_sns_thumbnail,
-    send_verification_code,
-    get_email_grant_token,
-    get_email_verification_presigned_url,
-    get_file_upload_presigned_urls,
-    get_id_checker_presigned_url,
-    get_old_file_upload_presigned_url,
-    get_policy_agreements,
-    get_web_socket_token,
-    verify_device,
-    upload_image,
-    upload_video,
-    get_app_config,
-    get_banned_words,
-    get_popular_words,
-)
 from .api.notification import (
     get_user_activities,
     get_user_merged_activities,
@@ -220,53 +202,6 @@ from .api.thread import (
     leave_thread,
     remove_thread,
     update_thread,
-)
-from .api.user import (
-    delete_footprint,
-    destroy_user,
-    follow_user,
-    follow_users,
-    get_active_followings,
-    get_follow_recommendations,
-    get_follow_request,
-    get_follow_request_count,
-    get_following_users_born,
-    get_footprints,
-    get_fresh_user,
-    get_hima_users,
-    get_user_ranking,
-    get_refresh_counter_requests,
-    get_social_shared_users,
-    get_timestamp,
-    get_user,
-    get_user_email,
-    get_user_followers,
-    get_user_followings,
-    get_user_from_qr,
-    get_user_without_leaving_footprint,
-    get_users,
-    refresh_counter,
-    register,
-    remove_user_avatar,
-    remove_user_cover,
-    report_user,
-    reset_password,
-    search_lobi_users,
-    search_users,
-    set_follow_permission_enabled,
-    set_setting_follow_recommendation_enabled,
-    take_action_follow_request,
-    turn_on_hima,
-    unfollow_user,
-    update_language,
-    update_user,
-    block_user,
-    get_blocked_user_ids,
-    get_blocked_users,
-    unblock_user,
-    get_hidden_users_list,
-    hide_user,
-    unhide_users,
 )
 from .models import (
     ApplicationConfig,
@@ -538,16 +473,16 @@ class BaseClient(object):
 
         # self.__ws = WebSocketInteractor(self)
 
-        self.Auth = AuthAPI(self)
-        self.Call = CallAPI(self)
-        self.Chat = ChatAPI(self)
-        self.Group = GroupAPI(self)
-        self.Misc = MiscAPI(self)
-        self.Notification = NotificationAPI(self)
-        self.Post = PostAPI(self)
-        self.Review = ReviewAPI(self)
-        self.Thread = ThreadAPI(self)
-        self.User = UserAPI(self)
+        self.AuthAPI = AuthAPI(self)
+        self.CallAPI = CallAPI(self)
+        self.ChatAPI = ChatAPI(self)
+        self.GroupAPI = GroupAPI(self)
+        self.MiscAPI = MiscAPI(self)
+        self.NotificationAPI = NotificationAPI(self)
+        self.PostAPI = PostAPI(self)
+        self.ReviewAPI = ReviewAPI(self)
+        self.ThreadAPI = ThreadAPI(self)
+        self.UserAPI = UserAPI(self)
 
         self.logger = logging.getLogger("yaylib version: " + Configs.YAYLIB_VERSION)
 
@@ -814,7 +749,7 @@ class BaseClient(object):
         return timestamp
 
 
-class Client(API):
+class Client(BaseClient):
     """
 
     Yay!（イェイ）- API クライアント
@@ -2207,11 +2142,11 @@ class Client(API):
         """
         login_response = login_flow(self, email, password, secret_key)
 
-        policy_response = get_policy_agreements(self)
+        policy_response = self.MiscAPI.get_policy_agreements(self)
         if not policy_response.latest_privacy_policy_agreed:
-            accept_policy_agreement(self, type="privacy_policy")
+            self.MiscAPI.ccept_policy_agreement(self, type="privacy_policy")
         if not policy_response.latest_terms_of_use_agreed:
-            accept_policy_agreement(self, type="terms_of_use")
+            self.MiscAPI.accept_policy_agreement(self, type="terms_of_use")
 
         return login_response
 
@@ -2314,7 +2249,7 @@ class Client(API):
         利用規約、ポリシー同意書に同意します
 
         """
-        return accept_policy_agreement(
+        return self.MiscAPI.accept_policy_agreement(
             self,
             type,
         )
@@ -2325,7 +2260,7 @@ class Client(API):
         認証コードを送信します
 
         """
-        return send_verification_code(self, email)
+        return self.MiscAPI.send_verification_code(self, email)
 
     def get_email_grant_token(self, code: int, email: str) -> str:
         """
@@ -2333,7 +2268,7 @@ class Client(API):
         email_grant_tokenを取得します
 
         """
-        return get_email_grant_token(self, code, email)
+        return self.MiscAPI.get_email_grant_token(self, code, email)
 
     def get_email_verification_presigned_url(
         self, email: str, locale: str, intent: Optional[str] = None
@@ -2343,7 +2278,7 @@ class Client(API):
         メールアドレス確認用の署名付きURLを取得します
 
         """
-        return get_email_verification_presigned_url(
+        return self.MiscAPI.get_email_verification_presigned_url(
             self,
             email,
             locale,
@@ -2358,7 +2293,7 @@ class Client(API):
         ファイルアップロード用の署名付きURLを取得します
 
         """
-        return get_file_upload_presigned_urls(
+        return self.MiscAPI.get_file_upload_presigned_urls(
             self,
             file_names,
         )
@@ -2377,7 +2312,7 @@ class Client(API):
         動画ファイルアップロード用の署名付きURLを取得します
 
         """
-        return get_old_file_upload_presigned_url(
+        return self.MiscAPI.get_old_file_upload_presigned_url(
             self,
             video_file_name,
         )
@@ -2388,7 +2323,7 @@ class Client(API):
         利用規約、ポリシー同意書に同意しているかどうかを取得します
 
         """
-        return get_policy_agreements(
+        return self.MiscAPI.get_policy_agreements(
             self,
         )
 
@@ -2398,7 +2333,7 @@ class Client(API):
         Web Socket Tokenを取得します
 
         """
-        return get_web_socket_token(
+        return self.MiscAPI.get_web_socket_token(
             self,
             headers,
         )
@@ -2431,7 +2366,7 @@ class Client(API):
         >>> )
 
         """
-        return upload_image(self, image_paths, image_type)
+        return self.MiscAPI.upload_image(self, image_paths, image_type)
 
     def get_app_config(self) -> ApplicationConfig:
         """
@@ -2439,7 +2374,7 @@ class Client(API):
         アプリケーションの設定情報を取得します
 
         """
-        return get_app_config(self)
+        return self.MiscAPI.get_app_config(self)
 
     def get_banned_words(self, country_code: str = "jp") -> list[BanWord]:
         """
@@ -2447,7 +2382,7 @@ class Client(API):
         禁止ワードの一覧を取得します
 
         """
-        return get_banned_words(self, country_code)
+        return self.MiscAPI.get_banned_words(self, country_code)
 
     def get_popular_words(self, country_code: str = "jp") -> list[PopularWord]:
         """
@@ -2455,7 +2390,7 @@ class Client(API):
         人気のワードの一覧を取得します
 
         """
-        return get_popular_words(self, country_code)
+        return self.MiscAPI.get_popular_words(self, country_code)
 
     # -POST
 
