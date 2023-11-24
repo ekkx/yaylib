@@ -27,7 +27,7 @@ from .models import Device
 
 
 class Configs:
-    YAYLIB_VERSION = "1.3.2"
+    YAYLIB_VERSION = "1.3.4"
     YAY_API_VERSION = "3.29"
     YAY_VERSION_NAME = "3.29.0"
     YAY_API_VERSION_KEY = "6fa97fc2c3d04955bb8320f2d080593a"
