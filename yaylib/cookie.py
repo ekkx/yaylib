@@ -102,7 +102,7 @@ class CookieManager(object):
         return decrypted.decode()
 
     def __encrypt_cookie(self, cookie: Cookie) -> Cookie:
-        cookie_dict = cookie.to_dict()
+        cookie_dict: dict = cookie.to_dict()
         return Cookie(
             {
                 **cookie_dict,
@@ -125,7 +125,7 @@ class CookieManager(object):
         )
 
     def __decrypt_cookie(self, cookie: Cookie) -> Cookie:
-        cookie_dict = cookie.to_dict()
+        cookie_dict: dict = cookie.to_dict()
         return Cookie(
             {
                 **cookie_dict,
@@ -163,7 +163,7 @@ class CookieManager(object):
             }
         )
 
-    def set(self, cookie: Optional[Cookie] = None) -> None:
+    def set(self, cookie: Cookie) -> None:
         self.__email = cookie.user.email
         self.__user_id = cookie.user.user_id
         self.__uuid = cookie.user.uuid
@@ -176,7 +176,7 @@ class CookieManager(object):
             return
 
         if cookie is None:
-            cookie = self.get()
+            cookie: Cookie = self.get()
             if self.__encryption_key:
                 cookie = self.__encrypt_cookie(cookie)
 
