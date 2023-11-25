@@ -1,7 +1,7 @@
 """
 MIT License
 
-Copyright (c) 2023-present qvco
+Copyright (c) 2023 qvco
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from . import __version__
 from .models import Device
 
-
 class Configs:
-    YAYLIB_VERSION = "1.3.4"
     API_VERSION_NAME = "3.29"
     VERSION_NAME = "3.29.0"
     YAY_API_VERSION_KEY = "6fa97fc2c3d04955bb8320f2d080593a"
