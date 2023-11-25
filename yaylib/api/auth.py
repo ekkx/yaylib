@@ -106,7 +106,7 @@ class AuthAPI(object):
                 "api_key": Configs.API_KEY,
                 "email": email,
                 "password": password,
-                "uuid": self.uuid,
+                "uuid": self.__base.uuid,
             },
             data_type=LoginUserResponse,
         )
@@ -115,7 +115,7 @@ class AuthAPI(object):
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/logout",
-            payload={"uuid": self.uuid},
+            payload={"uuid": self.__base.uuid},
         )
 
     def resend_confirm_email(self):
@@ -131,9 +131,9 @@ class AuthAPI(object):
             payload={
                 "user_id": user_id,
                 "api_key": Configs.API_KEY,
-                "uuid": self.uuid,
+                "uuid": self.__base.uuid,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(self.__base.device_uuid, timestamp),
             },
         )
 
@@ -155,7 +155,7 @@ class AuthAPI(object):
             payload={
                 "device_token": device_token,
                 "device_type": device_type,
-                "uuid": self.uuid,
+                "uuid": self.__base.uuid,
                 "os_version": os_version,
                 "app_version": app_version,
                 "screen_resolution": screen_resolution,

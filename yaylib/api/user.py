@@ -68,10 +68,12 @@ class UserAPI(object):
             "POST",
             endpoint=f"{Endpoints.USERS_V2}/destroy",
             payload={
-                "uuid": self.uuid,
-                "api_key": self.api_key,
+                "uuid": self.__base.uuid,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
             },
         )
 
@@ -369,12 +371,14 @@ class UserAPI(object):
             "POST",
             endpoint=f"{Endpoints.USERS_V3}/register",
             payload={
-                "app_version": self.api_version,
+                "app_version": Configs.API_VERSION_NAME,
                 "timestamp": timestamp,
-                "api_key": self.api_key,
+                "api_key": Configs.API_KEY,
                 "signed_version": self.generate_signed_version(),
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
-                "uuid": self.uuid,
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
+                "uuid": self.__base.uuid,
                 "nickname": nickname,
                 "birth_date": birth_date,
                 "gender": gender,
@@ -487,10 +491,12 @@ class UserAPI(object):
             payload={
                 "nickname": nickname,
                 "is_private": is_private,
-                "uuid": self.uuid,
-                "api_key": self.api_key,
+                "uuid": self.__base.uuid,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
                 "signed_version": self.generate_signed_version(),
             },
         )
@@ -526,10 +532,12 @@ class UserAPI(object):
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/language",
             payload={
-                "uuid": self.uuid,
-                "api_key": self.api_key,
+                "uuid": self.__base.uuid,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
                 "language": language,
             },
         )
@@ -556,11 +564,11 @@ class UserAPI(object):
         params.update(
             {
                 "nickname": nickname,
-                "uuid": self.uuid,
-                "api_key": self.api_key,
+                "uuid": self.__base.uuid,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
                 "signed_info": self.generate_signed_info(
-                    self.uuid, timestamp, shared_key=True
+                    self.__base.uuid, timestamp, shared_key=True
                 ),
             }
         )

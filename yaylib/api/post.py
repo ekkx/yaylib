@@ -28,7 +28,7 @@ import json
 from datetime import datetime
 
 from .. import client
-from ..config import Endpoints
+from ..config import Configs, Endpoints
 from ..errors import ForbiddenError, NotFoundError
 from ..models import ConferenceCall, Post, SharedUrl, Survey
 from ..responses import (
@@ -101,10 +101,12 @@ class PostAPI(object):
                 "color": color,
                 "group_id": group_id,
                 "call_type": call_type,
-                "uuid": self.uuid,
-                "api_key": self.api_key,
+                "uuid": self.__base.uuid,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
                 "category_id": category_id,
                 "game_title": game_title,
                 "joinable_by": joinable_by,
@@ -357,10 +359,12 @@ class PostAPI(object):
                 "font_size": font_size,
                 "color": color,
                 "group_id": group_id,
-                "uuid": self.uuid,
-                "api_key": self.api_key,
+                "uuid": self.__base.uuid,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
             },
             data_type=Post,
         )
@@ -896,9 +900,11 @@ class PostAPI(object):
                 "font_size": font_size,
                 "color": color,
                 "message_tags": str(message_tags),
-                "api_key": self.api_key,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
             },
         )
 

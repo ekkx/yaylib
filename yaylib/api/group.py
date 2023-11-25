@@ -27,7 +27,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from .. import client
-from ..config import Endpoints
+from ..config import Configs, Endpoints
 from ..models import CreateGroupQuota
 from ..models import Group
 from ..responses import (
@@ -143,10 +143,12 @@ class GroupAPI(object):
                 "generation_groups_limit": generation_groups_limit,
                 "group_category_id": group_category_id,
                 "cover_image_filename": cover_image_filename,
-                "uuid": self.uuid,
-                "api_key": self.api_key,
+                "uuid": self.__base.uuid,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
                 "sub_category_id": sub_category_id,
                 "hide_from_game_eight": hide_from_game_eight,
                 "allow_members_to_post_image_and_video": allow_members_to_post_media,
@@ -458,10 +460,12 @@ class GroupAPI(object):
             endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/deputize/mass",
             payload={
                 "user_ids[]": user_ids,
-                "uuid": self.uuid,
-                "api_key": self.api_key,
+                "uuid": self.__base.uuid,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
             },
         )
 
@@ -472,10 +476,12 @@ class GroupAPI(object):
             endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/transfer",
             payload={
                 "user_id": user_id,
-                "uuid": self.uuid,
-                "api_key": self.api_key,
+                "uuid": self.__base.uuid,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
             },
         )
 
@@ -541,10 +547,12 @@ class GroupAPI(object):
                 "group_category_id": group_category_id,
                 "cover_image_filename": cover_image_filename,
                 "sub_category_id": sub_category_id,
-                "uuid": self.uuid,
-                "api_key": self.api_key,
+                "uuid": self.__base.uuid,
+                "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
+                "signed_info": self.generate_signed_info(
+                    self.__base.device_uuid, timestamp
+                ),
                 "hide_from_game_eight": hide_from_game_eight,
                 "allow_members_to_post_image_and_video": allow_members_to_post_media,
                 "allow_members_to_post_url": allow_members_to_post_url,

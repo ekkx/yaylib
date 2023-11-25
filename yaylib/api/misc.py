@@ -111,7 +111,7 @@ class MiscAPI(object):
             "POST",
             endpoint=f"{Endpoints.EMAIL_VERIFICATION_URL_V1}",
             payload={
-                "device_uuid": self.device_uuid,
+                "device_uuid": self.__base.device_uuid,
                 "email": email,
                 "locale": locale,
                 "intent": intent,
