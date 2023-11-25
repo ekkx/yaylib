@@ -24,8 +24,10 @@ SOFTWARE.
 
 from __future__ import annotations
 
+import json
 import websocket
-from typing import Optional, Any
+
+from typing import Optional, Dict, Type, Any
 
 from . import client
 from .config import Configs
@@ -37,15 +39,37 @@ __all__ = (
 )
 
 
-class Intents(object):
-    pass
+class Intents:
+    def __init__(self):
+        self.chat_message: bool = False
+        self.group_update: bool = False
+
+    @classmethod
+    def all(cls: Type[Intents]) -> Intents:
+        self = cls()
+        for attr in vars(self):
+            setattr(self, attr, True)
+        return self
+
+    @classmethod
+    def none(cls: Type[Intents]) -> Intents:
+        return cls()
+
+
+class ChannelMessage(object):
+    __slots__ = ("type", "message", "identifier")
+
+    def __init__(self, data) -> None:
+        self.type: str = data.get("type")
+        self.message: str = data.get("message")
+        self.identifier: str = data.get("identifier")
 
 
 class WebSocketInteractor(object):
     def __init__(
         self,
-        intents: Intents,
         base: client.BaseClient,
+        intents: Intents,
     ) -> None:
         self.__intents: Intents = intents
         self.__base: client.BaseClient = base
@@ -53,10 +77,18 @@ class WebSocketInteractor(object):
         self.__ws: Optional[websocket.WebSocketApp] = None
 
     def __on_open(self, ws):
-        pass
+        self.__base.logger.debug("on_open")
 
-    def __on_message(self, ws, message):
-        pass
+    def __on_message(self, ws, message: str):
+        self.__base.logger.debug(f"on_message: {message}")
+
+        events = ChannelMessage(json.loads(message))
+
+        if events.type == "ping":
+            return  # ignore ping events
+
+        if events.type == "welcome":
+            self.__connect()
 
     def __on_error(self, ws, error):
         self.__base.logger.error(error)
@@ -64,12 +96,39 @@ class WebSocketInteractor(object):
     def __on_close(self, ws, close_status_code, close_msg):
         pass
 
-    def __on_connect(self, sid: str):
-        pass
+    def __send_channel_command(self, command: str, channel: str) -> None:
+        if self.__ws is None:
+            return
+        self.__ws.send(
+            json.dumps(
+                {
+                    "command": command,
+                    "identifier": f'{{"channel":"{channel}"}}',
+                }
+            )
+        )
 
-    def __connect(self):
-        # connect to channels based on intents
-        pass
+    def __subscribe(self, channel: str) -> None:
+        
+        self.__send_channel_command("subscribe", channel)
+
+    def __unsubscribe(self, channel: str) -> None:
+        self.__send_channel_command("unsubscribe", channel)
+
+    def __connect(self) -> None:
+        # Connect to channels based on intents
+        intents_vars = vars(self.__intents)
+        channels: list[str] = [
+            channel for channel, value in intents_vars.items() if value
+        ]
+        for channel in channels:
+            self.__subscribe(channel)
+
+        self.on_ready()
+
+    def on_ready(self) -> None:
+        """クライアントの準備が完了すると呼び出されます"""
+        self.__base.logger.debug("on_ready")
 
     def run(self, email: str, password: str) -> None:
         self.__base._prepare(email, password)
