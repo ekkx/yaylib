@@ -605,7 +605,7 @@ class BaseClient(WebSocketInteractor):
         except:
             response = self.AuthAPI.login_with_email(email, password)
 
-            if response.access_token is not None:
+            if response.access_token is None:
                 raise ForbiddenError("Invalid email or password.")
 
             self.__cookie.set(
@@ -626,7 +626,7 @@ class BaseClient(WebSocketInteractor):
             )
             self.__cookie.save()
 
-        self.logger.info(f"Successfully logged in as '{response.user_id}'.")
+        self.logger.info(f"Successfully logged in as [{response.user_id}]")
 
         #
         # configure intents and websocket interactor here

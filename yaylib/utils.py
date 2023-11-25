@@ -62,7 +62,7 @@ def generate_jwt() -> str:
     timestamp = int(datetime.now().timestamp())
     return jwt.encode(
         payload={"exp": timestamp + 5, "iat": timestamp},
-        key=Configs.YAY_API_VERSION_KEY.encode("utf-8"),
+        key=Configs.API_VERSION_KEY.encode("utf-8"),
     )
 
 
