@@ -21,6 +21,7 @@ from .cookie import Cookie
 from .errors import *
 from .models import *
 from .responses import *
+from .types import *
 from .ws import Intents
 
 __all__ = (
@@ -29,5 +30,6 @@ __all__ = (
     "errors",
     "models",
     "responses",
+    "types",
     "Intents",
 )
