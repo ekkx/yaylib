@@ -304,20 +304,20 @@ class MiscAPI(object):
     def get_app_config(self) -> ApplicationConfig:
         return self.__base._request(
             "GET",
-            endpoint=f"https://{Configs.YAY_CONFIG_HOST}/api/apps/yay",
+            endpoint=f"https://{Configs.CONFIG_HOST}/api/apps/yay",
             data_type=ApplicationConfigResponse,
         ).app
 
     def get_banned_words(self, country_code: str = "jp") -> list[BanWord]:
         return self.__base._request(
             "GET",
-            endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/v2/banned_words",
+            endpoint=f"https://{Configs.CONFIG_HOST}/{country_code}/api/v2/banned_words",
             data_type=BanWordsResponse,
         ).ban_words
 
     def get_popular_words(self, country_code: str = "jp") -> list[PopularWord]:
         return self.__base._request(
             "GET",
-            endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/apps/yay/popular_words",
+            endpoint=f"https://{Configs.CONFIG_HOST}/{country_code}/api/apps/yay/popular_words",
             data_type=PopularWordsResponse,
         ).popular_words

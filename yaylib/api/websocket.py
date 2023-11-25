@@ -62,7 +62,7 @@ class WebSocketBaseHandler(object):
 
         """
         self.ws = websocket.WebSocketApp(
-            url=f"wss://{Configs.YAY_CABLE_HOST}/?token={ws_token}&app_version={Configs.YAY_VERSION_NAME}",
+            url=f"wss://{Configs.CABLE_HOST}/?token={ws_token}&app_version={Configs.VERSION_NAME}",
             on_open=self._on_open,
             on_message=self._on_message,
             on_error=self._on_error,

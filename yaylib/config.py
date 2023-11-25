@@ -27,18 +27,18 @@ from .models import Device
 class Configs:
     API_VERSION_NAME = "3.29"
     VERSION_NAME = "3.29.0"
-    YAY_API_VERSION_KEY = "6fa97fc2c3d04955bb8320f2d080593a"
-    YAY_API_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
-    YAY_SHARED_KEY = "yayZ1"
-    YAY_STORE_KEY = "yayZ1payment"
+    API_VERSION_KEY = "6fa97fc2c3d04955bb8320f2d080593a"
+    API_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
+    SHARED_KEY = "yayZ1"
+    STORE_KEY = "yayZ1payment"
     ID_CARD_CHECK_SECRET_KEY = "4aa6d1c301a97154bc1098c2"
-    YAY_REVIEW_HOST_1 = "review.yay.space"
-    YAY_REVIEW_HOST_2 = "cas-stg.yay.space"
-    YAY_STAGING_HOST_1 = "stg.yay.space"
-    YAY_STAGING_HOST_2 = "cas.yay.space"
-    YAY_CABLE_HOST = "cable.yay.space"
-    YAY_CONFIG_HOST = "settings.yay.space"
-    YAY_PRODUCTION_HOST = "api.yay.space"
+    REVIEW_HOST_1 = "review.yay.space"
+    REVIEW_HOST_2 = "cas-stg.yay.space"
+    STAGING_HOST_1 = "stg.yay.space"
+    STAGING_HOST_2 = "cas.yay.space"
+    CABLE_HOST = "cable.yay.space"
+    CONFIG_HOST = "settings.yay.space"
+    PRODUCTION_HOST = "api.yay.space"
     ID_CARD_CHECK_HOST_PRODUCTION = "idcardcheck.com"
     ID_CARD_CHECK_HOST_STAGING = "stg.idcardcheck.com"
     DEVICE = Device(
@@ -53,7 +53,7 @@ class Configs:
 
 
 class Endpoints:
-    BASE_API_URL = "https://" + Configs.YAY_PRODUCTION_HOST
+    BASE_API_URL = "https://" + Configs.PRODUCTION_HOST
 
     # api v1 endpoints
     USERS_V1 = BASE_API_URL + "/v1/users"

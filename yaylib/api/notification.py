@@ -45,7 +45,7 @@ class NotificationAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/user_activities",
+            endpoint=f"https://{Configs.STAGING_HOST_2}/api/user_activities",
             params=params,
             data_type=ActivitiesResponse,
         )
@@ -61,7 +61,7 @@ class NotificationAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"https://{Configs.YAY_STAGING_HOST_2}/api/v2/user_activities",
+            endpoint=f"https://{Configs.STAGING_HOST_2}/api/v2/user_activities",
             params=params,
             data_type=ActivitiesResponse,
         )

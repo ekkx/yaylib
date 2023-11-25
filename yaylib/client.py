@@ -208,7 +208,7 @@ class PolicyType(Enum):
 class HeaderInterceptor(object):
     def __init__(self, cookie: CookieManager, locale: str = "ja") -> None:
         self.__locale: str = locale
-        self.__host: str = Configs.YAY_PRODUCTION_HOST
+        self.__host: str = Configs.PRODUCTION_HOST
         self.__user_agent: str = Configs.USER_AGENT
         self.__device_info: str = Configs.DEVICE_INFO
         self.__app_version: str = Configs.API_VERSION_NAME

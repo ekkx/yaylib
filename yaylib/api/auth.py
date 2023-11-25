@@ -30,7 +30,7 @@ from cryptography.fernet import Fernet
 from datetime import datetime
 
 from .. import client
-from ..config import Endpoints
+from ..config import Configs, Endpoints
 from ..errors import ForbiddenError
 from ..responses import (
     LoginUserResponse,
@@ -51,7 +51,7 @@ class AuthAPI(object):
             "PUT",
             endpoint=f"{Endpoints.USERS_V1}/change_email",
             payload={
-                "api_key": self.api_key,
+                "api_key": Configs.API_KEY,
                 "email": email,
                 "password": password,
                 "email_grant_token": email_grant_token,
@@ -66,7 +66,7 @@ class AuthAPI(object):
             "PUT",
             endpoint=f"{Endpoints.USERS_V1}/change_email",
             payload={
-                "api_key": self.api_key,
+                "api_key": Configs.API_KEY,
                 "current_password": current_password,
                 "password": new_password,
             },
@@ -103,7 +103,7 @@ class AuthAPI(object):
             "POST",
             endpoint=f"{Endpoints.USERS_V3}/login_with_email",
             payload={
-                "api_key": self.api_key,
+                "api_key": Configs.API_KEY,
                 "email": email,
                 "password": password,
                 "uuid": self.uuid,
@@ -130,7 +130,7 @@ class AuthAPI(object):
             endpoint=f"{Endpoints.USERS_V2}/restore",
             payload={
                 "user_id": user_id,
-                "api_key": self.api_key,
+                "api_key": Configs.API_KEY,
                 "uuid": self.uuid,
                 "timestamp": timestamp,
                 "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
@@ -184,7 +184,7 @@ class AuthAPI(object):
             "POST",
             endpoint=f"{Endpoints.USERS_V3}/login_update",
             payload={
-                "api_key": self.api_key,
+                "api_key": Configs.API_KEY,
                 "email": email,
                 "password": password,
                 "current_password": current_password,
