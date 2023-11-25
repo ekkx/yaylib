@@ -2,10 +2,19 @@ from __future__ import annotations
 
 from . import client
 
-from typing import Optional, List, Any
+from typing import Optional, Any
+
+
+__all__ = (
+    "Intents",
+    "WebSocketInteractor",
+)
+
+
+class Intents(object):
+    pass
 
 
 class WebSocketInteractor(object):
-    def __init__(self, base: client.BaseClient, **options: Any) -> None:
-        self.__base: client.BaseClient = base
-        self.__intents: Optional[List[str]] = options.pop("intents", None)
+    def __init__(self, intents: Intents, **options: Any) -> None:
+        self.__intents: Intents = intents
