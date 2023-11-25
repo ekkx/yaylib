@@ -1,6 +1,26 @@
-# yaylib
-# Copyright 2023 qvco
-# See LICENSE for details.
+"""
+MIT License
+
+Copyright (c) 2023 qvco
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
 
 from __future__ import annotations
 
@@ -27,6 +47,7 @@ from .api.review import ReviewAPI
 from .api.thread import ThreadAPI
 from .api.user import UserAPI
 
+from . import __version__
 from .config import Configs
 from .cookie import Cookie, CookieManager
 from .errors import (
@@ -104,12 +125,15 @@ from .responses import (
     UserTimestampResponse,
 )
 from .utils import Colors
-from .ws import WebSocketInteractor
+from .ws import Intents, WebSocketInteractor
 
 try:
     from json.decoder import JSONDecodeError
 except ImportError:
     JSONDecodeError = ValueError
+
+
+__all__ = "Client"
 
 
 class PostType(Enum):
@@ -192,7 +216,7 @@ class HeaderInterceptor(object):
         self.__client_ip: str = ""
         self.__connection_speed: str = ""
         self.__connection_type: str = "wifi"
-        self.__content_type = "application/json;charset=UTF-8"
+        self.__content_type: str = "application/json;charset=UTF-8"
 
     def intercept(self) -> Dict[str, str]:
         cookie: Cookie = self.__cookie.get()
@@ -236,10 +260,11 @@ class HeaderInterceptor(object):
 current_path = os.path.abspath(os.getcwd())
 
 
-class BaseClient(object):
+class BaseClient(WebSocketInteractor):
     def __init__(
         self,
         *,
+        intents: Optional[Intents] = None,
         proxy_url: Optional[str] = None,
         max_retries: int = 3,
         backoff_factor: float = 1.5,
@@ -254,6 +279,8 @@ class BaseClient(object):
         cookie_filename: str = "cookies",
         loglevel: int = logging.INFO,
     ) -> None:
+        super().__init__(intents=intents)
+
         self.__max_retries: int = max_retries
         self.__backoff_factor: float = backoff_factor
         self.__wait_on_ratelimit: bool = wait_on_ratelimit
@@ -279,8 +306,6 @@ class BaseClient(object):
             timeout=timeout,
         )
 
-        self.__ws: WebSocketInteractor = WebSocketInteractor(self)
-
         self.AuthAPI: AuthAPI = AuthAPI(self)
         self.CallAPI: CallAPI = CallAPI(self)
         self.ChatAPI: ChatAPI = ChatAPI(self)
@@ -293,7 +318,7 @@ class BaseClient(object):
         self.UserAPI: UserAPI = UserAPI(self)
 
         self.logger: logging.Logger = logging.getLogger(
-            "yaylib version: " + Configs.YAYLIB_VERSION
+            "yaylib version: " + __version__
         )
 
         if not os.path.exists(base_path):
