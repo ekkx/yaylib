@@ -80,7 +80,7 @@ class CookieManager(object):
             self.__encryption_key: Fernet = self.__generate_key(cookie_password)
 
     def __is_encrypted(self, cookie: Cookie) -> bool:
-        return cookie.authentication.access_token.startswith("encrypted:")
+        return cookie.authentication.access_token.startswith("encrypted_")
 
     def __generate_key(self, password: str) -> Fernet:
         hashed = hashlib.sha256(password.encode()).digest()
@@ -93,11 +93,11 @@ class CookieManager(object):
     def __encrypt(self, text: str) -> str:
         encoded: bytes = text.encode()
         encrypted: bytes = self.__encryption_key.encrypt(encoded)
-        return "encrypted:" + encrypted.decode()
+        return "encrypted_" + encrypted.decode()
 
     def __decrypt(self, text: str) -> str:
-        if text.startswith("encrypted:"):
-            text = text[len("encrypted:") :]
+        if text.startswith("encrypted_"):
+            text = text[len("encrypted_") :]
         decrypted: bytes = self.__encryption_key.decrypt(text)
         return decrypted.decode()
 
