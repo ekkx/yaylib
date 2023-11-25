@@ -66,6 +66,11 @@ class ChannelMessage(object):
 
 
 class WebSocketInteractor(object):
+    intent_map: Dict[str, str] = {
+        "chat_message": "ChatRoomChannel",
+        "group_update": "GroupUpdatesChannel",
+    }
+
     def __init__(
         self,
         base: client.BaseClient,
@@ -109,7 +114,6 @@ class WebSocketInteractor(object):
         )
 
     def __subscribe(self, channel: str) -> None:
-        
         self.__send_channel_command("subscribe", channel)
 
     def __unsubscribe(self, channel: str) -> None:
@@ -122,7 +126,7 @@ class WebSocketInteractor(object):
             channel for channel, value in intents_vars.items() if value
         ]
         for channel in channels:
-            self.__subscribe(channel)
+            self.__subscribe(self.intent_map.get(channel))
 
         self.on_ready()
 
