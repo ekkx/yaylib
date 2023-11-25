@@ -48,13 +48,11 @@ class PostAPI(object):
         self.__base = base
 
     def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
-        response = self.__base._request(
+        return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
             data_type=BookmarkPostResponse,
         )
-        self.logger.info("Post has been added to the bookmarks.")
-        return response
 
     def add_group_highlight_post(self, group_id: int, post_id: int):
         """
@@ -218,10 +216,6 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-        timestamp = int(datetime.now().timestamp())
-        headers = self.session.headers.copy()
-        headers["X-Jwt"] = self.generate_jwt(timestamp)
-
         if text is not None:
             if "@:start:" in text and ":end:" in text:
                 text, message_tags = self.parse_mention_format(self, text)
@@ -271,7 +265,7 @@ class PostAPI(object):
                 "video_file_name": video_file_name,
             },
             data_type=Post,
-            headers=headers,
+            jwt_required=True,
         )
         self.logger.info("Post has been created.")
         return response
@@ -299,10 +293,6 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-        timestamp = int(datetime.now().timestamp())
-        headers = self.session.headers.copy()
-        headers["X-Jwt"] = self.generate_jwt(timestamp)
-
         if text is not None:
             if "@:start:" in text and ":end:" in text:
                 text, message_tags = self.parse_mention_format(self, text)
@@ -353,7 +343,7 @@ class PostAPI(object):
                 "video_file_name": video_file_name,
             },
             data_type=CreatePostResponse,
-            headers=headers,
+            jwt_required=True,
         ).post
         self.logger.info("Repost has been created.")
         return response
@@ -412,9 +402,6 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-        timestamp = int(datetime.now().timestamp())
-        headers = self.session.headers.copy()
-        headers["X-Jwt"] = self.generate_jwt(timestamp)
 
         if text is not None:
             if "@:start:" in text and ":end:" in text:
@@ -466,7 +453,7 @@ class PostAPI(object):
                 "video_file_name": video_file_name,
             },
             data_type=Post,
-            headers=headers,
+            jwt_required=True,
         )
         self.logger.info("Thread post has been created.")
         return response

@@ -124,7 +124,7 @@ from .responses import (
     UsersByTimestampResponse,
     UserTimestampResponse,
 )
-from .utils import Colors
+from .utils import Colors, generate_jwt
 from .ws import Intents, WebSocketInteractor
 
 try:
@@ -357,12 +357,6 @@ class BaseClient(WebSocketInteractor):
     def device_uuid(self) -> str:
         return self.cookie.device.device_uuid
 
-    @staticmethod
-    def parse_datetime(timestamp: int) -> str:
-        if timestamp is not None:
-            return str(datetime.fromtimestamp(timestamp))
-        return timestamp
-
     def __make_request(
         self,
         method: str,
@@ -370,6 +364,7 @@ class BaseClient(WebSocketInteractor):
         params: Optional[Dict[str | Any]] = None,
         payload: Optional[Dict[str | Any]] = None,
         headers: Optional[Dict[str | str]] = None,
+        jwt_required: bool = False,
         bypass_delay: bool = False,
     ) -> dict | str:
         # set client ip address to request header if not exists
@@ -383,6 +378,9 @@ class BaseClient(WebSocketInteractor):
         if headers is None:
             headers = {}
         headers.update(self.__header_interceptor.intercept())
+
+        if jwt_required:
+            headers.update({"X-Jwt": generate_jwt()})
 
         response = None
         backoff_duration: int = 0
@@ -584,10 +582,11 @@ class BaseClient(WebSocketInteractor):
         payload: Optional[Dict[str | Any]] = None,
         data_type: Optional[object] = None,
         headers: Optional[Dict[str | Any]] = None,
-        bypass_delay: Optional[bool] = False,
+        jwt_required: bool = False,
+        bypass_delay: bool = False,
     ) -> object | dict:
         res: dict | str = self.__make_request(
-            method, endpoint, params, payload, headers, bypass_delay
+            method, endpoint, params, payload, headers, jwt_required, bypass_delay
         )
         if data_type:
             return self.__construct_response(res, data_type)
@@ -660,6 +659,7 @@ class Client(BaseClient):
 
     #### Parameters
 
+        - intents: Intents - (optional)
         - proxy_url: str - (optional)
         - max_retries: int - (optional)
         - backoff_factor: float - (optional)

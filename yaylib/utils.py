@@ -23,8 +23,12 @@ SOFTWARE.
 """
 
 import re
+import jwt
 import uuid
+
 from datetime import datetime
+
+from .config import Configs
 
 
 class Colors:
@@ -52,6 +56,14 @@ def generate_uuid(uuid_type=True):
         return generated_uuid
     else:
         return generated_uuid.replace("-", "")
+
+
+def generate_jwt() -> str:
+    timestamp = int(datetime.now().timestamp())
+    return jwt.encode(
+        payload={"exp": timestamp + 5, "iat": timestamp},
+        key=Configs.YAY_API_VERSION_KEY.encode("utf-8"),
+    )
 
 
 def is_valid_image_format(format):
