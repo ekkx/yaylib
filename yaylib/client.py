@@ -367,8 +367,8 @@ class BaseClient(WebSocketInteractor):
         jwt_required: bool = False,
         bypass_delay: bool = False,
     ) -> dict | str:
-        params: Optional[Dict[str, Any]] = self.__filter_request_params(params)
-        payload: Optional[Dict[str, Any]] = self.__filter_request_params(payload)
+        params: Optional[Dict[str, Any]] = self.__filter_params(params)
+        payload: Optional[Dict[str, Any]] = self.__filter_params(payload)
 
         # set client ip address to request header if not exists
         if (
@@ -522,7 +522,7 @@ class BaseClient(WebSocketInteractor):
             f"Response: {response.text}\n"
         )
 
-    def __filter_request_params(
+    def __filter_params(
         self, params: Optional[Dict[str, Any]] = None
     ) -> Optional[Dict[str, Any]]:
         if params is None:
