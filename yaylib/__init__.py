@@ -5,29 +5,29 @@ Yay! (nanameue, Inc.) API Client
 
 An API wrapper for Yay! (yay.space) written in Python.
 
-:copyright: (c) 2023-present qvco
+:copyright: (c) 2023 qvco
 :license: MIT, see LICENSE for more details.
 
 """
 
-from .client import *
-from .config import *
+__title__ = "yaylib"
+__author__ = "qvco"
+__license__ = "MIT"
+__copyright__ = "Copyright (c) 2023 qvco"
+__version__ = "1.3.4"
+
+from .client import Client
+from .cookie import Cookie
 from .errors import *
 from .models import *
 from .responses import *
-from .utils import *
-from .api.websocket import *
+from .ws import Intents
 
-__version__ = Configs.YAYLIB_VERSION
-__all__ = [
+__all__ = (
     "Client",
-    "config",
+    "Cookie",
     "errors",
     "models",
     "responses",
-    "utils",
-    "MessageEventHandler",
-    "ChatRoomEventHandler",
-    "GroupUpdateEventHandler",
-    "GroupPostEventHandler",
-]
+    "Intents",
+)

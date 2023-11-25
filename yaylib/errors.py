@@ -25,6 +25,19 @@ SOFTWARE.
 from enum import Enum
 
 
+__all__ = (
+    "YaylibError",
+    "HTTPError",
+    "BadRequestError",
+    "AuthenticationError",
+    "ForbiddenError",
+    "NotFoundError",
+    "RateLimitError",
+    "YayServerError",
+    "ErrorCode",
+)
+
+
 class YaylibError(Exception):
     """Base exception for yaylib"""
 
