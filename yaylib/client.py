@@ -331,7 +331,7 @@ class BaseClient(WebSocketInteractor):
         self.logger.addHandler(ch)
         self.logger.setLevel(logging.DEBUG)
 
-        self.logger.info("yaylib version: " + Configs.YAYLIB_VERSION + " started.")
+        self.logger.info("yaylib version: " + __version__ + " started.")
 
     @property
     def cookie(self) -> Cookie:
