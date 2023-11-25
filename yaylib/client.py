@@ -1965,13 +1965,13 @@ class Client(BaseClient):
         """
         return self.MiscAPI.get_policy_agreements()
 
-    def get_web_socket_token(self, headers: Optional[dict] = None) -> str:
+    def get_web_socket_token(self) -> str:
         """
 
         Web Socket Tokenを取得します
 
         """
-        return self.MiscAPI.get_web_socket_token(headers)
+        return self.MiscAPI.get_web_socket_token().token
 
     def upload_image(self, image_paths: list[str], image_type: str) -> list[Attachment]:
         """

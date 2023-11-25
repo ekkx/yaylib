@@ -161,14 +161,14 @@ class MiscAPI(object):
             bypass_delay=True,
         )
 
-    def get_web_socket_token(self, headers: dict = None) -> str:
+    def get_web_socket_token(self, headers: dict = None) -> WebSocketTokenResponse:
         return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.USERS_V1}/ws_token",
             data_type=WebSocketTokenResponse,
             headers=headers,
             bypass_delay=True,
-        ).token
+        )
 
     def verify_device(
         self,
