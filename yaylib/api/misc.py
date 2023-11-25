@@ -67,13 +67,11 @@ class MiscAPI(object):
         self.__base = base
 
     def accept_policy_agreement(self, type: str):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/policy_agreements/{type}",
             bypass_delay=True,
         )
-        self.logger.info(f"Accepted to {type}.")
-        return response
 
     def generate_sns_thumbnail(self, **params):
         """
@@ -85,22 +83,18 @@ class MiscAPI(object):
             - resource_id: int - (Required)
 
         """
-        response = self.__base._request(
+        return self.__base._request(
             "GET", endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate", params=params
         )
-        self.logger.info("SNS thumbnail generated.")
-        return response
 
     def send_verification_code(self, email: str):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=self.get_email_verification_presigned_url(
                 email=email, locale="ja"
             ).url,
             payload={"locale": "ja", "email": email},
         )
-        self.logger.info(f"Verification code successfully sent to '{email}'.")
-        return response
 
     def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenResponse:
         return self.__base._request(
@@ -184,7 +178,7 @@ class MiscAPI(object):
         verification_string: str,
     ) -> VerifyDeviceResponse:
         # TODO: check platform, verification_string
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GENUINE_DEVICES_V1}/verify",
             payload={
@@ -195,8 +189,6 @@ class MiscAPI(object):
             },
             data_type=VerifyDeviceResponse,
         )
-        self.logger.info("Device has been verified.")
-        return response
 
     def upload_image(self, image_paths: list[str], image_type: str) -> list[Attachment]:
         """
@@ -310,25 +302,22 @@ class MiscAPI(object):
     # config
 
     def get_app_config(self) -> ApplicationConfig:
-        response = self.__base._request(
+        return self.__base._request(
             "GET",
             endpoint=f"https://{Configs.YAY_CONFIG_HOST}/api/apps/yay",
             data_type=ApplicationConfigResponse,
         ).app
-        return response
 
     def get_banned_words(self, country_code: str = "jp") -> list[BanWord]:
-        response = self.__base._request(
+        return self.__base._request(
             "GET",
             endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/v2/banned_words",
             data_type=BanWordsResponse,
         ).ban_words
-        return response
 
     def get_popular_words(self, country_code: str = "jp") -> list[PopularWord]:
-        response = self.__base._request(
+        return self.__base._request(
             "GET",
             endpoint=f"https://{Configs.YAY_CONFIG_HOST}/{country_code}/api/apps/yay/popular_words",
             data_type=PopularWordsResponse,
         ).popular_words
-        return response

@@ -57,16 +57,14 @@ class UserAPI(object):
         self.__base = base
 
     def delete_footprint(self, user_id: int, footprint_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE",
             endpoint=f"{Endpoints.USERS_V2}/{user_id}/footprints/{footprint_id}",
         )
-        self.logger.info("Footprint has been deleted.")
-        return response
 
     def destroy_user(self):
         timestamp = int(datetime.now().timestamp())
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V2}/destroy",
             payload={
@@ -76,24 +74,18 @@ class UserAPI(object):
                 "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
             },
         )
-        self.logger.info("User has been deleted.")
-        return response
 
     def follow_user(self, user_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/follow"
         )
-        self.logger.info(f"Followed the user '{user_id}'.")
-        return response
 
     def follow_users(self, user_ids: list[int]):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V2}/follow",
             params={"user_ids[]": user_ids},
         )
-        self.logger.info("Followed multiple users.")
-        return response
 
     def get_active_followings(self, **params) -> ActiveFollowingsResponse:
         """
@@ -349,13 +341,11 @@ class UserAPI(object):
         )
 
     def refresh_counter(self, counter: str):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/reset_counters",
             payload={"counter": counter},
         )
-        self.logger.info("Requested counter refresh.")
-        return response
 
     def register(
         self,
@@ -375,7 +365,7 @@ class UserAPI(object):
         vn: int = None,
     ) -> CreateUserResponse:
         timestamp = int(datetime.now().timestamp())
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V3}/register",
             payload={
@@ -401,22 +391,16 @@ class UserAPI(object):
             },
             data_type=CreateUserResponse,
         )
-        self.logger.info(f"A new user has been registered. (USER ID: {response.id})")
-        return response
 
     def remove_user_avatar(self):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.USERS_V2}/remove_profile_photo"
         )
-        self.logger.info("Profile image has been removed.")
-        return response
 
     def remove_user_cover(self):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.USERS_V2}/remove_cover_image"
         )
-        self.logger.info("Profile cover image has been removed.")
-        return response
 
     def report_user(
         self,
@@ -428,7 +412,7 @@ class UserAPI(object):
         screenshot_3_filename: str = None,
         screenshot_4_filename: str = None,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V3}/{user_id}/report",
             payload={
@@ -440,11 +424,9 @@ class UserAPI(object):
                 "screenshot_4_filename": screenshot_4_filename,
             },
         )
-        self.logger.info(f"Reported the user '{user_id}'.")
-        return response
 
     def reset_password(self, email: str, email_grant_token: str, password: str):
-        response = self.__base._request(
+        return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.USERS_V1}/reset_password",
             payload={
@@ -453,8 +435,6 @@ class UserAPI(object):
                 "password": password,
             },
         )
-        self.logger.info("Reset the password.")
-        return response
 
     def search_lobi_users(self, **params) -> UsersResponse:
         """
@@ -501,7 +481,7 @@ class UserAPI(object):
 
     def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
         timestamp = int(datetime.now().timestamp())
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V2}/edit",
             payload={
@@ -514,45 +494,35 @@ class UserAPI(object):
                 "signed_version": self.generate_signed_version(),
             },
         )
-        self.logger.info("Follow permission has been enabled.")
-        return response
 
     def set_setting_follow_recommendation_enabled(self, on: bool):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/visible_on_sns_friend_recommendation_setting",
             params={"on": on},
         )
-        self.logger.info("Follow recommendation has been enabled.")
-        return response
 
     def take_action_follow_request(self, target_id: int, action: str):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V2}/{target_id}/follow_request",
             payload={"action": action},
         )
-        self.logger.info("Took action follow request.")
-        return response
 
     def turn_on_hima(self):
-        response = self.__base._request(
+        return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.USERS_V1}/hima",
         )
-        self.logger.info("Turned on 'hima now'.")
-        return response
 
     def unfollow_user(self, user_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow"
         )
-        self.logger.info(f"Unfollowed the user '{user_id}'.")
-        return response
 
     def update_language(self, language: str):
         timestamp = int(datetime.now().timestamp())
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/language",
             payload={
@@ -563,8 +533,6 @@ class UserAPI(object):
                 "language": language,
             },
         )
-        self.logger.info("Language has been updated.")
-        return response
 
     def update_user(self, nickname: str, **params):
         """
@@ -596,13 +564,11 @@ class UserAPI(object):
                 ),
             }
         )
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V3}/edit",
             payload=params,
         )
-        self.logger.info("User profile has been updated.")
-        return response
 
     # BlockApi
 
@@ -610,11 +576,9 @@ class UserAPI(object):
         self,
         user_id: int,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.USERS_V1}/{user_id}/block"
         )
-        self.logger.info(f"Blocked the user '{user_id}'.")
-        return response
 
     def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
         return self.__base._request(
@@ -636,11 +600,9 @@ class UserAPI(object):
         )
 
     def unblock_user(self, user_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unblock"
         )
-        self.logger.info(f"Unblocked the user '{user_id}'.")
-        return response
 
     # HiddenApi
 
@@ -662,19 +624,15 @@ class UserAPI(object):
         )
 
     def hide_user(self, user_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.HIDDEN_V1}/users",
             payload={"user_id": user_id},
         )
-        self.logger.info(f"User '{user_id}' is hidden.")
-        return response
 
     def unhide_users(self, user_ids: list[int]):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE",
             endpoint=f"{Endpoints.HIDDEN_V1}/users",
             params={"user_ids[]": user_ids},
         )
-        self.logger.info("Unhid users.")
-        return response

@@ -60,12 +60,10 @@ class PostAPI(object):
         投稿をグループのまとめに追加します
 
         """
-        response = self.__base._request(
+        return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
         )
-        self.logger.info("Post has been added to the group highlight.")
-        return response
 
     def create_call_post(
         self,
@@ -94,7 +92,7 @@ class PostAPI(object):
 
         timestamp = int(datetime.now().timestamp())
 
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
             payload={
@@ -123,24 +121,18 @@ class PostAPI(object):
             },
             data_type=CreatePostResponse,
         ).conference_call
-        self.logger.info("Call post has been created.")
-        return response
 
     def create_group_pin_post(self, post_id: int, group_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
             payload={"post_id": post_id, "group_id": group_id},
         )
-        self.logger.info("Pinned the post in the group.")
-        return response
 
     def create_pin_post(self, post_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.PINNED_V1}/posts", payload={"id": post_id}
         )
-        self.logger.info("Pinned post.")
-        return response
 
     def mention(self, user_id: int) -> str:
         if not (isinstance(user_id, int) or str(user_id).isdigit()):
@@ -236,10 +228,10 @@ class PostAPI(object):
             try:
                 shared_url = self.get_url_metadata(url=shared_url).data
             except ForbiddenError:
-                self.logger.error("Unable to get the URL metadata.")
+                self.__base.logger.error("Unable to get the URL metadata.")
                 shared_url = None
 
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V3}/new",
             payload={
@@ -267,8 +259,6 @@ class PostAPI(object):
             data_type=Post,
             jwt_required=True,
         )
-        self.logger.info("Post has been created.")
-        return response
 
     def create_repost(
         self,
@@ -313,10 +303,10 @@ class PostAPI(object):
             try:
                 shared_url = self.get_url_metadata(url=shared_url).data
             except ForbiddenError:
-                self.logger.error("Unable to get the URL metadata.")
+                self.__base.logger.error("Unable to get the URL metadata.")
                 shared_url = None
 
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V3}/repost",
             payload={
@@ -345,8 +335,6 @@ class PostAPI(object):
             data_type=CreatePostResponse,
             jwt_required=True,
         ).post
-        self.logger.info("Repost has been created.")
-        return response
 
     def create_share_post(
         self,
@@ -359,7 +347,7 @@ class PostAPI(object):
     ) -> Post:
         timestamp = int(datetime.now().timestamp())
 
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
             payload={
@@ -376,8 +364,6 @@ class PostAPI(object):
             },
             data_type=Post,
         )
-        self.logger.info("Share post has been created.")
-        return response
 
     def create_thread_post(
         self,
@@ -402,7 +388,6 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-
         if text is not None:
             if "@:start:" in text and ":end:" in text:
                 text, message_tags = self.parse_mention_format(self, text)
@@ -423,10 +408,10 @@ class PostAPI(object):
             try:
                 shared_url = self.get_url_metadata(url=shared_url).data
             except ForbiddenError:
-                self.logger.error("Unable to get the URL metadata.")
+                self.__base.logger.error("Unable to get the URL metadata.")
                 shared_url = None
 
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.THREADS_V1}/{post_id}/posts",
             payload={
@@ -455,34 +440,26 @@ class PostAPI(object):
             data_type=Post,
             jwt_required=True,
         )
-        self.logger.info("Thread post has been created.")
-        return response
 
     def delete_all_post(self):
         try:
-            response = self.__base._request(
+            return self.__base._request(
                 "POST", endpoint=f"{Endpoints.POSTS_V1}/delete_all_post"
             )
-            self.logger.info("Post deletion request has been sent.")
-            return response
         except NotFoundError:
-            self.logger.info("Post not found. Skipping...")
+            self.__base.logger.info("Post not found. Skipping...")
 
     def delete_group_pin_post(self, group_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE",
             endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
             payload={"group_id": group_id},
         )
-        self.logger.info("Unpinned post in the group.")
-        return response
 
     def delete_pin_post(self, post_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE", endpoint=f"{Endpoints.PINNED_V1}/posts/{post_id}"
         )
-        self.logger.info("Unpinned post.")
-        return response
 
     def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
         params = {}
@@ -842,39 +819,31 @@ class PostAPI(object):
         )
 
     def like_posts(self, post_ids: list[int]) -> LikePostsResponse:
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V2}/like",
             payload={"post_ids": post_ids},
             data_type=LikePostsResponse,
         )
-        self.logger.info("Posts have been liked.")
-        return response
 
     def remove_bookmark(self, user_id: int, post_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE",
             endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
         )
-        self.logger.info("Bookmark has been removed.")
-        return response
 
     def remove_group_highlight_post(self, group_id: int, post_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
         )
-        self.logger.info("Group hightlight post removed.")
-        return response
 
     def remove_posts(self, post_ids: list[int]):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V2}/mass_destroy",
             payload={"posts_ids": post_ids},
         )
-        self.logger.info("Posts have been removed.")
-        return response
 
     def report_post(
         self,
@@ -887,7 +856,7 @@ class PostAPI(object):
         screenshot_3_filename: str = None,
         screenshot_4_filename: str = None,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V3}/{post_id}/report",
             payload={
@@ -900,15 +869,11 @@ class PostAPI(object):
                 "screenshot_4_filename": screenshot_4_filename,
             },
         )
-        self.logger.info("Post has been reported.")
-        return response
 
     def unlike_post(self, post_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.POSTS_V1}/{post_id}/unlike"
         )
-        self.logger.info("Post has been unliked.")
-        return response
 
     def update_post(
         self,
@@ -923,7 +888,7 @@ class PostAPI(object):
 
         timestamp = int(datetime.now().timestamp())
 
-        response = self.__base._request(
+        return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.POSTS_V3}/{post_id}",
             payload={
@@ -936,23 +901,17 @@ class PostAPI(object):
                 "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
             },
         )
-        self.logger.info("Post has been updated.")
-        return response
 
     def view_video(self, video_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V1}/videos/{video_id}/view",
         )
-        self.logger.info("Viewed the video.")
-        return response
 
     def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",
             payload={"choice_id": choice_id},
             data_type=ValidationPostResponse,
         ).survey
-        self.logger.info("Voted.")
-        return response

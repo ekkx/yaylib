@@ -36,41 +36,18 @@ class ReviewAPI(object):
         self.__base = base
 
     def create_review(self, user_id: int, comment: str):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
             payload={"comment": comment},
         )
-        self.logger.info(f"Review has been sent to {user_id}.")
-        return response
-
-    def create_reviews(self, user_ids: list[int], comment: str):
-        timestamp = int(datetime.now().timestamp())
-        response = self.__base._request(
-            "POST",
-            endpoint=f"{Endpoints.USERS_V1}/reviews",
-            payload={
-                "user_ids": user_ids,
-                "comment": comment,
-                "uuid": self.uuid,
-                "api_key": self.api_key,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.uuid, timestamp, shared_key=True
-                ),
-            },
-        )
-        self.logger.info("Reviews have been sent to multiple users.")
-        return response
 
     def delete_reviews(self, review_ids: list[int]):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE",
             endpoint=f"{Endpoints.USERS_V1}/reviews",
             params={"review_ids[]": review_ids},
         )
-        self.logger.info("Reviews have been deleted.")
-        return response
 
     def get_my_reviews(self, **params) -> ReviewsResponse:
         """
@@ -108,15 +85,11 @@ class ReviewAPI(object):
         )
 
     def pin_review(self, review_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.PINNED_V1}/reviews", payload={"id": review_id}
         )
-        self.logger.info("Pinned the review.")
-        return response
 
     def unpin_review(self, review_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE", endpoint=f"{Endpoints.PINNED_V1}/reviews{review_id}"
         )
-        self.logger.info("Unpinned the review.")
-        return response

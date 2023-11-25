@@ -45,16 +45,12 @@ class ChatAPI(object):
     def __init__(self, base: client.BaseClient) -> None:
         self.__base = base
 
-
     def accept_chat_requests(self, chat_room_ids: list[int]):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
             payload={"chat_room_ids[]": chat_room_ids},
         )
-        self.logger.info("Accepted chat requests.")
-        return response
-
 
     def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
         return self.__base._request(
@@ -64,7 +60,6 @@ class ChatAPI(object):
             data_type=UnreadStatusResponse,
         )
 
-
     def create_group_chat(
         self,
         name: str,
@@ -72,7 +67,7 @@ class ChatAPI(object):
         icon_filename: str = None,
         background_filename: str = None,
     ) -> CreateChatRoomResponse:
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CHAT_ROOMS_V3}/new",
             payload={
@@ -83,14 +78,11 @@ class ChatAPI(object):
             },
             data_type=CreateChatRoomResponse,
         )
-        self.logger.info(f"Group chat '{name}' has been created.")
-        return response
-
 
     def create_private_chat(
         self, with_user_id: int, matching_id: int = None, hima_chat: bool = False
     ) -> CreateChatRoomResponse:
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CHAT_ROOMS_V1}/new",
             payload={
@@ -100,26 +92,17 @@ class ChatAPI(object):
             },
             data_type=CreateChatRoomResponse,
         )
-        self.logger.info(f"Created a private chatroom with '{with_user_id}'.")
-        return response
-
 
     def delete_background(self, room_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{room_id}/background"
         )
-        self.logger.info("Background image of the chatroom has been deleted.")
-        return response
-
 
     def delete_message(self, room_id: int, message_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE",
             endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/messages/{message_id}/delete",
         )
-        self.logger.info("Message has been deleted.")
-        return response
-
 
     def edit_chat_room(
         self,
@@ -128,7 +111,7 @@ class ChatAPI(object):
         icon_filename: str = None,
         background_filename: str = None,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/edit",
             payload={
@@ -137,9 +120,6 @@ class ChatAPI(object):
                 "background_filename": background_filename,
             },
         )
-        self.logger.info("Chatroom has been updated.")
-        return response
-
 
     def get_chatable_users(
         self,
@@ -159,12 +139,10 @@ class ChatAPI(object):
             data_type=FollowUsersResponse,
         )
 
-
     def get_gifs_data(self) -> list[GifImageCategory]:
         return self.__base._request(
             "GET", endpoint=f"{Endpoints.HIDDEN_V1}/chats", data_type=GifsDataResponse
         ).gif_categories
-
 
     def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
         """
@@ -183,7 +161,6 @@ class ChatAPI(object):
             data_type=ChatRoomsResponse,
         )
 
-
     def get_main_chat_rooms(self, from_timestamp: int = None) -> ChatRoomsResponse:
         params = {}
         if from_timestamp:
@@ -194,7 +171,6 @@ class ChatAPI(object):
             params=params,
             data_type=ChatRoomsResponse,
         )
-
 
     def get_messages(self, chat_room_id: int, **params) -> list[Message]:
         """
@@ -211,7 +187,6 @@ class ChatAPI(object):
             params=params,
             data_type=MessagesResponse,
         ).messages
-
 
     def get_request_chat_rooms(self, **params) -> ChatRoomsResponse:
         """
@@ -230,7 +205,6 @@ class ChatAPI(object):
             data_type=ChatRoomsResponse,
         )
 
-
     def get_chat_room(self, chat_room_id: int) -> ChatRoom:
         return self.__base._request(
             "GET",
@@ -238,12 +212,10 @@ class ChatAPI(object):
             data_type=ChatRoomResponse,
         ).chat
 
-
     def get_sticker_packs(self) -> list[StickerPack]:
         return self.__base._request(
             "GET", endpoint=Endpoints.STICKER_PACKS_V2, data_type=StickerPacksResponse
         ).sticker_packs
-
 
     def get_total_chat_requests(self) -> int:
         return self.__base._request(
@@ -252,53 +224,37 @@ class ChatAPI(object):
             data_type=TotalChatRequestResponse,
         ).total
 
-
     def hide_chat(self, chat_room_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.HIDDEN_V1}/chats",
             payload={"chat_room_id": chat_room_id},
         )
-        self.logger.info(f"Chatroom '{chat_room_id}' has been hidden.")
-        return response
-
 
     def invite_to_chat(self, chat_room_id: int, user_ids: list[int]):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/invite",
             payload={"with_user_ids": user_ids},
         )
-        self.logger.info("Invited users to the chatroom.")
-        return response
-
 
     def kick_users_from_chat(self, chat_room_id: int, user_ids: list[int]):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/kick",
             payload={"with_user_ids[]": user_ids},
         )
-        self.logger.info(f"Users have been kicked from the chatroom.")
-        return response
-
 
     def pin_chat(self, room_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/pinned"
         )
-        self.logger.info("Pinned the chatroom.")
-        return response
-
 
     def read_message(self, chat_room_id: int, message_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages/{message_id}/read",
         )
-        self.logger.info("Message has been read.")
-        return response
-
 
     def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
         params = {}
@@ -311,17 +267,15 @@ class ChatAPI(object):
             data_type=ChatRoomsResponse,
         )
 
-
     def remove_chat_rooms(self, chat_room_ids: list[int]):
-        chat_room_ids = [chat_room_ids] if isinstance(chat_room_ids, int) else chat_room_ids
-        response = self.__base._request(
+        chat_room_ids = (
+            [chat_room_ids] if isinstance(chat_room_ids, int) else chat_room_ids
+        )
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CHAT_ROOMS_V1}/mass_destroy",
             payload={"chat_room_ids": chat_room_ids},
         )
-        self.logger.info(f"Chatrooms have been removed.")
-        return response
-
 
     def report_chat_room(
         self,
@@ -334,7 +288,7 @@ class ChatAPI(object):
         screenshot_3_filename: str = None,
         screenshot_4_filename: str = None,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/report",
             payload={
@@ -348,34 +302,23 @@ class ChatAPI(object):
                 "screenshot_4_filename": screenshot_4_filename,
             },
         )
-        self.logger.info(f"Chatroom '{chat_room_id}' has been reported.")
-        return response
-
 
     def send_message(self, chat_room_id: int, **params) -> MessageResponse:
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/messages/new",
             payload=params,
             data_type=MessageResponse,
         )
-        self.logger.info("Your message has been sent.")
-        return response
-
 
     def unhide_chat(self, chat_room_ids: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE",
             endpoint=f"{Endpoints.HIDDEN_V1}/chats",
             params={"chat_room_ids": chat_room_ids},
         )
-        self.logger.info("Unhid the chatrooms.")
-        return response
-
 
     def unpin_chat(self, chat_room_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/pinned"
         )
-        self.logger.info("Unpinned the chatroom.")
-        return response

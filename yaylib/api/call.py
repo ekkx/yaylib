@@ -47,11 +47,9 @@ class CallAPI(object):
         params = {}
         if participant_limit:
             params["participant_limit"] = participant_limit
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bump", params=params
         )
-        self.logger.info("Call bumped.")
-        return response
 
     def get_user_active_call(self, user_id: int) -> Post:
         return self.__base._request(
@@ -157,13 +155,11 @@ class CallAPI(object):
         params = {}
         if group_id:
             params["group_id"] = group_id
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bulk_invite",
             params=params,
         )
-        self.logger.info("Invited your online followings to the call.")
-        return response
 
     def invite_users_to_call(self, call_id: int, user_ids: list[int]):
         """
@@ -174,16 +170,14 @@ class CallAPI(object):
             - user_ids: list[int] - (required)
 
         """
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/invite",
             payload={"call_id": call_id, "user_ids": user_ids},
         )
-        self.logger.info("Invited users to call.")
-        return response
 
     def invite_users_to_chat_call(self, chat_room_id: int, room_id: int, room_url: str):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CALLS_V2}/invite",
             payload={
@@ -192,17 +186,13 @@ class CallAPI(object):
                 "room_url": room_url,
             },
         )
-        self.logger.info("Invited users to chat call.")
-        return response
 
     def kick_and_ban_from_call(self, call_id: int, user_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/kick",
             payload={"user_id": user_id},
         )
-        self.logger.info("User has been banned from the call.")
-        return response
 
     def set_call(
         self,
@@ -211,7 +201,7 @@ class CallAPI(object):
         game_title: str = None,
         category_id: str = None,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.CALLS_V1}/{call_id}",
             payload={
@@ -220,54 +210,42 @@ class CallAPI(object):
                 "category_id": category_id,
             },
         )
-        self.logger.info("Started a call.")
-        return response
 
     def set_user_role(self, call_id: int, user_id: int, role: str):
-        response = self.__base._request(
+        return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.CALLS_V1}/{call_id}/users/{user_id}",
             payload={"role": role},
         )
-        self.logger.info(f"User '{user_id}' has been given a role.")
-        return response
 
     def start_call(self, conference_id: int, call_sid: str = None) -> ConferenceCall:
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CALLS_V1}/start_conference_call",
             payload={"conference_id": conference_id, "call_sid": call_sid},
             data_type=ConferenceCallResponse,
         ).conference_call
-        self.logger.info("Joined the call.")
-        return response
 
     def start_anonymous_call(
         self, conference_id: int, agora_uid: str
     ) -> ConferenceCall:
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/start_conference_call",
             payload={"conference_id": conference_id, "agora_uid": agora_uid},
             data_type=ConferenceCallResponse,
         ).conference_call
-        self.logger.info("Joined the call.")
-        return response
 
     def stop__anonymous_call(self, conference_id: int, agora_uid: str = None):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/leave_conference_call",
             payload={"conference_id": conference_id, "agora_uid": agora_uid},
         )
-        self.logger.info("Left the call.")
-        return response
 
     def stop_call(self, conference_id: int, call_sid: str = None):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CALLS_V1}/leave_conference_call",
             payload={"conference_id": conference_id, "call_sid": call_sid},
         )
-        self.logger.info("Left the call.")
-        return response

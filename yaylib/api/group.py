@@ -49,33 +49,27 @@ class GroupAPI(object):
         self.__base = base
 
     def accept_moderator_offer(self, group_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize"
         )
-        self.logger.info("Accepted the group moderator offer.")
-        return response
 
     def accept_ownership_offer(
         self,
         group_id: int,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer"
         )
-        self.logger.info("Accepted the group ownership offer.")
-        return response
 
     def accept_group_join_request(
         self,
         group_id: int,
         user_id: int,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/accept/{user_id}",
         )
-        self.logger.info("Accepted the group join request.")
-        return response
 
     def add_related_groups(self, group_id: int, related_group_id: list[int]):
         """
@@ -83,21 +77,17 @@ class GroupAPI(object):
         関連サークルを追加する
 
         """
-        response = self.__base._request(
+        return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
             params={"related_group_id[]": related_group_id},
         )
-        self.logger.info("Group has been added to the related groups.")
-        return response
 
     def ban_group_user(self, group_id: int, user_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban/{user_id}",
         )
-        self.logger.info(f"User '{user_id}' has been banned from the group.")
-        return response
 
     def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
         params = {}
@@ -134,7 +124,7 @@ class GroupAPI(object):
         guidelines: str = None,
     ) -> CreateGroupResponse:
         timestamp = int(datetime.now().timestamp())
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V3}/new",
             payload={
@@ -165,43 +155,31 @@ class GroupAPI(object):
             },
             data_type=CreateGroupResponse,
         )
-        self.logger.info("Group has been created.")
-        return response
 
     def create_pin_group(self, group_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.PINNED_V1}/groups", payload={"id": group_id}
         )
-        self.logger.info("Pinned the group.")
-        return response
 
     def decline_moderator_offer(self, group_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize"
         )
-        self.logger.info("Declined the moderator offer.")
-        return response
 
     def decline_ownership_offer(self, group_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer"
         )
-        self.logger.info("Declined the ownership offer.")
-        return response
 
     def decline_group_join_request(self, group_id: int, user_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/decline/{user_id}"
         )
-        self.logger.info("Declined the group join request.")
-        return response
 
     def delete_pin_group(self, group_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE", endpoint=f"{Endpoints.PINNED_V1}/groups/{group_id}"
         )
-        self.logger.info("Unpinned the group.")
-        return response
 
     def get_banned_group_members(
         self, group_id: int, page: int = None
@@ -383,84 +361,70 @@ class GroupAPI(object):
         group_id: int,
         user_ids: list[int],
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/invite",
             payload={"user_ids[]": user_ids},
         )
-        self.logger.info("Invited users to the group.")
-        return response
 
     def join_group(
         self,
         group_id: int,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/join",
         )
-        self.logger.info("You are now one of the members of the group.")
-        return response
 
     def leave_group(
         self,
         group_id: int,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/leave",
         )
-        self.logger.info("Left the group.")
-        return response
 
     def post_gruop_social_shared(
         self,
         group_id: int,
         sns_name: str,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/social_shared",
             params={"sns_name": sns_name},
         )
-        self.logger.info("Group social shared has been posted.")
-        return response
 
     def remove_group_cover(
         self,
         group_id: int,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/remove_cover",
         )
-        self.logger.info("Group cover image has been removed.")
-        return response
 
     def remove_moderator(
         self,
         group_id: int,
         user_id: int,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/fire/{user_id}",
         )
-        self.logger.info(f"Group moderator '{user_id}' has been removed.")
-        return response
 
     def remove_related_groups(
         self,
         group_id: int,
         related_group_ids: list[int],
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "DELETE",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
             params={"related_group_id[]": related_group_ids},
         )
-        self.logger.info("Related groups have been removed.")
-        return response
 
     def report_group(
         self,
@@ -473,7 +437,7 @@ class GroupAPI(object):
         screenshot_3_filename: str = None,
         screenshot_4_filename: str = None,
     ):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/report",
             payload={
@@ -486,12 +450,10 @@ class GroupAPI(object):
                 "screenshot_4_filename": screenshot_4_filename,
             },
         )
-        self.logger.info("Group has been reported.")
-        return response
 
     def send_moderator_offers(self, group_id: int, user_ids: list[int]):
         timestamp = int(datetime.now().timestamp())
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/deputize/mass",
             payload={
@@ -502,12 +464,10 @@ class GroupAPI(object):
                 "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
             },
         )
-        self.logger.info("Offered users to become a group moderator.")
-        return response
 
     def send_ownership_offer(self, group_id: int, user_id: int):
         timestamp = int(datetime.now().timestamp())
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/transfer",
             payload={
@@ -518,31 +478,23 @@ class GroupAPI(object):
                 "signed_info": self.generate_signed_info(self.device_uuid, timestamp),
             },
         )
-        self.logger.info("Offered user to become a group owner.")
-        return response
 
     def set_group_title(self, group_id: int, title: str):
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/set_title",
             payload={"title": title},
         )
-        self.logger.info("Group tittle has been set.")
-        return response
 
     def take_over_group_ownership(self, group_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/take_over"
         )
-        self.logger.info(f"Took over the group ownership of {group_id}.")
-        return response
 
     def unban_group_member(self, group_id: int, user_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/unban/{user_id}"
         )
-        self.logger.info("User has been banned from the group.")
-        return response
 
     def update_group(
         self,
@@ -569,7 +521,7 @@ class GroupAPI(object):
         guidelines: str = None,
     ) -> Group:
         timestamp = int(datetime.now().timestamp())
-        response = self.__base._request(
+        return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/update",
             payload={
@@ -600,22 +552,16 @@ class GroupAPI(object):
             },
             data_type=GroupResponse,
         ).group
-        self.logger.info("Group details have been updated.")
-        return response
 
     def withdraw_moderator_offer(self, group_id: int, user_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize/{user_id}/withdraw",
         )
-        self.logger.info("Group moderator offer has been withdrawn.")
-        return response
 
     def withdraw_ownership_offer(self, group_id: int, user_id: int):
-        response = self.__base._request(
+        return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer/withdraw",
             payload={"user_id": user_id},
         )
-        self.logger.info("Group ownership offer has been withdrawn.")
-        return response
