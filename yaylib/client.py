@@ -210,7 +210,7 @@ class BaseClient(WebSocketInteractor):
         cookie_filename: str = "cookies",
         loglevel: int = logging.INFO,
     ) -> None:
-        super().__init__(intents=intents)
+        super().__init__(self, intents)
 
         self.__max_retries: int = max_retries
         self.__backoff_factor: float = backoff_factor
