@@ -24,9 +24,11 @@ SOFTWARE.
 
 from __future__ import annotations
 
-from . import client
-
+import websocket
 from typing import Optional, Any
+
+from . import client
+from .config import Configs
 
 
 __all__ = (
@@ -40,5 +42,46 @@ class Intents(object):
 
 
 class WebSocketInteractor(object):
-    def __init__(self, intents: Intents, **options: Any) -> None:
+    def __init__(
+        self,
+        intents: Intents,
+        base: client.BaseClient,
+    ) -> None:
         self.__intents: Intents = intents
+        self.__base: client.BaseClient = base
+        self.__ws_token: Optional[str] = None
+        self.__ws: Optional[websocket.WebSocketApp] = None
+
+    def __on_open(self, ws):
+        pass
+
+    def __on_message(self, ws, message):
+        pass
+
+    def __on_error(self, ws, error):
+        self.__base.logger.error(error)
+
+    def __on_close(self, ws, close_status_code, close_msg):
+        pass
+
+    def __on_connect(self, sid: str):
+        pass
+
+    def __connect(self):
+        # connect to channels based on intents
+        pass
+
+    def run(self, email: str, password: str) -> None:
+        self.__base._prepare(email, password)
+        self.__ws_token = self.__base.MiscAPI.get_web_socket_token().token
+        self.__ws = websocket.WebSocketApp(
+            f"wss://{Configs.CABLE_HOST}/?token={self.__ws_token}&app_version={Configs.VERSION_NAME}",
+            on_open=self.__on_open,
+            on_message=self.__on_message,
+            on_error=self.__on_error,
+            on_close=self.__on_close,
+        )
+        self.__ws.run_forever()
+
+    def stop(self) -> None:
+        self.__ws.keep_running = False
