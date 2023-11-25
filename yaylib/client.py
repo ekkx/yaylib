@@ -361,12 +361,15 @@ class BaseClient(WebSocketInteractor):
         self,
         method: str,
         endpoint: str,
-        params: Optional[Dict[str | Any]] = None,
-        payload: Optional[Dict[str | Any]] = None,
-        headers: Optional[Dict[str | str]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        payload: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, str]] = None,
         jwt_required: bool = False,
         bypass_delay: bool = False,
     ) -> dict | str:
+        params: Optional[Dict[str, Any]] = self.__filter_request_params(params)
+        payload: Optional[Dict[str, Any]] = self.__filter_request_params(payload)
+
         # set client ip address to request header if not exists
         if (
             not self.__header_interceptor.get_client_ip()
@@ -519,6 +522,17 @@ class BaseClient(WebSocketInteractor):
             f"Response: {response.text}\n"
         )
 
+    def __filter_request_params(
+        self, params: Optional[Dict[str, Any]] = None
+    ) -> Optional[Dict[str, Any]]:
+        if params is None:
+            return None
+        new_params = {}
+        for k in params:
+            if params[k] is not None:
+                new_params[k] = params[k]
+        return new_params
+
     def __is_access_token_expired_error(self, response: httpx.Response) -> bool:
         return response.status_code == 401 and (
             response.get("error_code") == ErrorCode.AccessTokenExpired
@@ -578,10 +592,10 @@ class BaseClient(WebSocketInteractor):
         self,
         method: str,
         endpoint: str,
-        params: Optional[Dict[str | Any]] = None,
-        payload: Optional[Dict[str | Any]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        payload: Optional[Dict[str, Any]] = None,
         data_type: Optional[object] = None,
-        headers: Optional[Dict[str | Any]] = None,
+        headers: Optional[Dict[str, Any]] = None,
         jwt_required: bool = False,
         bypass_delay: bool = False,
     ) -> object | dict:
