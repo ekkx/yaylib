@@ -31,6 +31,7 @@ from typing import Optional, Dict, Type, Any
 
 from . import client
 from .config import Configs
+from .models import Message
 
 
 __all__ = (
@@ -56,13 +57,37 @@ class Intents:
         return cls()
 
 
-class ChannelMessage(object):
-    __slots__ = ("type", "message", "identifier")
+class Identifier(object):
+    __slots__ = "channel"
 
     def __init__(self, data) -> None:
-        self.type: str = data.get("type")
-        self.message: str = data.get("message")
-        self.identifier: str = data.get("identifier")
+        self.channel: Optional[str] = data.get("channel")
+
+
+class Content(object):
+    __slots__ = ("event", "message", "data")
+
+    def __init__(self, data) -> None:
+        self.event: Optional[str] = data.get("event")
+        self.message: Optional[Dict[str, Any]] = data.get("message")
+        self.data: Optional[Dict[str, Any]] = data.get("data")
+
+
+class ChannelMessage(object):
+    __slots__ = ("type", "message", "identifier", "sid")
+
+    def __init__(self, data) -> None:
+        self.type: Optional[str] = data.get("type")
+
+        self.message: Optional[Content] = data.get("message")
+        if self.message is not None:
+            Content(self.message)
+
+        self.identifier: Optional[Identifier] = data.get("identifier")
+        if self.identifier is not None:
+            Identifier(json.loads(self.identifier))
+
+        self.sid: Optional[str] = data.get("sid")
 
 
 class WebSocketInteractor(object):
@@ -94,6 +119,41 @@ class WebSocketInteractor(object):
 
         if events.type == "welcome":
             self.__connect()
+            self.on_ready()
+            return
+
+        if events.type == "confirm_subscription" and events.identifier:
+            self.__base.logger.debug(
+                f"Connected to Gateway -> {events.identifier.channel}"
+            )
+            return
+
+        content = events.message
+
+        if content and events.identifier and content.event:
+            if events.identifier.channel == "ChatRoomChannel":
+                if content.event == "new_message":
+                    if content.message:
+                        self.on_message_create(Message(content.message))
+                elif content.event == "chat_deleted":
+                    self.on_chat_room_delete(content.data.get("room_id"))
+                elif content.event == "total_chat_request":
+                    self.on_chat_request(content.data.get("total_count"))
+            elif events.identifier.channel == "GroupUpdatesChannel":
+                if content.event == "new_post":
+                    self.on_group_update(content.data.get("group_id"))
+
+    def on_message_create(message: Message):
+        pass
+
+    def on_chat_room_delete(room_id: int | None):
+        pass
+
+    def on_chat_request(total_count: int | None):
+        pass
+
+    def on_group_update(group_id: int | None):
+        pass
 
     def __on_error(self, ws, error):
         self.__base.logger.error(error)
@@ -127,8 +187,6 @@ class WebSocketInteractor(object):
         ]
         for channel in channels:
             self.__subscribe(self.intent_map.get(channel))
-
-        self.on_ready()
 
     def on_ready(self) -> None:
         """クライアントの準備が完了すると呼び出されます"""
