@@ -80,12 +80,12 @@ class ChannelMessage(object):
         self.type: Optional[str] = data.get("type")
 
         self.message: Optional[Content] = data.get("message")
-        if self.message is not None:
+        if self.message is not None and isinstance(self.message, dict):
             Content(self.message)
 
         self.identifier: Optional[Identifier] = data.get("identifier")
         if self.identifier is not None:
-            Identifier(json.loads(self.identifier))
+            self.identifier = Identifier(json.loads(self.identifier))
 
         self.sid: Optional[str] = data.get("sid")
 
