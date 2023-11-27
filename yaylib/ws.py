@@ -137,31 +137,25 @@ class WebSocketInteractor(object):
                         self.on_message_create(Message(content.message))
 
                 elif content.event == "chat_deleted":
-                    room_id: int | None = content.data.get("room_id")
-                    if room_id is not None:
-                        self.on_chat_room_delete(room_id)
+                    self.on_chat_room_delete(content.data.get("room_id"))
 
                 elif content.event == "total_chat_request":
-                    total_count: int | None = content.data.get("total_count")
-                    if total_count is not None:
-                        self.on_chat_request(total_count)
+                    self.on_chat_request(content.data.get("total_count"))
 
             elif events.identifier.channel == "GroupUpdatesChannel":
                 if content.event == "new_post":
-                    group_id: int | None = content.data.get("group_id")
-                    if group_id is not None:
-                        self.on_group_update(group_id)
+                    self.on_group_update(content.data.get("group_id"))
 
-    def on_message_create(message: Message):
+    def on_message_create(self, message: Message):
         pass
 
-    def on_chat_room_delete(room_id: int):
+    def on_chat_room_delete(self, room_id: int | None):
         pass
 
-    def on_chat_request(total_count: int):
+    def on_chat_request(self, total_count: int | None):
         pass
 
-    def on_group_update(group_id: int):
+    def on_group_update(self, group_id: int | None):
         pass
 
     def __on_error(self, ws, error):
