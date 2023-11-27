@@ -50,6 +50,25 @@ def console_print(*args):
     print("\n")
 
 
+def mention(user_id: int, display_name: str) -> str:
+    """
+
+    ユーザーをメンションします
+
+    #### Useage
+
+        >>> import yaylib
+        >>> from yaylib import mention
+        >>> api = yaylib.Client()
+        >>> api.login(email, password)
+        >>> api.create_post(f"こんにちは、{mention(user_id=15184, display_name='アルパカ')}さん！")
+
+    """
+    if not len(display_name):
+        raise ValueError("display_nameは空白にできません。")
+    return f"<@>{user_id}:{display_name}<@/>"
+
+
 def generate_uuid(uuid_type=True):
     generated_uuid = str(uuid.uuid4())
     if uuid_type:
