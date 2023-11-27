@@ -147,15 +147,19 @@ class WebSocketInteractor(object):
                     self.on_group_update(content.data.get("group_id"))
 
     def on_message_create(self, message: Message):
+        """チャットメッセージが届いた時に発火される関数"""
         pass
 
     def on_chat_room_delete(self, room_id: int | None):
+        """チャットルームが削除された時に発火される関数"""
         pass
 
     def on_chat_request(self, total_count: int | None):
+        """チャットリクエストが届いた時に発火される関数"""
         pass
 
     def on_group_update(self, group_id: int | None):
+        """サークルに投稿された時に発火される関数"""
         pass
 
     def __on_error(self, ws, error):
@@ -197,6 +201,7 @@ class WebSocketInteractor(object):
         self.__base.logger.debug("on_ready")
 
     def run(self, email: str, password: str) -> None:
+        """クライアントを起動します"""
         self.__base._prepare(email, password)
         self.__ws_token = self.__base.MiscAPI.get_web_socket_token().token
         self.__ws = websocket.WebSocketApp(
@@ -209,4 +214,5 @@ class WebSocketInteractor(object):
         self.__ws.run_forever()
 
     def stop(self) -> None:
+        """クライアントを停止します"""
         self.__ws.keep_running = False
