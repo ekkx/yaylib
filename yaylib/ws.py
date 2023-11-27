@@ -81,7 +81,7 @@ class ChannelMessage(object):
 
         self.message: Optional[Content] = data.get("message")
         if self.message is not None and isinstance(self.message, dict):
-            Content(self.message)
+            self.message = Content(self.message)
 
         self.identifier: Optional[Identifier] = data.get("identifier")
         if self.identifier is not None:
