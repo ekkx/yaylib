@@ -31,7 +31,7 @@ keywords = [
 ]
 
 install_requires = [
-    "httpx[http2,socks]==0.17.1",
+    "httpx[http2,socks]==0.25.2",
     "Pillow==9.3.0",
     "cryptography==41.0.1",
     "websocket-client==1.6.0",
