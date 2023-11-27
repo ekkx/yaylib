@@ -133,26 +133,35 @@ class WebSocketInteractor(object):
         if content and events.identifier and content.event:
             if events.identifier.channel == "ChatRoomChannel":
                 if content.event == "new_message":
-                    if content.message:
+                    if content.message is not None:
                         self.on_message_create(Message(content.message))
+
                 elif content.event == "chat_deleted":
-                    self.on_chat_room_delete(content.data.get("room_id"))
+                    room_id: int | None = content.data.get("room_id")
+                    if room_id is not None:
+                        self.on_chat_room_delete(room_id)
+
                 elif content.event == "total_chat_request":
-                    self.on_chat_request(content.data.get("total_count"))
+                    total_count: int | None = content.data.get("total_count")
+                    if total_count is not None:
+                        self.on_chat_request(total_count)
+
             elif events.identifier.channel == "GroupUpdatesChannel":
                 if content.event == "new_post":
-                    self.on_group_update(content.data.get("group_id"))
+                    group_id: int | None = content.data.get("group_id")
+                    if group_id is not None:
+                        self.on_group_update(group_id)
 
     def on_message_create(message: Message):
         pass
 
-    def on_chat_room_delete(room_id: int | None):
+    def on_chat_room_delete(room_id: int):
         pass
 
-    def on_chat_request(total_count: int | None):
+    def on_chat_request(total_count: int):
         pass
 
-    def on_group_update(group_id: int | None):
+    def on_group_update(group_id: int):
         pass
 
     def __on_error(self, ws, error):
@@ -162,16 +171,15 @@ class WebSocketInteractor(object):
         pass
 
     def __send_channel_command(self, command: str, channel: str) -> None:
-        if self.__ws is None:
-            return
-        self.__ws.send(
-            json.dumps(
-                {
-                    "command": command,
-                    "identifier": f'{{"channel":"{channel}"}}',
-                }
+        if self.__ws is not None:
+            self.__ws.send(
+                json.dumps(
+                    {
+                        "command": command,
+                        "identifier": f'{{"channel":"{channel}"}}',
+                    }
+                )
             )
-        )
 
     def __subscribe(self, channel: str) -> None:
         self.__send_channel_command("subscribe", channel)
@@ -186,7 +194,9 @@ class WebSocketInteractor(object):
             channel for channel, value in intents_vars.items() if value
         ]
         for channel in channels:
-            self.__subscribe(self.intent_map.get(channel))
+            channel = self.intent_map.get(channel)
+            if channel is not None:
+                self.__subscribe(channel)
 
     def on_ready(self) -> None:
         """クライアントの準備が完了すると呼び出されます"""
