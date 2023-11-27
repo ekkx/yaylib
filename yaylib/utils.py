@@ -27,6 +27,7 @@ import jwt
 import uuid
 
 from datetime import datetime
+from typing import Any
 
 from .config import Configs
 
@@ -67,6 +68,31 @@ def mention(user_id: int, display_name: str) -> str:
     if not len(display_name):
         raise ValueError("display_nameは空白にできません。")
     return f"<@>{user_id}:{display_name}<@/>"
+
+
+def build_message_tags(text: str) -> tuple[str, list[dict[str, Any]]]:
+    if "<@>" in text and "<@/>" in text:
+        message_tags = []
+        regex = re.compile(r"<@>(\d+):([^<]+)<@/>")
+        offset_adjustment = 0
+
+        for result in regex.finditer(text):
+            full_match_length = len(result.group(0))
+            display_name_length = len(result.group(2))
+
+            message_tags.append(
+                {
+                    "type": "user",
+                    "user_id": int(result.group(1)),
+                    "offset": result.start() - offset_adjustment,
+                    "length": display_name_length,
+                }
+            )
+
+            offset_adjustment += full_match_length - display_name_length
+
+    text: str = re.sub(r"<@>(\d+):([^<]+)<@/>", r"\2", text)
+    return text, message_tags
 
 
 def generate_uuid(uuid_type=True):
