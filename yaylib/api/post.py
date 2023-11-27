@@ -24,6 +24,7 @@ SOFTWARE.
 
 from __future__ import annotations
 
+import re
 import json
 from datetime import datetime
 
@@ -41,6 +42,7 @@ from ..responses import (
     LikePostsResponse,
     ValidationPostResponse,
 )
+from ..utils import build_message_tags
 
 
 class PostAPI(object):
@@ -86,9 +88,7 @@ class PostAPI(object):
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
     ) -> ConferenceCall:
-        if text is not None:
-            if "@:start:" in text and ":end:" in text:
-                text, message_tags = self.parse_mention_format(self, text)
+        text, message_tags = build_message_tags(text)
 
         timestamp = int(datetime.now().timestamp())
 
@@ -110,7 +110,7 @@ class PostAPI(object):
                 "category_id": category_id,
                 "game_title": game_title,
                 "joinable_by": joinable_by,
-                "message_tags": str(message_tags),
+                "message_tags": message_tags,
                 "attachment_filename": attachment_filename,
                 "attachment_2_filename": attachment_2_filename,
                 "attachment_3_filename": attachment_3_filename,
@@ -136,58 +136,6 @@ class PostAPI(object):
             "POST", endpoint=f"{Endpoints.PINNED_V1}/posts", payload={"id": post_id}
         )
 
-    def mention(self, user_id: int) -> str:
-        if not (isinstance(user_id, int) or str(user_id).isdigit()):
-            raise ValueError(
-                "The value of 'user_id' must be an integer or a string containing only digits."
-            )
-        return "@:start:" + str(user_id) + ":end:"
-
-    def convert_mention_format(self, text) -> tuple:
-        # Do NOT write this function in client.py
-        formatted_text = ""
-        user_ids = []
-        segments = text.split("@:start:")
-
-        for i, segment in enumerate(segments):
-            if i == 0:
-                formatted_text += segment
-                continue
-            user_id, text = segment.split(":end:")
-            username = self.get_user_without_leaving_footprint(user_id).user.nickname
-            formatted_text += "@" + username + " " + text
-            user_ids.append(user_id)
-
-        return formatted_text, user_ids
-
-    def parse_mention_format(self, text) -> tuple:
-        # Do NOT write this function in client.py
-        user_ids = {}
-        message_tags = []
-        offset = 0
-
-        text, user_ids = self.convert_mention_format(self, text)
-
-        for user_id in user_ids:
-            start = text.find("@", offset)
-            if start == -1:
-                break
-            end = text.find(" ", start)
-            if end == -1:
-                end = len(text)
-            username = text[start + 1 : end]
-            message_tags.append(
-                {
-                    "type": "user",
-                    "user_id": int(user_id),
-                    "offset": start,
-                    "length": len(username) + 1,
-                }
-            )
-            offset = end
-
-        return text, json.dumps(message_tags)
-
     def create_post(
         self,
         text: str = None,
@@ -210,9 +158,7 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-        if text is not None:
-            if "@:start:" in text and ":end:" in text:
-                text, message_tags = self.parse_mention_format(self, text)
+        text, message_tags = build_message_tags(text)
 
         post_type = (
             "survey"
@@ -246,7 +192,7 @@ class PostAPI(object):
                 "mention_ids": mention_ids,
                 "choices": choices,
                 "shared_url": shared_url,
-                "message_tags": str(message_tags),
+                "message_tags": message_tags,
                 "attachment_filename": attachment_filename,
                 "attachment_2_filename": attachment_2_filename,
                 "attachment_3_filename": attachment_3_filename,
@@ -285,9 +231,7 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-        if text is not None:
-            if "@:start:" in text and ":end:" in text:
-                text, message_tags = self.parse_mention_format(self, text)
+        text, message_tags = build_message_tags(text)
 
         post_type = (
             "survey"
@@ -322,7 +266,7 @@ class PostAPI(object):
                 "mention_ids": mention_ids,
                 "choices": choices,
                 "shared_url": shared_url,
-                "message_tags": str(message_tags),
+                "message_tags": message_tags,
                 "attachment_filename": attachment_filename,
                 "attachment_2_filename": attachment_2_filename,
                 "attachment_3_filename": attachment_3_filename,
@@ -392,9 +336,7 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-        if text is not None:
-            if "@:start:" in text and ":end:" in text:
-                text, message_tags = self.parse_mention_format(self, text)
+        text, message_tags = build_message_tags(text)
 
         post_type = (
             "survey"
@@ -429,7 +371,7 @@ class PostAPI(object):
                 "mention_ids": mention_ids,
                 "choices": choices,
                 "shared_url": shared_url,
-                "message_tags": str(message_tags),
+                "message_tags": message_tags,
                 "attachment_filename": attachment_filename,
                 "attachment_2_filename": attachment_2_filename,
                 "attachment_3_filename": attachment_3_filename,
@@ -887,8 +829,7 @@ class PostAPI(object):
         color: int = None,
         message_tags: list = [],
     ) -> Post:
-        if "@:start:" in text and ":end:" in text:
-            text, message_tags = self.parse_mention_format(self, text)
+        text, message_tags = build_message_tags(text)
 
         timestamp = int(datetime.now().timestamp())
 
@@ -899,7 +840,7 @@ class PostAPI(object):
                 "text": text,
                 "font_size": font_size,
                 "color": color,
-                "message_tags": str(message_tags),
+                "message_tags": message_tags,
                 "api_key": Configs.API_KEY,
                 "timestamp": timestamp,
                 "signed_info": self.generate_signed_info(
