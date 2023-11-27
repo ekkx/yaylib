@@ -24,8 +24,6 @@ SOFTWARE.
 
 from __future__ import annotations
 
-import re
-import json
 from datetime import datetime
 
 from .. import client
@@ -42,7 +40,7 @@ from ..responses import (
     LikePostsResponse,
     ValidationPostResponse,
 )
-from ..utils import build_message_tags
+from ..utils import build_message_tags, get_post_type
 
 
 class PostAPI(object):
@@ -160,16 +158,11 @@ class PostAPI(object):
     ) -> Post:
         text, message_tags = build_message_tags(text)
 
-        post_type = (
-            "survey"
-            if choices
-            else "shareable_url"
-            if shared_url
-            else "video"
-            if video_file_name
-            else "image"
-            if attachment_filename
-            else "text"
+        post_type = get_post_type(
+            choices=choices,
+            shared_url=shared_url,
+            video_file_name=video_file_name,
+            attachment_filename=attachment_filename,
         )
 
         if shared_url is not None:
@@ -233,16 +226,11 @@ class PostAPI(object):
     ) -> Post:
         text, message_tags = build_message_tags(text)
 
-        post_type = (
-            "survey"
-            if choices
-            else "shareable_url"
-            if shared_url
-            else "video"
-            if video_file_name
-            else "image"
-            if attachment_filename
-            else "text"
+        post_type = get_post_type(
+            choices=choices,
+            shared_url=shared_url,
+            video_file_name=video_file_name,
+            attachment_filename=attachment_filename,
         )
 
         if shared_url is not None:
@@ -338,16 +326,11 @@ class PostAPI(object):
     ) -> Post:
         text, message_tags = build_message_tags(text)
 
-        post_type = (
-            "survey"
-            if choices
-            else "shareable_url"
-            if shared_url
-            else "video"
-            if video_file_name
-            else "image"
-            if attachment_filename
-            else "text"
+        post_type = get_post_type(
+            choices=choices,
+            shared_url=shared_url,
+            video_file_name=video_file_name,
+            attachment_filename=attachment_filename,
         )
 
         if shared_url is not None:

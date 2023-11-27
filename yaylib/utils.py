@@ -95,6 +95,19 @@ def build_message_tags(text: str) -> tuple[str, list[dict[str, Any]]]:
     return text, message_tags
 
 
+def get_post_type(**kwargs) -> str:
+    if kwargs.get("choices"):
+        return "survey"
+    elif kwargs.get("shared_url"):
+        return "shareable_url"
+    elif kwargs.get("video_file_name"):
+        return "video"
+    elif kwargs.get("attachment_filename"):
+        return "image"
+    else:
+        return "text"
+
+
 def generate_uuid(uuid_type=True):
     generated_uuid = str(uuid.uuid4())
     if uuid_type:
