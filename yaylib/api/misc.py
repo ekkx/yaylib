@@ -31,8 +31,8 @@ from PIL import Image
 from urllib import parse
 
 from .. import client
-from ..config import Endpoints, Configs
-from ..models import ApplicationConfig, Attachment, BanWord, PresignedUrl, PopularWord
+from ..config import Configs
+from ..models import Attachment
 from ..responses import (
     EmailGrantTokenResponse,
     EmailVerificationPresignedUrlResponse,
@@ -46,7 +46,7 @@ from ..responses import (
     PopularWordsResponse,
     PolicyAgreementsResponse,
 )
-from ..utils import is_valid_image_format, get_hashed_filename
+from ..utils import is_valid_image_format, get_hashed_filename, generate_uuid
 
 
 upload_item_types = [
@@ -69,7 +69,7 @@ class MiscAPI(object):
     def accept_policy_agreement(self, type: str):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V1}/policy_agreements/{type}",
+            route=f"/v1/users/policy_agreements/{type}",
             bypass_delay=True,
         )
 
@@ -84,13 +84,13 @@ class MiscAPI(object):
 
         """
         return self.__base._request(
-            "GET", endpoint=f"{Endpoints.SNS_THUMBNAIL_V1}/generate", params=params
+            "GET", route=f"/v1/sns_thumbnail/generate", params=params
         )
 
     def send_verification_code(self, email: str):
         return self.__base._request(
             "POST",
-            endpoint=self.get_email_verification_presigned_url(
+            route=self.get_email_verification_presigned_url(
                 email=email, locale="ja"
             ).url,
             payload={"locale": "ja", "email": email},
@@ -99,17 +99,18 @@ class MiscAPI(object):
     def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GET_EMAIL_GRANT_TOKEN}",
+            base_url=Configs.ID_CARD_CHECK_HOST_PRODUCTION,
+            route="/apis/v1/apps/yay/email_grant_tokens",
             payload={"code": code, "email": email},
             data_type=EmailGrantTokenResponse,
-        ).email_grant_token
+        )
 
     def get_email_verification_presigned_url(
         self, email: str, locale: str, intent: str = None
     ) -> str:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.EMAIL_VERIFICATION_URL_V1}",
+            route="/v1/email_verification_urls",
             payload={
                 "device_uuid": self.__base.device_uuid,
                 "email": email,
@@ -122,41 +123,45 @@ class MiscAPI(object):
 
     def get_file_upload_presigned_urls(
         self, file_names: list[str]
-    ) -> list[PresignedUrl]:
+    ) -> PresignedUrlsResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.BUCKETS_V1}/presigned_urls",
+            route="/v1/buckets/presigned_urls",
             params={"file_names[]": file_names},
             data_type=PresignedUrlsResponse,
             bypass_delay=True,
-        ).presigned_urls
+        )
 
-    def get_id_checker_presigned_url(self, model: str, action: str, **params) -> str:
+    def get_id_checker_presigned_url(
+        self, model: str, action: str, **params
+    ) -> IdCheckerPresignedUrlResponse:
         # TODO: @QueryMap @NotNull Map<String, String> map
         """
         Meow..
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.ID_CHECK_V1}/{model}/{action}",
+            route=f"/v1/id_check/{model}/{action}",
             params=params,
             data_type=IdCheckerPresignedUrlResponse,
             bypass_delay=True,
-        ).presigned_url
+        )
 
-    def get_old_file_upload_presigned_url(self, video_file_name: str) -> str:
+    def get_old_file_upload_presigned_url(
+        self, video_file_name: str
+    ) -> PresignedUrlResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/presigned_url",
+            route=f"/v1/users/presigned_url",
             params={"video_file_name": video_file_name},
             data_type=PresignedUrlResponse,
             bypass_delay=True,
-        ).presigned_url
+        )
 
     def get_policy_agreements(self) -> PolicyAgreementsResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/policy_agreements",
+            route=f"/v1/users/policy_agreements",
             data_type=PolicyAgreementsResponse,
             bypass_delay=True,
         )
@@ -164,7 +169,7 @@ class MiscAPI(object):
     def get_web_socket_token(self, headers: dict = None) -> WebSocketTokenResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/ws_token",
+            route=f"/v1/users/ws_token",
             data_type=WebSocketTokenResponse,
             headers=headers,
             bypass_delay=True,
@@ -180,7 +185,7 @@ class MiscAPI(object):
         # TODO: check platform, verification_string
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GENUINE_DEVICES_V1}/verify",
+            route="/v1/genuine_devices/verify",
             payload={
                 "app_version": app_version,
                 "device_uuid": device_uuid,
@@ -256,7 +261,7 @@ class MiscAPI(object):
                 is_thumb=True,
             )
 
-            uuid = self.generate_uuid(False)[:16]
+            uuid = generate_uuid(False)[:16]
 
             original_attachment.filename = get_hashed_filename(
                 original_attachment, image_type, key, uuid
@@ -269,7 +274,7 @@ class MiscAPI(object):
             _files.append(thumbnail_attachment)
 
         file_names = [x.filename for x in _files]
-        res_presigned_url = self.get_file_upload_presigned_urls(self, file_names)
+        res_presigned_url = self.get_file_upload_presigned_urls(file_names).presigned_urls
 
         res_upload = []
 
@@ -301,23 +306,23 @@ class MiscAPI(object):
 
     # config
 
-    def get_app_config(self) -> ApplicationConfig:
+    def get_app_config(self) -> ApplicationConfigResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"https://{Configs.CONFIG_HOST}/api/apps/yay",
+            route=f"https://{Configs.CONFIG_HOST}/api/apps/yay",
             data_type=ApplicationConfigResponse,
-        ).app
+        )
 
-    def get_banned_words(self, country_code: str = "jp") -> list[BanWord]:
+    def get_banned_words(self, country_code: str = "jp") -> BanWordsResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"https://{Configs.CONFIG_HOST}/{country_code}/api/v2/banned_words",
+            route=f"https://{Configs.CONFIG_HOST}/{country_code}/api/v2/banned_words",
             data_type=BanWordsResponse,
-        ).ban_words
+        )
 
-    def get_popular_words(self, country_code: str = "jp") -> list[PopularWord]:
+    def get_popular_words(self, country_code: str = "jp") -> PopularWordsResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"https://{Configs.CONFIG_HOST}/{country_code}/api/apps/yay/popular_words",
+            route=f"https://{Configs.CONFIG_HOST}/{country_code}/api/apps/yay/popular_words",
             data_type=PopularWordsResponse,
-        ).popular_words
+        )

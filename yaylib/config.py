@@ -24,6 +24,7 @@ SOFTWARE.
 
 from .models import Device
 
+
 class Configs:
     API_VERSION_NAME = "3.29"
     VERSION_NAME = "3.29.0"
@@ -50,98 +51,3 @@ class Configs:
     )
     USER_AGENT = f"{DEVICE.device_type} {DEVICE.os_version} ({DEVICE.screen_density}x {DEVICE.screen_size} {DEVICE.model})"
     DEVICE_INFO = "yay " + VERSION_NAME + " " + USER_AGENT
-
-
-class Endpoints:
-    BASE_API_URL = "https://" + Configs.PRODUCTION_HOST
-
-    # api v1 endpoints
-    USERS_V1 = BASE_API_URL + "/v1/users"
-    PAYMENTS_V1 = BASE_API_URL + "/v1/payments"
-    THREADS_V1 = BASE_API_URL + "/v1/threads"
-    PINNED_V1 = BASE_API_URL + "/v1/pinned"
-    POSTS_V1 = BASE_API_URL + "/v1/posts"
-    CONVERSATIONS_V1 = BASE_API_URL + "/v1/conversations"
-    HIDDEN_V1 = BASE_API_URL + "/v1/hidden"
-    GROUPS_V1 = BASE_API_URL + "/v1/groups"
-    CHAT_ROOMS_V1 = BASE_API_URL + "/v1/chat_rooms"
-    CALLS_V1 = BASE_API_URL + "/v1/calls"
-    SURVEYS_V1 = BASE_API_URL + "/v1/surveys"
-    FRIENDS_V1 = BASE_API_URL + "/v1/friends"
-    GAMES_V1 = BASE_API_URL + "/v1/games"
-    GENRES_V1 = BASE_API_URL + "/v1/genres"
-    ANONYMOUS_CALLS_V1 = BASE_API_URL + "/v1/anonymous_calls"
-    NOTIFICATION_SETTINGS_V1 = BASE_API_URL + "/v1/notification_settings"
-    STICKER_PACKS_V1 = BASE_API_URL + "/v1/sticker_packs"
-    SNS_THUMBNAIL_V1 = BASE_API_URL + "/v1/sns_thumbnail"
-    EMAIL_VERIFICATION_URL_V1 = BASE_API_URL + "/v1/email_verification_urls"
-    BUCKETS_V1 = BASE_API_URL + "/v1/buckets"
-    ID_CHECK_V1 = BASE_API_URL + "/v1/id_check"
-    PROMOTIONS_V1 = BASE_API_URL + "/v1/promotions"
-    SKYFALL_V1 = BASE_API_URL + "/v1/skyfall"
-    GENUINE_DEVICES_V1 = BASE_API_URL + "/v1/genuine_devices"
-    LOBI_FRIENDS_V1 = BASE_API_URL + "/v1/lobi_friends"
-    WEB_V1 = BASE_API_URL + "/v1/web"
-
-    # api v2 endpoints
-    USERS_V2 = BASE_API_URL + "/v2/users"
-    PAYMENTS_V2 = BASE_API_URL + "/v2/payments"
-    THREADS_V2 = BASE_API_URL + "/v2/threads"
-    PINNED_V2 = BASE_API_URL + "/v2/pinned"
-    POSTS_V2 = BASE_API_URL + "/v2/posts"
-    CONVERSATIONS_V2 = BASE_API_URL + "/v2/conversations"
-    HIDDEN_V2 = BASE_API_URL + "/v2/hidden"
-    GROUPS_V2 = BASE_API_URL + "/v2/groups"
-    CHAT_ROOMS_V2 = BASE_API_URL + "/v2/chat_rooms"
-    CALLS_V2 = BASE_API_URL + "/v2/calls"
-    SURVEYS_V2 = BASE_API_URL + "/v2/surveys"
-    FRIENDS_V2 = BASE_API_URL + "/v2/friends"
-    GAMES_V2 = BASE_API_URL + "/v2/games"
-    GENRES_V2 = BASE_API_URL + "/v2/genres"
-    ANONYMOUS_CALLS_V2 = BASE_API_URL + "/v2/anonymous_calls"
-    NOTIFICATION_SETTINGS_V2 = BASE_API_URL + "/v2/notification_settings"
-    STICKER_PACKS_V2 = BASE_API_URL + "/v2/sticker_packs"
-    SNS_THUMBNAIL_V2 = BASE_API_URL + "/v2/sns_thumbnail"
-    EMAIL_VERIFICATION_URL_V2 = BASE_API_URL + "/v2/email_verification_urls"
-    BUCKETS_V2 = BASE_API_URL + "/v2/buckets"
-    ID_CHECK_V2 = BASE_API_URL + "/v2/id_check"
-    PROMOTIONS_V2 = BASE_API_URL + "/v2/promotions"
-    SKYFALL_V2 = BASE_API_URL + "/v2/skyfall"
-    GENUINE_DEVICES_V2 = BASE_API_URL + "/v2/genuine_devices"
-    LOBI_FRIENDS_V2 = BASE_API_URL + "/v2/lobi_friends"
-    WEB_V2 = BASE_API_URL + "/v2/web"
-
-    # api v3 endpoints
-    USERS_V3 = BASE_API_URL + "/v3/users"
-    PAYMENTS_V3 = BASE_API_URL + "/v3/payments"
-    THREADS_V3 = BASE_API_URL + "/v3/threads"
-    PINNED_V3 = BASE_API_URL + "/v3/pinned"
-    POSTS_V3 = BASE_API_URL + "/v3/posts"
-    CONVERSATIONS_V3 = BASE_API_URL + "/v3/conversations"
-    HIDDEN_V3 = BASE_API_URL + "/v3/hidden"
-    GROUPS_V3 = BASE_API_URL + "/v3/groups"
-    CHAT_ROOMS_V3 = BASE_API_URL + "/v3/chat_rooms"
-    CALLS_V3 = BASE_API_URL + "/v3/calls"
-    SURVEYS_V3 = BASE_API_URL + "/v3/surveys"
-    FRIENDS_V3 = BASE_API_URL + "/v3/friends"
-    GAMES_V3 = BASE_API_URL + "/v3/games"
-    GENRES_V3 = BASE_API_URL + "/v3/genres"
-    ANONYMOUS_CALLS_V3 = BASE_API_URL + "/v3/anonymous_calls"
-    NOTIFICATION_SETTINGS_V3 = BASE_API_URL + "/v3/notification_settings"
-    STICKER_PACKS_V3 = BASE_API_URL + "/v3/sticker_packs"
-    SNS_THUMBNAIL_V3 = BASE_API_URL + "/v3/sns_thumbnail"
-    EMAIL_VERIFICATION_URL_V3 = BASE_API_URL + "/v3/email_verification_urls"
-    BUCKETS_V3 = BASE_API_URL + "/v3/buckets"
-    ID_CHECK_V3 = BASE_API_URL + "/v3/id_check"
-    PROMOTIONS_V3 = BASE_API_URL + "/v3/promotions"
-    SKYFALL_V3 = BASE_API_URL + "/v3/skyfall"
-    GENUINE_DEVICES_V3 = BASE_API_URL + "/v3/genuine_devices"
-    LOBI_FRIENDS_V3 = BASE_API_URL + "/v3/lobi_friends"
-    WEB_V3 = BASE_API_URL + "/v3/web"
-
-    # misc
-    GET_EMAIL_GRANT_TOKEN = (
-        "https://"
-        + Configs.ID_CARD_CHECK_HOST_PRODUCTION
-        + "/apis/v1/apps/yay/email_grant_tokens"
-    )

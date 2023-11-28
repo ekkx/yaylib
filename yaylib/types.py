@@ -22,10 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from enum import Enum
 
-
-class PostType(Enum):
+class PostType(object):
     """投稿の種類"""
 
     text = "text"
@@ -44,7 +42,7 @@ class PostType(Enum):
     """ `shareable_url`: サークルやスレッド共有用の投稿タイプ"""
 
 
-class CallType(Enum):
+class CallType(object):
     """通話の種類"""
 
     voice = "voice"
@@ -53,7 +51,7 @@ class CallType(Enum):
     """ `vdo`: ビデオ通話用の通話タイプ"""
 
 
-class ImageType(Enum):
+class ImageType(object):
     """画像の種類"""
 
     post = "post"
@@ -76,7 +74,7 @@ class ImageType(Enum):
     """ `group_icon`: グループのアイコンをアップロードする際の画像タイプ"""
 
 
-class ShareableType(Enum):
+class ShareableType(object):
     """共有の種類"""
 
     group = "group"
@@ -85,7 +83,7 @@ class ShareableType(Enum):
     """ `thread`: スレッド用の共有タイプ"""
 
 
-class PolicyType(Enum):
+class PolicyType(object):
     """利用規約の種類"""
 
     privacy_policy = "privacy_policy"

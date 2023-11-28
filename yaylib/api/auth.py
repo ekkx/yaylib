@@ -24,20 +24,17 @@ SOFTWARE.
 
 from __future__ import annotations
 
-import hashlib
-
-from cryptography.fernet import Fernet
 from datetime import datetime
 
 from .. import client
-from ..config import Configs, Endpoints
-from ..errors import ForbiddenError
+from ..config import Configs
 from ..responses import (
     LoginUserResponse,
     LoginUpdateResponse,
     RegisterDeviceTokenResponse,
     TokenResponse,
 )
+from ..utils import md5
 
 
 class AuthAPI(object):
@@ -49,7 +46,7 @@ class AuthAPI(object):
     ) -> LoginUpdateResponse:
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.USERS_V1}/change_email",
+            route="/v1/users/change_email",
             payload={
                 "api_key": Configs.API_KEY,
                 "email": email,
@@ -64,7 +61,7 @@ class AuthAPI(object):
     ) -> LoginUpdateResponse:
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.USERS_V1}/change_email",
+            route="/v1/users/change_email",
             payload={
                 "api_key": Configs.API_KEY,
                 "current_password": current_password,
@@ -82,7 +79,7 @@ class AuthAPI(object):
     ) -> TokenResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.BASE_API_URL}/api/v1/oauth/token",
+            route="/api/v1/oauth/token",
             payload={
                 "grant_type": grant_type,
                 "email": email,
@@ -101,7 +98,7 @@ class AuthAPI(object):
         """
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V3}/login_with_email",
+            route="/v3/users/login_with_email",
             payload={
                 "api_key": Configs.API_KEY,
                 "email": email,
@@ -114,26 +111,23 @@ class AuthAPI(object):
     def logout(self):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V1}/logout",
+            route="/v1/users/logout",
             payload={"uuid": self.__base.uuid},
         )
 
     def resend_confirm_email(self):
-        return self.__base._request(
-            "POST", endpoint=f"{Endpoints.USERS_V2}/resend_confirm_email"
-        )
+        return self.__base._request("POST", route="/v2/users/resend_confirm_email")
 
     def restore_user(self, user_id: int) -> LoginUserResponse:
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V2}/restore",
+            route="/v2/users/restore",
             payload={
                 "user_id": user_id,
                 "api_key": Configs.API_KEY,
                 "uuid": self.__base.uuid,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.__base.device_uuid, timestamp),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             },
         )
 
@@ -151,7 +145,7 @@ class AuthAPI(object):
     ) -> RegisterDeviceTokenResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V2}/device_tokens/new",
+            route="/v2/users/device_tokens/new",
             payload={
                 "device_token": device_token,
                 "device_type": device_type,
@@ -170,7 +164,7 @@ class AuthAPI(object):
     def revoke_tokens(self):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.USERS_V1}/device_tokens",
+            route="/v1/users/device_tokens",
         )
 
     def save_account_with_email(
@@ -182,7 +176,7 @@ class AuthAPI(object):
     ) -> LoginUpdateResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V3}/login_update",
+            route="/v3/users/login_update",
             payload={
                 "api_key": Configs.API_KEY,
                 "email": email,
@@ -192,3 +186,7 @@ class AuthAPI(object):
             },
             data_type=LoginUpdateResponse,
         )
+
+    @property
+    def __signed_info(self) -> str:
+        return md5(self.__base.device_uuid, int(datetime.now().timestamp()), False)

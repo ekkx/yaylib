@@ -149,7 +149,7 @@ class HeaderInterceptor(object):
         self.__connection_type: str = "wifi"
         self.__content_type: str = "application/json;charset=UTF-8"
 
-    def intercept(self) -> Dict[str, str]:
+    def intercept(self, jwt_required: bool = False) -> Dict[str, str]:
         cookie: Cookie = self.__cookie.get()
         headers: dict = {
             "Host": self.__host,
@@ -164,6 +164,9 @@ class HeaderInterceptor(object):
             "Accept-Language": self.__locale,
             "Content-Type": self.__content_type,
         }
+
+        if jwt_required:
+            headers.update({"X-Jwt": generate_jwt()})
 
         if len(self.__client_ip):
             headers.update({"X-Client-IP": self.__client_ip})
@@ -291,13 +294,16 @@ class BaseClient(WebSocketInteractor):
     def __make_request(
         self,
         method: str,
-        endpoint: str,
+        base_url: str,
+        route: str,
         params: Optional[Dict[str, Any]] = None,
         payload: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
         jwt_required: bool = False,
         bypass_delay: bool = False,
     ) -> dict | str:
+        endpoint: str = "https://" + base_url + route
+
         params: Optional[Dict[str, Any]] = self.__filter_params(params)
         payload: Optional[Dict[str, Any]] = self.__filter_params(payload)
 
@@ -309,13 +315,6 @@ class BaseClient(WebSocketInteractor):
             response = self.UserAPI.get_timestamp()
             self.__header_interceptor.set_client_ip(response.ip_address)
 
-        if headers is None:
-            headers = {}
-        headers.update(self.__header_interceptor.intercept())
-
-        if jwt_required:
-            headers.update({"X-Jwt": generate_jwt()})
-
         response = None
         backoff_duration: int = 0
         # roughly equivalent to 60 mins, plus extra 15 mins
@@ -325,6 +324,10 @@ class BaseClient(WebSocketInteractor):
         # retry the request based on max_retries
         for i in range(self.__max_retries):
             time.sleep(backoff_duration)
+
+            if headers is None:
+                headers = {}
+            headers.update(self.__header_interceptor.intercept(jwt_required))
 
             self.__log_request(method, endpoint, params, headers, payload)
 
@@ -465,16 +468,18 @@ class BaseClient(WebSocketInteractor):
         return new_params
 
     def __is_access_token_expired_error(self, response: httpx.Response) -> bool:
+        json_response: dict = response.json()
         return response.status_code == 401 and (
-            response.get("error_code") == ErrorCode.AccessTokenExpired
-            or response.get("error_code") == ErrorCode.AccessTokenInvalid
+            json_response.get("error_code") == ErrorCode.AccessTokenExpired.value
+            or json_response.get("error_code") == ErrorCode.AccessTokenInvalid.value
         )
 
     def __is_ratelimit_error(self, response: httpx.Response) -> bool:
         if response.status_code == 429:
             return True
         if response.status_code == 400:
-            if response.get("error_code") == ErrorCode.QuotaLimitExceeded:
+            json_response: dict = response.json()
+            if json_response.get("error_code") == ErrorCode.QuotaLimitExceeded.value:
                 return True
         return False
 
@@ -487,7 +492,7 @@ class BaseClient(WebSocketInteractor):
                 {
                     **self.cookie.to_dict(),
                     "authentication": {
-                        "accessToken": response.access_token,
+                        "access_token": response.access_token,
                         "refresh_token": response.refresh_token,
                     },
                 }
@@ -522,7 +527,8 @@ class BaseClient(WebSocketInteractor):
     def _request(
         self,
         method: str,
-        endpoint: str,
+        route: str,
+        base_url: str = Configs.PRODUCTION_HOST,
         params: Optional[Dict[str, Any]] = None,
         payload: Optional[Dict[str, Any]] = None,
         data_type: Optional[object] = None,
@@ -531,7 +537,14 @@ class BaseClient(WebSocketInteractor):
         bypass_delay: bool = False,
     ) -> object | dict:
         res: dict | str = self.__make_request(
-            method, endpoint, params, payload, headers, jwt_required, bypass_delay
+            method=method,
+            base_url=base_url,
+            route=route,
+            params=params,
+            payload=payload,
+            headers=headers,
+            jwt_required=jwt_required,
+            bypass_delay=bypass_delay,
         )
         if data_type:
             return self.__construct_response(res, data_type)
@@ -637,7 +650,7 @@ class Client(BaseClient):
         ユーザーが参加中の通話を取得します
 
         """
-        return self.CallAPI.get_user_active_call(user_id)
+        return self.CallAPI.get_user_active_call(user_id).post
 
     def get_bgms(self) -> list[Bgm]:
         """
@@ -645,7 +658,7 @@ class Client(BaseClient):
         通話のBGMを取得します
 
         """
-        return self.CallAPI.get_bgms()
+        return self.CallAPI.get_bgms().bgm
 
     def get_call(self, call_id: int) -> ConferenceCall:
         """
@@ -653,7 +666,7 @@ class Client(BaseClient):
         通話の詳細を取得します
 
         """
-        return self.CallAPI.get_call(call_id)
+        return self.CallAPI.get_call(call_id).conference_call
 
     def get_call_invitable_users(
         self, call_id: int, from_timestamp: Optional[int] = None
@@ -809,7 +822,7 @@ class Client(BaseClient):
         通話に参加します
 
         """
-        return self.CallAPI.start_call(conference_id, call_sid)
+        return self.CallAPI.start_call(conference_id, call_sid).conference_call
 
     def join_call_as_anonymous(
         self, conference_id: int, agora_uid: str
@@ -819,7 +832,9 @@ class Client(BaseClient):
         無名くんとして通話に参加します
 
         """
-        return self.CallAPI.start_anonymous_call(conference_id, agora_uid)
+        return self.CallAPI.start_anonymous_call(
+            conference_id, agora_uid
+        ).conference_call
 
     def leave_call(
         self,
@@ -841,7 +856,7 @@ class Client(BaseClient):
         通話から退出します
 
         """
-        return self.CallAPI.stop__anonymous_call(conference_id, agora_uid)
+        return self.CallAPI.stop_anonymous_call(conference_id, agora_uid)
 
     # -CASSANDRA
 
@@ -1014,7 +1029,7 @@ class Client(BaseClient):
         チャットルームのGIFデータを取得します
 
         """
-        return self.ChatAPI.get_gifs_data()
+        return self.ChatAPI.get_gifs_data().gif_categories
 
     def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
         """
@@ -1051,7 +1066,7 @@ class Client(BaseClient):
             - to_message_id: int - (optional)
 
         """
-        return self.ChatAPI.get_messages(chat_room_id, **params)
+        return self.ChatAPI.get_messages(chat_room_id, **params).messages
 
     def get_chat_requests(self, **params) -> ChatRoomsResponse:
         """
@@ -1074,7 +1089,7 @@ class Client(BaseClient):
         チャットルームの詳細を取得します
 
         """
-        return self.ChatAPI.get_chat_room(chat_room_id)
+        return self.ChatAPI.get_chat_room(chat_room_id).chat
 
     def get_sticker_packs(self) -> list[StickerPack]:
         """
@@ -1082,7 +1097,7 @@ class Client(BaseClient):
         スタンプを取得します
 
         """
-        return self.ChatAPI.get_sticker_packs()
+        return self.ChatAPI.get_sticker_packs().sticker_packs
 
     def get_chat_requests_count(self) -> int:
         """
@@ -1090,7 +1105,7 @@ class Client(BaseClient):
         チャットリクエストの数を取得します
 
         """
-        return self.ChatAPI.get_total_chat_requests()
+        return self.ChatAPI.get_total_chat_requests().total
 
     def hide_chat(self, chat_room_id: int) -> dict:
         """
@@ -1402,7 +1417,7 @@ class Client(BaseClient):
         サークルの詳細を取得します
 
         """
-        return self.GroupAPI.get_group(group_id)
+        return self.GroupAPI.get_group(group_id).group
 
     def get_groups(self, **params) -> GroupsResponse:
         """
@@ -1697,7 +1712,7 @@ class Client(BaseClient):
             allow_members_to_post_media,
             allow_members_to_post_url,
             guidelines,
-        )
+        ).group
 
     def withdraw_moderator_offer(self, group_id: int, user_id: int) -> dict:
         """
@@ -1850,7 +1865,7 @@ class Client(BaseClient):
         email_grant_tokenを取得します
 
         """
-        return self.MiscAPI.get_email_grant_token(code, email)
+        return self.MiscAPI.get_email_grant_token(code, email).email_grant_token
 
     def get_email_verification_presigned_url(
         self, email: str, locale: str, intent: Optional[str] = None
@@ -1870,7 +1885,7 @@ class Client(BaseClient):
         ファイルアップロード用の署名付きURLを取得します
 
         """
-        return self.MiscAPI.get_file_upload_presigned_urls(file_names)
+        return self.MiscAPI.get_file_upload_presigned_urls(file_names).presigned_urls
 
     # def get_id_checker_presigned_url(
     #         self,
@@ -1886,7 +1901,9 @@ class Client(BaseClient):
         動画ファイルアップロード用の署名付きURLを取得します
 
         """
-        return self.MiscAPI.get_old_file_upload_presigned_url(video_file_name)
+        return self.MiscAPI.get_old_file_upload_presigned_url(
+            video_file_name
+        ).presigned_url
 
     def get_policy_agreements(self) -> PolicyAgreementsResponse:
         """
@@ -1940,7 +1957,7 @@ class Client(BaseClient):
         アプリケーションの設定情報を取得します
 
         """
-        return self.MiscAPI.get_app_config()
+        return self.MiscAPI.get_app_config().app
 
     def get_banned_words(self, country_code: str = "jp") -> list[BanWord]:
         """
@@ -1948,7 +1965,7 @@ class Client(BaseClient):
         禁止ワードの一覧を取得します
 
         """
-        return self.MiscAPI.get_banned_words(country_code)
+        return self.MiscAPI.get_banned_words(country_code).ban_words
 
     def get_popular_words(self, country_code: str = "jp") -> list[PopularWord]:
         """
@@ -1956,7 +1973,7 @@ class Client(BaseClient):
         人気のワードの一覧を取得します
 
         """
-        return self.MiscAPI.get_popular_words(country_code)
+        return self.MiscAPI.get_popular_words(country_code).popular_words
 
     # -POST
 
@@ -2021,7 +2038,7 @@ class Client(BaseClient):
             attachment_7_filename,
             attachment_8_filename,
             attachment_9_filename,
-        )
+        ).conference_call
 
     def pin_group_post(self, post_id: int, group_id: int) -> dict:
         """
@@ -2145,7 +2162,7 @@ class Client(BaseClient):
             attachment_8_filename,
             attachment_9_filename,
             video_file_name,
-        )
+        ).post
 
     def create_share_post(
         self,
@@ -2424,7 +2441,7 @@ class Client(BaseClient):
         投稿の詳細を取得します
 
         """
-        return self.PostAPI.get_post(post_id)
+        return self.PostAPI.get_post(post_id).post
 
     def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
         """
@@ -2651,7 +2668,7 @@ class Client(BaseClient):
         アンケートに投票します
 
         """
-        return self.PostAPI.vote_survey(survey_id, choice_id)
+        return self.PostAPI.vote_survey(survey_id, choice_id).survey
 
     # -REVIEW
 
@@ -2929,7 +2946,7 @@ class Client(BaseClient):
         フォローリクエストの数を取得します
 
         """
-        return self.UserAPI.get_follow_request_count()
+        return self.UserAPI.get_follow_request_count().users_count
 
     def get_following_users_born(
         self, birthdate: Optional[int] = None
@@ -2954,7 +2971,7 @@ class Client(BaseClient):
             - mode: str = None
 
         """
-        return self.UserAPI.get_footprints(**params)
+        return self.UserAPI.get_footprints(**params).footprints
 
     def get_fresh_user(self, user_id: int) -> UserResponse:
         """
@@ -2976,7 +2993,7 @@ class Client(BaseClient):
             - number: int = None
 
         """
-        return self.UserAPI.get_hima_users(**params)
+        return self.UserAPI.get_hima_users(**params).hima_users
 
     def get_user_ranking(self, mode: str) -> RankingUsersResponse:
         """
@@ -3042,7 +3059,7 @@ class Client(BaseClient):
         ユーザーの情報を取得します
 
         """
-        return self.UserAPI.get_user(user_id)
+        return self.UserAPI.get_user(user_id).user
 
     def get_user_email(self, user_id: int) -> str:
         """
@@ -3050,7 +3067,7 @@ class Client(BaseClient):
         ユーザーのメールアドレスを取得します
 
         """
-        return self.UserAPI.get_user_email(user_id)
+        return self.UserAPI.get_user_email(user_id).email
 
     def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
         """

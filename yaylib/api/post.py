@@ -27,9 +27,9 @@ from __future__ import annotations
 from datetime import datetime
 
 from .. import client
-from ..config import Configs, Endpoints
+from ..config import Configs
 from ..errors import ForbiddenError, NotFoundError
-from ..models import ConferenceCall, Post, SharedUrl, Survey
+from ..models import Post, SharedUrl
 from ..responses import (
     BookmarkPostResponse,
     CreatePostResponse,
@@ -38,9 +38,9 @@ from ..responses import (
     PostLikersResponse,
     PostTagsResponse,
     LikePostsResponse,
-    ValidationPostResponse,
+    VoteSurveyResponse,
 )
-from ..utils import build_message_tags, get_post_type
+from ..utils import build_message_tags, get_post_type, md5
 
 
 class PostAPI(object):
@@ -50,7 +50,7 @@ class PostAPI(object):
     def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
+            route=f"/v1/users/{user_id}/bookmarks/{post_id}",
             data_type=BookmarkPostResponse,
         )
 
@@ -62,7 +62,7 @@ class PostAPI(object):
         """
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+            route=f"/v1/groups/{group_id}/highlights/{post_id}",
         )
 
     def create_call_post(
@@ -85,14 +85,12 @@ class PostAPI(object):
         attachment_7_filename: str = None,
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
-    ) -> ConferenceCall:
+    ) -> CreatePostResponse:
         text, message_tags = build_message_tags(text)
-
-        timestamp = int(datetime.now().timestamp())
 
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
+            route=f"/v1/posts/new_conference_call",
             payload={
                 "text": text,
                 "font_size": font_size,
@@ -101,10 +99,8 @@ class PostAPI(object):
                 "call_type": call_type,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
                 "category_id": category_id,
                 "game_title": game_title,
                 "joinable_by": joinable_by,
@@ -120,18 +116,18 @@ class PostAPI(object):
                 "attachment_9_filename": attachment_9_filename,
             },
             data_type=CreatePostResponse,
-        ).conference_call
+        )
 
     def create_group_pin_post(self, post_id: int, group_id: int):
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
+            route=f"/v2/posts/group_pinned_post",
             payload={"post_id": post_id, "group_id": group_id},
         )
 
     def create_pin_post(self, post_id: int):
         return self.__base._request(
-            "POST", endpoint=f"{Endpoints.PINNED_V1}/posts", payload={"id": post_id}
+            "POST", route=f"/v1/pinned/posts", payload={"id": post_id}
         )
 
     def create_post(
@@ -156,7 +152,9 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
         post_type = get_post_type(
             choices=choices,
@@ -174,7 +172,7 @@ class PostAPI(object):
 
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.POSTS_V3}/new",
+            route=f"/v3/posts/new",
             payload={
                 "text": text,
                 "font_size": font_size,
@@ -223,8 +221,10 @@ class PostAPI(object):
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
-    ) -> Post:
-        text, message_tags = build_message_tags(text)
+    ) -> CreatePostResponse:
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
         post_type = get_post_type(
             choices=choices,
@@ -242,7 +242,7 @@ class PostAPI(object):
 
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.POSTS_V3}/repost",
+            route=f"/v3/posts/repost",
             payload={
                 "post_id": post_id,
                 "text": text,
@@ -268,7 +268,7 @@ class PostAPI(object):
             },
             data_type=CreatePostResponse,
             jwt_required=True,
-        ).post
+        )
 
     def create_share_post(
         self,
@@ -279,11 +279,9 @@ class PostAPI(object):
         color: int = None,
         group_id: int = None,
     ) -> Post:
-        timestamp = int(datetime.now().timestamp())
-
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
+            route=f"/v2/posts/new_share_post",
             payload={
                 "shareable_type": shareable_type,
                 "shareable_id": shareable_id,
@@ -293,10 +291,8 @@ class PostAPI(object):
                 "group_id": group_id,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             },
             data_type=Post,
         )
@@ -324,7 +320,9 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
         post_type = get_post_type(
             choices=choices,
@@ -342,7 +340,7 @@ class PostAPI(object):
 
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.THREADS_V1}/{post_id}/posts",
+            route=f"/v1/threads/{post_id}/posts",
             payload={
                 "id": post_id,
                 "text": text,
@@ -372,23 +370,19 @@ class PostAPI(object):
 
     def delete_all_post(self):
         try:
-            return self.__base._request(
-                "POST", endpoint=f"{Endpoints.POSTS_V1}/delete_all_post"
-            )
+            return self.__base._request("POST", route=f"/v1/posts/delete_all_post")
         except NotFoundError:
             self.__base.logger.info("Post not found. Skipping...")
 
     def delete_group_pin_post(self, group_id: int):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.POSTS_V2}/group_pinned_post",
+            route=f"/v2/posts/group_pinned_post",
             payload={"group_id": group_id},
         )
 
     def delete_pin_post(self, post_id: int):
-        return self.__base._request(
-            "DELETE", endpoint=f"{Endpoints.PINNED_V1}/posts/{post_id}"
-        )
+        return self.__base._request("DELETE", route=f"/v1/pinned/posts/{post_id}")
 
     def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
         params = {}
@@ -396,7 +390,7 @@ class PostAPI(object):
             params = {"from": from_str}
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks",
+            route=f"/v1/users/{user_id}/bookmarks",
             params=params,
             data_type=PostsResponse,
         )
@@ -420,7 +414,7 @@ class PostAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/call_timeline",
+            route=f"/v2/posts/call_timeline",
             params=params,
             data_type=PostsResponse,
         )
@@ -441,7 +435,7 @@ class PostAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CONVERSATIONS_V2}/{conversation_id}",
+            route=f"/v2/conversations/{conversation_id}",
             params=params,
             data_type=PostsResponse,
         )
@@ -449,7 +443,7 @@ class PostAPI(object):
     def get_conversation_root_posts(self, post_ids: list[int]) -> PostsResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CONVERSATIONS_V2}/root_posts",
+            route=f"/v2/conversations/root_posts",
             params={"ids[]": post_ids},
             data_type=PostsResponse,
         )
@@ -470,7 +464,7 @@ class PostAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/call_followers_timeline",
+            route=f"/v2/posts/call_followers_timeline",
             params=params,
             data_type=PostsResponse,
         )
@@ -492,7 +486,7 @@ class PostAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/following_timeline",
+            route=f"/v2/posts/following_timeline",
             params=params,
             data_type=PostsResponse,
         )
@@ -512,7 +506,7 @@ class PostAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights",
+            route=f"/v1/groups/{group_id}/highlights",
             params=params,
             data_type=PostsResponse,
         )
@@ -535,7 +529,7 @@ class PostAPI(object):
         params["keyword"] = keyword
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/posts/search",
+            route=f"/v2/groups/{group_id}/posts/search",
             params=params,
             data_type=PostsResponse,
         )
@@ -557,7 +551,7 @@ class PostAPI(object):
         params["group_id"] = group_id
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/group_timeline",
+            route=f"/v2/posts/group_timeline",
             params=params,
             data_type=PostsResponse,
         )
@@ -575,7 +569,7 @@ class PostAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/tags/{hashtag}",
+            route=f"/v2/posts/tags/{hashtag}",
             params=params,
             data_type=PostsResponse,
         )
@@ -593,15 +587,15 @@ class PostAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/mine",
+            route=f"/v2/posts/mine",
             params=params,
             data_type=PostsResponse,
         )
 
-    def get_post(self, post_id: int) -> Post:
+    def get_post(self, post_id: int) -> PostResponse:
         return self.__base._request(
-            "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}", data_type=PostResponse
-        ).post
+            "GET", route=f"/v2/posts/{post_id}", data_type=PostResponse
+        )
 
     def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
         """
@@ -615,7 +609,7 @@ class PostAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V1}/{post_id}/likers",
+            route=f"/v1/posts/{post_id}/likers",
             params=params,
             data_type=PostLikersResponse,
         )
@@ -633,7 +627,7 @@ class PostAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/{post_id}/reposts",
+            route=f"/v2/posts/{post_id}/reposts",
             params=params,
             data_type=PostsResponse,
         )
@@ -641,7 +635,7 @@ class PostAPI(object):
     def get_posts(self, post_ids: list[int]) -> PostsResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/multiple",
+            route=f"/v2/posts/multiple",
             params={"post_ids[]": post_ids},
             data_type=PostsResponse,
         )
@@ -651,7 +645,7 @@ class PostAPI(object):
     ) -> PostTagsResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V1}/recommended_tag",
+            route=f"/v1/posts/recommended_tag",
             payload={"tag": tag, "save_recent_search": save_recent_search},
             data_type=PostTagsResponse,
         )
@@ -669,7 +663,7 @@ class PostAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/recommended_timeline",
+            route=f"/v2/posts/recommended_timeline",
             params=params,
             data_type=PostsResponse,
         )
@@ -688,7 +682,7 @@ class PostAPI(object):
         params["keyword"] = keyword
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/search",
+            route=f"/v2/posts/search",
             params=params,
             data_type=PostsResponse,
         )
@@ -713,17 +707,17 @@ class PostAPI(object):
             - custom_generation_range: bool - (optional)
 
         """
-        endpoint = f"{Endpoints.POSTS_V2}/timeline"
+        endpoint = f"/v2/posts/timeline"
         if "noreply_mode" in params and params["noreply_mode"] is True:
-            endpoint = f"{Endpoints.POSTS_V2}/noreply_timeline"
+            endpoint = f"/v2/posts/noreply_timeline"
         return self.__base._request(
-            "GET", endpoint=endpoint, params=params, data_type=PostsResponse
+            "GET", route=endpoint, params=params, data_type=PostsResponse
         )
 
     def get_url_metadata(self, url: str) -> SharedUrl:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/url_metadata",
+            route=f"/v2/posts/url_metadata",
             params={"url": url},
             data_type=SharedUrl,
         )
@@ -742,7 +736,7 @@ class PostAPI(object):
         params["user_id"] = user_id
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V2}/user_timeline",
+            route=f"/v2/posts/user_timeline",
             params=params,
             data_type=PostsResponse,
         )
@@ -750,7 +744,7 @@ class PostAPI(object):
     def like_posts(self, post_ids: list[int]) -> LikePostsResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.POSTS_V2}/like",
+            route=f"/v2/posts/like",
             payload={"post_ids": post_ids},
             data_type=LikePostsResponse,
         )
@@ -758,19 +752,19 @@ class PostAPI(object):
     def remove_bookmark(self, user_id: int, post_id: int):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.USERS_V1}/{user_id}/bookmarks/{post_id}",
+            route=f"/v1/users/{user_id}/bookmarks/{post_id}",
         )
 
     def remove_group_highlight_post(self, group_id: int, post_id: int):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/highlights/{post_id}",
+            route=f"/v1/groups/{group_id}/highlights/{post_id}",
         )
 
     def remove_posts(self, post_ids: list[int]):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.POSTS_V2}/mass_destroy",
+            route=f"/v2/posts/mass_destroy",
             payload={"posts_ids": post_ids},
         )
 
@@ -787,7 +781,7 @@ class PostAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.POSTS_V3}/{post_id}/report",
+            route=f"/v3/posts/{post_id}/report",
             payload={
                 "opponent_id": opponent_id,
                 "category_id": category_id,
@@ -800,9 +794,7 @@ class PostAPI(object):
         )
 
     def unlike_post(self, post_id: int):
-        return self.__base._request(
-            "POST", endpoint=f"{Endpoints.POSTS_V1}/{post_id}/unlike"
-        )
+        return self.__base._request("POST", route=f"/v1/posts/{post_id}/unlike")
 
     def update_post(
         self,
@@ -812,36 +804,37 @@ class PostAPI(object):
         color: int = None,
         message_tags: list = [],
     ) -> Post:
-        text, message_tags = build_message_tags(text)
-
-        timestamp = int(datetime.now().timestamp())
-
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.POSTS_V3}/{post_id}",
+            route=f"/v3/posts/{post_id}",
             payload={
                 "text": text,
                 "font_size": font_size,
                 "color": color,
                 "message_tags": message_tags,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             },
         )
 
     def view_video(self, video_id: int):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.POSTS_V1}/videos/{video_id}/view",
+            route=f"/v1/posts/videos/{video_id}/view",
         )
 
-    def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
+    def vote_survey(self, survey_id: int, choice_id: int) -> VoteSurveyResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",
+            route=f"/v2/surveys/{survey_id}/vote",
             payload={"choice_id": choice_id},
-            data_type=ValidationPostResponse,
-        ).survey
+            data_type=VoteSurveyResponse,
+        )
+
+    @property
+    def __signed_info(self) -> str:
+        return md5(self.__base.device_uuid, int(datetime.now().timestamp()), False)

@@ -27,13 +27,11 @@ from __future__ import annotations
 from datetime import datetime
 
 from .. import client
-from ..config import Configs, Endpoints
-from ..models import Footprint, User, UserWrapper
+from ..config import Configs
 from ..responses import (
     ActiveFollowingsResponse,
     BlockedUserIdsResponse,
     BlockedUsersResponse,
-    CreatePostResponse,
     CreateUserResponse,
     FollowRecommendationsResponse,
     FollowRequestCountResponse,
@@ -50,6 +48,7 @@ from ..responses import (
     UsersByTimestampResponse,
     UserTimestampResponse,
 )
+from ..utils import md5, sha256
 
 
 class UserAPI(object):
@@ -59,33 +58,28 @@ class UserAPI(object):
     def delete_footprint(self, user_id: int, footprint_id: int):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.USERS_V2}/{user_id}/footprints/{footprint_id}",
+            route=f"/v2/users/{user_id}/footprints/{footprint_id}",
         )
 
     def destroy_user(self):
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V2}/destroy",
+            route=f"/v2/users/destroy",
             payload={
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             },
         )
 
     def follow_user(self, user_id: int):
-        return self.__base._request(
-            "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/follow"
-        )
+        return self.__base._request("POST", route=f"/v2/users/{user_id}/follow")
 
     def follow_users(self, user_ids: list[int]):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V2}/follow",
+            route=f"/v2/users/follow",
             params={"user_ids[]": user_ids},
         )
 
@@ -101,7 +95,7 @@ class UserAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/active_followings",
+            route=f"/v1/users/active_followings",
             params=params,
             data_type=ActiveFollowingsResponse,
         )
@@ -119,7 +113,7 @@ class UserAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.FRIENDS_V1}",
+            route=f"/v1/friends",
             params=params,
             data_type=FollowRecommendationsResponse,
         )
@@ -132,17 +126,17 @@ class UserAPI(object):
             params["from_timestamp"] = from_timestamp
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/follow_requests",
+            route=f"/v2/users/follow_requests",
             params=params,
             data_type=UsersByTimestampResponse,
         )
 
-    def get_follow_request_count(self) -> int:
+    def get_follow_request_count(self) -> FollowRequestCountResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/follow_requests_count",
+            route=f"/v2/users/follow_requests_count",
             data_type=FollowRequestCountResponse,
-        ).users_count
+        )
 
     def get_following_users_born(self, birthdate: int = None) -> UsersResponse:
         params = {}
@@ -150,12 +144,12 @@ class UserAPI(object):
             params["birthdate"] = birthdate
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/following_born_today",
+            route=f"/v1/users/following_born_today",
             params=params,
             data_type=UsersResponse,
         )
 
-    def get_footprints(self, **params) -> list[Footprint]:
+    def get_footprints(self, **params) -> FootprintsResponse:
         """
 
         Parameters:
@@ -168,19 +162,19 @@ class UserAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/footprints",
+            route=f"/v2/users/footprints",
             params=params,
             data_type=FootprintsResponse,
-        ).footprints
+        )
 
     def get_fresh_user(self, user_id: int) -> UserResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}",
+            route=f"/v2/users/fresh/{user_id}",
             data_type=UserResponse,
         )
 
-    def get_hima_users(self, **params) -> list[UserWrapper]:
+    def get_hima_users(self, **params) -> HimaUsersResponse:
         """
 
         Parameters:
@@ -192,10 +186,10 @@ class UserAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/hima_users",
+            route=f"/v2/users/hima_users",
             params=params,
             data_type=HimaUsersResponse,
-        ).hima_users
+        )
 
     def get_user_ranking(self, mode: str) -> RankingUsersResponse:
         """
@@ -224,7 +218,7 @@ class UserAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.WEB_V1}/users/ranking",
+            route=f"/v1/web/users/ranking",
             params={"mode": mode},
             data_type=RankingUsersResponse,
         )
@@ -232,7 +226,7 @@ class UserAPI(object):
     def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/reset_counters",
+            route=f"/v1/users/reset_counters",
             data_type=RefreshCounterRequestsResponse,
         )
 
@@ -249,7 +243,7 @@ class UserAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/social_shared_users",
+            route=f"/v2/users/social_shared_users",
             params=params,
             data_type=SocialShareUsersResponse,
         )
@@ -259,22 +253,22 @@ class UserAPI(object):
     ) -> UserTimestampResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/timestamp",
+            route=f"/v2/users/timestamp",
             data_type=UserTimestampResponse,
             bypass_delay=True,
         )
 
-    def get_user(self, user_id: int) -> User:
+    def get_user(self, user_id: int) -> UserResponse:
         return self.__base._request(
-            "GET", endpoint=f"{Endpoints.USERS_V2}/{user_id}", data_type=UserResponse
-        ).user
+            "GET", route=f"/v2/users/{user_id}", data_type=UserResponse
+        )
 
-    def get_user_email(self, user_id: int) -> str:
+    def get_user_email(self, user_id: int) -> UserEmailResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}",
+            route=f"/v2/users/fresh/{user_id}",
             data_type=UserEmailResponse,
-        ).email
+        )
 
     def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
         """
@@ -290,7 +284,7 @@ class UserAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/{user_id}/followers",
+            route=f"/v2/users/{user_id}/followers",
             params=params,
             data_type=FollowUsersResponse,
         )
@@ -311,7 +305,7 @@ class UserAPI(object):
         """
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V2}/{user_id}/list_followings",
+            route=f"/v2/users/{user_id}/list_followings",
             params=params,
             data_type=FollowUsersResponse,
         )
@@ -319,14 +313,14 @@ class UserAPI(object):
     def get_user_from_qr(self, qr: str) -> UserResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/qr_codes/{qr}",
+            route=f"/v1/users/qr_codes/{qr}",
             data_type=UserResponse,
         )
 
     def get_user_without_leaving_footprint(self, user_id: int) -> UserResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/info/{user_id}",
+            route=f"/v2/users/info/{user_id}",
             data_type=UserResponse,
         )
 
@@ -336,7 +330,7 @@ class UserAPI(object):
         headers["X-Jwt"] = self.generate_jwt(timestamp)
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/list_id",
+            route=f"/v1/users/list_id",
             params={"user_ids[]": user_ids},
             data_type=UsersResponse,
             headers=headers,
@@ -345,7 +339,7 @@ class UserAPI(object):
     def refresh_counter(self, counter: str):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V1}/reset_counters",
+            route=f"/v1/users/reset_counters",
             payload={"counter": counter},
         )
 
@@ -366,18 +360,15 @@ class UserAPI(object):
         en: int = None,
         vn: int = None,
     ) -> CreateUserResponse:
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V3}/register",
+            route=f"/v3/users/register",
             payload={
                 "app_version": Configs.API_VERSION_NAME,
-                "timestamp": timestamp,
                 "api_key": Configs.API_KEY,
-                "signed_version": self.generate_signed_version(),
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "signed_version": sha256(),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
                 "uuid": self.__base.uuid,
                 "nickname": nickname,
                 "birth_date": birth_date,
@@ -397,14 +388,10 @@ class UserAPI(object):
         )
 
     def remove_user_avatar(self):
-        return self.__base._request(
-            "POST", endpoint=f"{Endpoints.USERS_V2}/remove_profile_photo"
-        )
+        return self.__base._request("POST", route=f"/v2/users/remove_profile_photo")
 
     def remove_user_cover(self):
-        return self.__base._request(
-            "POST", endpoint=f"{Endpoints.USERS_V2}/remove_cover_image"
-        )
+        return self.__base._request("POST", route=f"/v2/users/remove_cover_image")
 
     def report_user(
         self,
@@ -418,7 +405,7 @@ class UserAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V3}/{user_id}/report",
+            route=f"/v3/users/{user_id}/report",
             payload={
                 "category_id": category_id,
                 "reason": reason,
@@ -432,7 +419,7 @@ class UserAPI(object):
     def reset_password(self, email: str, email_grant_token: str, password: str):
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.USERS_V1}/reset_password",
+            route=f"/v1/users/reset_password",
             payload={
                 "email": email,
                 "email_grant_token": email_grant_token,
@@ -453,7 +440,7 @@ class UserAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.LOBI_FRIENDS_V1}",
+            route=f"/v1/lobi_friends",
             params=params,
             data_type=UsersResponse,
         )
@@ -478,66 +465,58 @@ class UserAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.WEB_V1}/users/search",
+            route=f"/v1/web/users/search",
             params=params,
             data_type=UsersResponse,
         )
 
     def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V2}/edit",
+            route=f"/v2/users/edit",
             payload={
                 "nickname": nickname,
                 "is_private": is_private,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
-                "signed_version": self.generate_signed_version(),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
+                "signed_version": sha256(),
             },
         )
 
     def set_setting_follow_recommendation_enabled(self, on: bool):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V1}/visible_on_sns_friend_recommendation_setting",
+            route=f"/v1/users/visible_on_sns_friend_recommendation_setting",
             params={"on": on},
         )
 
     def take_action_follow_request(self, target_id: int, action: str):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V2}/{target_id}/follow_request",
+            route=f"/v2/users/{target_id}/follow_request",
             payload={"action": action},
         )
 
     def turn_on_hima(self):
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/hima",
+            route=f"/v1/users/hima",
         )
 
     def unfollow_user(self, user_id: int):
-        return self.__base._request(
-            "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unfollow"
-        )
+        return self.__base._request("POST", route=f"/v2/users/{user_id}/unfollow")
 
     def update_language(self, language: str):
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V1}/language",
+            route=f"/v1/users/language",
             payload={
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
                 "language": language,
             },
         )
@@ -560,21 +539,18 @@ class UserAPI(object):
             - username: str = (optional)
 
         """
-        timestamp = int(datetime.now().timestamp())
         params.update(
             {
                 "nickname": nickname,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.uuid, timestamp, shared_key=True
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             }
         )
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V3}/edit",
+            route=f"/v3/users/edit",
             payload=params,
         )
 
@@ -584,14 +560,12 @@ class UserAPI(object):
         self,
         user_id: int,
     ):
-        return self.__base._request(
-            "POST", endpoint=f"{Endpoints.USERS_V1}/{user_id}/block"
-        )
+        return self.__base._request("POST", route=f"/v1/users/{user_id}/block")
 
     def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/block_ids",
+            route=f"/v1/users/block_ids",
             data_type=BlockedUserIdsResponse,
         )
 
@@ -602,15 +576,13 @@ class UserAPI(object):
             params["from_id"] = from_id
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V2}/blocked",
+            route=f"/v2/users/blocked",
             params=params,
             data_type=BlockedUsersResponse,
         )
 
     def unblock_user(self, user_id: int):
-        return self.__base._request(
-            "POST", endpoint=f"{Endpoints.USERS_V2}/{user_id}/unblock"
-        )
+        return self.__base._request("POST", route=f"/v2/users/{user_id}/unblock")
 
     # HiddenApi
 
@@ -626,7 +598,7 @@ class UserAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.HIDDEN_V1}/users",
+            route=f"/v1/hidden/users",
             params=params,
             data_type=HiddenResponse,
         )
@@ -634,13 +606,17 @@ class UserAPI(object):
     def hide_user(self, user_id: int):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.HIDDEN_V1}/users",
+            route=f"/v1/hidden/users",
             payload={"user_id": user_id},
         )
 
     def unhide_users(self, user_ids: list[int]):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.HIDDEN_V1}/users",
+            route=f"/v1/hidden/users",
             params={"user_ids[]": user_ids},
         )
+
+    @property
+    def __signed_info(self) -> str:
+        return md5(self.__base.device_uuid, int(datetime.now().timestamp()), False)

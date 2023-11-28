@@ -24,10 +24,7 @@ SOFTWARE.
 
 from __future__ import annotations
 
-from datetime import datetime
-
 from .. import client
-from ..config import Endpoints
 from ..responses import ReviewsResponse
 
 
@@ -38,14 +35,14 @@ class ReviewAPI(object):
     def create_review(self, user_id: int, comment: str):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
+            route=f"/v1/users/reviews/{user_id}",
             payload={"comment": comment},
         )
 
     def delete_reviews(self, review_ids: list[int]):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.USERS_V1}/reviews",
+            route=f"/v1/users/reviews",
             params={"review_ids[]": review_ids},
         )
 
@@ -61,7 +58,7 @@ class ReviewAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/reviews/mine",
+            route=f"/v1/users/reviews/mine",
             params=params,
             data_type=ReviewsResponse,
         )
@@ -79,17 +76,15 @@ class ReviewAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.USERS_V1}/reviews/{user_id}",
+            route=f"/v1/users/reviews/{user_id}",
             params=params,
             data_type=ReviewsResponse,
         )
 
     def pin_review(self, review_id: int):
         return self.__base._request(
-            "POST", endpoint=f"{Endpoints.PINNED_V1}/reviews", payload={"id": review_id}
+            "POST", route=f"/v1/pinned/reviews", payload={"id": review_id}
         )
 
     def unpin_review(self, review_id: int):
-        return self.__base._request(
-            "DELETE", endpoint=f"{Endpoints.PINNED_V1}/reviews{review_id}"
-        )
+        return self.__base._request("DELETE", route=f"/v1/pinned/reviews{review_id}")

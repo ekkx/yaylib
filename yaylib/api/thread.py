@@ -25,7 +25,6 @@ SOFTWARE.
 from __future__ import annotations
 
 from .. import client
-from ..config import Endpoints
 from ..models import ThreadInfo
 from ..responses import GroupThreadListResponse, PostsResponse
 
@@ -37,7 +36,7 @@ class ThreadAPI(object):
     def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread/{thread_id}",
+            route=f"/v3/posts/{post_id}/move_to_thread/{thread_id}",
             data_type=ThreadInfo,
         )
 
@@ -46,7 +45,7 @@ class ThreadAPI(object):
     ) -> ThreadInfo:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread",
+            route=f"/v3/posts/{post_id}/move_to_thread",
             payload={"title": title, "thread_icon_filename": thread_icon_filename},
             data_type=ThreadInfo,
         )
@@ -56,7 +55,7 @@ class ThreadAPI(object):
     ) -> ThreadInfo:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.THREADS_V1}",
+            route=f"/v1/threads/",
             payload={
                 "group_id": group_id,
                 "title": title,
@@ -83,7 +82,7 @@ class ThreadAPI(object):
             params["from"] = from_str
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.THREADS_V1}",
+            route=f"/v1/threads/",
             params=params,
             data_type=GroupThreadListResponse,
         )
@@ -91,7 +90,7 @@ class ThreadAPI(object):
     def get_thread_joined_statuses(self, ids: list[int]) -> dict:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.THREADS_V1}/joined_statuses",
+            route=f"/v1/threads/joined_statuses",
             params={"ids[]": ids},
         )
 
@@ -112,20 +111,20 @@ class ThreadAPI(object):
             params["from"] = from_str
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/posts",
+            route=f"/v1/threads/{thread_id}/posts",
             params=params,
             data_type=PostsResponse,
         )
 
     def join_thread(self, thread_id: int, user_id: int):
         return self.__base._request(
-            "POST", endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}"
+            "POST", route=f"/v1/threads/{thread_id}/members/{user_id}"
         )
 
     def leave_thread(self, thread_id: int, user_id: int):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
+            route=f"/v1/threads/{thread_id}/members/{user_id}",
         )
 
     def remove_thread(
@@ -134,12 +133,12 @@ class ThreadAPI(object):
     ):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
+            route=f"/v1/threads/{thread_id}",
         )
 
     def update_thread(self, thread_id: int, title: str, thread_icon_filename: str):
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
+            route=f"/v1/threads/{thread_id}",
             payload={"title": title, "thread_icon_filename": thread_icon_filename},
         )
