@@ -48,14 +48,14 @@ class ChatAPI(object):
     def accept_chat_requests(self, chat_room_ids: list[int]):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V1}/accept_chat_request",
+            route=f"/v1/chat_rooms/accept_chat_request",
             payload={"chat_room_ids[]": chat_room_ids},
         )
 
     def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V1}/unread_status",
+            route=f"/v1/chat_rooms/unread_status",
             params={"from_time": from_time},
             data_type=UnreadStatusResponse,
         )
@@ -69,7 +69,7 @@ class ChatAPI(object):
     ) -> CreateChatRoomResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V3}/new",
+            route=f"/v3/chat_rooms/new",
             payload={
                 "name": name,
                 "with_user_ids[]": with_user_ids,
@@ -84,7 +84,7 @@ class ChatAPI(object):
     ) -> CreateChatRoomResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V1}/new",
+            route=f"/v1/chat_rooms/new",
             payload={
                 "with_user_id": with_user_id,
                 "matching_id": matching_id,
@@ -95,13 +95,13 @@ class ChatAPI(object):
 
     def delete_background(self, room_id: int):
         return self.__base._request(
-            "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{room_id}/background"
+            "DELETE", route=f"/v2/chat_rooms/{room_id}/background"
         )
 
     def delete_message(self, room_id: int, message_id: int):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/messages/{message_id}/delete",
+            route=f"/v1/chat_rooms/{room_id}/messages/{message_id}/delete",
         )
 
     def edit_chat_room(
@@ -113,7 +113,7 @@ class ChatAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/edit",
+            route=f"/v1/chat_rooms/{chat_room_id}/edit",
             payload={
                 "name": name,
                 "icon_filename": icon_filename,
@@ -130,7 +130,7 @@ class ChatAPI(object):
     ) -> FollowUsersResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.USERS_V1}/followings/chatable",
+            route=f"/v1/users/followings/chatable",
             payload={
                 "from_follow_id": from_follow_id,
                 "from_timestamp": from_timestamp,
@@ -141,7 +141,7 @@ class ChatAPI(object):
 
     def get_gifs_data(self) -> GifsDataResponse:
         return self.__base._request(
-            "GET", endpoint=f"{Endpoints.HIDDEN_V1}/chats", data_type=GifsDataResponse
+            "GET", route=f"/v1/hidden/chats", data_type=GifsDataResponse
         )
 
     def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
@@ -156,7 +156,7 @@ class ChatAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.HIDDEN_V1}/chats",
+            route=f"/v1/hidden/chats",
             params=params,
             data_type=ChatRoomsResponse,
         )
@@ -167,7 +167,7 @@ class ChatAPI(object):
             params["from_timestamp"] = from_timestamp
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V1}/main_list",
+            route=f"/v1/chat_rooms/main_list",
             params=params,
             data_type=ChatRoomsResponse,
         )
@@ -183,7 +183,7 @@ class ChatAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages",
+            route=f"/v2/chat_rooms/{chat_room_id}/messages",
             params=params,
             data_type=MessagesResponse,
         )
@@ -200,7 +200,7 @@ class ChatAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V1}/request_list",
+            route=f"/v1/chat_rooms/request_list",
             params=params,
             data_type=ChatRoomsResponse,
         )
@@ -208,52 +208,50 @@ class ChatAPI(object):
     def get_chat_room(self, chat_room_id: int) -> ChatRoomResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}",
+            route=f"/v2/chat_rooms/{chat_room_id}",
             data_type=ChatRoomResponse,
         )
 
     def get_sticker_packs(self) -> StickerPacksResponse:
         return self.__base._request(
-            "GET", endpoint=Endpoints.STICKER_PACKS_V2, data_type=StickerPacksResponse
+            "GET", route="/v2/sticker_packs", data_type=StickerPacksResponse
         )
 
     def get_total_chat_requests(self) -> TotalChatRequestResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V1}/total_chat_request",
+            route=f"/v1/chat_rooms/total_chat_request",
             data_type=TotalChatRequestResponse,
         )
 
     def hide_chat(self, chat_room_id: int):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.HIDDEN_V1}/chats",
+            route=f"/v1/hidden/chats",
             payload={"chat_room_id": chat_room_id},
         )
 
     def invite_to_chat(self, chat_room_id: int, user_ids: list[int]):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/invite",
+            route=f"/v2/chat_rooms/{chat_room_id}/invite",
             payload={"with_user_ids": user_ids},
         )
 
     def kick_users_from_chat(self, chat_room_id: int, user_ids: list[int]):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/kick",
+            route=f"/v2/chat_rooms/{chat_room_id}/kick",
             payload={"with_user_ids[]": user_ids},
         )
 
     def pin_chat(self, room_id: int):
-        return self.__base._request(
-            "POST", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{room_id}/pinned"
-        )
+        return self.__base._request("POST", route=f"/v1/chat_rooms/{room_id}/pinned")
 
     def read_message(self, chat_room_id: int, message_id: int):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages/{message_id}/read",
+            route=f"/v2/chat_rooms/{chat_room_id}/messages/{message_id}/read",
         )
 
     def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
@@ -262,7 +260,7 @@ class ChatAPI(object):
             params["from_time"] = from_time
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V2}/update",
+            route=f"/v2/chat_rooms/update",
             params=params,
             data_type=ChatRoomsResponse,
         )
@@ -273,7 +271,7 @@ class ChatAPI(object):
         )
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V1}/mass_destroy",
+            route=f"/v1/chat_rooms/mass_destroy",
             payload={"chat_room_ids": chat_room_ids},
         )
 
@@ -290,7 +288,7 @@ class ChatAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/report",
+            route=f"/v3/chat_rooms/{chat_room_id}/report",
             payload={
                 "chat_room_id": chat_room_id,
                 "opponent_id": opponent_id,
@@ -306,7 +304,7 @@ class ChatAPI(object):
     def send_message(self, chat_room_id: int, **params) -> MessageResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CHAT_ROOMS_V3}/{chat_room_id}/messages/new",
+            route=f"/v3/chat_rooms/{chat_room_id}/messages/new",
             payload=params,
             data_type=MessageResponse,
         )
@@ -314,11 +312,11 @@ class ChatAPI(object):
     def unhide_chat(self, chat_room_ids: int):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.HIDDEN_V1}/chats",
+            route=f"/v1/hidden/chats",
             params={"chat_room_ids": chat_room_ids},
         )
 
     def unpin_chat(self, chat_room_id: int):
         return self.__base._request(
-            "DELETE", endpoint=f"{Endpoints.CHAT_ROOMS_V1}/{chat_room_id}/pinned"
+            "DELETE", route=f"/v1/chat_rooms/{chat_room_id}/pinned"
         )
