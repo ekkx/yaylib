@@ -6,6 +6,7 @@ _.py
 _config.py
 
 *.jpg
+*.png
 *.gif
 
 # Byte-compiled / optimized / DLL files

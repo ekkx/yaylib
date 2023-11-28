@@ -47,7 +47,8 @@ class ChatAPI(object):
         return self.__base._request(
             "POST",
             route=f"/v1/chat_rooms/accept_chat_request",
-            payload={"chat_room_ids[]": chat_room_ids},
+            payload={"chat_room_ids": chat_room_ids},
+            bypass_delay=True,
         )
 
     def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
@@ -56,6 +57,7 @@ class ChatAPI(object):
             route=f"/v1/chat_rooms/unread_status",
             params={"from_time": from_time},
             data_type=UnreadStatusResponse,
+            bypass_delay=True,
         )
 
     def create_group_chat(
@@ -70,7 +72,7 @@ class ChatAPI(object):
             route=f"/v3/chat_rooms/new",
             payload={
                 "name": name,
-                "with_user_ids[]": with_user_ids,
+                "with_user_ids": with_user_ids,
                 "icon_filename": icon_filename,
                 "background_filename": background_filename,
             },
@@ -93,13 +95,16 @@ class ChatAPI(object):
 
     def delete_background(self, room_id: int):
         return self.__base._request(
-            "DELETE", route=f"/v2/chat_rooms/{room_id}/background"
+            "DELETE",
+            route=f"/v2/chat_rooms/{room_id}/background",
+            bypass_delay=True,
         )
 
     def delete_message(self, room_id: int, message_id: int):
         return self.__base._request(
             "DELETE",
             route=f"/v1/chat_rooms/{room_id}/messages/{message_id}/delete",
+            bypass_delay=True,
         )
 
     def edit_chat_room(
@@ -117,6 +122,7 @@ class ChatAPI(object):
                 "icon_filename": icon_filename,
                 "background_filename": background_filename,
             },
+            bypass_delay=True,
         )
 
     def get_chatable_users(
@@ -139,7 +145,10 @@ class ChatAPI(object):
 
     def get_gifs_data(self) -> GifsDataResponse:
         return self.__base._request(
-            "GET", route=f"/v1/hidden/chats", data_type=GifsDataResponse
+            "GET",
+            route=f"/v1/hidden/chats",
+            data_type=GifsDataResponse,
+            bypass_delay=True,
         )
 
     def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
@@ -157,6 +166,7 @@ class ChatAPI(object):
             route=f"/v1/hidden/chats",
             params=params,
             data_type=ChatRoomsResponse,
+            bypass_delay=True,
         )
 
     def get_main_chat_rooms(self, from_timestamp: int = None) -> ChatRoomsResponse:
@@ -168,6 +178,7 @@ class ChatAPI(object):
             route=f"/v1/chat_rooms/main_list",
             params=params,
             data_type=ChatRoomsResponse,
+            bypass_delay=True,
         )
 
     def get_messages(self, chat_room_id: int, **params) -> MessagesResponse:
@@ -184,6 +195,7 @@ class ChatAPI(object):
             route=f"/v2/chat_rooms/{chat_room_id}/messages",
             params=params,
             data_type=MessagesResponse,
+            bypass_delay=True,
         )
 
     def get_request_chat_rooms(self, **params) -> ChatRoomsResponse:
@@ -201,6 +213,7 @@ class ChatAPI(object):
             route=f"/v1/chat_rooms/request_list",
             params=params,
             data_type=ChatRoomsResponse,
+            bypass_delay=True,
         )
 
     def get_chat_room(self, chat_room_id: int) -> ChatRoomResponse:
@@ -208,11 +221,15 @@ class ChatAPI(object):
             "GET",
             route=f"/v2/chat_rooms/{chat_room_id}",
             data_type=ChatRoomResponse,
+            bypass_delay=True,
         )
 
     def get_sticker_packs(self) -> StickerPacksResponse:
         return self.__base._request(
-            "GET", route="/v2/sticker_packs", data_type=StickerPacksResponse
+            "GET",
+            route="/v2/sticker_packs",
+            data_type=StickerPacksResponse,
+            bypass_delay=True,
         )
 
     def get_total_chat_requests(self) -> TotalChatRequestResponse:
@@ -240,7 +257,7 @@ class ChatAPI(object):
         return self.__base._request(
             "POST",
             route=f"/v2/chat_rooms/{chat_room_id}/kick",
-            payload={"with_user_ids[]": user_ids},
+            payload={"with_user_ids": user_ids},
         )
 
     def pin_chat(self, room_id: int):
@@ -305,6 +322,7 @@ class ChatAPI(object):
             route=f"/v3/chat_rooms/{chat_room_id}/messages/new",
             payload=params,
             data_type=MessageResponse,
+            bypass_delay=True,
         )
 
     def unhide_chat(self, chat_room_ids: int):
