@@ -72,7 +72,7 @@ def mention(user_id: int, display_name: str) -> str:
     """
     if not len(display_name):
         raise ValueError("display_nameは空白にできません。")
-    return f"<@>{user_id}:{display_name}<@/>"
+    return f"<@>{user_id}:@{display_name}<@/>"
 
 
 def build_message_tags(text: str) -> tuple[str, list[dict[str, Any]]]:
