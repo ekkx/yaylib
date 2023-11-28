@@ -149,7 +149,7 @@ class HeaderInterceptor(object):
         self.__connection_type: str = "wifi"
         self.__content_type: str = "application/json;charset=UTF-8"
 
-    def intercept(self) -> Dict[str, str]:
+    def intercept(self, jwt_required: bool = False) -> Dict[str, str]:
         cookie: Cookie = self.__cookie.get()
         headers: dict = {
             "Host": self.__host,
@@ -164,6 +164,9 @@ class HeaderInterceptor(object):
             "Accept-Language": self.__locale,
             "Content-Type": self.__content_type,
         }
+
+        if jwt_required:
+            headers.update({"X-Jwt": generate_jwt()})
 
         if len(self.__client_ip):
             headers.update({"X-Client-IP": self.__client_ip})
@@ -309,13 +312,6 @@ class BaseClient(WebSocketInteractor):
             response = self.UserAPI.get_timestamp()
             self.__header_interceptor.set_client_ip(response.ip_address)
 
-        if headers is None:
-            headers = {}
-        headers.update(self.__header_interceptor.intercept())
-
-        if jwt_required:
-            headers.update({"X-Jwt": generate_jwt()})
-
         response = None
         backoff_duration: int = 0
         # roughly equivalent to 60 mins, plus extra 15 mins
@@ -325,6 +321,10 @@ class BaseClient(WebSocketInteractor):
         # retry the request based on max_retries
         for i in range(self.__max_retries):
             time.sleep(backoff_duration)
+
+            if headers is None:
+                headers = {}
+            headers.update(self.__header_interceptor.intercept(jwt_required))
 
             self.__log_request(method, endpoint, params, headers, payload)
 
@@ -388,7 +388,7 @@ class BaseClient(WebSocketInteractor):
                     self.__refresh_tokens()
                     continue
                 else:
-                    self.__cookie.destroy()
+                    # self.__cookie.destroy()
                     raise AuthenticationError(
                         "Maximum authentication retries exceeded. Try logging in again."
                     )
@@ -465,16 +465,18 @@ class BaseClient(WebSocketInteractor):
         return new_params
 
     def __is_access_token_expired_error(self, response: httpx.Response) -> bool:
+        json_response: dict = response.json()
         return response.status_code == 401 and (
-            response.get("error_code") == ErrorCode.AccessTokenExpired
-            or response.get("error_code") == ErrorCode.AccessTokenInvalid
+            json_response.get("error_code") == ErrorCode.AccessTokenExpired.value
+            or json_response.get("error_code") == ErrorCode.AccessTokenInvalid.value
         )
 
     def __is_ratelimit_error(self, response: httpx.Response) -> bool:
         if response.status_code == 429:
             return True
         if response.status_code == 400:
-            if response.get("error_code") == ErrorCode.QuotaLimitExceeded:
+            json_response: dict = response.json()
+            if json_response.get("error_code") == ErrorCode.QuotaLimitExceeded.value:
                 return True
         return False
 
@@ -487,7 +489,7 @@ class BaseClient(WebSocketInteractor):
                 {
                     **self.cookie.to_dict(),
                     "authentication": {
-                        "accessToken": response.access_token,
+                        "access_token": response.access_token,
                         "refresh_token": response.refresh_token,
                     },
                 }
