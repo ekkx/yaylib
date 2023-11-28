@@ -48,26 +48,26 @@ class CallAPI(object):
         if participant_limit:
             params["participant_limit"] = participant_limit
         return self.__base._request(
-            "POST", endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bump", params=params
+            "POST", route=f"/v1/calls/{call_id}/bump", params=params
         )
 
     def get_user_active_call(self, user_id: int) -> PostResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V1}/active_call",
+            route=f"/v1/posts/active_call",
             params={"user_id": user_id},
             data_type=PostResponse,
         )
 
     def get_bgms(self) -> BgmsResponse:
         return self.__base._request(
-            "GET", endpoint=f"{Endpoints.CALLS_V1}/bgm", data_type=BgmsResponse
+            "GET", route="/v1/calls/bgm", data_type=BgmsResponse
         )
 
     def get_call(self, call_id: int) -> ConferenceCallResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CALLS_V1}/conferences/{call_id}",
+            route=f"/v1/calls/conferences/{call_id}",
             data_type=ConferenceCallResponse,
         )
 
@@ -80,7 +80,7 @@ class CallAPI(object):
             params["from_timestamp"] = from_timestamp
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CALLS_V1}/{call_id}/users/invitable",
+            route=f"/v1/calls/{call_id}/users/invitable",
             params=params,
             data_type=UsersByTimestampResponse,
         )
@@ -88,7 +88,7 @@ class CallAPI(object):
     def get_call_status(self, opponent_id: int) -> CallStatusResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.CALLS_V1}/phone_status/{opponent_id}",
+            route=f"/v1/calls/phone_status/{opponent_id}",
             data_type=CallStatusResponse,
         )
 
@@ -104,7 +104,7 @@ class CallAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GAMES_V1}/apps",
+            route=f"/v1/games/apps",
             params=params,
             data_type=GamesResponse,
         )
@@ -120,7 +120,7 @@ class CallAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GENRES_V1}",
+            route=f"/v1/genres",
             params=params,
             data_type=GenresResponse,
         )
@@ -138,7 +138,7 @@ class CallAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.POSTS_V1}/group_calls",
+            route="/v1/posts/group_calls",
             params=params,
             data_type=PostsResponse,
         )
@@ -157,7 +157,7 @@ class CallAPI(object):
             params["group_id"] = group_id
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bulk_invite",
+            route=f"/v1/calls/{call_id}/bulk_invite",
             params=params,
         )
 
@@ -172,14 +172,14 @@ class CallAPI(object):
         """
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/invite",
+            route=f"/v1/calls/conference_calls/{call_id}/invite",
             payload={"call_id": call_id, "user_ids": user_ids},
         )
 
     def invite_users_to_chat_call(self, chat_room_id: int, room_id: int, room_url: str):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CALLS_V2}/invite",
+            route="/v2/calls/invite",
             payload={
                 "chat_room_id": chat_room_id,
                 "room_id": room_id,
@@ -190,7 +190,7 @@ class CallAPI(object):
     def kick_and_ban_from_call(self, call_id: int, user_id: int):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/kick",
+            route=f"/v1/calls/conference_calls/{call_id}/kick",
             payload={"user_id": user_id},
         )
 
@@ -203,7 +203,7 @@ class CallAPI(object):
     ):
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.CALLS_V1}/{call_id}",
+            route=f"/v1/calls/{call_id}",
             payload={
                 "joinable_by": joinable_by,
                 "game_title": game_title,
@@ -214,7 +214,7 @@ class CallAPI(object):
     def set_user_role(self, call_id: int, user_id: int, role: str):
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.CALLS_V1}/{call_id}/users/{user_id}",
+            route=f"/v1/calls/{call_id}/users/{user_id}",
             payload={"role": role},
         )
 
@@ -223,7 +223,7 @@ class CallAPI(object):
     ) -> ConferenceCallResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CALLS_V1}/start_conference_call",
+            route="/v1/calls/start_conference_call",
             payload={"conference_id": conference_id, "call_sid": call_sid},
             data_type=ConferenceCallResponse,
         )
@@ -233,7 +233,7 @@ class CallAPI(object):
     ) -> ConferenceCallResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/start_conference_call",
+            route="/v1/anonymous_calls/start_conference_call",
             payload={"conference_id": conference_id, "agora_uid": agora_uid},
             data_type=ConferenceCallResponse,
         )
@@ -241,13 +241,13 @@ class CallAPI(object):
     def stop_anonymous_call(self, conference_id: int, agora_uid: str = None):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/leave_conference_call",
+            route="/v1/anonymous_calls/leave_conference_call",
             payload={"conference_id": conference_id, "agora_uid": agora_uid},
         )
 
     def stop_call(self, conference_id: int, call_sid: str = None):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.CALLS_V1}/leave_conference_call",
+            route="/v1/calls/leave_conference_call",
             payload={"conference_id": conference_id, "call_sid": call_sid},
         )
