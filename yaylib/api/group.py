@@ -76,7 +76,7 @@ class GroupAPI(object):
         return self.__base._request(
             "PUT",
             route=f"/v1/groups/{group_id}/related",
-            params={"related_group_id[]": related_group_id},
+            params={"related_group_id": related_group_id},
         )
 
     def ban_group_user(self, group_id: int, user_id: int):
@@ -251,7 +251,7 @@ class GroupAPI(object):
         return self.__base._request(
             "GET",
             route=f"/v1/groups/joined_statuses",
-            params={"ids[]": ids},
+            params={"ids": ids},
         )
 
     def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
@@ -353,7 +353,7 @@ class GroupAPI(object):
         return self.__base._request(
             "POST",
             route=f"/v1/groups/{group_id}/invite",
-            payload={"user_ids[]": user_ids},
+            payload={"user_ids": user_ids},
         )
 
     def join_group(
@@ -445,7 +445,7 @@ class GroupAPI(object):
             "POST",
             route=f"/v3/groups/{group_id}/deputize/mass",
             payload={
-                "user_ids[]": user_ids,
+                "user_ids": user_ids,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
