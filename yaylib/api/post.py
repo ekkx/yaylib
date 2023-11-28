@@ -152,7 +152,9 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
         post_type = get_post_type(
             choices=choices,
@@ -220,7 +222,9 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> CreatePostResponse:
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
         post_type = get_post_type(
             choices=choices,
@@ -316,7 +320,9 @@ class PostAPI(object):
         attachment_9_filename: str = None,
         video_file_name: str = None,
     ) -> Post:
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
         post_type = get_post_type(
             choices=choices,
@@ -804,7 +810,9 @@ class PostAPI(object):
         color: int = None,
         message_tags: list = [],
     ) -> Post:
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
         return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.POSTS_V3}/{post_id}",

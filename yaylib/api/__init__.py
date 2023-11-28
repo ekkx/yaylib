@@ -20,7 +20,6 @@ from .post import *
 from .review import *
 from .thread import *
 from .user import *
-from .websocket import *
 
 __all__ = [
     "auth",
@@ -49,5 +48,4 @@ __all__ = [
     "user_identity",
     "user",
     "wallet",
-    "websocket",
 ]

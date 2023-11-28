@@ -96,8 +96,8 @@ def build_message_tags(text: str) -> tuple[str, list[dict[str, Any]]]:
 
             offset_adjustment += full_match_length - display_name_length
 
-    text: str = re.sub(r"<@>(\d+):([^<]+)<@/>", r"\2", text)
-    return text, message_tags
+        text: str = re.sub(r"<@>(\d+):([^<]+)<@/>", r"\2", text)
+        return text, message_tags
 
 
 def get_post_type(**kwargs) -> str:
