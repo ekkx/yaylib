@@ -294,13 +294,16 @@ class BaseClient(WebSocketInteractor):
     def __make_request(
         self,
         method: str,
-        endpoint: str,
+        base_url: str,
+        route: str,
         params: Optional[Dict[str, Any]] = None,
         payload: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
         jwt_required: bool = False,
         bypass_delay: bool = False,
     ) -> dict | str:
+        endpoint: str = "https://" + base_url + route
+
         params: Optional[Dict[str, Any]] = self.__filter_params(params)
         payload: Optional[Dict[str, Any]] = self.__filter_params(payload)
 
@@ -388,7 +391,7 @@ class BaseClient(WebSocketInteractor):
                     self.__refresh_tokens()
                     continue
                 else:
-                    # self.__cookie.destroy()
+                    self.__cookie.destroy()
                     raise AuthenticationError(
                         "Maximum authentication retries exceeded. Try logging in again."
                     )
@@ -524,7 +527,8 @@ class BaseClient(WebSocketInteractor):
     def _request(
         self,
         method: str,
-        endpoint: str,
+        route: str,
+        base_url: str = Configs.PRODUCTION_HOST,
         params: Optional[Dict[str, Any]] = None,
         payload: Optional[Dict[str, Any]] = None,
         data_type: Optional[object] = None,
@@ -533,7 +537,14 @@ class BaseClient(WebSocketInteractor):
         bypass_delay: bool = False,
     ) -> object | dict:
         res: dict | str = self.__make_request(
-            method, endpoint, params, payload, headers, jwt_required, bypass_delay
+            method=method,
+            base_url=base_url,
+            route=route,
+            params=params,
+            payload=payload,
+            headers=headers,
+            jwt_required=jwt_required,
+            bypass_delay=bypass_delay,
         )
         if data_type:
             return self.__construct_response(res, data_type)
