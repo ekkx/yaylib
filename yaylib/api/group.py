@@ -27,9 +27,8 @@ from __future__ import annotations
 from datetime import datetime
 
 from .. import client
-from ..config import Configs, Endpoints
+from ..config import Configs
 from ..models import CreateGroupQuota
-from ..models import Group
 from ..responses import (
     CreateGroupResponse,
     GroupCategoriesResponse,

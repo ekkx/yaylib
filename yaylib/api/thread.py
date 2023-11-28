@@ -25,7 +25,6 @@ SOFTWARE.
 from __future__ import annotations
 
 from .. import client
-from ..config import Endpoints
 from ..models import ThreadInfo
 from ..responses import GroupThreadListResponse, PostsResponse
 

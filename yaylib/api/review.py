@@ -24,10 +24,7 @@ SOFTWARE.
 
 from __future__ import annotations
 
-from datetime import datetime
-
 from .. import client
-from ..config import Endpoints
 from ..responses import ReviewsResponse
 
 

@@ -25,8 +25,6 @@ SOFTWARE.
 from __future__ import annotations
 
 from .. import client
-from ..config import Endpoints
-from ..models import ChatRoom, GifImageCategory, Message, StickerPack
 from ..responses import (
     ChatRoomResponse,
     ChatRoomsResponse,

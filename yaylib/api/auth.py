@@ -27,7 +27,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from .. import client
-from ..config import Configs, Endpoints
+from ..config import Configs
 from ..responses import (
     LoginUserResponse,
     LoginUpdateResponse,
