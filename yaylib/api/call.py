@@ -51,25 +51,25 @@ class CallAPI(object):
             "POST", endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bump", params=params
         )
 
-    def get_user_active_call(self, user_id: int) -> Post:
+    def get_user_active_call(self, user_id: int) -> PostResponse:
         return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.POSTS_V1}/active_call",
             params={"user_id": user_id},
             data_type=PostResponse,
-        ).post
+        )
 
-    def get_bgms(self) -> list[Bgm]:
+    def get_bgms(self) -> BgmsResponse:
         return self.__base._request(
             "GET", endpoint=f"{Endpoints.CALLS_V1}/bgm", data_type=BgmsResponse
-        ).bgm
+        )
 
-    def get_call(self, call_id: int) -> ConferenceCall:
+    def get_call(self, call_id: int) -> ConferenceCallResponse:
         return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.CALLS_V1}/conferences/{call_id}",
             data_type=ConferenceCallResponse,
-        ).conference_call
+        )
 
     def get_call_invitable_users(
         self, call_id: int, from_timestamp: int = None
@@ -218,25 +218,27 @@ class CallAPI(object):
             payload={"role": role},
         )
 
-    def start_call(self, conference_id: int, call_sid: str = None) -> ConferenceCall:
+    def start_call(
+        self, conference_id: int, call_sid: str = None
+    ) -> ConferenceCallResponse:
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.CALLS_V1}/start_conference_call",
             payload={"conference_id": conference_id, "call_sid": call_sid},
             data_type=ConferenceCallResponse,
-        ).conference_call
+        )
 
     def start_anonymous_call(
         self, conference_id: int, agora_uid: str
-    ) -> ConferenceCall:
+    ) -> ConferenceCallResponse:
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/start_conference_call",
             payload={"conference_id": conference_id, "agora_uid": agora_uid},
             data_type=ConferenceCallResponse,
-        ).conference_call
+        )
 
-    def stop__anonymous_call(self, conference_id: int, agora_uid: str = None):
+    def stop_anonymous_call(self, conference_id: int, agora_uid: str = None):
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/leave_conference_call",

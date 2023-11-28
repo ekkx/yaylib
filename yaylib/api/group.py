@@ -213,14 +213,14 @@ class GroupAPI(object):
             "GET",
             endpoint=f"{Endpoints.GROUPS_V1}/created_quota",
             data_type=CreateGroupQuota,
-        ).create
+        )
 
-    def get_group(self, group_id: int) -> Group:
+    def get_group(self, group_id: int) -> GroupResponse:
         return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}",
             data_type=GroupResponse,
-        ).group
+        )
 
     def get_groups(self, **params) -> GroupsResponse:
         """
@@ -517,7 +517,7 @@ class GroupAPI(object):
         allow_members_to_post_media: bool = None,
         allow_members_to_post_url: bool = None,
         guidelines: str = None,
-    ) -> Group:
+    ) -> GroupResponse:
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/update",
@@ -548,7 +548,7 @@ class GroupAPI(object):
                 "guidelines": guidelines,
             },
             data_type=GroupResponse,
-        ).group
+        )
 
     def withdraw_moderator_offer(self, group_id: int, user_id: int):
         return self.__base._request(

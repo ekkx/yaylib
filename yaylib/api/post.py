@@ -38,7 +38,7 @@ from ..responses import (
     PostLikersResponse,
     PostTagsResponse,
     LikePostsResponse,
-    ValidationPostResponse,
+    VoteSurveyResponse,
 )
 from ..utils import build_message_tags, get_post_type, md5
 
@@ -85,7 +85,7 @@ class PostAPI(object):
         attachment_7_filename: str = None,
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
-    ) -> ConferenceCall:
+    ) -> CreatePostResponse:
         text, message_tags = build_message_tags(text)
 
         return self.__base._request(
@@ -116,7 +116,7 @@ class PostAPI(object):
                 "attachment_9_filename": attachment_9_filename,
             },
             data_type=CreatePostResponse,
-        ).conference_call
+        )
 
     def create_group_pin_post(self, post_id: int, group_id: int):
         return self.__base._request(
@@ -219,7 +219,7 @@ class PostAPI(object):
         attachment_8_filename: str = None,
         attachment_9_filename: str = None,
         video_file_name: str = None,
-    ) -> Post:
+    ) -> CreatePostResponse:
         text, message_tags = build_message_tags(text)
 
         post_type = get_post_type(
@@ -264,7 +264,7 @@ class PostAPI(object):
             },
             data_type=CreatePostResponse,
             jwt_required=True,
-        ).post
+        )
 
     def create_share_post(
         self,
@@ -590,10 +590,10 @@ class PostAPI(object):
             data_type=PostsResponse,
         )
 
-    def get_post(self, post_id: int) -> Post:
+    def get_post(self, post_id: int) -> PostResponse:
         return self.__base._request(
             "GET", endpoint=f"{Endpoints.POSTS_V2}/{post_id}", data_type=PostResponse
-        ).post
+        )
 
     def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
         """
@@ -825,13 +825,13 @@ class PostAPI(object):
             endpoint=f"{Endpoints.POSTS_V1}/videos/{video_id}/view",
         )
 
-    def vote_survey(self, survey_id: int, choice_id: int) -> Survey:
+    def vote_survey(self, survey_id: int, choice_id: int) -> VoteSurveyResponse:
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.SURVEYS_V2}/{survey_id}/vote",
             payload={"choice_id": choice_id},
-            data_type=ValidationPostResponse,
-        ).survey
+            data_type=VoteSurveyResponse,
+        )
 
     @property
     def __signed_info(self) -> str:

@@ -135,12 +135,12 @@ class UserAPI(object):
             data_type=UsersByTimestampResponse,
         )
 
-    def get_follow_request_count(self) -> int:
+    def get_follow_request_count(self) -> FollowRequestCountResponse:
         return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.USERS_V2}/follow_requests_count",
             data_type=FollowRequestCountResponse,
-        ).users_count
+        )
 
     def get_following_users_born(self, birthdate: int = None) -> UsersResponse:
         params = {}
@@ -153,7 +153,7 @@ class UserAPI(object):
             data_type=UsersResponse,
         )
 
-    def get_footprints(self, **params) -> list[Footprint]:
+    def get_footprints(self, **params) -> FootprintsResponse:
         """
 
         Parameters:
@@ -169,7 +169,7 @@ class UserAPI(object):
             endpoint=f"{Endpoints.USERS_V2}/footprints",
             params=params,
             data_type=FootprintsResponse,
-        ).footprints
+        )
 
     def get_fresh_user(self, user_id: int) -> UserResponse:
         return self.__base._request(
@@ -178,7 +178,7 @@ class UserAPI(object):
             data_type=UserResponse,
         )
 
-    def get_hima_users(self, **params) -> list[UserWrapper]:
+    def get_hima_users(self, **params) -> HimaUsersResponse:
         """
 
         Parameters:
@@ -193,7 +193,7 @@ class UserAPI(object):
             endpoint=f"{Endpoints.USERS_V2}/hima_users",
             params=params,
             data_type=HimaUsersResponse,
-        ).hima_users
+        )
 
     def get_user_ranking(self, mode: str) -> RankingUsersResponse:
         """
@@ -262,17 +262,17 @@ class UserAPI(object):
             bypass_delay=True,
         )
 
-    def get_user(self, user_id: int) -> User:
+    def get_user(self, user_id: int) -> UserResponse:
         return self.__base._request(
             "GET", endpoint=f"{Endpoints.USERS_V2}/{user_id}", data_type=UserResponse
-        ).user
+        )
 
-    def get_user_email(self, user_id: int) -> str:
+    def get_user_email(self, user_id: int) -> UserEmailResponse:
         return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.USERS_V2}/fresh/{user_id}",
             data_type=UserEmailResponse,
-        ).email
+        )
 
     def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
         """

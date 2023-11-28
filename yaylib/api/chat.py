@@ -139,10 +139,10 @@ class ChatAPI(object):
             data_type=FollowUsersResponse,
         )
 
-    def get_gifs_data(self) -> list[GifImageCategory]:
+    def get_gifs_data(self) -> GifsDataResponse:
         return self.__base._request(
             "GET", endpoint=f"{Endpoints.HIDDEN_V1}/chats", data_type=GifsDataResponse
-        ).gif_categories
+        )
 
     def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
         """
@@ -172,7 +172,7 @@ class ChatAPI(object):
             data_type=ChatRoomsResponse,
         )
 
-    def get_messages(self, chat_room_id: int, **params) -> list[Message]:
+    def get_messages(self, chat_room_id: int, **params) -> MessagesResponse:
         """
 
         Parameters:
@@ -186,7 +186,7 @@ class ChatAPI(object):
             endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}/messages",
             params=params,
             data_type=MessagesResponse,
-        ).messages
+        )
 
     def get_request_chat_rooms(self, **params) -> ChatRoomsResponse:
         """
@@ -205,24 +205,24 @@ class ChatAPI(object):
             data_type=ChatRoomsResponse,
         )
 
-    def get_chat_room(self, chat_room_id: int) -> ChatRoom:
+    def get_chat_room(self, chat_room_id: int) -> ChatRoomResponse:
         return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.CHAT_ROOMS_V2}/{chat_room_id}",
             data_type=ChatRoomResponse,
-        ).chat
+        )
 
-    def get_sticker_packs(self) -> list[StickerPack]:
+    def get_sticker_packs(self) -> StickerPacksResponse:
         return self.__base._request(
             "GET", endpoint=Endpoints.STICKER_PACKS_V2, data_type=StickerPacksResponse
-        ).sticker_packs
+        )
 
-    def get_total_chat_requests(self) -> int:
+    def get_total_chat_requests(self) -> TotalChatRequestResponse:
         return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.CHAT_ROOMS_V1}/total_chat_request",
             data_type=TotalChatRequestResponse,
-        ).total
+        )
 
     def hide_chat(self, chat_room_id: int):
         return self.__base._request(

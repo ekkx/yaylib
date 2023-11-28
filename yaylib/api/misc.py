@@ -102,7 +102,7 @@ class MiscAPI(object):
             endpoint=f"{Endpoints.GET_EMAIL_GRANT_TOKEN}",
             payload={"code": code, "email": email},
             data_type=EmailGrantTokenResponse,
-        ).email_grant_token
+        )
 
     def get_email_verification_presigned_url(
         self, email: str, locale: str, intent: str = None
@@ -122,16 +122,18 @@ class MiscAPI(object):
 
     def get_file_upload_presigned_urls(
         self, file_names: list[str]
-    ) -> list[PresignedUrl]:
+    ) -> PresignedUrlsResponse:
         return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.BUCKETS_V1}/presigned_urls",
             params={"file_names[]": file_names},
             data_type=PresignedUrlsResponse,
             bypass_delay=True,
-        ).presigned_urls
+        )
 
-    def get_id_checker_presigned_url(self, model: str, action: str, **params) -> str:
+    def get_id_checker_presigned_url(
+        self, model: str, action: str, **params
+    ) -> IdCheckerPresignedUrlResponse:
         # TODO: @QueryMap @NotNull Map<String, String> map
         """
         Meow..
@@ -142,16 +144,18 @@ class MiscAPI(object):
             params=params,
             data_type=IdCheckerPresignedUrlResponse,
             bypass_delay=True,
-        ).presigned_url
+        )
 
-    def get_old_file_upload_presigned_url(self, video_file_name: str) -> str:
+    def get_old_file_upload_presigned_url(
+        self, video_file_name: str
+    ) -> PresignedUrlResponse:
         return self.__base._request(
             "GET",
             endpoint=f"{Endpoints.USERS_V1}/presigned_url",
             params={"video_file_name": video_file_name},
             data_type=PresignedUrlResponse,
             bypass_delay=True,
-        ).presigned_url
+        )
 
     def get_policy_agreements(self) -> PolicyAgreementsResponse:
         return self.__base._request(
@@ -301,23 +305,23 @@ class MiscAPI(object):
 
     # config
 
-    def get_app_config(self) -> ApplicationConfig:
+    def get_app_config(self) -> ApplicationConfigResponse:
         return self.__base._request(
             "GET",
             endpoint=f"https://{Configs.CONFIG_HOST}/api/apps/yay",
             data_type=ApplicationConfigResponse,
-        ).app
+        )
 
-    def get_banned_words(self, country_code: str = "jp") -> list[BanWord]:
+    def get_banned_words(self, country_code: str = "jp") -> BanWordsResponse:
         return self.__base._request(
             "GET",
             endpoint=f"https://{Configs.CONFIG_HOST}/{country_code}/api/v2/banned_words",
             data_type=BanWordsResponse,
-        ).ban_words
+        )
 
-    def get_popular_words(self, country_code: str = "jp") -> list[PopularWord]:
+    def get_popular_words(self, country_code: str = "jp") -> PopularWordsResponse:
         return self.__base._request(
             "GET",
             endpoint=f"https://{Configs.CONFIG_HOST}/{country_code}/api/apps/yay/popular_words",
             data_type=PopularWordsResponse,
-        ).popular_words
+        )
