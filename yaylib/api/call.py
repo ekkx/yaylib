@@ -1,7 +1,7 @@
 """
 MIT License
 
-Copyright (c) 2023-present qvco
+Copyright (c) 2023 qvco
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,7 @@ SOFTWARE.
 
 from __future__ import annotations
 
-from ..config import Endpoints
-from ..models import Bgm, ConferenceCall, Post
+from .. import client
 from ..responses import (
     BgmsResponse,
     CallStatusResponse,
@@ -38,283 +37,215 @@ from ..responses import (
 )
 
 
-def bump_call(
-    self, call_id: int, participant_limit: int = None, access_token: str = None
-):
-    params = {}
-    if participant_limit:
-        params["participant_limit"] = participant_limit
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bump",
-        params=params,
-        access_token=access_token,
-    )
-    self.logger.info("Call bumped.")
-    return response
+class CallAPI(object):
+    def __init__(self, base: client.BaseClient) -> None:
+        self.__base = base
 
+    def bump_call(self, call_id: int, participant_limit: int = None):
+        params = {}
+        if participant_limit:
+            params["participant_limit"] = participant_limit
+        return self.__base._request(
+            "POST", route=f"/v1/calls/{call_id}/bump", params=params
+        )
 
-def get_user_active_call(self, user_id: int, access_token: str = None) -> Post:
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.POSTS_V1}/active_call",
-        params={"user_id": user_id},
-        data_type=PostResponse,
-        access_token=access_token,
-    ).post
+    def get_user_active_call(self, user_id: int) -> PostResponse:
+        return self.__base._request(
+            "GET",
+            route=f"/v1/posts/active_call",
+            params={"user_id": user_id},
+            data_type=PostResponse,
+        )
 
+    def get_bgms(self) -> BgmsResponse:
+        return self.__base._request(
+            "GET", route="/v1/calls/bgm", data_type=BgmsResponse
+        )
 
-def get_bgms(self, access_token: str = None) -> list[Bgm]:
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.CALLS_V1}/bgm",
-        data_type=BgmsResponse,
-        access_token=access_token,
-    ).bgm
+    def get_call(self, call_id: int) -> ConferenceCallResponse:
+        return self.__base._request(
+            "GET",
+            route=f"/v1/calls/conferences/{call_id}",
+            data_type=ConferenceCallResponse,
+        )
 
+    def get_call_invitable_users(
+        self, call_id: int, from_timestamp: int = None
+    ) -> UsersByTimestampResponse:
+        # @Nullable @Query("user[nickname]")
+        params = {}
+        if from_timestamp:
+            params["from_timestamp"] = from_timestamp
+        return self.__base._request(
+            "GET",
+            route=f"/v1/calls/{call_id}/users/invitable",
+            params=params,
+            data_type=UsersByTimestampResponse,
+        )
 
-def get_call(self, call_id: int, access_token: str = None) -> ConferenceCall:
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.CALLS_V1}/conferences/{call_id}",
-        data_type=ConferenceCallResponse,
-        access_token=access_token,
-    ).conference_call
+    def get_call_status(self, opponent_id: int) -> CallStatusResponse:
+        return self.__base._request(
+            "GET",
+            route=f"/v1/calls/phone_status/{opponent_id}",
+            data_type=CallStatusResponse,
+        )
 
+    def get_games(self, **params) -> GamesResponse:
+        """
 
-def get_call_invitable_users(
-    self, call_id: int, from_timestamp: int = None, access_token: str = None
-) -> UsersByTimestampResponse:
-    # @Nullable @Query("user[nickname]")
-    params = {}
-    if from_timestamp:
-        params["from_timestamp"] = from_timestamp
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.CALLS_V1}/{call_id}/users/invitable",
-        params=params,
-        data_type=UsersByTimestampResponse,
-        access_token=access_token,
-    )
+        Parameters
+        ----------
+            - number: int - (optional)
+            - ids: list[int] - (optional)
+            - from_id: int - (optional)
 
+        """
+        return self.__base._request(
+            "GET",
+            route=f"/v1/games/apps",
+            params=params,
+            data_type=GamesResponse,
+        )
 
-def get_call_status(
-    self, opponent_id: int, access_token: str = None
-) -> CallStatusResponse:
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.CALLS_V1}/phone_status/{opponent_id}",
-        data_type=CallStatusResponse,
-        access_token=access_token,
-    )
+    def get_genres(self, **params) -> GenresResponse:
+        """
 
+        Parameters
+        ----------
+            - number: int - (optional)
+            - from: int - (optional)
 
-def get_games(self, access_token: str = None, **params) -> GamesResponse:
-    """
+        """
+        return self.__base._request(
+            "GET",
+            route=f"/v1/genres",
+            params=params,
+            data_type=GenresResponse,
+        )
 
-    Parameters
-    ----------
-        - number: int - (optional)
-        - ids: list[int] - (optional)
-        - from_id: int - (optional)
+    def get_group_calls(self, **params) -> PostsResponse:
+        """
 
-    """
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.GAMES_V1}/apps",
-        params=params,
-        data_type=GamesResponse,
-        access_token=access_token,
-    )
+        Parameters
+        ----------
+            - number: int - (optional)
+            - group_category_id: int - (optional)
+            - from_timestamp: int - (optional)
+            - scope: str - (optional)
 
+        """
+        return self.__base._request(
+            "GET",
+            route="/v1/posts/group_calls",
+            params=params,
+            data_type=PostsResponse,
+        )
 
-def get_genres(self, access_token: str = None, **params) -> GenresResponse:
-    """
+    def invite_to_call_bulk(self, call_id: int, group_id: int = None):
+        """
 
-    Parameters
-    ----------
-        - number: int - (optional)
-        - from: int - (optional)
+        Parameters
+        ----------
+            - call_id: int - (required)
+            - group_id: int - (optional)
 
-    """
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.GENRES_V1}",
-        params=params,
-        data_type=GenresResponse,
-        access_token=access_token,
-    )
+        """
+        params = {}
+        if group_id:
+            params["group_id"] = group_id
+        return self.__base._request(
+            "POST",
+            route=f"/v1/calls/{call_id}/bulk_invite",
+            params=params,
+        )
 
+    def invite_users_to_call(self, call_id: int, user_ids: list[int]):
+        """
 
-def get_group_calls(self, access_token: str = None, **params) -> PostsResponse:
-    """
+        Parameters
+        ----------
+            - call_id: int - (required)
+            - user_ids: list[int] - (required)
 
-    Parameters
-    ----------
-        - number: int - (optional)
-        - group_category_id: int - (optional)
-        - from_timestamp: int - (optional)
-        - scope: str - (optional)
+        """
+        return self.__base._request(
+            "POST",
+            route=f"/v1/calls/conference_calls/{call_id}/invite",
+            payload={"call_id": call_id, "user_ids": user_ids},
+        )
 
-    """
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.POSTS_V1}/group_calls",
-        params=params,
-        data_type=PostsResponse,
-        access_token=access_token,
-    )
+    def invite_users_to_chat_call(self, chat_room_id: int, room_id: int, room_url: str):
+        return self.__base._request(
+            "POST",
+            route="/v2/calls/invite",
+            payload={
+                "chat_room_id": chat_room_id,
+                "room_id": room_id,
+                "room_url": room_url,
+            },
+        )
 
+    def kick_and_ban_from_call(self, call_id: int, user_id: int):
+        return self.__base._request(
+            "POST",
+            route=f"/v1/calls/conference_calls/{call_id}/kick",
+            payload={"user_id": user_id},
+        )
 
-def invite_to_call_bulk(
-    self, call_id: int, group_id: int = None, access_token: str = None
-):
-    """
+    def set_call(
+        self,
+        call_id: int,
+        joinable_by: str,
+        game_title: str = None,
+        category_id: str = None,
+    ):
+        return self.__base._request(
+            "PUT",
+            route=f"/v1/calls/{call_id}",
+            payload={
+                "joinable_by": joinable_by,
+                "game_title": game_title,
+                "category_id": category_id,
+            },
+        )
 
-    Parameters
-    ----------
-        - call_id: int - (required)
-        - group_id: int - (optional)
+    def set_user_role(self, call_id: int, user_id: int, role: str):
+        return self.__base._request(
+            "PUT",
+            route=f"/v1/calls/{call_id}/users/{user_id}",
+            payload={"role": role},
+        )
 
-    """
-    params = {}
-    if group_id:
-        params["group_id"] = group_id
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.CALLS_V1}/{call_id}/bulk_invite",
-        params=params,
-        access_token=access_token,
-    )
-    self.logger.info("Invited your online followings to the call.")
-    return response
+    def start_call(
+        self, conference_id: int, call_sid: str = None
+    ) -> ConferenceCallResponse:
+        return self.__base._request(
+            "POST",
+            route="/v1/calls/start_conference_call",
+            payload={"conference_id": conference_id, "call_sid": call_sid},
+            data_type=ConferenceCallResponse,
+        )
 
+    def start_anonymous_call(
+        self, conference_id: int, agora_uid: str
+    ) -> ConferenceCallResponse:
+        return self.__base._request(
+            "POST",
+            route="/v1/anonymous_calls/start_conference_call",
+            payload={"conference_id": conference_id, "agora_uid": agora_uid},
+            data_type=ConferenceCallResponse,
+        )
 
-def invite_users_to_call(
-    self, call_id: int, user_ids: list[int], access_token: str = None
-):
-    """
+    def stop_anonymous_call(self, conference_id: int, agora_uid: str = None):
+        return self.__base._request(
+            "POST",
+            route="/v1/anonymous_calls/leave_conference_call",
+            payload={"conference_id": conference_id, "agora_uid": agora_uid},
+        )
 
-    Parameters
-    ----------
-        - call_id: int - (required)
-        - user_ids: list[int] - (required)
-
-    """
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/invite",
-        payload={"call_id": call_id, "user_ids": user_ids},
-        access_token=access_token,
-    )
-    self.logger.info("Invited users to call.")
-    return response
-
-
-def invite_users_to_chat_call(
-    self, chat_room_id: int, room_id: int, room_url: str, access_token: str = None
-):
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.CALLS_V2}/invite",
-        payload={
-            "chat_room_id": chat_room_id,
-            "room_id": room_id,
-            "room_url": room_url,
-        },
-        access_token=access_token,
-    )
-    self.logger.info("Invited users to chat call.")
-    return response
-
-
-def kick_and_ban_from_call(self, call_id: int, user_id: int, access_token: str = None):
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.CALLS_V1}/conference_calls/{call_id}/kick",
-        payload={"user_id": user_id},
-        access_token=access_token,
-    )
-    self.logger.info("User has been banned from the call.")
-    return response
-
-
-def set_call(
-    self,
-    call_id: int,
-    joinable_by: str,
-    game_title: str = None,
-    category_id: str = None,
-    access_token: str = None,
-):
-    response = self.request(
-        "PUT",
-        endpoint=f"{Endpoints.CALLS_V1}/{call_id}",
-        payload={
-            "joinable_by": joinable_by,
-            "game_title": game_title,
-            "category_id": category_id,
-        },
-        access_token=access_token,
-    )
-    self.logger.info("Started a call.")
-    return response
-
-
-def set_user_role(
-    self, call_id: int, user_id: int, role: str, access_token: str = None
-):
-    response = self.request(
-        "PUT",
-        endpoint=f"{Endpoints.CALLS_V1}/{call_id}/users/{user_id}",
-        payload={"role": role},
-        access_token=access_token,
-    )
-    self.logger.info(f"User '{user_id}' has been given a role.")
-    return response
-
-
-def start_call(
-    self, conference_id: int, call_sid: str = None, access_token: str = None
-) -> ConferenceCall:
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.CALLS_V1}/start_conference_call",
-        payload={"conference_id": conference_id, "call_sid": call_sid},
-        data_type=ConferenceCallResponse,
-        access_token=access_token,
-    ).conference_call
-    self.logger.info("Joined the call.")
-    return response
-
-
-def start_anonymous_call(self, conference_id: int, agora_uid: str) -> ConferenceCall:
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/start_conference_call",
-        payload={"conference_id": conference_id, "agora_uid": agora_uid},
-        data_type=ConferenceCallResponse,
-    ).conference_call
-    self.logger.info("Joined the call.")
-    return response
-
-
-def stop__anonymous_call(self, conference_id: int, agora_uid: str = None):
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.ANONYMOUS_CALLS_V1}/leave_conference_call",
-        payload={"conference_id": conference_id, "agora_uid": agora_uid},
-    )
-    self.logger.info("Left the call.")
-    return response
-
-
-def stop_call(self, conference_id: int, call_sid: str = None, access_token: str = None):
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.CALLS_V1}/leave_conference_call",
-        payload={"conference_id": conference_id, "call_sid": call_sid},
-        access_token=access_token,
-    )
-    self.logger.info("Left the call.")
-    return response
+    def stop_call(self, conference_id: int, call_sid: str = None):
+        return self.__base._request(
+            "POST",
+            route="/v1/calls/leave_conference_call",
+            payload={"conference_id": conference_id, "call_sid": call_sid},
+        )

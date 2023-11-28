@@ -1,7 +1,7 @@
 """
 MIT License
 
-Copyright (c) 2023-present qvco
+Copyright (c) 2023 qvco
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,168 +24,121 @@ SOFTWARE.
 
 from __future__ import annotations
 
-from ..config import Endpoints
+from .. import client
 from ..models import ThreadInfo
 from ..responses import GroupThreadListResponse, PostsResponse
 
 
-def add_post_to_thread(
-    self, post_id: int, thread_id: int, access_token: str = None
-) -> ThreadInfo:
-    response = self.request(
-        "PUT",
-        endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread/{thread_id}",
-        data_type=ThreadInfo,
-        auth_required=True,
-        access_token=access_token,
-    )
-    self.logger.info(f"Post '{post_id}' added to the thread '{thread_id}'.")
-    return response
+class ThreadAPI(object):
+    def __init__(self, base: client.BaseClient) -> None:
+        self.__base = base
 
+    def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
+        return self.__base._request(
+            "PUT",
+            route=f"/v3/posts/{post_id}/move_to_thread/{thread_id}",
+            data_type=ThreadInfo,
+        )
 
-def convert_post_to_thread(
-    self,
-    post_id: int,
-    title: str = None,
-    thread_icon_filename: str = None,
-    access_token: str = None,
-) -> ThreadInfo:
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.POSTS_V3}/{post_id}/move_to_thread",
-        payload={"title": title, "thread_icon_filename": thread_icon_filename},
-        data_type=ThreadInfo,
-        auth_required=True,
-        access_token=access_token,
-    )
-    self.logger.info("Post has been converted to a thread.")
-    return response
+    def convert_post_to_thread(
+        self, post_id: int, title: str = None, thread_icon_filename: str = None
+    ) -> ThreadInfo:
+        return self.__base._request(
+            "POST",
+            route=f"/v3/posts/{post_id}/move_to_thread",
+            payload={"title": title, "thread_icon_filename": thread_icon_filename},
+            data_type=ThreadInfo,
+        )
 
+    def create_thread(
+        self, group_id: int, title: str, thread_icon_filename: str
+    ) -> ThreadInfo:
+        return self.__base._request(
+            "POST",
+            route=f"/v1/threads/",
+            payload={
+                "group_id": group_id,
+                "title": title,
+                "thread_icon_filename": thread_icon_filename,
+            },
+            data_type=ThreadInfo,
+        )
 
-def create_thread(
-    self, group_id: int, title: str, thread_icon_filename: str, access_token: str = None
-) -> ThreadInfo:
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.THREADS_V1}",
-        payload={
-            "group_id": group_id,
-            "title": title,
-            "thread_icon_filename": thread_icon_filename,
-        },
-        data_type=ThreadInfo,
-        auth_required=True,
-        access_token=access_token,
-    )
-    self.logger.info("A new thread has been created.")
-    return response
+    def get_group_thread_list(
+        self, group_id: int, from_str: str = None, **params
+    ) -> GroupThreadListResponse:
+        """
 
+        Parameters:
+        ----------
 
-def get_group_thread_list(
-    self, group_id: int, from_str: str = None, access_token: str = None, **params
-) -> GroupThreadListResponse:
-    """
+            - group_id: int
+            - from_str: str = None
+            - join_status: str = None
 
-    Parameters:
-    ----------
+        """
+        params["group_id"] = group_id
+        if from_str:
+            params["from"] = from_str
+        return self.__base._request(
+            "GET",
+            route=f"/v1/threads/",
+            params=params,
+            data_type=GroupThreadListResponse,
+        )
 
-        - group_id: int
-        - from_str: str = None
-        - join_status: str = None
+    def get_thread_joined_statuses(self, ids: list[int]) -> dict:
+        return self.__base._request(
+            "GET",
+            route=f"/v1/threads/joined_statuses",
+            params={"ids[]": ids},
+        )
 
-    """
-    params["group_id"] = group_id
-    if from_str:
-        params["from"] = from_str
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.THREADS_V1}",
-        params=params,
-        data_type=GroupThreadListResponse,
-        access_token=access_token,
-    )
+    def get_thread_posts(
+        self, thread_id: int, from_str: str = None, **params
+    ) -> PostsResponse:
+        """
 
+        Parameters:
+        ----------
 
-def get_thread_joined_statuses(self, ids: list[int], access_token: str = None) -> dict:
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.THREADS_V1}/joined_statuses",
-        params={"ids[]": ids},
-        auth_required=True,
-        access_token=access_token,
-    )
+            - post_type: str
+            - number: int = None
+            - from_str: str = None
 
+        """
+        if from_str:
+            params["from"] = from_str
+        return self.__base._request(
+            "GET",
+            route=f"/v1/threads/{thread_id}/posts",
+            params=params,
+            data_type=PostsResponse,
+        )
 
-def get_thread_posts(
-    self, thread_id: int, from_str: str = None, access_token: str = None, **params
-) -> PostsResponse:
-    """
+    def join_thread(self, thread_id: int, user_id: int):
+        return self.__base._request(
+            "POST", route=f"/v1/threads/{thread_id}/members/{user_id}"
+        )
 
-    Parameters:
-    ----------
+    def leave_thread(self, thread_id: int, user_id: int):
+        return self.__base._request(
+            "DELETE",
+            route=f"/v1/threads/{thread_id}/members/{user_id}",
+        )
 
-        - post_type: str
-        - number: int = None
-        - from_str: str = None
+    def remove_thread(
+        self,
+        thread_id: int,
+    ):
+        return self.__base._request(
+            "DELETE",
+            route=f"/v1/threads/{thread_id}",
+        )
 
-    """
-    if from_str:
-        params["from"] = from_str
-    return self.request(
-        "GET",
-        endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/posts",
-        params=params,
-        data_type=PostsResponse,
-        access_token=access_token,
-    )
-
-
-def join_thread(self, thread_id: int, user_id: int, access_token: str = None):
-    response = self.request(
-        "POST",
-        endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
-        auth_required=True,
-        access_token=access_token,
-    )
-    self.logger.info(f"Joined the thread '{thread_id}'.")
-    return response
-
-
-def leave_thread(self, thread_id: int, user_id: int, access_token: str = None):
-    response = self.request(
-        "DELETE",
-        endpoint=f"{Endpoints.THREADS_V1}/{thread_id}/members/{user_id}",
-        auth_required=True,
-        access_token=access_token,
-    )
-    self.logger.info("Left the thread.")
-    return response
-
-
-def remove_thread(self, thread_id: int, access_token: str = None):
-    response = self.request(
-        "DELETE",
-        endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
-        auth_required=True,
-        access_token=access_token,
-    )
-    self.logger.info(f"Thread '{thread_id}' has been removed.")
-    return response
-
-
-def update_thread(
-    self,
-    thread_id: int,
-    title: str,
-    thread_icon_filename: str,
-    access_token: str = None,
-):
-    response = self.request(
-        "PUT",
-        endpoint=f"{Endpoints.THREADS_V1}/{thread_id}",
-        payload={"title": title, "thread_icon_filename": thread_icon_filename},
-        auth_required=True,
-        access_token=access_token,
-    )
-    self.logger.info(f"Thread '{thread_id}' has been updated.")
-    return response
+    def update_thread(self, thread_id: int, title: str, thread_icon_filename: str):
+        return self.__base._request(
+            "PUT",
+            route=f"/v1/threads/{thread_id}",
+            payload={"title": title, "thread_icon_filename": thread_icon_filename},
+        )

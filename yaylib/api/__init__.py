@@ -5,29 +5,26 @@ Yay! (nanameue, Inc.) API Client
 
 An API wrapper for Yay! (yay.space) written in Python.
 
-:copyright: (c) 2023-present qvco
+:copyright: (c) 2023 qvco
 :license: MIT, see LICENSE for more details.
 
 """
 
-from .api import *
+from .auth import *
 from .call import *
-from .cassandra import *
+from .notification import *
 from .chat import *
 from .group import *
-from .login import *
 from .misc import *
 from .post import *
 from .review import *
 from .thread import *
 from .user import *
-from .websocket import *
 
 __all__ = [
-    "API",
+    "auth",
     "block",
     "call",
-    "cassandra",
     "chat",
     "common",
     "config",
@@ -39,8 +36,8 @@ __all__ = [
     "hidden",
     "id_card_check",
     "internal_id_card_check",
-    "login",
     "misc",
+    "notification",
     "mute_keyword",
     "payment",
     "post",
@@ -51,5 +48,4 @@ __all__ = [
     "user_identity",
     "user",
     "wallet",
-    "websocket",
 ]

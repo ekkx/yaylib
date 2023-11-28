@@ -25,66 +25,53 @@ SOFTWARE.
 from __future__ import annotations
 
 from .. import client
-from ..responses import ReviewsResponse
+from ..config import Configs
+from ..responses import ActivitiesResponse
 
 
-class ReviewAPI(object):
+class NotificationAPI(object):
     def __init__(self, base: client.BaseClient) -> None:
         self.__base = base
 
-    def create_review(self, user_id: int, comment: str):
+    def get_user_activities(self, **params) -> ActivitiesResponse:
+        """
+
+        Parameters
+        ----------
+            - important: bool - (required)
+            - from_timestamp: int - (optional)
+            - number: int - (optional)
+
+        """
+        return self.__base._request(
+            "GET",
+            base_url=Configs.STAGING_HOST_2,
+            route="/api/user_activities",
+            params=params,
+            data_type=ActivitiesResponse,
+        )
+
+    def get_user_merged_activities(self, **params) -> ActivitiesResponse:
+        """
+        Parameters
+        ----------
+
+            - from_timestamp: int - (optional)
+            - number: int - (optional)
+
+        """
+        return self.__base._request(
+            "GET",
+            base_url=Configs.STAGING_HOST_2,
+            route="/api/v2/user_activities",
+            params=params,
+            data_type=ActivitiesResponse,
+        )
+
+    def received_notification(self, pid: str, type: str, opened_at: int = None):
+        # TODO: opened_atはnullalbeか確認する
         return self.__base._request(
             "POST",
-            route=f"/v1/users/reviews/{user_id}",
-            payload={"comment": comment},
+            route="/api/received_push_notifications",
+            payload={"pid": pid, "type": type, "opened_at": opened_at},
         )
-
-    def delete_reviews(self, review_ids: list[int]):
-        return self.__base._request(
-            "DELETE",
-            route=f"/v1/users/reviews",
-            params={"review_ids[]": review_ids},
-        )
-
-    def get_my_reviews(self, **params) -> ReviewsResponse:
-        """
-
-        Parameters
-        ----------
-
-            - from_id: int (optional)
-            - number: int = (optional)
-
-        """
-        return self.__base._request(
-            "GET",
-            route=f"/v1/users/reviews/mine",
-            params=params,
-            data_type=ReviewsResponse,
-        )
-
-    def get_reviews(self, user_id: int, **params) -> ReviewsResponse:
-        """
-
-        Parameters
-        ----------
-
-            - user_id: int (required)
-            - from_id: int = (optional)
-            - number: int = (optional)
-
-        """
-        return self.__base._request(
-            "GET",
-            route=f"/v1/users/reviews/{user_id}",
-            params=params,
-            data_type=ReviewsResponse,
-        )
-
-    def pin_review(self, review_id: int):
-        return self.__base._request(
-            "POST", route=f"/v1/pinned/reviews", payload={"id": review_id}
-        )
-
-    def unpin_review(self, review_id: int):
-        return self.__base._request("DELETE", route=f"/v1/pinned/reviews{review_id}")
