@@ -50,6 +50,7 @@ from ..responses import (
     UsersByTimestampResponse,
     UserTimestampResponse,
 )
+from ..utils import md5, sha256
 
 
 class UserAPI(object):
@@ -63,17 +64,14 @@ class UserAPI(object):
         )
 
     def destroy_user(self):
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V2}/destroy",
             payload={
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             },
         )
 
@@ -366,18 +364,15 @@ class UserAPI(object):
         en: int = None,
         vn: int = None,
     ) -> CreateUserResponse:
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V3}/register",
             payload={
                 "app_version": Configs.API_VERSION_NAME,
-                "timestamp": timestamp,
                 "api_key": Configs.API_KEY,
-                "signed_version": self.generate_signed_version(),
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "signed_version": sha256(),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
                 "uuid": self.__base.uuid,
                 "nickname": nickname,
                 "birth_date": birth_date,
@@ -484,7 +479,6 @@ class UserAPI(object):
         )
 
     def set_follow_permission_enabled(self, nickname: str, is_private: bool = None):
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V2}/edit",
@@ -493,11 +487,9 @@ class UserAPI(object):
                 "is_private": is_private,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
-                "signed_version": self.generate_signed_version(),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
+                "signed_version": sha256(),
             },
         )
 
@@ -527,17 +519,14 @@ class UserAPI(object):
         )
 
     def update_language(self, language: str):
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V1}/language",
             payload={
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
                 "language": language,
             },
         )
@@ -560,16 +549,13 @@ class UserAPI(object):
             - username: str = (optional)
 
         """
-        timestamp = int(datetime.now().timestamp())
         params.update(
             {
                 "nickname": nickname,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.uuid, timestamp, shared_key=True
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             }
         )
         return self.__base._request(
@@ -644,3 +630,7 @@ class UserAPI(object):
             endpoint=f"{Endpoints.HIDDEN_V1}/users",
             params={"user_ids[]": user_ids},
         )
+
+    @property
+    def __signed_info(self) -> str:
+        return md5(self.__base.device_uuid, int(datetime.now().timestamp()), False)

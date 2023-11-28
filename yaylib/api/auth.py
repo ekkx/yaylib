@@ -24,20 +24,17 @@ SOFTWARE.
 
 from __future__ import annotations
 
-import hashlib
-
-from cryptography.fernet import Fernet
 from datetime import datetime
 
 from .. import client
 from ..config import Configs, Endpoints
-from ..errors import ForbiddenError
 from ..responses import (
     LoginUserResponse,
     LoginUpdateResponse,
     RegisterDeviceTokenResponse,
     TokenResponse,
 )
+from ..utils import md5
 
 
 class AuthAPI(object):
@@ -124,7 +121,6 @@ class AuthAPI(object):
         )
 
     def restore_user(self, user_id: int) -> LoginUserResponse:
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.USERS_V2}/restore",
@@ -132,8 +128,8 @@ class AuthAPI(object):
                 "user_id": user_id,
                 "api_key": Configs.API_KEY,
                 "uuid": self.__base.uuid,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(self.__base.device_uuid, timestamp),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             },
         )
 
@@ -192,3 +188,7 @@ class AuthAPI(object):
             },
             data_type=LoginUpdateResponse,
         )
+
+    @property
+    def __signed_info(self) -> str:
+        return md5(self.__base.device_uuid, int(datetime.now().timestamp()), False)

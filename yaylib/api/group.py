@@ -42,6 +42,7 @@ from ..responses import (
     UsersResponse,
     UsersByTimestampResponse,
 )
+from ..utils import md5
 
 
 class GroupAPI(object):
@@ -123,7 +124,6 @@ class GroupAPI(object):
         allow_members_to_post_url: bool = None,
         guidelines: str = None,
     ) -> CreateGroupResponse:
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V3}/new",
@@ -145,10 +145,8 @@ class GroupAPI(object):
                 "cover_image_filename": cover_image_filename,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
                 "sub_category_id": sub_category_id,
                 "hide_from_game_eight": hide_from_game_eight,
                 "allow_members_to_post_image_and_video": allow_members_to_post_media,
@@ -454,7 +452,6 @@ class GroupAPI(object):
         )
 
     def send_moderator_offers(self, group_id: int, user_ids: list[int]):
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/deputize/mass",
@@ -462,15 +459,12 @@ class GroupAPI(object):
                 "user_ids[]": user_ids,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             },
         )
 
     def send_ownership_offer(self, group_id: int, user_id: int):
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/transfer",
@@ -478,10 +472,8 @@ class GroupAPI(object):
                 "user_id": user_id,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             },
         )
 
@@ -526,7 +518,6 @@ class GroupAPI(object):
         allow_members_to_post_url: bool = None,
         guidelines: str = None,
     ) -> Group:
-        timestamp = int(datetime.now().timestamp())
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/update",
@@ -549,10 +540,8 @@ class GroupAPI(object):
                 "sub_category_id": sub_category_id,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
                 "hide_from_game_eight": hide_from_game_eight,
                 "allow_members_to_post_image_and_video": allow_members_to_post_media,
                 "allow_members_to_post_url": allow_members_to_post_url,
@@ -573,3 +562,7 @@ class GroupAPI(object):
             endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer/withdraw",
             payload={"user_id": user_id},
         )
+
+    @property
+    def __signed_info(self) -> str:
+        return md5(self.__base.uuid, int(datetime.now().timestamp()), True)

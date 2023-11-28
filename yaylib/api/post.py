@@ -40,7 +40,7 @@ from ..responses import (
     LikePostsResponse,
     ValidationPostResponse,
 )
-from ..utils import build_message_tags, get_post_type
+from ..utils import build_message_tags, get_post_type, md5
 
 
 class PostAPI(object):
@@ -88,8 +88,6 @@ class PostAPI(object):
     ) -> ConferenceCall:
         text, message_tags = build_message_tags(text)
 
-        timestamp = int(datetime.now().timestamp())
-
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V2}/new_conference_call",
@@ -101,10 +99,8 @@ class PostAPI(object):
                 "call_type": call_type,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
                 "category_id": category_id,
                 "game_title": game_title,
                 "joinable_by": joinable_by,
@@ -279,8 +275,6 @@ class PostAPI(object):
         color: int = None,
         group_id: int = None,
     ) -> Post:
-        timestamp = int(datetime.now().timestamp())
-
         return self.__base._request(
             "POST",
             endpoint=f"{Endpoints.POSTS_V2}/new_share_post",
@@ -293,10 +287,8 @@ class PostAPI(object):
                 "group_id": group_id,
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             },
             data_type=Post,
         )
@@ -813,9 +805,6 @@ class PostAPI(object):
         message_tags: list = [],
     ) -> Post:
         text, message_tags = build_message_tags(text)
-
-        timestamp = int(datetime.now().timestamp())
-
         return self.__base._request(
             "PUT",
             endpoint=f"{Endpoints.POSTS_V3}/{post_id}",
@@ -825,10 +814,8 @@ class PostAPI(object):
                 "color": color,
                 "message_tags": message_tags,
                 "api_key": Configs.API_KEY,
-                "timestamp": timestamp,
-                "signed_info": self.generate_signed_info(
-                    self.__base.device_uuid, timestamp
-                ),
+                "timestamp": int(datetime.now().timestamp()),
+                "signed_info": self.__signed_info,
             },
         )
 
@@ -845,3 +832,7 @@ class PostAPI(object):
             payload={"choice_id": choice_id},
             data_type=ValidationPostResponse,
         ).survey
+
+    @property
+    def __signed_info(self) -> str:
+        return md5(self.__base.device_uuid, int(datetime.now().timestamp()), False)
