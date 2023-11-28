@@ -20,7 +20,7 @@ image_paths = [
 ]
 
 # 画像の使い道を指定
-image_type = yaylib.IMAGE_TYPE_POST
+image_type = yaylib.ImageType.post
 
 # サーバー上にアップロード
 attachments = api.upload_image(image_paths, image_type)

@@ -14,7 +14,7 @@ class LikeBot:
         self.api = yaylib.Client()
         self.api.login(email, password)
 
-    def run(self):
+    def main(self):
         min_collect = 30
         liked = 0
         collected_ids = set()
@@ -45,6 +45,7 @@ class LikeBot:
 
             for id in ids:
                 self.api.like(id)
+                self.api.logger.info("いいねしました。")
 
             liked += len(ids)
             self.api.logger.info(f"いいね数: {liked}")
@@ -55,4 +56,4 @@ class LikeBot:
 
 if __name__ == "__main__":
     bot = LikeBot(email, password)
-    bot.run()
+    bot.main()
