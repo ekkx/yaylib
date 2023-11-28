@@ -46,7 +46,7 @@ from ..responses import (
     PopularWordsResponse,
     PolicyAgreementsResponse,
 )
-from ..utils import is_valid_image_format, get_hashed_filename
+from ..utils import is_valid_image_format, get_hashed_filename, generate_uuid
 
 
 upload_item_types = [
@@ -261,7 +261,7 @@ class MiscAPI(object):
                 is_thumb=True,
             )
 
-            uuid = self.generate_uuid(False)[:16]
+            uuid = generate_uuid(False)[:16]
 
             original_attachment.filename = get_hashed_filename(
                 original_attachment, image_type, key, uuid
@@ -274,7 +274,7 @@ class MiscAPI(object):
             _files.append(thumbnail_attachment)
 
         file_names = [x.filename for x in _files]
-        res_presigned_url = self.get_file_upload_presigned_urls(self, file_names)
+        res_presigned_url = self.get_file_upload_presigned_urls(file_names).presigned_urls
 
         res_upload = []
 
