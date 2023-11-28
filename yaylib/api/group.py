@@ -50,17 +50,13 @@ class GroupAPI(object):
         self.__base = base
 
     def accept_moderator_offer(self, group_id: int):
-        return self.__base._request(
-            "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize"
-        )
+        return self.__base._request("PUT", route=f"/v1/groups/{group_id}/deputize")
 
     def accept_ownership_offer(
         self,
         group_id: int,
     ):
-        return self.__base._request(
-            "PUT", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer"
-        )
+        return self.__base._request("PUT", route=f"/v1/groups/{group_id}/transfer")
 
     def accept_group_join_request(
         self,
@@ -69,7 +65,7 @@ class GroupAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/accept/{user_id}",
+            route=f"/v1/groups/{group_id}/accept/{user_id}",
         )
 
     def add_related_groups(self, group_id: int, related_group_id: list[int]):
@@ -80,14 +76,14 @@ class GroupAPI(object):
         """
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
+            route=f"/v1/groups/{group_id}/related",
             params={"related_group_id[]": related_group_id},
         )
 
     def ban_group_user(self, group_id: int, user_id: int):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban/{user_id}",
+            route=f"/v1/groups/{group_id}/ban/{user_id}",
         )
 
     def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
@@ -96,7 +92,7 @@ class GroupAPI(object):
             params["from_time"] = from_time
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V1}/unread_status",
+            route=f"/v1/groups/unread_status",
             params=params,
             data_type=UnreadStatusResponse,
         )
@@ -126,7 +122,7 @@ class GroupAPI(object):
     ) -> CreateGroupResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V3}/new",
+            route=f"/v3/groups/new",
             payload={
                 "topic": topic,
                 "description": description,
@@ -158,28 +154,22 @@ class GroupAPI(object):
 
     def create_pin_group(self, group_id: int):
         return self.__base._request(
-            "POST", endpoint=f"{Endpoints.PINNED_V1}/groups", payload={"id": group_id}
+            "POST", route=f"/v1/pinned/groups", payload={"id": group_id}
         )
 
     def decline_moderator_offer(self, group_id: int):
-        return self.__base._request(
-            "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize"
-        )
+        return self.__base._request("DELETE", route=f"/v1/groups/{group_id}/deputize")
 
     def decline_ownership_offer(self, group_id: int):
-        return self.__base._request(
-            "DELETE", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer"
-        )
+        return self.__base._request("DELETE", route=f"/v1/groups/{group_id}/transfer")
 
     def decline_group_join_request(self, group_id: int, user_id: int):
         return self.__base._request(
-            "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/decline/{user_id}"
+            "POST", route=f"/v1/groups/{group_id}/decline/{user_id}"
         )
 
     def delete_pin_group(self, group_id: int):
-        return self.__base._request(
-            "DELETE", endpoint=f"{Endpoints.PINNED_V1}/groups/{group_id}"
-        )
+        return self.__base._request("DELETE", route=f"/v1/pinned/groups/{group_id}")
 
     def get_banned_group_members(
         self, group_id: int, page: int = None
@@ -188,7 +178,7 @@ class GroupAPI(object):
         if page:
             params["page"] = page
         return self.__base._request(
-            "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/ban_list", params=params
+            "GET", route=f"/v1/groups/{group_id}/ban_list", params=params
         )
 
     def get_group_categories(self, **params) -> GroupCategoriesResponse:
@@ -203,7 +193,7 @@ class GroupAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V1}/categories",
+            route=f"/v1/groups/categories",
             params=params,
             data_type=GroupCategoriesResponse,
         )
@@ -211,14 +201,14 @@ class GroupAPI(object):
     def get_create_group_quota(self) -> CreateGroupQuota:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V1}/created_quota",
+            route=f"/v1/groups/created_quota",
             data_type=CreateGroupQuota,
         )
 
     def get_group(self, group_id: int) -> GroupResponse:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}",
+            route=f"/v1/groups/{group_id}",
             data_type=GroupResponse,
         )
 
@@ -236,7 +226,7 @@ class GroupAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V2}",
+            route=f"/v2/groups",
             params=params,
             data_type=GroupsResponse,
         )
@@ -253,7 +243,7 @@ class GroupAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/users/invitable",
+            route=f"/v1/groups/{group_id}/users/invitable",
             params=params,
             data_type=UsersByTimestampResponse,
         )
@@ -261,13 +251,13 @@ class GroupAPI(object):
     def get_joined_statuses(self, ids: list[int]) -> dict:
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V1}/joined_statuses",
+            route=f"/v1/groups/joined_statuses",
             params={"ids[]": ids},
         )
 
     def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
         return self.__base._request(
-            "GET", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/members/{user_id}"
+            "GET", route=f"/v1/groups/{group_id}/members/{user_id}"
         )
 
     def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
@@ -287,7 +277,7 @@ class GroupAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/members",
+            route=f"/v2/groups/{group_id}/members",
             params=params,
             data_type=GroupUsersResponse,
         )
@@ -298,7 +288,7 @@ class GroupAPI(object):
             params["from_timestamp"] = from_timestamp
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V2}/mine",
+            route=f"/v2/groups/mine",
             params=params,
             data_type=GroupsResponse,
         )
@@ -316,7 +306,7 @@ class GroupAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/relatable",
+            route=f"/v1/groups/{group_id}/relatable",
             params=params,
             data_type=GroupsRelatedResponse,
         )
@@ -334,7 +324,7 @@ class GroupAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
+            route=f"/v1/groups/{group_id}/related",
             params=params,
             data_type=GroupsRelatedResponse,
         )
@@ -351,7 +341,7 @@ class GroupAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"{Endpoints.GROUPS_V1}/user_group_list",
+            route=f"/v1/groups/user_group_list",
             params=params,
             data_type=GroupsResponse,
         )
@@ -363,7 +353,7 @@ class GroupAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/invite",
+            route=f"/v1/groups/{group_id}/invite",
             payload={"user_ids[]": user_ids},
         )
 
@@ -373,7 +363,7 @@ class GroupAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/join",
+            route=f"/v1/groups/{group_id}/join",
         )
 
     def leave_group(
@@ -382,7 +372,7 @@ class GroupAPI(object):
     ):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/leave",
+            route=f"/v1/groups/{group_id}/leave",
         )
 
     def post_gruop_social_shared(
@@ -392,7 +382,7 @@ class GroupAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V2}/{group_id}/social_shared",
+            route=f"/v2/groups/{group_id}/social_shared",
             params={"sns_name": sns_name},
         )
 
@@ -402,7 +392,7 @@ class GroupAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/remove_cover",
+            route=f"/v1/groups/{group_id}/remove_cover",
         )
 
     def remove_moderator(
@@ -412,7 +402,7 @@ class GroupAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/fire/{user_id}",
+            route=f"/v1/groups/{group_id}/fire/{user_id}",
         )
 
     def remove_related_groups(
@@ -422,7 +412,7 @@ class GroupAPI(object):
     ):
         return self.__base._request(
             "DELETE",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/related",
+            route=f"/v1/groups/{group_id}/related",
             params={"related_group_id[]": related_group_ids},
         )
 
@@ -439,7 +429,7 @@ class GroupAPI(object):
     ):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/report",
+            route=f"/v3/groups/{group_id}/report",
             payload={
                 "category_id": category_id,
                 "reason": reason,
@@ -454,7 +444,7 @@ class GroupAPI(object):
     def send_moderator_offers(self, group_id: int, user_ids: list[int]):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/deputize/mass",
+            route=f"/v3/groups/{group_id}/deputize/mass",
             payload={
                 "user_ids[]": user_ids,
                 "uuid": self.__base.uuid,
@@ -467,7 +457,7 @@ class GroupAPI(object):
     def send_ownership_offer(self, group_id: int, user_id: int):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/transfer",
+            route=f"/v3/groups/{group_id}/transfer",
             payload={
                 "user_id": user_id,
                 "uuid": self.__base.uuid,
@@ -480,18 +470,16 @@ class GroupAPI(object):
     def set_group_title(self, group_id: int, title: str):
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/set_title",
+            route=f"/v1/groups/{group_id}/set_title",
             payload={"title": title},
         )
 
     def take_over_group_ownership(self, group_id: int):
-        return self.__base._request(
-            "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/take_over"
-        )
+        return self.__base._request("POST", route=f"/v1/groups/{group_id}/take_over")
 
     def unban_group_member(self, group_id: int, user_id: int):
         return self.__base._request(
-            "POST", endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/unban/{user_id}"
+            "POST", route=f"/v1/groups/{group_id}/unban/{user_id}"
         )
 
     def update_group(
@@ -520,7 +508,7 @@ class GroupAPI(object):
     ) -> GroupResponse:
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.GROUPS_V3}/{group_id}/update",
+            route=f"/v3/groups/{group_id}/update",
             payload={
                 "topic": topic,
                 "description": description,
@@ -553,13 +541,13 @@ class GroupAPI(object):
     def withdraw_moderator_offer(self, group_id: int, user_id: int):
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/deputize/{user_id}/withdraw",
+            route=f"/v1/groups/{group_id}/deputize/{user_id}/withdraw",
         )
 
     def withdraw_ownership_offer(self, group_id: int, user_id: int):
         return self.__base._request(
             "PUT",
-            endpoint=f"{Endpoints.GROUPS_V1}/{group_id}/transfer/withdraw",
+            route=f"/v1/groups/{group_id}/transfer/withdraw",
             payload={"user_id": user_id},
         )
 
