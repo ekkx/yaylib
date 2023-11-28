@@ -45,7 +45,8 @@ class NotificationAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"https://{Configs.STAGING_HOST_2}/api/user_activities",
+            base_url=Configs.STAGING_HOST_2,
+            route="/api/user_activities",
             params=params,
             data_type=ActivitiesResponse,
         )
@@ -61,7 +62,8 @@ class NotificationAPI(object):
         """
         return self.__base._request(
             "GET",
-            endpoint=f"https://{Configs.STAGING_HOST_2}/api/v2/user_activities",
+            base_url=Configs.STAGING_HOST_2,
+            route="/api/v2/user_activities",
             params=params,
             data_type=ActivitiesResponse,
         )
@@ -70,6 +72,6 @@ class NotificationAPI(object):
         # TODO: opened_atはnullalbeか確認する
         return self.__base._request(
             "POST",
-            endpoint=f"{Endpoints.BASE_API_URL}/api/received_push_notifications",
+            route="/api/received_push_notifications",
             payload={"pid": pid, "type": type, "opened_at": opened_at},
         )
