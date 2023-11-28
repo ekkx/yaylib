@@ -1,5 +1,4 @@
 # リアルタイムで個人チャットを取得するサンプルコード
-# 例): メッセージが届いたチャットルームにオウム返しする場合
 
 
 email = "your_email"
@@ -7,33 +6,34 @@ password = "your_password"
 
 
 import yaylib
+from yaylib import Message
 
 
-class ChatBot(yaylib.ChatRoomEventHandler):
-    def __init__(self, api: yaylib.Client):
-        self.api = api
+class MyBot(yaylib.Client):
+    def on_ready(self):
+        print("ボットがオンラインになりました！")
 
-    def on_request(self, total_count: int):
-        # チャットリクエストを承認する
-        chat_rooms = self.api.get_chat_requests()
-        for room in chat_rooms.chat_rooms:
-            self.api.accept_chat_requests(chat_room_ids=[room.id])
-        self.on_message(chat_rooms.chat_rooms[0])
+    def on_chat_request(self, total_count):
+        # チャットリクエストはすべて承認する
+        chat_requests = self.get_chat_requests()
+        for chat_room in chat_requests.chat_rooms:
+            self.accept_chat_requests([chat_room.id])
 
-    def on_message(self, chat_room):
-        # 受信したメッセージをオウム返しする
-        self.api.send_message(
-            chat_room_id=chat_room.id,
-            message_type=chat_room.last_message.message_type,
-            text=chat_room.last_message.text,
-            font_size=chat_room.last_message.font_size,
-        )
+        # 最新のメッセージをon_message_create関数に送信
+        message = self.get_messages(chat_requests.chat_rooms[0].id)
+        self.on_message_create(message[0])
+
+    def on_message_create(self, message: Message):
+        # 「ping」というメッセージに対して「pong」と返信する
+        if message.text == "ping":
+            self.send_message(message.room_id, text="pong")
+
+    def on_chat_room_delete(self, room_id):
+        print(f"チャットルームが削除されました。ルームID: {room_id}")
 
 
-api = yaylib.Client()
-api.login(email, password)
+intents = yaylib.Intents.none()
+intents.chat_message = True
 
-ws_token = api.get_web_socket_token()
-
-bot = ChatBot(api)
-bot.run(ws_token)
+bot = MyBot(intents=intents)
+bot.run(email, password)
