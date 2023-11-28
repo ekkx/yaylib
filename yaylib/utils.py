@@ -22,8 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import re
+import base64
+import hmac
+import hashlib
 import jwt
+import re
 import uuid
 
 from datetime import datetime
@@ -55,6 +58,8 @@ def mention(user_id: int, display_name: str) -> str:
     """
 
     ユーザーをメンションします
+
+    ※ メンションするには相手をフォローする必要があります。
 
     #### Useage
 
@@ -140,3 +145,20 @@ def get_hashed_filename(att, type, key, uuid):
     hashed_filename = f"{type}/{full_date}/{file_name}{sizes}{extension}"
 
     return hashed_filename
+
+
+def md5(uuid: str, timestamp: int, require_shared_key: bool) -> str:
+    shared_key: str = Configs.SHARED_KEY if require_shared_key else ""
+    return hashlib.md5(
+        (Configs.API_KEY + uuid + str(timestamp) + shared_key).encode()
+    ).hexdigest()
+
+
+def sha256() -> str:
+    return base64.b64encode(
+        hmac.new(
+            Configs.API_VERSION_KEY.encode(),
+            "yay_android/{}".format(Configs.API_VERSION_NAME).encode(),
+            hashlib.sha256,
+        ).digest()
+    ).decode("utf-8")
