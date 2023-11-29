@@ -2,12 +2,12 @@ import base64
 import hashlib
 import json
 import os
-import uuid
 
 from cryptography.fernet import Fernet
 from typing import Optional
 
 from .errors import YaylibError
+from .utils import generate_uuid
 
 
 class CookieAuthentication(object):
@@ -70,17 +70,18 @@ class CookieManager(object):
         self.__filepath: str = filepath
         self.__email: str = ""
         self.__user_id: int = 0
-        self.__uuid: str = str(uuid.uuid4())
-        self.__device_uuid: str = str(uuid.uuid4())
+        self.__uuid: str = generate_uuid(True)
+        self.__device_uuid: str = generate_uuid(True)
         self.__access_token: str = ""
         self.__refresh_token: str = ""
         self.__encryption_key: Optional[Fernet] = None
+        self.__encryption_flag: str = "encrypted_"
 
         if cookie_password is not None:
             self.__encryption_key: Fernet = self.__generate_key(cookie_password)
 
     def __is_encrypted(self, cookie: Cookie) -> bool:
-        return cookie.authentication.access_token.startswith("encrypted_")
+        return cookie.authentication.access_token.startswith(self.__encryption_flag)
 
     def __generate_key(self, password: str) -> Fernet:
         hashed = hashlib.sha256(password.encode()).digest()
@@ -93,11 +94,11 @@ class CookieManager(object):
     def __encrypt(self, text: str) -> str:
         encoded: bytes = text.encode()
         encrypted: bytes = self.__encryption_key.encrypt(encoded)
-        return "encrypted_" + encrypted.decode()
+        return self.__encryption_flag + encrypted.decode()
 
     def __decrypt(self, text: str) -> str:
-        if text.startswith("encrypted_"):
-            text = text[len("encrypted_") :]
+        if text.startswith(self.__encryption_flag):
+            text = text[len(self.__encryption_flag) :]
         decrypted: bytes = self.__encryption_key.decrypt(text)
         return decrypted.decode()
 
