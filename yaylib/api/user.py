@@ -619,4 +619,4 @@ class UserAPI(object):
 
     @property
     def __signed_info(self) -> str:
-        return md5(self.__base.device_uuid, int(datetime.now().timestamp()), False)
+        return md5(self.__base.uuid, int(datetime.now().timestamp()), True)
