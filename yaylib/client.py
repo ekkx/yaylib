@@ -188,7 +188,7 @@ class HeaderInterceptor(object):
         self.__client_ip = client_ip
 
     def set_connection_speed(self, connection_speed: str) -> None:
-        self.__connection_speed = connection_speed
+        self.__connection_speed = connection_speed + " kbps"
 
 
 current_path = os.path.abspath(os.getcwd())
