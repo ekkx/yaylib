@@ -236,7 +236,9 @@ class MiscAPI(object):
 
             image = Image.open(image_path)
             natural_width, natural_height = image.size
-            resized_image = image
+
+            resized_image = image.copy()
+            resized_image.format = image.format
 
             if extension != ".gif":
                 resized_image.thumbnail((450, 450))
@@ -274,10 +276,13 @@ class MiscAPI(object):
             _files.append(thumbnail_attachment)
 
         file_names = [x.filename for x in _files]
-        res_presigned_url = self.get_file_upload_presigned_urls(file_names).presigned_urls
+        res_presigned_url = self.get_file_upload_presigned_urls(
+            file_names
+        ).presigned_urls
 
         res_upload = []
 
+        x: Attachment
         for x in _files:
             p_url = next(
                 (p.url for p in res_presigned_url if x.filename in p.filename), None
@@ -289,7 +294,10 @@ class MiscAPI(object):
             if x.file.format == "GIF" and x.file.is_animated:
                 x.file.save(image_data, format=x.file.format, save_all=True)
             else:
-                x.file.save(image_data, format=x.file.format)
+                format = (
+                    "JPEG" if x.file.format.lower() == "jpg" else x.file.format.upper()
+                )
+                x.file.save(image_data, format=format)
             image_data.seek(0)
 
             response = httpx.put(p_url, data=image_data.read())
