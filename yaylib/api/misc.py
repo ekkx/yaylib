@@ -294,10 +294,7 @@ class MiscAPI(object):
             if x.file.format == "GIF" and x.file.is_animated:
                 x.file.save(image_data, format=x.file.format, save_all=True)
             else:
-                format = (
-                    "JPEG" if x.file.format.lower() == "jpg" else x.file.format.upper()
-                )
-                x.file.save(image_data, format=format)
+                x.file.save(image_data, format=x.file.format)
             image_data.seek(0)
 
             response = httpx.put(p_url, data=image_data.read())
