@@ -546,11 +546,12 @@ class ConferenceCall:
 
 
 class ConferenceCallUserRole:
-    __slots__ = ("data", "id", "role")
+    __slots__ = ("data", "id", "user_id", "role")
 
     def __init__(self, data):
         self.data = data
         self.id = data.get("id")
+        self.user_id = data.get("user_id")
         self.role = data.get("role")
 
     def __repr__(self):
