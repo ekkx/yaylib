@@ -46,6 +46,7 @@ from ..responses import (
     PopularWordsResponse,
     PolicyAgreementsResponse,
 )
+from ..types import ImageType
 from ..utils import is_valid_image_format, get_hashed_filename, generate_uuid
 
 
@@ -237,11 +238,10 @@ class MiscAPI(object):
             image = Image.open(image_path)
             natural_width, natural_height = image.size
 
-            resized_image = image.copy()
-            resized_image.format = image.format
+            resized_image = Image.open(image_path)
 
-            if extension != ".gif":
-                resized_image.thumbnail((450, 450))
+            if extension != ".gif" and image_type == ImageType.user_avatar:
+                resized_image.thumbnail((200, 200))
 
             original_attachment = Attachment(
                 file=image,
@@ -294,10 +294,7 @@ class MiscAPI(object):
             if x.file.format == "GIF" and x.file.is_animated:
                 x.file.save(image_data, format=x.file.format, save_all=True)
             else:
-                format = (
-                    "JPEG" if x.file.format.lower() == "jpg" else x.file.format.upper()
-                )
-                x.file.save(image_data, format=format)
+                x.file.save(image_data, format=x.file.format)
             image_data.seek(0)
 
             response = httpx.put(p_url, data=image_data.read())
