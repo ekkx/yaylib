@@ -46,6 +46,7 @@ from ..responses import (
     PopularWordsResponse,
     PolicyAgreementsResponse,
 )
+from ..types import ImageType
 from ..utils import is_valid_image_format, get_hashed_filename, generate_uuid
 
 
@@ -237,11 +238,10 @@ class MiscAPI(object):
             image = Image.open(image_path)
             natural_width, natural_height = image.size
 
-            resized_image = image.copy()
-            resized_image.format = image.format
+            resized_image = Image.open(image_path)
 
-            if extension != ".gif":
-                resized_image.thumbnail((450, 450))
+            if extension != ".gif" and image_type == ImageType.user_avatar:
+                resized_image.thumbnail((200, 200))
 
             original_attachment = Attachment(
                 file=image,
