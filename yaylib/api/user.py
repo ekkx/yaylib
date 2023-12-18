@@ -69,7 +69,9 @@ class UserAPI(object):
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
-                "signed_info": self.__signed_info,
+                "signed_info": md5(
+                    self.__base.uuid, int(datetime.now().timestamp()), True
+                ),
             },
         )
 
@@ -368,7 +370,9 @@ class UserAPI(object):
                 "api_key": Configs.API_KEY,
                 "signed_version": sha256(),
                 "timestamp": int(datetime.now().timestamp()),
-                "signed_info": self.__signed_info,
+                "signed_info": md5(
+                    self.__base.device_uuid, int(datetime.now().timestamp()), False
+                ),
                 "uuid": self.__base.uuid,
                 "nickname": nickname,
                 "birth_date": birth_date,
@@ -480,7 +484,9 @@ class UserAPI(object):
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
-                "signed_info": self.__signed_info,
+                "signed_info": md5(
+                    self.__base.uuid, int(datetime.now().timestamp()), True
+                ),
                 "signed_version": sha256(),
             },
         )
@@ -516,7 +522,9 @@ class UserAPI(object):
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
-                "signed_info": self.__signed_info,
+                "signed_info": md5(
+                    self.__base.uuid, int(datetime.now().timestamp()), True
+                ),
                 "language": language,
             },
         )
@@ -545,7 +553,9 @@ class UserAPI(object):
                 "uuid": self.__base.uuid,
                 "api_key": Configs.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
-                "signed_info": self.__signed_info,
+                "signed_info": md5(
+                    self.__base.uuid, int(datetime.now().timestamp()), True
+                ),
             }
         )
         return self.__base._request(
@@ -616,7 +626,3 @@ class UserAPI(object):
             route=f"/v1/hidden/users",
             params={"user_ids[]": user_ids},
         )
-
-    @property
-    def __signed_info(self) -> str:
-        return md5(self.__base.uuid, int(datetime.now().timestamp()), True)
