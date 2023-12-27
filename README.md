@@ -89,10 +89,10 @@ pip install -e .
 ```python
 import yaylib
 
-api = yaylib.Client()
-api.login(email="your_email", password="your_password")
+client = yaylib.Client()
+client.login(email="your_email", password="your_password")
 
-api.create_post("Hello with yaylib!")
+client.create_post("Hello with yaylib!")
 ```
 
 #### ✨ 埋め込みリンクの投稿を作成する
@@ -100,10 +100,10 @@ api.create_post("Hello with yaylib!")
 ```python
 import yaylib
 
-api = yaylib.Client()
-api.login(email="your_email", password="your_password")
+client = yaylib.Client()
+client.login(email="your_email", password="your_password")
 
-api.create_post("Hello with yaylib!", shared_url="https://github.com/qvco/yaylib")
+client.create_post("Hello with yaylib!", shared_url="https://github.com/qvco/yaylib")
 ```
 
 #### ✨ 画像と一緒に投稿を作成する
@@ -111,8 +111,8 @@ api.create_post("Hello with yaylib!", shared_url="https://github.com/qvco/yaylib
 ```python
 import yaylib
 
-api = yaylib.Client()
-api.login(email="your_email", password="your_password")
+client = yaylib.Client()
+client.login(email="your_email", password="your_password")
 
 # 画像のパスを指定
 image_paths = [
@@ -125,11 +125,11 @@ image_paths = [
 image_type = yaylib.ImageType.post
 
 # サーバー上にアップロード
-attachments = api.upload_image(image_paths, image_type)
+attachments = client.upload_image(image_paths, image_type)
 
 # サーバー上のファイル名を指定する
 # attachmentsが一つ飛ばしなのはオリジナル品質の画像のみを指定するため
-api.create_post(
+client.create_post(
     "Hello with yaylib!",
     attachment_filename=attachments[0].filename,
     attachment_2_filename=attachments[2].filename,
@@ -142,9 +142,9 @@ api.create_post(
 ```python
 import yaylib
 
-api = yaylib.Client()
+client = yaylib.Client()
 
-timeline = api.get_timeline(number=100)
+timeline = client.get_timeline(number=100)
 
 for post in timeline.posts:
     print(post.user.nickname)  # 投稿者名
@@ -159,16 +159,16 @@ for post in timeline.posts:
 ```python
 import yaylib
 
-api = yaylib.Client()
-api.login(email="your_email", password="your_password")
+client = yaylib.Client()
+client.login(email="your_email", password="your_password")
 
-timeline = api.get_timeline_by_keyword(
+timeline = client.get_timeline_by_keyword(
     keyword="プログラミング",
     number=15
 )
 
 for post in timeline.posts:
-    api.like(post.id)
+    client.like(post.id)
 ```
 
 #### ✨ 新規ユーザーをフォローする
@@ -176,13 +176,13 @@ for post in timeline.posts:
 ```python
 import yaylib
 
-api = yaylib.Client()
-api.login(email="your_email", password="your_password")
+client = yaylib.Client()
+client.login(email="your_email", password="your_password")
 
-new_users = api.search_users(recently_created=True)
+new_users = client.search_users(recently_created=True)
 
 for new_user in new_users.users:
-    api.follow_user(new_user.id)
+    client.follow_user(new_user.id)
 ```
 
 #### ✨ リアルタイムでチャットを取得する
