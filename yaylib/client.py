@@ -335,7 +335,10 @@ class BaseClient(WebSocketInteractor):
                 method, endpoint, params=params, json=payload, headers=headers
             )
 
-            if int(datetime.now().timestamp()) - self.__last_request_timestamp < 1:
+            if (
+                self.__last_request_timestamp
+                and int(datetime.now().timestamp()) - self.__last_request_timestamp < 1
+            ):
                 # insert delay if time between requests is less than 1 second
                 sleep_time = random.uniform(self.__min_delay, self.__max_delay)
                 time.sleep(sleep_time)
