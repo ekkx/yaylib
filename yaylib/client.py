@@ -188,7 +188,7 @@ class HeaderInterceptor(object):
         self.__client_ip = client_ip
 
     def set_connection_speed(self, connection_speed: str) -> None:
-        self.__connection_speed = connection_speed + " kbps"
+        self.__connection_speed = connection_speed
 
 
 current_path = os.path.abspath(os.getcwd())
@@ -218,7 +218,7 @@ class BaseClient(WebSocketInteractor):
         self.__max_retries: int = max_retries
         self.__backoff_factor: float = backoff_factor
         self.__wait_on_ratelimit: bool = wait_on_ratelimit
-        self.__last_request_timestamp: Optional[int] = None
+        self.__last_request_timestamp: int = 0
         self.__min_delay: float = min_delay
         self.__max_delay: float = max_delay
         self.__err_lang: str = err_lang
@@ -231,7 +231,7 @@ class BaseClient(WebSocketInteractor):
         )
 
         self.__header_interceptor: HeaderInterceptor = HeaderInterceptor(self.__cookie)
-        self.__header_interceptor.set_connection_speed("0")
+        self.__header_interceptor.set_connection_speed("0 kbps")
 
         self.__session: httpx.Client = httpx.Client(
             headers=self.__header_interceptor.intercept(),
@@ -335,10 +335,7 @@ class BaseClient(WebSocketInteractor):
                 method, endpoint, params=params, json=payload, headers=headers
             )
 
-            if (
-                self.__last_request_timestamp
-                and int(datetime.now().timestamp()) - self.__last_request_timestamp < 1
-            ):
+            if int(datetime.now().timestamp()) - self.__last_request_timestamp < 1:
                 # insert delay if time between requests is less than 1 second
                 sleep_time = random.uniform(self.__min_delay, self.__max_delay)
                 time.sleep(sleep_time)
@@ -409,7 +406,7 @@ class BaseClient(WebSocketInteractor):
 
             backoff_duration = self.__backoff_factor * (2**i)
 
-        self.__last_request_timestamp = None
+        self.__last_request_timestamp = 0
         if not bypass_delay:
             self.__last_request_timestamp = int(datetime.now().timestamp())
 
