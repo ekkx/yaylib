@@ -11,8 +11,8 @@ import yaylib
 
 class LikeBot:
     def __init__(self, email=None, password=None):
-        self.api = yaylib.Client()
-        self.api.login(email, password)
+        self.client = yaylib.Client()
+        self.client.login(email, password)
 
     def main(self):
         min_collect = 30
@@ -22,10 +22,10 @@ class LikeBot:
         while True:
             ids = []
 
-            self.api.logger.info("投稿を取得しています...")
+            self.client.logger.info("投稿を取得しています...")
 
             while True:
-                timeline = self.api.get_timeline(number=100)
+                timeline = self.client.get_timeline(number=100)
 
                 new_ids = [
                     post.id
@@ -36,7 +36,7 @@ class LikeBot:
                 ids.extend(new_ids)
                 collected_ids.update(new_ids)
 
-                self.api.logger.info(f"取得済み投稿数: {len(ids)}")
+                self.client.logger.info(f"取得済み投稿数: {len(ids)}")
 
                 if len(ids) >= min_collect:
                     break
@@ -44,11 +44,11 @@ class LikeBot:
                 time.sleep(10)
 
             for id in ids:
-                self.api.like(id)
-                self.api.logger.info("いいねしました。")
+                self.client.like(id)
+                self.client.logger.info("いいねしました。")
 
             liked += len(ids)
-            self.api.logger.info(f"いいね数: {liked}")
+            self.client.logger.info(f"いいね数: {liked}")
 
             ids.clear()
             collected_ids.clear()

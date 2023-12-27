@@ -9,7 +9,7 @@ password = "your_password"
 import yaylib
 from yaylib import mention
 
-api = yaylib.Client()
-api.login(email, password)
+client = yaylib.Client()
+client.login(email, password)
 
-api.create_post(f"{mention(12345, 'アルパカ')}さん、お元気ですか？")
+client.create_post(f"{mention(12345, 'アルパカ')}さん、お元気ですか？")

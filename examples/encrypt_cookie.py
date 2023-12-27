@@ -8,8 +8,8 @@ password = "your_password"
 
 import yaylib
 
-api = yaylib.Client(cookie_password=cookie_password)
+client = yaylib.Client(cookie_password=cookie_password)
 
-api.login(email, password)
+client.login(email, password)
 
-api.create_post("Hello with yaylib!")
+client.create_post("Hello with yaylib!")

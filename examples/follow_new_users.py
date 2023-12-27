@@ -10,8 +10,8 @@ import yaylib
 
 class FollowBot:
     def __init__(self, email=None, password=None):
-        self.api = yaylib.Client()
-        self.api.login(email, password)
+        self.client = yaylib.Client()
+        self.client.login(email, password)
 
     def main(self):
         followed = 0
@@ -21,7 +21,7 @@ class FollowBot:
 
             print("新規ユーザーを取得しています...")
 
-            new_users = self.api.search_users(recently_created=True, number=100)
+            new_users = self.client.search_users(recently_created=True, number=100)
 
             ids = [user.id for user in new_users.users if not user.is_following]
 
@@ -29,7 +29,7 @@ class FollowBot:
 
             for id in ids:
                 try:
-                    self.api.follow_user(id)
+                    self.client.follow_user(id)
                     print("ユーザーをフォローしました。")
                 except yaylib.ForbiddenError:
                     print("ユーザーのフォローに失敗しました。")

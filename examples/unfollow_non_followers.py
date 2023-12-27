@@ -9,24 +9,26 @@ password = "your_password"
 import yaylib
 
 
-def get_all_followings(api):
-    data = api.get_user_followings(api.user_id)
+def get_all_followings(client):
+    data = client.get_user_followings(client.user_id)
     followings = []
 
     while data.last_follow_id is not None:
         followings.extend(data.users)
-        data = api.get_user_followings(api.user_id, from_follow_id=data.last_follow_id)
+        data = client.get_user_followings(
+            client.user_id, from_follow_id=data.last_follow_id
+        )
 
     return followings
 
 
 if __name__ == "__main__":
-    api = yaylib.Client()
+    client = yaylib.Client()
 
-    api.login(email, password)
+    client.login(email, password)
 
-    followings = get_all_followings(api)
+    followings = get_all_followings(client)
 
     for following in followings:
         if not following.is_followed_by:
-            api.unfollow_user(following.id)
+            client.unfollow_user(following.id)
