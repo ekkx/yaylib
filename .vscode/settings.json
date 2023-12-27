@@ -3,7 +3,7 @@
     "editor.tabSize": 4,
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
+      "source.organizeImports": "explicit"
     }
   },
   "python.formatting.provider": "black",
