@@ -19,11 +19,11 @@ class MyBot(yaylib.Client):
         for chat_room in chat_requests.chat_rooms:
             self.accept_chat_requests([chat_room.id])
 
-        # 最新のメッセージをon_message_create関数に送信
+        # 最新のメッセージをon_message関数に送信
         message = self.get_messages(chat_requests.chat_rooms[0].id)
-        self.on_message_create(message[0])
+        self.on_message(message[0])
 
-    def on_message_create(self, message: Message):
+    def on_message(self, message: Message):
         # 「ping」というメッセージに対して「pong」と返信する
         if message.text == "ping":
             self.send_message(message.room_id, text="pong")

@@ -106,6 +106,9 @@ class WebSocketInteractor(object):
         self.__ws_token: Optional[str] = None
         self.__ws: Optional[websocket.WebSocketApp] = None
 
+    def set_ws_token(self, ws_token: str) -> None:
+        self.__ws_token = ws_token
+
     def __on_open(self, ws):
         self.__base.logger.debug("on_open")
 
@@ -134,7 +137,7 @@ class WebSocketInteractor(object):
             if events.identifier.channel == "ChatRoomChannel":
                 if content.event == "new_message":
                     if content.message is not None:
-                        self.on_message_create(Message(content.message))
+                        self.on_message(Message(content.message))
 
                 elif content.event == "chat_deleted":
                     self.on_chat_room_delete(content.data.get("room_id"))
@@ -146,7 +149,7 @@ class WebSocketInteractor(object):
                 if content.event == "new_post":
                     self.on_group_update(content.data.get("group_id"))
 
-    def on_message_create(self, message: Message):
+    def on_message(self, message: Message):
         """チャットメッセージが届いた時に発火される関数"""
         pass
 
@@ -200,10 +203,14 @@ class WebSocketInteractor(object):
         """クライアントの準備が完了すると呼び出されます"""
         self.__base.logger.debug("on_ready")
 
-    def run(self, email: str, password: str) -> None:
+    def run(self, email: str = None, password: str = None) -> None:
         """クライアントを起動します"""
-        self.__base._prepare(email, password)
-        self.__ws_token = self.__base.MiscAPI.get_web_socket_token().token
+        if email is not None and password is not None:
+            self.__base._prepare(email, password)
+
+        if self.__ws_token is None:
+            self.__ws_token = self.__base.MiscAPI.get_web_socket_token().token
+
         self.__ws = websocket.WebSocketApp(
             f"wss://{Configs.CABLE_HOST}/?token={self.__ws_token}&app_version={Configs.VERSION_NAME}",
             on_open=self.__on_open,
