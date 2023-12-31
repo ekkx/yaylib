@@ -149,7 +149,7 @@ class WebSocketInteractor(object):
                 if content.event == "new_post":
                     self.on_group_update(content.data.get("group_id"))
 
-    def on_message(self, message: Message):
+    def on_chat_message(self, message: Message):
         """チャットメッセージが届いた時に発火される関数"""
         pass
 
