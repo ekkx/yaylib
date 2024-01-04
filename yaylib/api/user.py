@@ -327,15 +327,12 @@ class UserAPI(object):
         )
 
     def get_users(self, user_ids: list[int]) -> UsersResponse:
-        timestamp = int(datetime.now().timestamp())
-        headers = self.session.headers.copy()
-        headers["X-Jwt"] = self.generate_jwt(timestamp)
         return self.__base._request(
             "GET",
             route=f"/v1/users/list_id",
             params={"user_ids[]": user_ids},
             data_type=UsersResponse,
-            headers=headers,
+            jwt_required=True,
         )
 
     def refresh_counter(self, counter: str):
