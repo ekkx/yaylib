@@ -353,7 +353,7 @@ class BaseClient(WebSocketInteractor):
                 while retries_performed <= max_ratelimit_retries:
                     retry_after: int = 60 * 5
 
-                    self.logger.warn(f"Rate limit reached. Sleeping for: {retry_after}")
+                    self.logger.warn(f"Rate limit reached. Sleeping for: {retry_after} sec...")
                     time.sleep(retry_after + 1)
 
                     headers.update(self.__header_interceptor.intercept())
