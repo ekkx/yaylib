@@ -1153,7 +1153,7 @@ class UserCustomDefinitionsResponse:
 
 
 class UserEmailResponse:
-    __slots__ = "email"
+    __slots__ = ("data", "email")
 
     def __init__(self, data):
         self.data = data
