@@ -809,7 +809,7 @@ class Client(BaseClient):
     def set_user_role(self, call_id: int, user_id: int, role: str) -> dict:
         """
 
-        通話に参加中ののユーザーに役職を与えます
+        通話に参加中のユーザーに役職を与えます
 
         """
         return self.CallAPI.set_user_role(call_id, user_id, role)
