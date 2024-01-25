@@ -37,11 +37,7 @@ class Activity:
         "followers_count",
         "from_post_ids",
         "vip_reward",
-        "is_bulk_invitation",
-        "content_preview",
-        "title",
-        "body",
-        "url",
+        "metadata",
         "birthday_users",
         "birthday_users_count",
     )
@@ -75,11 +71,10 @@ class Activity:
         self.followers_count = data.get("followers_count")
         self.from_post_ids = data.get("from_post_ids")
         self.vip_reward = data.get("vip_reward")
-        self.is_bulk_invitation = data.get("is_bulk_invitation")
-        self.content_preview = data.get("content_preview")
-        self.title = data.get("title")
-        self.body = data.get("body")
-        self.url = data.get("url")
+
+        self.metadata = data.get("metadata")
+        if self.metadata is not None:
+            self.metadata = Metadata(self.metadata)
 
         self.birthday_users = data.get("birthday_users")
         if self.birthday_users is not None:
@@ -91,6 +86,28 @@ class Activity:
 
     def __repr__(self):
         return f"Activity(data={self.data})"
+
+
+class Metadata:
+    __slots__ = (
+        "data",
+        "body",
+        "bulk_invitation",
+        "content_preview",
+        "title",
+        "url",
+    )
+
+    def __init__(self, data):
+        self.data = data.get("data")
+        self.body = data.get("body")
+        self.bulk_invitation = data.get("bulk_invitation")
+        self.content_preview = data.get("content_preview")
+        self.title = data.get("title")
+        self.url = data.get("url")
+
+    def __repr__(self):
+        return f"Metadata(data={self.data})"
 
 
 class ApplicationConfig:
