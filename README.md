@@ -75,9 +75,11 @@ git clone https://github.com/qvco/yaylib.git
 
 cd yaylib
 
-pip install -r requirements.txt
+pip install pipenv
 
-pip install -e .
+pipenv install --dev
+
+pipenv shell
 ```
 
 <!-- 使用例 -->
