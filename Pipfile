@@ -11,7 +11,9 @@ websocket-client = "==1.6.0"
 pyjwt = "==2.8.0"
 
 [dev-packages]
+setuptools = "*"
+twine = "*"
+wheel = "*"
 
 [requires]
 python_version = "3.11"
-python_full_version = "3.11.0"
