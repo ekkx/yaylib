@@ -1857,13 +1857,13 @@ class Client(BaseClient):
         """
         return self.MiscAPI.accept_policy_agreement(type)
 
-    def send_verification_code(self, email: str):
+    def send_verification_code(self, email: str, locale="ja", intent=None):
         """
 
         認証コードを送信します
 
         """
-        return self.MiscAPI.send_verification_code(email)
+        return self.MiscAPI.send_verification_code(email, locale, intent)
 
     def get_email_grant_token(self, code: int, email: str) -> str:
         """
