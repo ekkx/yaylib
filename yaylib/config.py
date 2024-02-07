@@ -26,9 +26,9 @@ from .models import Device
 
 
 class Configs:
-    API_VERSION_NAME = "3.30"
-    VERSION_NAME = "3.30.0"
-    API_VERSION_KEY = "e463476778d84e9ba594a5aaf391a516"
+    API_VERSION_NAME = "3.31"
+    VERSION_NAME = "3.31.0"
+    API_VERSION_KEY = "e84d8fb180cf420abbfb380100230009"
     API_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
     FB_API_KEY = "AIzaSyCa6wL3iBz_VUZIjc_XkEODw2z0AAAW-fM"
     FB_PROJECT_ID = "yay-space"
