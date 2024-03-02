@@ -88,11 +88,11 @@ class MiscAPI(object):
             "GET", route=f"/v1/sns_thumbnail/generate", params=params
         )
 
-    def send_verification_code(self, email: str):
+    def send_verification_code(self, email: str, locale: str, intent: str = None):
         return self.__base._request(
             "POST",
             route=self.get_email_verification_presigned_url(
-                email=email, locale="ja"
+                email=email, locale=locale, intent=intent
             ).url,
             payload={"locale": "ja", "email": email},
         )

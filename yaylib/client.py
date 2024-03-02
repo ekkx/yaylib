@@ -353,7 +353,9 @@ class BaseClient(WebSocketInteractor):
                 while retries_performed <= max_ratelimit_retries:
                     retry_after: int = 60 * 5
 
-                    self.logger.warn(f"Rate limit reached. Sleeping for: {retry_after} sec...")
+                    self.logger.warn(
+                        f"Rate limit reached. Sleeping for: {retry_after} sec..."
+                    )
                     time.sleep(retry_after + 1)
 
                     headers.update(self.__header_interceptor.intercept())
@@ -388,6 +390,10 @@ class BaseClient(WebSocketInteractor):
                 auth_retry_count += 1
 
                 if auth_retry_count < max_auth_retries:
+                    if self.user_id == 0:
+                        raise AuthenticationError(
+                            "Please log in to perform the action."
+                        )
                     self.__refresh_tokens()
                     continue
                 else:
@@ -1851,13 +1857,13 @@ class Client(BaseClient):
         """
         return self.MiscAPI.accept_policy_agreement(type)
 
-    def send_verification_code(self, email: str):
+    def send_verification_code(self, email: str, locale="ja", intent=None):
         """
 
         認証コードを送信します
 
         """
-        return self.MiscAPI.send_verification_code(email)
+        return self.MiscAPI.send_verification_code(email, locale, intent)
 
     def get_email_grant_token(self, code: int, email: str) -> str:
         """

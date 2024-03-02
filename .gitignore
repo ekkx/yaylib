@@ -1,8 +1,7 @@
 .idea
 
 nanameue/
-_.py
-_config.py
+*.test.py
 
 *.jpg
 *.png
