@@ -88,13 +88,14 @@ class MiscAPI(object):
             "GET", route=f"/v1/sns_thumbnail/generate", params=params
         )
 
-    def send_verification_code(self, email: str, locale: str, intent: str = None):
+    def send_verification_code(self, email: str, intent: str, locale: str):
         return self.__base._request(
             "POST",
             route=self.get_email_verification_presigned_url(
                 email=email, locale=locale, intent=intent
             ).url,
             payload={"locale": "ja", "email": email},
+            base_url=None
         )
 
     def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenResponse:

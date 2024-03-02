@@ -302,7 +302,9 @@ class BaseClient(WebSocketInteractor):
         jwt_required: bool = False,
         bypass_delay: bool = False,
     ) -> dict | str:
-        endpoint: str = "https://" + base_url + route
+        endpoint = route
+        if base_url is not None:
+            endpoint: str = "https://" + base_url + route
 
         params: Optional[Dict[str, Any]] = self.__filter_params(params)
         payload: Optional[Dict[str, Any]] = self.__filter_params(payload)
@@ -1857,13 +1859,13 @@ class Client(BaseClient):
         """
         return self.MiscAPI.accept_policy_agreement(type)
 
-    def send_verification_code(self, email: str, locale="ja", intent=None):
+    def send_verification_code(self, email: str, intent: str, locale="ja"):
         """
 
         認証コードを送信します
 
         """
-        return self.MiscAPI.send_verification_code(email, locale, intent)
+        return self.MiscAPI.send_verification_code(email, intent, locale)
 
     def get_email_grant_token(self, code: int, email: str) -> str:
         """
