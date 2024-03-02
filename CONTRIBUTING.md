@@ -19,4 +19,17 @@ yaylib の改善にご協力いただきありがとうございます。
 - コードに変更を加える場合は、[プルリクエスト](https://github.com/qvco/yaylib/pulls)から行ってください。
 - タスクがわからない場合は [イシュー](https://github.com/qvco/yaylib/issues)、もしくは [Discord サーバー](https://discord.gg/MEuBfNtqRN)から確認してください。
 
+**Upload to PYPI**
+
+```shell
+pip install twine
+pip install wheel
+
+python setup.py sdist
+
+python setup.py bdist_wheel
+
+twine upload --repository pypi dist/*
+```
+
 **_yaylib のサポートに心から感謝します！！_**
