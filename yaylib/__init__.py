@@ -14,7 +14,7 @@ __title__ = "yaylib"
 __author__ = "qvco"
 __license__ = "MIT"
 __copyright__ = "Copyright (c) 2023 qvco"
-__version__ = "1.4.11"
+__version__ = "1.4.12"
 
 from .client import Client
 from .cookie import Cookie
