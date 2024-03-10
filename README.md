@@ -67,7 +67,7 @@ pip install yaylib
 
 <br>
 
-> **Note**
+> [!TIP]
 > 開発バージョンをインストールする場合は、以下の手順を実行します:
 
 ```bash
@@ -75,11 +75,9 @@ git clone https://github.com/ekkx/yaylib.git
 
 cd yaylib
 
-pip install pipenv
+make setup
 
-pipenv install --dev
-
-pipenv shell
+make active
 ```
 
 <!-- 使用例 -->
