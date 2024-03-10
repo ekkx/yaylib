@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import os
 import httpx
+from datetime import datetime
 from io import BytesIO
 from PIL import Image
 from urllib import parse
@@ -47,7 +48,12 @@ from ..responses import (
     PolicyAgreementsResponse,
 )
 from ..types import ImageType
-from ..utils import is_valid_image_format, get_hashed_filename, generate_uuid
+from ..utils import (
+    is_valid_image_format,
+    is_valid_video_format,
+    get_hashed_filename,
+    generate_uuid,
+)
 
 
 upload_item_types = [
@@ -95,7 +101,7 @@ class MiscAPI(object):
                 email=email, locale=locale, intent=intent
             ).url,
             payload={"locale": "ja", "email": email},
-            base_url=None
+            base_url=None,
         )
 
     def get_email_grant_token(self, code: int, email: str) -> EmailGrantTokenResponse:
@@ -216,7 +222,7 @@ class MiscAPI(object):
         >>> # サーバー上にアップロード
         >>> attachments = api.upload_image(
         >>>     image_type=yaylib.IMAGE_TYPE_POST,
-        >>>     image_paths=["./test.jpg"],
+        >>>     image_paths=["./example.jpg"],
         >>> )
         >>> # サーバー上のファイル名を指定
         >>> api.create_post(
@@ -307,8 +313,28 @@ class MiscAPI(object):
 
         return res_upload
 
-    def upload_video(self, video_path: str):
-        pass
+    def upload_video(self, video_path: str) -> str:
+        filename, extension = os.path.splitext(video_path)
+
+        if not is_valid_video_format(extension):
+            raise ValueError(f"Invalid video format. [{filename + extension}]")
+
+        uuid = generate_uuid(False)[:16]
+        filename = f"{uuid}_{int(datetime.now().timestamp())}{extension}"
+
+        res_presigned_url = self.get_old_file_upload_presigned_url(
+            filename
+        ).presigned_url
+
+        with open(video_path, "br") as f:
+            video = f.read()
+
+        self.__base.logger.debug(f"Uploading video: {video_path}")
+
+        response = httpx.put(res_presigned_url, data=video)
+        response.raise_for_status()
+
+        return filename
 
     # config
 

@@ -130,8 +130,13 @@ def generate_jwt() -> str:
 
 
 def is_valid_image_format(format):
-    is_valid = bool(re.match(r".jpg|.jpeg|.png|.gif", format))
-    return is_valid
+    allowed_formats = [".jpg", ".jpeg", ".png", ".gif"]
+    return format in allowed_formats
+
+
+def is_valid_video_format(format):
+    allowed_formats = [".mp4"]
+    return format in allowed_formats
 
 
 def get_hashed_filename(att, type, key, uuid):

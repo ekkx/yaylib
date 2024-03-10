@@ -1959,6 +1959,34 @@ class Client(BaseClient):
         """
         return self.MiscAPI.upload_image(image_paths, image_type)
 
+    def upload_video(self, video_path: str) -> str:
+        """
+
+        動画をアップロードして、サーバー上のファイル名を返します。
+
+        Parameteres
+        -----------
+
+            - video_path: str - (required): 動画ファイルの場所
+
+        Examples
+        --------
+
+        投稿に動画を付与する場合
+
+        >>> # サーバー上にアップロード
+        >>> filename = api.upload_video(
+        >>>     video_path="./example.mp4",
+        >>> )
+        >>> # サーバー上のファイル名を指定
+        >>> api.create_post(
+        >>>     "Hello with yaylib!",
+        >>>     video_file_name=filename
+        >>> )
+
+        """
+        return self.MiscAPI.upload_video(video_path)
+
     def get_app_config(self) -> ApplicationConfig:
         """
 
