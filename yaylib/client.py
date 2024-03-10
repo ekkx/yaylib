@@ -1,7 +1,7 @@
 """
 MIT License
 
-Copyright (c) 2023 qvco
+Copyright (c) 2023 ekkx
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -640,13 +640,13 @@ class Client(BaseClient):
         - cookie_filename: str - (optional)
         - loglevel: int - (optional)
 
-    <https://github.com/qvco/yaylib>
+    <https://github.com/ekkx/yaylib>
 
     ---
 
     ### Yay! (nanameue, Inc.) API Client
 
-    Copyright (c) 2023 qvco
+    Copyright (c) 2023 ekkx
 
     """
 

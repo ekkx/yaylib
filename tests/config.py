@@ -1,5 +1,5 @@
 # yaylib
-# Copyright 2023 qvco
+# Copyright 2023 ekkx
 # See LICENSE for details.
 
 import os

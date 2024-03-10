@@ -1,14 +1,14 @@
 <div><a id="readme-top"></a></div>
 <div align="center">
-    <img src="https://img.shields.io/github/stars/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue" />
-    <img src="https://img.shields.io/github/forks/qvco/yaylib?style=for-the-badge&logo=appveyor&color=blue" />
-    <img src="https://img.shields.io/github/issues/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational" />
-    <img src="https://img.shields.io/github/issues-pr/qvco/yaylib?style=for-the-badge&logo=appveyor&color=informational" />
+    <img src="https://img.shields.io/github/stars/ekkx/yaylib?style=for-the-badge&logo=appveyor&color=blue" />
+    <img src="https://img.shields.io/github/forks/ekkx/yaylib?style=for-the-badge&logo=appveyor&color=blue" />
+    <img src="https://img.shields.io/github/issues/ekkx/yaylib?style=for-the-badge&logo=appveyor&color=informational" />
+    <img src="https://img.shields.io/github/issues-pr/ekkx/yaylib?style=for-the-badge&logo=appveyor&color=informational" />
 </div>
 <br />
 <p align="center">
     <a href="https://github.com/othneildrew/Best-README-Template">
-        <img src="https://github.com/qvco/yaylib/assets/77382767/45c45b21-d812-4cad-8f27-315ffef53201" alt="Logo" height="300px">
+        <img src="https://github.com/ekkx/yaylib/assets/77382767/45c45b21-d812-4cad-8f27-315ffef53201" alt="Logo" height="300px">
     </a>
     <h3 align="center">yaylib</h3>
     <p align="center">
@@ -16,14 +16,14 @@
         あらゆる操作の自動化や、ボットの開発が可能です。
         <br />
         <br />
-        <a href="https://github.com/qvco/yay.js">
+        <a href="https://github.com/ekkx/yay.js">
             <strong>Node.js 版はこちらから »</strong>
         </a>
         <br />
         <br />
-        <a href="https://github.com/qvco/yaylib/issues">Report Bug</a>
+        <a href="https://github.com/ekkx/yaylib/issues">Report Bug</a>
         ·
-        <a href="https://github.com/qvco/yaylib/issues">Request Feature</a>
+        <a href="https://github.com/ekkx/yaylib/issues">Request Feature</a>
         ·
         <a href="https://discord.gg/MEuBfNtqRN">Join the discord</a>
     </p>
@@ -48,14 +48,14 @@
 
 ## Buy me a coffee
 
-このライブラリが気に入っていただけたら、<a href="https://github.com/qvco/yaylib/">**リポジトリにスターをお願いします</a>(⭐)**  
+このライブラリが気に入っていただけたら、<a href="https://github.com/ekkx/yaylib/">**リポジトリにスターをお願いします</a>(⭐)**  
 また、Buy Me a Coffee からご支援いただけますと幸いです。
 
 <a href="https://www.buymeacoffee.com/qvco" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 <!-- インストール -->
 
-## [<img src="https://github.com/qvco/yaylib/assets/77382767/2f632349-0cbc-4c81-bc19-11d24c8c142b" width="30" height="30" />](https://github.com/qvco) Installation
+## [<img src="https://github.com/ekkx/yaylib/assets/77382767/2f632349-0cbc-4c81-bc19-11d24c8c142b" width="30" height="30" />](https://github.com/ekkx) Installation
 
 **※ Python 3.10 以上のバージョンが必要です。**
 
@@ -71,7 +71,7 @@ pip install yaylib
 > 開発バージョンをインストールする場合は、以下の手順を実行します:
 
 ```bash
-git clone https://github.com/qvco/yaylib.git
+git clone https://github.com/ekkx/yaylib.git
 
 cd yaylib
 
@@ -84,7 +84,7 @@ pipenv shell
 
 <!-- 使用例 -->
 
-## [<img src="https://github.com/qvco/yaylib/assets/77382767/dc7dcea0-c581-4039-8fc2-3994884d2ba3" width="30" height="30" />](https://github.com/qvco) Quick Example
+## [<img src="https://github.com/ekkx/yaylib/assets/77382767/dc7dcea0-c581-4039-8fc2-3994884d2ba3" width="30" height="30" />](https://github.com/ekkx) Quick Example
 
 #### ✨ 投稿を作成する
 
@@ -105,7 +105,7 @@ import yaylib
 client = yaylib.Client()
 client.login(email="your_email", password="your_password")
 
-client.create_post("Hello with yaylib!", shared_url="https://github.com/qvco/yaylib")
+client.create_post("Hello with yaylib!", shared_url="https://github.com/ekkx/yaylib")
 ```
 
 #### ✨ 画像と一緒に投稿を作成する
@@ -222,7 +222,7 @@ bot = MyBot(intents=intents)
 bot.run("your_email", "your_password")
 ```
 
-より詳しい使用例については、[こちら](https://github.com/qvco/yaylib/blob/master/examples) を参照してください。
+より詳しい使用例については、[こちら](https://github.com/ekkx/yaylib/blob/master/examples) を参照してください。
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>
 
@@ -243,17 +243,17 @@ bot.run("your_email", "your_password")
     <tbody>
         <tr>
             <td align="center">
-                <img src="https://github.com/qvco/yaylib/assets/77382767/cc41ce3c-0e11-4ec5-be99-ff7090a95667" width="200px">
+                <img src="https://github.com/ekkx/yaylib/assets/77382767/cc41ce3c-0e11-4ec5-be99-ff7090a95667" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
             </td>
             <td align="center">
-                <img src="https://github.com/qvco/yaylib/assets/77382767/4fd728a0-9b3a-427f-ac1f-70e6d6538564" width="200px">
+                <img src="https://github.com/ekkx/yaylib/assets/77382767/4fd728a0-9b3a-427f-ac1f-70e6d6538564" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/7520368">tori</a></p>
             </td>
             <td align="center">
-                <img src="https://github.com/qvco/yaylib/assets/77382767/65fcb885-4fbe-4170-9378-6f8d9af61ff8" width="200px">
+                <img src="https://github.com/ekkx/yaylib/assets/77382767/65fcb885-4fbe-4170-9378-6f8d9af61ff8" width="200px">
                 <br />
                 <p>開発者: <a href="https://yay.space/user/1298298">ぺゅー</a></p>
             </td>
@@ -267,11 +267,11 @@ bot.run("your_email", "your_password")
 
 私たちと開発することに興味を持っていただけているなら、ぜひ参加して頂きたいです！
 
-- <a href="https://github.com/qvco/yaylib/pulls">プルリクエストを送信する</a>
+- <a href="https://github.com/ekkx/yaylib/pulls">プルリクエストを送信する</a>
 - <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
 - <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com にメールを送信する</a>
 
-のいずれかの方法で繋がりましょう。詳しくは[こちらから](https://github.com/qvco/yaylib/blob/master/CONTRIBUTING.md)！
+のいずれかの方法で繋がりましょう。詳しくは[こちらから](https://github.com/ekkx/yaylib/blob/master/CONTRIBUTING.md)！
 
 <!-- 免責事項 -->
 
@@ -284,16 +284,16 @@ yaylib は、API の公式なサポートやメンテナンスを提供するも
 ## ライセンス
 
 <p align="center">
-  <a href="https://github.com/qvco">
-    <img src="https://github.com/qvco/yaylib/assets/77382767/5d6aef18-5d98-4c9b-9f54-791308b393af" width="256" height="256">
+  <a href="https://github.com/ekkx">
+    <img src="https://github.com/ekkx/yaylib/assets/77382767/5d6aef18-5d98-4c9b-9f54-791308b393af" width="256" height="256">
   </a>
 </p>
 
 <p align="center">
-  <strong>MIT © <a href="https://github.com/qvco">qvco</a></strong>
+  <strong>MIT © <a href="https://github.com/ekkx">ekkx</a></strong>
 </p>
 
-フルライセンスは [こちら](https://github.com/qvco/yaylib/blob/master/LICENSE) からご確認いただけます。  
+フルライセンスは [こちら](https://github.com/ekkx/yaylib/blob/master/LICENSE) からご確認いただけます。  
 このプロジェクトは、 **【MIT ライセンス】** の条件の下でライセンスされています。
 
 <p align="right">(<a href="#readme-top">トップに戻る</a>)</p>

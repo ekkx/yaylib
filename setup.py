@@ -17,7 +17,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 author_email = "nikola.desuga@gmail.com"
 description = "同世代と趣味の通話コミュニティ - Yay! (イェイ) で投稿やタイムラインの取得、リツイートやいいねの実行、フォローや投稿の検索など様々な機能をPythonプログラムから利用可能なAPIクライアントツールです。"
 long_description_content_type = "text/markdown"
-url = "https://github.com/qvco/yaylib"
+url = "https://github.com/ekkx/yaylib"
 
 keywords = [
     "yay",

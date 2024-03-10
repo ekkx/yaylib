@@ -5,16 +5,16 @@ Yay! (nanameue, Inc.) API Client
 
 An API wrapper for Yay! (yay.space) written in Python.
 
-:copyright: (c) 2023 qvco
+:copyright: (c) 2023 ekkx
 :license: MIT, see LICENSE for more details.
 
 """
 
 __title__ = "yaylib"
-__author__ = "qvco"
+__author__ = "ekkx"
 __license__ = "MIT"
-__copyright__ = "Copyright (c) 2023 qvco"
-__version__ = "1.4.12"
+__copyright__ = "Copyright (c) 2023 ekkx"
+__version__ = "1.4.13"
 
 from .client import Client
 from .cookie import Cookie

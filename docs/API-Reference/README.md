@@ -1,12 +1,12 @@
 <!-- 参考: https://developer.twitter.com/en/docs/api-reference-index -->
 
 <p align="center">
-    <img src="https://github.com/qvco/yaylib/assets/77382767/45c45b21-d812-4cad-8f27-315ffef53201" alt="Logo" height="300px">
+    <img src="https://github.com/ekkx/yaylib/assets/77382767/45c45b21-d812-4cad-8f27-315ffef53201" alt="Logo" height="300px">
     <h3 align="center">API reference index</h3>
     <p align="center">
-        <a href="https://github.com/qvco/yaylib/issues">Report Bug</a>
+        <a href="https://github.com/ekkx/yaylib/issues">Report Bug</a>
         ·
-        <a href="https://github.com/qvco/yaylib/issues">Request Feature</a>
+        <a href="https://github.com/ekkx/yaylib/issues">Request Feature</a>
         ·
         <a href="https://discord.gg/MEuBfNtqRN">Join the discord</a>
     </p>
@@ -372,7 +372,7 @@
 
 #### User Management
 
-- <a href="https://github.com/qvco/yaylib/blob/master/docs/API-Reference/login/change_email.md">PUT /v1/users/change_email</a> (`changeEmail`)
+- <a href="https://github.com/ekkx/yaylib/blob/master/docs/API-Reference/login/change_email.md">PUT /v1/users/change_email</a> (`changeEmail`)
 - <a href="">PUT /v1/users/change_password</a> (`changePassword`)
 - <a href="">POST /v2/users/sns/connect</a> (`connectAccountWithSns`)
 - <a href="">POST /v2/users/sns/disconnect</a> (`disconnectAccountWithSns`)

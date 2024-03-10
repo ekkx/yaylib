@@ -8,16 +8,16 @@ yaylib の改善にご協力いただきありがとうございます。
 
 #### 利用者
 
-- [リポジトリにスター](https://github.com/qvco/yaylib)をする。 ※ GitHub の登録が必要です（無料）
+- [リポジトリにスター](https://github.com/ekkx/yaylib)をする。 ※ GitHub の登録が必要です（無料）
 - お友達に「yaylib」を布教する。
-- バグを発見したら [イシュー](https://github.com/qvco/yaylib/issues) に報告する。
+- バグを発見したら [イシュー](https://github.com/ekkx/yaylib/issues) に報告する。
 - 「yaylib」 を使用したボットがあれば、[ぜひ教えてください](https://discord.gg/MEuBfNtqRN)！
 
 #### デベロッパー
 
 - バグの修正や機能の追加、ドキュメントの作成をお願いします。
-- コードに変更を加える場合は、[プルリクエスト](https://github.com/qvco/yaylib/pulls)から行ってください。
-- タスクがわからない場合は [イシュー](https://github.com/qvco/yaylib/issues)、もしくは [Discord サーバー](https://discord.gg/MEuBfNtqRN)から確認してください。
+- コードに変更を加える場合は、[プルリクエスト](https://github.com/ekkx/yaylib/pulls)から行ってください。
+- タスクがわからない場合は [イシュー](https://github.com/ekkx/yaylib/issues)、もしくは [Discord サーバー](https://discord.gg/MEuBfNtqRN)から確認してください。
 
 **Upload to PYPI**
 

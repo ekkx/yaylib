@@ -1,7 +1,7 @@
 """
 MIT License
 
-Copyright (c) 2023 qvco
+Copyright (c) 2023 ekkx
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,11 +30,6 @@ class Configs:
     VERSION_NAME = "3.33.0"
     API_VERSION_KEY = "44a528f56e154b13b5f17a214d9f2ba6"
     API_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
-    FB_API_KEY = "AIzaSyCa6wL3iBz_VUZIjc_XkEODw2z0AAAW-fM"
-    FB_PROJECT_ID = "yay-space"
-    FB_MESSAGING_SENDER_ID = "287723651699"
-    FB_APP_ID = "1:287723651699:web:dd73f4f4bc9258bb8c2006"
-    FB_MEASUREMENT_ID = "G-FCYBYY66VR"
     SHARED_KEY = "yayZ1"
     STORE_KEY = "yayZ1payment"
     ID_CARD_CHECK_SECRET_KEY = "4aa6d1c301a97154bc1098c2"
