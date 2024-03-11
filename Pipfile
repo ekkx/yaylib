@@ -12,8 +12,10 @@ pyjwt = "==2.8.0"
 
 [dev-packages]
 setuptools = "*"
+sphinx = "*"
 twine = "*"
 wheel = "*"
+sphinx-rtd-theme = "*"
 
 [requires]
 python_version = "3.11"
