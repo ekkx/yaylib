@@ -399,7 +399,7 @@ class PostAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - group_id: int = None
             - from_timestamp: int = None
@@ -423,7 +423,7 @@ class PostAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - conversation_id: int
             - group_id: int = None
@@ -452,7 +452,7 @@ class PostAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - from_timestamp: int = None
             - number: int = None
@@ -473,7 +473,7 @@ class PostAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - from_str: str = None
             - only_root: bool = None
@@ -497,7 +497,7 @@ class PostAPI(object):
         グループのまとめ投稿を取得します
 
         Parameters:
-        ----------
+        -----------
 
             - group_id: int
             - from_post: int = None
@@ -517,7 +517,7 @@ class PostAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - group_id: int
             - keyword: str
@@ -538,7 +538,7 @@ class PostAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - group_id: int
             - from_post_id: int
@@ -560,7 +560,7 @@ class PostAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - hashtag: str - (required)
             - from_post_id: int - (optional)

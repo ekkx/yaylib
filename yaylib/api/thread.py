@@ -70,7 +70,7 @@ class ThreadAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - group_id: int
             - from_str: str = None
@@ -100,7 +100,7 @@ class ThreadAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - post_type: str
             - number: int = None

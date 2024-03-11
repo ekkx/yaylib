@@ -202,7 +202,7 @@ class ChatAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - number: int (optional)
             - from_timestamp: int (optional)

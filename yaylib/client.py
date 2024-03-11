@@ -47,6 +47,7 @@ from .api.thread import ThreadAPI
 from .api.user import UserAPI
 
 from . import __version__
+from . import ws
 from .config import Configs
 from .cookie import Cookie, CookieManager
 from .errors import (
@@ -125,7 +126,6 @@ from .responses import (
 )
 from .types import PolicyType
 from .utils import Colors, generate_jwt
-from .ws import Intents, WebSocketInteractor
 
 try:
     from json.decoder import JSONDecodeError
@@ -133,7 +133,7 @@ except ImportError:
     JSONDecodeError = ValueError
 
 
-__all__ = "Client"
+__all__ = ["Client"]
 
 
 class HeaderInterceptor(object):
@@ -194,11 +194,11 @@ class HeaderInterceptor(object):
 current_path = os.path.abspath(os.getcwd())
 
 
-class BaseClient(WebSocketInteractor):
+class BaseClient(ws.WebSocketInteractor):
     def __init__(
         self,
         *,
-        intents: Optional[Intents] = None,
+        intents: Optional[ws.Intents] = None,
         proxy_url: Optional[str] = None,
         max_retries: int = 3,
         backoff_factor: float = 1.5,
@@ -593,11 +593,6 @@ class BaseClient(WebSocketInteractor):
             self.__cookie.save()
 
         self.logger.info(f"Successfully logged in as [{response.user_id}]")
-
-        #
-        # configure intents and websocket interactor here
-        # i will do it later...
-        #
 
         # agree to the policy stuff
         policy_response = self.MiscAPI.get_policy_agreements()
@@ -1082,7 +1077,7 @@ class Client(BaseClient):
         チャットリクエストを取得します
 
         Parameters:
-        ----------
+        -----------
 
             - number: int (optional)
             - from_timestamp: int (optional)
@@ -1208,7 +1203,7 @@ class Client(BaseClient):
         チャットルームにメッセージを送信します
 
         Parameters:
-        ----------
+        -----------
 
             - chat_room_id: int (required)
             - message_type: str (required)

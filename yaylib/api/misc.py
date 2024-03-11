@@ -84,7 +84,7 @@ class MiscAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - resource_type: str - (Required)
             - resource_id: int - (Required)
@@ -208,8 +208,8 @@ class MiscAPI(object):
 
         画像をアップロードして、サーバー上のファイル名のリストを返します。
 
-        Parameteres
-        -----------
+        Parameteres:
+        ------------
 
             - image_path: list[str] - (required): 画像パスのリスト
             - image_type: str - (required): 画像の種類

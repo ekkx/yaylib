@@ -184,7 +184,7 @@ class GroupAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - page: int - (optional)
             - number: int - (optional)
@@ -215,7 +215,7 @@ class GroupAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - group_category_id: int = None
             - keyword: str = None
@@ -234,7 +234,7 @@ class GroupAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - from_timestamp: int - (optional)
             - user[nickname]: str - (optional)
@@ -263,7 +263,7 @@ class GroupAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - id: int - (required)
             - mode: str - (optional)
@@ -296,7 +296,7 @@ class GroupAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - group_id: int - (required)
             - keyword: str - (optional)
@@ -314,7 +314,7 @@ class GroupAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - group_id: int - (required)
             - keyword: str - (optional)
@@ -332,7 +332,7 @@ class GroupAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - user_id: int - (required)
             - page: int - (optional)

@@ -89,7 +89,7 @@ class UserAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - only_online: bool
             - from_loggedin_at: int = None
@@ -106,7 +106,7 @@ class UserAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - from_timestamp: int = None,
             - number: int = None,
@@ -155,7 +155,7 @@ class UserAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - from_id: int = None
             - number: int = None
@@ -180,7 +180,7 @@ class UserAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - from_hima_id: int = None
             - number: int = None
@@ -199,7 +199,7 @@ class UserAPI(object):
         ユーザーのランキングを取得します
 
         Examples:
-        --------
+        ---------
 
         >>> ルーキーを取得する場合:
 
@@ -236,7 +236,7 @@ class UserAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - sns_name: str - (Required)
             - number: int - (Optional)
@@ -276,7 +276,7 @@ class UserAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - user_id: int - (required)
             - from_follow_id: int - (optional)
@@ -296,7 +296,7 @@ class UserAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - user_id: int
             - from_follow_id: int = None
@@ -432,7 +432,7 @@ class UserAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - nickname: str = None
             - number: int = None
@@ -450,7 +450,7 @@ class UserAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - gender: int = None
             - nickname: str = None
@@ -597,7 +597,7 @@ class UserAPI(object):
         """
 
         Parameters:
-        ----------
+        -----------
 
             - from: str = None
             - number: int = None
