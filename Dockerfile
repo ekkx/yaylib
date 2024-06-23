@@ -7,4 +7,5 @@ WORKDIR /app
 COPY Pipfile .
 RUN pip install pipenv
 RUN pipenv install
+RUN echo 'pipenv shell' >> ~/.bashrc
 COPY . .

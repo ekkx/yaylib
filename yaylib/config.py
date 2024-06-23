@@ -26,9 +26,9 @@ from .models import Device
 
 
 class Configs:
-    API_VERSION_NAME = "3.34"
-    VERSION_NAME = "3.34.0"
-    API_VERSION_KEY = "4a522ab1f65a4418bf74ba69f99c1e1d"
+    API_VERSION_NAME = "3.40"
+    VERSION_NAME = "3.40.0"
+    API_VERSION_KEY = "d175f967bb6444f49ff08b3b6d646527"
     API_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
     SHARED_KEY = "yayZ1"
     STORE_KEY = "yayZ1payment"

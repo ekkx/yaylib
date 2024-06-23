@@ -1,25 +1,34 @@
 .PHONY:
-up:
+up: # 実行環境の構築&起動
 	docker compose up -d
-	docker compose exec -it yaylib bash
+	docker compose exec yaylib bash
 
+.PHONY:
+down: # コンテナ停止
+	docker compose down
+
+.PHONY:
 clean-doc:
 	rm -rf docs/yaylib.* docs/modules.rst docs/_build/
 
+.PHONY:
 doc: # ドキュメントの生成
 	make clean-doc
 	sphinx-apidoc -f -e -o ./docs . tests/* *_test.py setup.py
 	sphinx-build -b singlehtml ./docs ./docs/_build
 
+.PHONY:
 build: # パッケージのビルド
 	python setup.py sdist
 	python setup.py bdist_wheel
 
+.PHONY:
 clean: # ビルドファイル削除
 	rm -rf build/
 	rm -rf dist/
 	rm -rf yaylib.egg-info/
 
+.PHONY:
 publish: # PYPIにパッケージのアップロード
 	make build
 	twine upload --repository pypi dist/*
