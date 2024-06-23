@@ -1,0 +1,8 @@
+services:
+  yaylib:
+    container_name: python
+    build:
+      context: .
+    volumes:
+      - .:/app
+    tty: true

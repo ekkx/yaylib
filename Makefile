@@ -1,12 +1,7 @@
-setup: # 仮想環境構築
-	pip install pipenv
-	pipenv install --dev
-
-active: # 仮想環境の起動
-	pipenv shell
-
-clean-venv: # 仮想環境削除
-	pipenv --rm
+.PHONY:
+up:
+	docker compose up -d
+	docker compose exec -it yaylib bash
 
 clean-doc:
 	rm -rf docs/yaylib.* docs/modules.rst docs/_build/

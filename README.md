@@ -61,23 +61,21 @@
 
 「yaylib」をインストールするには、以下のコマンドをターミナル上で実行します:
 
-```bash
+```shell
 pip install yaylib
 ```
 
 <br>
 
 > [!TIP]
-> 開発バージョンをインストールする場合は、以下の手順を実行します:
+> 開発環境をインストールする場合は、以下の手順を実行します:
 
-```bash
+```shell
 git clone https://github.com/ekkx/yaylib.git
 
 cd yaylib
 
-make setup
-
-make active
+make up
 ```
 
 <!-- 使用例 -->
