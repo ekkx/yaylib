@@ -5,7 +5,9 @@ RUN apt-get update && apt-get install make
 WORKDIR /app
 
 COPY Pipfile .
+
 RUN pip install pipenv
-RUN pipenv install
+RUN pipenv install --dev
 RUN echo 'pipenv shell' >> ~/.bashrc
+
 COPY . .
