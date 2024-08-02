@@ -32,7 +32,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from .config import Configs
+from . import config
 
 
 class Colors:
@@ -45,6 +45,75 @@ class Colors:
     RESET = "\033[0m"
     BOLD = "\033[1m"
     UNDERLINE = "\033[4m"
+
+
+class PostType:
+    """投稿の種類"""
+
+    TEXT = "text"
+    """ `text`: テキストのみ投稿タイプ"""
+    MEDIA = "media"
+    """ `media`: メディアを含める投稿タイプ"""
+    IMAGE = "image"
+    """ `image`: 画像を含める投稿タイプ"""
+    VIDEO = "video"
+    """ `video`: ビデオを含める投稿タイプ"""
+    SURVEY = "survey"
+    """ `survey`: アンケートを含める投稿タイプ"""
+    CALL = "call"
+    """ `call`: 通話用の投稿タイプ"""
+    SHAREABLE_URL = "shareable_url"
+    """ `shareable_url`: サークルやスレッド共有用の投稿タイプ"""
+
+
+class CallType:
+    """通話の種類"""
+
+    VOICE = "voice"
+    """ `voice`: 音声通話用の通話タイプ"""
+    VIDEO = "vdo"
+    """ `vdo`: ビデオ通話用の通話タイプ"""
+
+
+class ImageType:
+    """画像の種類"""
+
+    POST = "post"
+    """ `post`: 投稿に画像をアップロードする際の画像タイプ"""
+    CHAT_MESSAGE = "chat_message"
+    """ `chat_message`: 個人チャットに画像をアップロードする際の画像タイプ"""
+    CHAT_BACKGROUND = "chat_background"
+    """ `chat_background`: 個人チャットの背景用に画像をアップロードする際の画像タイプ"""
+    REPORT = "report"
+    """ `report`: 通報用の画像をアップロードする際の画像タイプ"""
+    USER_AVATAR = "user_avatar"
+    """ `user_avatar`: プロフィール画像をアップロードする際の画像タイプ"""
+    USER_COVER = "user_cover"
+    """ `user_cover`: プロフィールの背景画像をアップロードする際の画像タイプ"""
+    GROUP_COVER = "group_cover"
+    """ `group_cover`: グループの背景画像をアップロードする際の画像タイプ"""
+    GROUP_THREAD_ICON = "group_thread_icon"
+    """ `group_thread_icon`: グループ内のスレッド用アイコンをアップロードする際の画像タイプ"""
+    GROUP_ICON = "group_icon"
+    """ `group_icon`: グループのアイコンをアップロードする際の画像タイプ"""
+
+
+class ShareableType:
+    """共有の種類"""
+
+    GROUP = "group"
+    """ `group`: サークル用の共有タイプ"""
+    THREAD = "thread"
+    """ `thread`: スレッド用の共有タイプ"""
+
+
+class PolicyType:
+    """利用規約の種類"""
+
+    PRIVACY_POLICY = "privacy_policy"
+    """ `privacy_policy`: プライバシーポリシー"""
+    TERM_OF_USE = "terms_of_use"
+    """ `terms_of_use`: 利用規約"""
 
 
 def console_print(*args):
@@ -125,7 +194,7 @@ def generate_jwt() -> str:
     timestamp = int(datetime.now().timestamp())
     return jwt.encode(
         payload={"exp": timestamp + 5, "iat": timestamp},
-        key=Configs.API_VERSION_KEY.encode("utf-8"),
+        key=config.API_VERSION_KEY.encode("utf-8"),
     )
 
 
@@ -153,17 +222,17 @@ def get_hashed_filename(att, type, key, uuid):
 
 
 def md5(uuid: str, timestamp: int, require_shared_key: bool) -> str:
-    shared_key: str = Configs.SHARED_KEY if require_shared_key else ""
+    shared_key: str = config.SHARED_KEY if require_shared_key else ""
     return hashlib.md5(
-        (Configs.API_KEY + uuid + str(timestamp) + shared_key).encode()
+        (config.API_KEY + uuid + str(timestamp) + shared_key).encode()
     ).hexdigest()
 
 
 def sha256() -> str:
     return base64.b64encode(
         hmac.new(
-            Configs.API_VERSION_KEY.encode(),
-            "yay_android/{}".format(Configs.API_VERSION_NAME).encode(),
+            config.API_VERSION_KEY.encode(),
+            "yay_android/{}".format(config.API_VERSION_NAME).encode(),
             hashlib.sha256,
         ).digest()
     ).decode("utf-8")
