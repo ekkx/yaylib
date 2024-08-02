@@ -47,6 +47,7 @@ class Intents:
 
     @classmethod
     def all(cls: Type[Intents]) -> Intents:
+
         self = cls()
         for attr in vars(self):
             setattr(self, attr, True)
