@@ -6,8 +6,5 @@
       "source.organizeImports": "explicit"
     }
   },
-  "python.formatting.provider": "black",
-  "python.formatting.blackArgs": ["--line-length=88"],
-  "python.linting.enabled": true,
   "editor.formatOnSave": true
 }
