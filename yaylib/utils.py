@@ -25,12 +25,14 @@ SOFTWARE.
 import base64
 import hmac
 import hashlib
-import jwt
 import re
 import uuid
 
+from json import dumps
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
+from base64 import urlsafe_b64encode
+from cryptography.fernet import Fernet
 
 from .config import Configs
 
@@ -123,10 +125,33 @@ def generate_uuid(uuid_type=True):
 
 def generate_jwt() -> str:
     timestamp = int(datetime.now().timestamp())
-    return jwt.encode(
-        payload={"exp": timestamp + 5, "iat": timestamp},
-        key=Configs.API_VERSION_KEY.encode("utf-8"),
+    encoded_headers = (
+        urlsafe_b64encode(dumps({"alg": "HS256"}, separators=(",", ":")).encode())
+        .decode()
+        .strip("=")
     )
+    encoded_payload = (
+        urlsafe_b64encode(
+            dumps(
+                {"iat": timestamp, "exp": timestamp + 5}, separators=(",", ":")
+            ).encode()
+        )
+        .decode()
+        .strip("=")
+    )
+    payload = encoded_headers + "." + encoded_payload
+    sig = (
+        urlsafe_b64encode(
+            hmac.new(
+                key=Configs.API_VERSION_KEY.encode(),
+                msg=payload.encode(),
+                digestmod=hashlib.sha256,
+            ).digest()
+        )
+        .decode()
+        .strip("=")
+    )
+    return payload + "." + sig
 
 
 def is_valid_image_format(format):
@@ -167,3 +192,29 @@ def sha256() -> str:
             hashlib.sha256,
         ).digest()
     ).decode("utf-8")
+
+
+class CryptoManager(object):
+
+    def __init__(self, password: Optional[str] = None) -> None:
+        self.__encryption_key: Optional[Fernet] = None
+
+        if password is not None:
+            self.__encryption_key: Fernet = self._generate_key(password)
+
+    def _generate_key(self, password: str) -> Fernet:
+        hashed = hashlib.sha256(password.encode()).digest()
+        key: bytes = base64.urlsafe_b64encode(hashed[:32])
+        return Fernet(key)
+
+    def _hash(self, text: str) -> str:
+        return hashlib.sha256(text.encode()).hexdigest()
+
+    def _encrypt(self, text: str) -> str:
+        encoded: bytes = text.encode()
+        encrypted: bytes = self.__encryption_key.encrypt(encoded)
+        return encrypted.decode()
+
+    def _decrypt(self, text: str) -> str:
+        decrypted: bytes = self.__encryption_key.decrypt(text)
+        return decrypted.decode()
