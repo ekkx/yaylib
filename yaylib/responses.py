@@ -59,6 +59,7 @@ from .models import (
     Interest,
     Message,
     MessageTag,
+    Model,
     MuteKeyword,
     PlatformDetails,
     PopularWord,
@@ -90,7 +91,7 @@ from .models import (
 )
 
 
-class ActiveFollowingsResponse:
+class ActiveFollowingsResponse(Model):
     __slots__ = ("data", "last_loggedin_at", "users")
 
     def __init__(self, data):
@@ -105,7 +106,7 @@ class ActiveFollowingsResponse:
         return f"ActiveFollowingsResponse(data={self.data})"
 
 
-class ActivitiesResponse:
+class ActivitiesResponse(Model):
     __slots__ = ("data", "activities", "last_timestamp")
 
     def __init__(self, data):
@@ -121,7 +122,7 @@ class ActivitiesResponse:
         return f"ActivitiesResponse(data={self.data})"
 
 
-class AdditionalSettingsResponse:
+class AdditionalSettingsResponse(Model):
     __slots__ = ("data", "settings")
 
     def __init__(self, data):
@@ -135,7 +136,7 @@ class AdditionalSettingsResponse:
         return f"AdditionalSettingsResponse(data={self.data})"
 
 
-class AppReviewStatusResponse:
+class AppReviewStatusResponse(Model):
     __slots__ = ("data", "is_app_reviewed")
 
     def __init__(self, data):
@@ -146,7 +147,7 @@ class AppReviewStatusResponse:
         return f"AppReviewStatusResponse(data={self.data})"
 
 
-class BgmsResponse:
+class BgmsResponse(Model):
     __slots__ = ("data", "bgm")
 
     def __init__(self, data):
@@ -160,7 +161,7 @@ class BgmsResponse:
         return f"BgmsResponse(data={self.data})"
 
 
-class BlockedUserIdsResponse:
+class BlockedUserIdsResponse(Model):
     __slots__ = ("data", "block_ids")
 
     def __init__(self, data):
@@ -172,7 +173,7 @@ class BlockedUserIdsResponse:
         return f"BlockedUserIdsResponse(data={self.data})"
 
 
-class BlockedUsersResponse:
+class BlockedUsersResponse(Model):
     __slots__ = ("data", "blocked_count", "last_id", "users")
 
     def __init__(self, data):
@@ -188,7 +189,7 @@ class BlockedUsersResponse:
         return f"BlockedUsersResponse(data={self.data})"
 
 
-class BookmarkPostResponse:
+class BookmarkPostResponse(Model):
     __slots__ = ("data", "is_bookmarked")
 
     def __init__(self, data):
@@ -199,7 +200,7 @@ class BookmarkPostResponse:
         return f"BookmarkPostResponse(data={self.data})"
 
 
-class CallStatusResponse:
+class CallStatusResponse(Model):
     __slots__ = ("data", "phone_status", "video_status", "room_url")
 
     def __init__(self, data):
@@ -212,7 +213,7 @@ class CallStatusResponse:
         return f"CallStatusResponse(data={self.data})"
 
 
-class ChatRoomResponse:
+class ChatRoomResponse(Model):
     __slots__ = ("data", "chat")
 
     def __init__(self, data):
@@ -226,7 +227,7 @@ class ChatRoomResponse:
         return f"ChatRoomResponse(data={self.data})"
 
 
-class ChatRoomsResponse:
+class ChatRoomsResponse(Model):
     __slots__ = ("data", "pinned_chat_rooms", "chat_rooms", "next_page_value")
 
     def __init__(self, data):
@@ -249,7 +250,7 @@ class ChatRoomsResponse:
         return f"ChatRoomsResponse(data={self.data})"
 
 
-class TotalChatRequestResponse:
+class TotalChatRequestResponse(Model):
     __slots__ = ("data", "total")
 
     def __init__(self, data):
@@ -260,7 +261,7 @@ class TotalChatRequestResponse:
         return f"TotalChatRequestResponse(data={self.data})"
 
 
-class ConferenceCallResponse:
+class ConferenceCallResponse(Model):
     __slots__ = ("data", "conference_call")
 
     def __init__(self, data):
@@ -274,7 +275,7 @@ class ConferenceCallResponse:
         return f"ConferenceCallResponse(data={self.data})"
 
 
-class ContactStatusResponse:
+class ContactStatusResponse(Model):
     __slots__ = ("data", "contacts")
 
     def __init__(self, data):
@@ -285,7 +286,7 @@ class ContactStatusResponse:
         return f"ContactStatusResponse(data={self.data})"
 
 
-class CreateGroupResponse:
+class CreateGroupResponse(Model):
     __slots__ = ("data", "group_id")
 
     def __init__(self, data):
@@ -296,7 +297,7 @@ class CreateGroupResponse:
         return f"CreateGroupResponse(data={self.data})"
 
 
-class CreateQuotaResponse:
+class CreateQuotaResponse(Model):
     __slots__ = ("data", "create")
 
     def __init__(self, data):
@@ -310,7 +311,7 @@ class CreateQuotaResponse:
         return f"CreateQuotaResponse(data={self.data})"
 
 
-class CreateChatRoomResponse:
+class CreateChatRoomResponse(Model):
     __slots__ = ("data", "room_id")
 
     def __init__(self, data):
@@ -321,7 +322,7 @@ class CreateChatRoomResponse:
         return f"CreateChatRoomResponse(data={self.data})"
 
 
-class CreatePostResponse:
+class CreatePostResponse(Model):
     __slots__ = ("data", "conference_call", "post")
 
     def __init__(self, data):
@@ -339,7 +340,7 @@ class CreatePostResponse:
         return f"CreatePostResponse(data={self.data})"
 
 
-class CreateUserResponse:
+class CreateUserResponse(Model):
     __slots__ = ("data", "id", "access_token", "refresh_token", "expires_in")
 
     def __init__(self, data):
@@ -353,7 +354,7 @@ class CreateUserResponse:
         return f"CreateUserResponse(data={self.data})"
 
 
-class EmailGrantTokenResponse:
+class EmailGrantTokenResponse(Model):
     __slots__ = ("data", "email_grant_token")
 
     def __init__(self, data):
@@ -364,7 +365,7 @@ class EmailGrantTokenResponse:
         return f"EmailGrantTokenResponse(data={self.data})"
 
 
-class EmailVerificationPresignedUrlResponse:
+class EmailVerificationPresignedUrlResponse(Model):
     __slots__ = ("data", "url", "presigned_url", "expires_at", "method_type")
 
     def __init__(self, data):
@@ -378,7 +379,7 @@ class EmailVerificationPresignedUrlResponse:
         return f"EmailVerificationPresignedUrlResponse(data={self.data})"
 
 
-class PresignedUrlResponse:
+class PresignedUrlResponse(Model):
     __slots__ = ("data", "presigned_url")
 
     def __init__(self, data):
@@ -389,7 +390,7 @@ class PresignedUrlResponse:
         return f"PresignedUrlResponse(data={self.data})"
 
 
-class PresignedUrlsResponse:
+class PresignedUrlsResponse(Model):
     __slots__ = ("data", "presigned_urls")
 
     def __init__(self, data):
@@ -405,7 +406,7 @@ class PresignedUrlsResponse:
         return f"PresignedUrlsResponse(data={self.data})"
 
 
-class IdCheckerPresignedUrlResponse:
+class IdCheckerPresignedUrlResponse(Model):
     __slots__ = ("data", "presigned_url")
 
     def __init__(self, data):
@@ -416,7 +417,7 @@ class IdCheckerPresignedUrlResponse:
         return f"IdCheckerPresignedUrlResponse(data={self.data})"
 
 
-class DefaultSettingsResponse:
+class DefaultSettingsResponse(Model):
     __slots__ = ("data", "timeline_settings")
 
     def __init__(self, data):
@@ -430,7 +431,7 @@ class DefaultSettingsResponse:
         return f"DefaultSettingsResponse(data={self.data})"
 
 
-class FollowRecommendationsResponse:
+class FollowRecommendationsResponse(Model):
     __slots__ = ("data", "total", "users", "next")
 
     def __init__(self, data):
@@ -447,7 +448,7 @@ class FollowRecommendationsResponse:
         return f"FollowRecommendationsResponse(data={self.data})"
 
 
-class FollowRequestCountResponse:
+class FollowRequestCountResponse(Model):
     __slots__ = ("data", "users_count")
 
     def __init__(self, data):
@@ -458,7 +459,7 @@ class FollowRequestCountResponse:
         return f"FollowRequestCountResponse(data={self.data})"
 
 
-class FollowUsersResponse:
+class FollowUsersResponse(Model):
     __slots__ = ("data", "last_follow_id", "users")
 
     def __init__(self, data):
@@ -473,7 +474,7 @@ class FollowUsersResponse:
         return f"FollowUsersResponse(data={self.data})"
 
 
-class FootprintsResponse:
+class FootprintsResponse(Model):
     __slots__ = ("data", "footprints")
 
     def __init__(self, data):
@@ -487,7 +488,7 @@ class FootprintsResponse:
         return f"FootprintsResponse(data={self.data})"
 
 
-class GamesResponse:
+class GamesResponse(Model):
     __slots__ = ("data", "games", "from_id")
 
     def __init__(self, data):
@@ -503,7 +504,7 @@ class GamesResponse:
         return f"GamesResponse(data={self.data})"
 
 
-class GenresResponse:
+class GenresResponse(Model):
     __slots__ = ("data", "genres", "next_page_value")
 
     def __init__(self, data):
@@ -519,7 +520,7 @@ class GenresResponse:
         return f"GenresResponse(data={self.data})"
 
 
-class GroupCategoriesResponse:
+class GroupCategoriesResponse(Model):
     __slots__ = ("data", "group_categories")
 
     def __init__(self, data):
@@ -536,7 +537,7 @@ class GroupCategoriesResponse:
         return f"GroupCategoriesResponse(data={self.data})"
 
 
-class GroupGiftHistoryResponse:
+class GroupGiftHistoryResponse(Model):
     __slots__ = ("data", "gift_history", "next_page_value")
 
     def __init__(self, data):
@@ -554,7 +555,7 @@ class GroupGiftHistoryResponse:
         return f"GroupGiftHistoryResponse(data={self.data})"
 
 
-class GroupNotificationSettingsResponse:
+class GroupNotificationSettingsResponse(Model):
     __slots__ = ("data", "setting")
 
     def __init__(self, data):
@@ -568,7 +569,7 @@ class GroupNotificationSettingsResponse:
         return f"GroupNotificationSettingsResponse(data={self.data})"
 
 
-class GroupResponse:
+class GroupResponse(Model):
     __slots__ = ("data", "group")
 
     def __init__(self, data):
@@ -582,7 +583,7 @@ class GroupResponse:
         return f"GroupResponse(data={self.data})"
 
 
-class GroupsRelatedResponse:
+class GroupsRelatedResponse(Model):
     __slots__ = ("data", "groups", "next_page_value")
 
     def __init__(self, data):
@@ -598,7 +599,7 @@ class GroupsRelatedResponse:
         return f"GroupsRelatedResponse(data={self.data})"
 
 
-class GroupsResponse:
+class GroupsResponse(Model):
     __slots__ = ("data", "pinned_groups", "groups")
 
     def __init__(self, data):
@@ -618,7 +619,7 @@ class GroupsResponse:
         return f"GroupsResponse(data={self.data})"
 
 
-class GroupThreadListResponse:
+class GroupThreadListResponse(Model):
     __slots__ = ("data", "threads", "next_page_value")
 
     def __init__(self, data):
@@ -634,7 +635,7 @@ class GroupThreadListResponse:
         return f"GroupThreadListResponse(data={self.data})"
 
 
-class GroupUserResponse:
+class GroupUserResponse(Model):
     __slots__ = ("data", "group_user")
 
     def __init__(self, data):
@@ -648,7 +649,7 @@ class GroupUserResponse:
         return f"GroupUserResponse(data={self.data})"
 
 
-class GroupUsersResponse:
+class GroupUsersResponse(Model):
     __slots__ = ("data", "group_users")
 
     def __init__(self, data):
@@ -664,7 +665,7 @@ class GroupUsersResponse:
         return f"GroupUsersResponse(data={self.data})"
 
 
-class GifsDataResponse:
+class GifsDataResponse(Model):
     __slots__ = ("data", "gif_categories")
 
     def __init__(self, data):
@@ -680,7 +681,7 @@ class GifsDataResponse:
         return f"GifsDataResponse(data={self.data})"
 
 
-class HiddenResponse:
+class HiddenResponse(Model):
     __slots__ = ("data", "hidden_users", "next_page_value", "total_count", "limit")
 
     def __init__(self, data):
@@ -698,7 +699,7 @@ class HiddenResponse:
         return f"HiddenResponse(data={self.data})"
 
 
-class LoginUserResponse:
+class LoginUserResponse(Model):
     __slots__ = (
         "data",
         "user_id",
@@ -728,7 +729,7 @@ class LoginUserResponse:
         return f"LoginUserResponse(data={self.data})"
 
 
-class LoginUpdateResponse:
+class LoginUpdateResponse(Model):
     __slots__ = (
         "data",
         "user_id",
@@ -750,7 +751,7 @@ class LoginUpdateResponse:
         return f"LoginUpdateResponse(data={self.data})"
 
 
-class MessageResponse:
+class MessageResponse(Model):
     __slots__ = ("data", "id", "conference_call")
 
     def __init__(self, data):
@@ -765,7 +766,7 @@ class MessageResponse:
         return f"MessageResponse(data={self.data})"
 
 
-class MessagesResponse:
+class MessagesResponse(Model):
     __slots__ = ("data", "messages")
 
     def __init__(self, data):
@@ -779,7 +780,7 @@ class MessagesResponse:
         return f"MessagesResponse(data={self.data})"
 
 
-class PolicyAgreementsResponse:
+class PolicyAgreementsResponse(Model):
     __slots__ = ("data", "latest_privacy_policy_agreed", "latest_terms_of_use_agreed")
 
     def __init__(self, data):
@@ -791,7 +792,7 @@ class PolicyAgreementsResponse:
         return f"PolicyAgreementsResponse(data={self.data})"
 
 
-class PostResponse:
+class PostResponse(Model):
     __slots__ = ("data", "post")
 
     def __init__(self, data):
@@ -805,7 +806,7 @@ class PostResponse:
         return f"PostResponse(data={self.data})"
 
 
-class PostsResponse:
+class PostsResponse(Model):
     __slots__ = ("data", "next_page_value", "posts", "pinned_posts")
 
     def __init__(self, data):
@@ -824,7 +825,7 @@ class PostsResponse:
         return f"PostsResponse(data={self.data})"
 
 
-class PostLikersResponse:
+class PostLikersResponse(Model):
     __slots__ = ("data", "last_id", "users")
 
     def __init__(self, data):
@@ -839,7 +840,7 @@ class PostLikersResponse:
         return f"PostLikersResponse(data={self.data})"
 
 
-class PostTagsResponse:
+class PostTagsResponse(Model):
     __slots__ = ("data", "tags")
 
     def __init__(self, data):
@@ -853,7 +854,7 @@ class PostTagsResponse:
         return f"PostTagsResponse(data={self.data})"
 
 
-class PromotionsResponse:
+class PromotionsResponse(Model):
     __slots__ = ("data", "promotions")
 
     def __init__(self, data):
@@ -867,7 +868,7 @@ class PromotionsResponse:
         return f"PromotionsResponse(data={self.data})"
 
 
-class LikePostsResponse:
+class LikePostsResponse(Model):
     __slots__ = ("data", "like_ids")
 
     def __init__(self, data):
@@ -878,7 +879,7 @@ class LikePostsResponse:
         return f"LikePostsResponse(data={self.data})"
 
 
-class ValidationPostResponse:
+class ValidationPostResponse(Model):
     __slots__ = ("data", "is_allow_to_post")
 
     def __init__(self, data):
@@ -889,7 +890,7 @@ class ValidationPostResponse:
         return f"ValidationPostResponse(data={self.data})"
 
 
-class RefreshCounterRequestsResponse:
+class RefreshCounterRequestsResponse(Model):
     __slots__ = ("data", "reset_counter_requests")
 
     def __init__(self, data):
@@ -906,7 +907,7 @@ class RefreshCounterRequestsResponse:
         return f"RefreshCounterRequestsResponse(data={self.data})"
 
 
-class RegisterDeviceTokenResponse:
+class RegisterDeviceTokenResponse(Model):
     __slots__ = ("data", "id", "server_device_id", "uuid", "created_at", "updated_at")
 
     def __init__(self, data):
@@ -921,7 +922,7 @@ class RegisterDeviceTokenResponse:
         return f"RegisterDeviceTokenResponse(data={self.data})"
 
 
-class ReviewsResponse:
+class ReviewsResponse(Model):
     __slots__ = ("data", "reviews", "pinned_reviews")
 
     def __init__(self, data):
@@ -941,7 +942,7 @@ class ReviewsResponse:
         return f"ReviewsResponse(data={self.data})"
 
 
-class SocialShareUsersResponse:
+class SocialShareUsersResponse(Model):
     __slots__ = ("data", "social_shared_users")
 
     def __init__(self, data):
@@ -958,7 +959,7 @@ class SocialShareUsersResponse:
         return f"SocialShareUsersResponse(data={self.data})"
 
 
-class StickerPacksResponse:
+class StickerPacksResponse(Model):
     __slots__ = ("data", "sticker_packs")
 
     def __init__(self, data):
@@ -974,7 +975,7 @@ class StickerPacksResponse:
         return f"StickerPacksResponse(data={self.data})"
 
 
-class TokenResponse:
+class TokenResponse(Model):
     __slots__ = (
         "data",
         "user_id",
@@ -996,7 +997,7 @@ class TokenResponse:
         return f"TokenResponse(data={self.data})"
 
 
-class VerifyDeviceResponse:
+class VerifyDeviceResponse(Model):
     __slots__ = ("data", "verified", "verified_at")
 
     def __init__(self, data):
@@ -1008,7 +1009,7 @@ class VerifyDeviceResponse:
         return f"VerifyDeviceResponse(data={self.data})"
 
 
-class VipGameRewardUrlResponse:
+class VipGameRewardUrlResponse(Model):
     __slots__ = ("data", "url")
 
     def __init__(self, data):
@@ -1019,7 +1020,7 @@ class VipGameRewardUrlResponse:
         return f"VipGameRewardUrlResponse(data={self.data})"
 
 
-class VoteSurveyResponse:
+class VoteSurveyResponse(Model):
     __slots__ = ("data", "survey")
 
     def __init__(self, data):
@@ -1033,7 +1034,7 @@ class VoteSurveyResponse:
         return f"VoteSurveyResponse(data={self.data})"
 
 
-class UnreadStatusResponse:
+class UnreadStatusResponse(Model):
     __slots__ = ("data", "is_unread")
 
     def __init__(self, data):
@@ -1044,7 +1045,7 @@ class UnreadStatusResponse:
         return f"UnreadStatusResponse(data={self.data})"
 
 
-class UserResponse:
+class UserResponse(Model):
     __slots__ = (
         "data",
         "user",
@@ -1097,7 +1098,7 @@ class UserResponse:
         return f"UserResponse(data={self.data})"
 
 
-class UsersResponse:
+class UsersResponse(Model):
     __slots__ = ("data", "users", "next_page_value")
 
     def __init__(self, data):
@@ -1113,7 +1114,7 @@ class UsersResponse:
         return f"UsersResponse(data={self.data})"
 
 
-class RankingUsersResponse:
+class RankingUsersResponse(Model):
     __slots__ = ("data", "users")
 
     def __init__(self, data):
@@ -1127,7 +1128,7 @@ class RankingUsersResponse:
         return f"RankingUsersResponse(data={self.data})"
 
 
-class UserCustomDefinitionsResponse:
+class UserCustomDefinitionsResponse(Model):
     __slots__ = (
         "age",
         "followers_count",
@@ -1152,7 +1153,7 @@ class UserCustomDefinitionsResponse:
         return f"UserCustomDefinitionsResponse(data={self.data})"
 
 
-class UserEmailResponse:
+class UserEmailResponse(Model):
     __slots__ = ("data", "email")
 
     def __init__(self, data):
@@ -1163,7 +1164,7 @@ class UserEmailResponse:
         return f"UserEmailResponse(data={self.data})"
 
 
-class HimaUsersResponse:
+class HimaUsersResponse(Model):
     __slots__ = ("data", "hima_users")
 
     def __init__(self, data):
@@ -1177,7 +1178,7 @@ class HimaUsersResponse:
         return f"HimaUsersResponse(data={self.data})"
 
 
-class UsersByTimestampResponse:
+class UsersByTimestampResponse(Model):
     __slots__ = ("data", "last_timestamp", "users")
 
     def __init__(self, data):
@@ -1192,7 +1193,7 @@ class UsersByTimestampResponse:
         return f"UsersByTimestampResponse(data={self.data})"
 
 
-class UserTimestampResponse:
+class UserTimestampResponse(Model):
     __slots__ = ("data", "time", "ip_address", "country")
 
     def __init__(self, data):
@@ -1205,7 +1206,7 @@ class UserTimestampResponse:
         return f"UserTimestampResponse(data={self.data})"
 
 
-class ChannelResponse:
+class ChannelResponse(Model):
     __slots__ = ("data", "identifier", "message", "type", "sid")
 
     def __init__(self, data):
@@ -1223,7 +1224,7 @@ class ChannelResponse:
         return f"ChannelResponse(data={self.data})"
 
 
-class WebSocketMessageResponse:
+class WebSocketMessageResponse(Model):
     __slots__ = ("response", "data", "event")
 
     def __init__(self, data):
@@ -1235,7 +1236,7 @@ class WebSocketMessageResponse:
         return f"WebSocketMessageResponse(response={self.response})"
 
 
-class WebSocketTokenResponse:
+class WebSocketTokenResponse(Model):
     __slots__ = ("data", "token")
 
     def __init__(self, data):
@@ -1246,7 +1247,7 @@ class WebSocketTokenResponse:
         return f"WebSocketTokenResponse(data={self.data})"
 
 
-class ApplicationConfigResponse:
+class ApplicationConfigResponse(Model):
     __slots__ = ("data", "app")
 
     def __init__(self, data):
@@ -1260,7 +1261,7 @@ class ApplicationConfigResponse:
         return f"ApplicationConfigResponse(data={self.data})"
 
 
-class BanWordsResponse:
+class BanWordsResponse(Model):
     __slots__ = ("data", "ban_words")
 
     def __init__(self, data):
@@ -1274,7 +1275,7 @@ class BanWordsResponse:
         return f"BanWordsResponse(data={self.data})"
 
 
-class PopularWordsResponse:
+class PopularWordsResponse(Model):
     __slots__ = ("data", "popular_words")
 
     def __init__(self, data):

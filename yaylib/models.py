@@ -23,7 +23,11 @@ SOFTWARE.
 """
 
 
-class Activity:
+class Model:
+    pass
+
+
+class Activity(Model):
     __slots__ = (
         "data",
         "id",
@@ -88,7 +92,7 @@ class Activity:
         return f"Activity(data={self.data})"
 
 
-class Metadata:
+class Metadata(Model):
     __slots__ = (
         "data",
         "body",
@@ -110,7 +114,7 @@ class Metadata:
         return f"Metadata(data={self.data})"
 
 
-class ApplicationConfig:
+class ApplicationConfig(Model):
     __slots__ = (
         "data",
         "id",
@@ -137,7 +141,7 @@ class ApplicationConfig:
         return f"ApplicationConfig(data={self.data})"
 
 
-class ApplicationConfigSettings:
+class ApplicationConfigSettings(Model):
     __slots__ = (
         "data",
         "minimum_app_version_required",
@@ -239,7 +243,7 @@ class ApplicationConfigSettings:
         return f"ApplicationConfigSettings(data={self.data})"
 
 
-class Attachment:
+class Attachment(Model):
     def __init__(
         self,
         file,
@@ -262,7 +266,7 @@ class Attachment:
         return f"Attachment(filename={self.filename})"
 
 
-class BanWord:
+class BanWord(Model):
     __slots__ = ("data", "id", "type", "word")
 
     def __init__(self, data):
@@ -275,7 +279,7 @@ class BanWord:
         return f"BanWord(data={self.data})"
 
 
-class Bgm:
+class Bgm(Model):
     __slots__ = ("data", "id", "title", "music_url", "order")
 
     def __init__(self, data):
@@ -289,7 +293,7 @@ class Bgm:
         return f"Bgm(data={self.data})"
 
 
-class CallGiftHistory:
+class CallGiftHistory(Model):
     __slots__ = ("data", "gifts_count", "sent_at", "sender")
 
     def __init__(self, data):
@@ -311,7 +315,7 @@ class CallGiftHistory:
         return f"CallGiftHistory(data={self.data})"
 
 
-class ChatRoom:
+class ChatRoom(Model):
     __slots__ = (
         "data",
         "id",
@@ -359,7 +363,7 @@ class ChatRoom:
         return f"ChatRoom(data={self.data})"
 
 
-class ChatRoomDraft:
+class ChatRoomDraft(Model):
     __slots__ = ("data", "id", "text")
 
     def __init__(self, data):
@@ -371,7 +375,7 @@ class ChatRoomDraft:
         return f"ChatRoomDraft(data={self.data})"
 
 
-class MessageEvent:
+class MessageEvent(Model):
     __slots__ = (
         "data",
         "message",
@@ -391,7 +395,7 @@ class MessageEvent:
         return f"MessageEvent(data={self.data})"
 
 
-class ChatRoomEvent:
+class ChatRoomEvent(Model):
     __slots__ = (
         "data",
         "icon_thumbnail",
@@ -417,7 +421,7 @@ class ChatRoomEvent:
         return f"ChatRoomEvent(data={self.data})"
 
 
-class GroupUpdatesEvent:
+class GroupUpdatesEvent(Model):
     __slots__ = (
         "response",
         "data",
@@ -433,7 +437,7 @@ class GroupUpdatesEvent:
         return f"GroupUpdateEvent(data={self.response})"
 
 
-class Choice:
+class Choice(Model):
     __slots__ = ("data", "id", "label", "votes_count")
 
     def __init__(self, data):
@@ -446,7 +450,7 @@ class Choice:
         return f"Choice(data={self.data})"
 
 
-class CoinAmount:
+class CoinAmount(Model):
     __slots__ = ("data", "paid", "free", "total")
 
     def __init__(self, data):
@@ -459,7 +463,7 @@ class CoinAmount:
         return f"CoinAmount(data={self.data})"
 
 
-class CoinExpiration:
+class CoinExpiration(Model):
     __slots__ = ("data", "expired_at", "amount")
 
     def __init__(self, data):
@@ -471,7 +475,7 @@ class CoinExpiration:
         return f"CoinExpiration(data={self.data})"
 
 
-class CoinProduct:
+class CoinProduct(Model):
     __slots__ = ("data", "id", "purchasable", "amount")
 
     def __init__(self, data):
@@ -484,7 +488,7 @@ class CoinProduct:
         return f"CoinProduct(data={self.data})"
 
 
-class CoinProductQuota:
+class CoinProductQuota(Model):
     __slots__ = ("data", "bought", "limit")
 
     def __init__(self, data):
@@ -496,7 +500,7 @@ class CoinProductQuota:
         return f"CoinProductQuota(data={self.data})"
 
 
-class ConferenceCall:
+class ConferenceCall(Model):
     __slots__ = (
         "data",
         "id",
@@ -562,7 +566,7 @@ class ConferenceCall:
         return f"ConferenceCall(data={self.data})"
 
 
-class ConferenceCallUserRole:
+class ConferenceCallUserRole(Model):
     __slots__ = ("data", "id", "user_id", "role")
 
     def __init__(self, data):
@@ -575,7 +579,7 @@ class ConferenceCallUserRole:
         return f"ConferenceCallUserRole(data={self.data})"
 
 
-class ContactStatus:
+class ContactStatus(Model):
     __slots__ = ("data", "status", "user_id")
 
     def __init__(self, data):
@@ -587,7 +591,7 @@ class ContactStatus:
         return f"ContactStatus(data={self.data})"
 
 
-class CreateGroupQuota:
+class CreateGroupQuota(Model):
     __slots__ = ("data", "used_quota", "remaining_quota")
 
     def __init__(self, data):
@@ -599,7 +603,7 @@ class CreateGroupQuota:
         return f"CreateGroupQuota(data={self.data})"
 
 
-class Device:
+class Device(Model):
     def __init__(
         self,
         device_type: str,
@@ -618,7 +622,7 @@ class Device:
         return f"Device(device_type={self.device_type})"
 
 
-class TimelineSettings:
+class TimelineSettings(Model):
     __slots__ = (
         "data",
         "hide_hot_post",
@@ -638,7 +642,7 @@ class TimelineSettings:
         return f"TimelineSettings(data={self.data})"
 
 
-class Error:
+class Error(Model):
     __slots__ = ("data", "throwable", "type", "action")
 
     def __init__(self, data):
@@ -651,7 +655,7 @@ class Error:
         return f"Error(data={self.data})"
 
 
-class Footprint:
+class Footprint(Model):
     __slots__ = ("data", "user", "visited_at", "id")
 
     def __init__(self, data):
@@ -668,7 +672,7 @@ class Footprint:
         return f"Footprint(data={self.data})"
 
 
-class Game:
+class Game(Model):
     __slots__ = ("data", "id", "type", "title", "icon_url", "platform_details")
 
     def __init__(self, data):
@@ -686,7 +690,7 @@ class Game:
         return f"Game(data={self.data})"
 
 
-class Genre:
+class Genre(Model):
     __slots__ = ("data", "id", "type", "title", "icon_url")
 
     def __init__(self, data):
@@ -700,7 +704,7 @@ class Genre:
         return f"Genre(data={self.data})"
 
 
-class GifImage:
+class GifImage(Model):
     __slots__ = ("data", "id", "url", "width", "height")
 
     def __init__(self, data):
@@ -714,7 +718,7 @@ class GifImage:
         return f"GifImage(data={self.data})"
 
 
-class GifImageCategory:
+class GifImageCategory(Model):
     __slots__ = ("data", "id", "name", "language", "gifs")
 
     def __init__(self, data):
@@ -731,7 +735,7 @@ class GifImageCategory:
         return f"GifImageCategory(data={self.data})"
 
 
-class Gift:
+class Gift(Model):
     __slots__ = ("data", "id", "title", "icon", "iconThumbnail", "price")
 
     def __init__(self, data):
@@ -746,7 +750,7 @@ class Gift:
         return f"Gift(data={self.data})"
 
 
-class GiftCount:
+class GiftCount(Model):
     __slots__ = ("data", "id", "quantity")
 
     def __init__(self, data):
@@ -758,7 +762,7 @@ class GiftCount:
         return f"GiftCount(data={self.data})"
 
 
-class GiftHistory:
+class GiftHistory(Model):
     __slots__ = ("data", "transaction_at_seconds", "user", "gifts")
 
     def __init__(self, data):
@@ -777,7 +781,7 @@ class GiftHistory:
         return f"GiftHistory(data={self.data})"
 
 
-class GiftingAbility:
+class GiftingAbility(Model):
     __slots__ = ("data", "user_id", "enabled", "can_send", "can_receive")
 
     def __init__(self, data):
@@ -791,7 +795,7 @@ class GiftingAbility:
         return f"GiftingAbility(data={self.data})"
 
 
-class Group:
+class Group(Model):
     __slots__ = (
         "data",
         "id",
@@ -909,7 +913,7 @@ class Group:
         return f"Group(data={self.data})"
 
 
-class GroupCategory:
+class GroupCategory(Model):
     __slots__ = ("data", "id", "name", "icon", "rank")
 
     def __init__(self, data):
@@ -923,7 +927,7 @@ class GroupCategory:
         return f"GroupCategory(data={self.data})"
 
 
-class GroupGiftHistory:
+class GroupGiftHistory(Model):
     __slots__ = ("data", "gifts_count", "received_date", "user")
 
     def __init__(self, data):
@@ -945,7 +949,7 @@ class GroupGiftHistory:
         return f"GroupGiftHistory(data={self.data})"
 
 
-class GroupUser:
+class GroupUser(Model):
     __slots__ = (
         "data",
         "user",
@@ -971,7 +975,7 @@ class GroupUser:
         return f"GroupUser(data={self.data})"
 
 
-class HiddenRecommendedPost:
+class HiddenRecommendedPost(Model):
     __slots__ = ("data", "post")
 
     def __init__(self, data):
@@ -984,7 +988,7 @@ class HiddenRecommendedPost:
         return f"HiddenRecommendedPost(data={self.data})"
 
 
-class Interest:
+class Interest(Model):
     __slots__ = ("data", "id", "name", "icon", "selected")
 
     def __init__(self, data):
@@ -998,7 +1002,7 @@ class Interest:
         return f"Interest(data={self.data})"
 
 
-class Message:
+class Message(Model):
     __slots__ = (
         "data",
         "attachment",
@@ -1073,7 +1077,7 @@ class Message:
         return f"Message(data={self.data})"
 
 
-class ParentMessage:
+class ParentMessage(Model):
     __slots__ = (
         "data",
         "attachment",
@@ -1131,7 +1135,7 @@ class ParentMessage:
         return f"ParentMessage(data={self.data})"
 
 
-class MessageTag:
+class MessageTag(Model):
     __slots__ = ("data", "user_id", "offset", "length", "type")
 
     def __init__(self, data):
@@ -1145,7 +1149,7 @@ class MessageTag:
         return f"MessageTag(data={self.data})"
 
 
-class MuteKeyword:
+class MuteKeyword(Model):
     __slots__ = ("data", "id", "word", "context")
 
     def __init__(self, data):
@@ -1158,7 +1162,7 @@ class MuteKeyword:
         return f"MuteKeyword(data={self.data})"
 
 
-class PlatformDetails:
+class PlatformDetails(Model):
     __slots__ = ("data", "package_id", "affiliate_url")
 
     def __init__(self, data):
@@ -1170,7 +1174,7 @@ class PlatformDetails:
         return f"PlatformDetails(data={self.data})"
 
 
-class PopularWord:
+class PopularWord(Model):
     __slots__ = ("data", "id", "word", "type")
 
     def __init__(self, data):
@@ -1183,7 +1187,7 @@ class PopularWord:
         return f"PopularWord(data={self.data})"
 
 
-class Post:
+class Post(Model):
     __slots__ = (
         "data",
         "id",
@@ -1344,7 +1348,7 @@ class Post:
         return f"Post(data={self.data})"
 
 
-class PostGift:
+class PostGift(Model):
     __slots__ = ("data", "count", "gift")
 
     def __init__(self, data):
@@ -1359,7 +1363,7 @@ class PostGift:
         return f"PostGift(data={self.data})"
 
 
-class PostTag:
+class PostTag(Model):
     __slots__ = ("data", "id", "tag", "post_hashtags_count")
 
     def __init__(self, data):
@@ -1372,7 +1376,7 @@ class PostTag:
         return f"PostTag(data={self.data})"
 
 
-class PresignedUrl:
+class PresignedUrl(Model):
     __slots__ = ("data", "filename", "url")
 
     def __init__(self, data):
@@ -1384,7 +1388,7 @@ class PresignedUrl:
         return f"PresignedUrl(data={self.data})"
 
 
-class Promotion:
+class Promotion(Model):
     __slots__ = ("data", "id", "title", "image_url", "promotion_url", "order")
 
     def __init__(self, data):
@@ -1399,7 +1403,7 @@ class Promotion:
         return f"Promotion(data={self.data})"
 
 
-class ReceivedGift:
+class ReceivedGift(Model):
     __slots__ = ("data", "gift", "received_count", "senders", "total_senders_count")
 
     def __init__(self, data):
@@ -1421,7 +1425,7 @@ class ReceivedGift:
         return f"ReceivedGift(data={self.data})"
 
 
-class RecentSearch:
+class RecentSearch(Model):
     __slots__ = ("data", "id", "type", "user", "hashtag", "keyword")
 
     def __init__(self, data):
@@ -1443,7 +1447,7 @@ class RecentSearch:
         return f"RecentSearch(data={self.data})"
 
 
-class RefreshCounterRequest:
+class RefreshCounterRequest(Model):
     __slots__ = ("data", "counter", "status", "last_requested_at")
 
     def __init__(self, data):
@@ -1456,7 +1460,7 @@ class RefreshCounterRequest:
         return f"RefreshCounterRequest(data={self.data})"
 
 
-class Review:
+class Review(Model):
     __slots__ = (
         "data",
         "id",
@@ -1486,7 +1490,7 @@ class Review:
         return f"Review(data={self.data})"
 
 
-class SearchCriteria:
+class SearchCriteria(Model):
     __slots__ = ("data", "nickname", "username", "biography", "prefecture", "gender")
 
     def __init__(self, data):
@@ -1501,7 +1505,7 @@ class SearchCriteria:
         return f"SearchCriteria(data={self.data})"
 
 
-class Setting:
+class Setting(Model):
     __slots__ = (
         "data",
         "notification_group_request",
@@ -1523,7 +1527,7 @@ class Setting:
         return f"Setting(data={self.data})"
 
 
-class Settings:
+class Settings(Model):
     __slots__ = (
         "data",
         "notification_like",
@@ -1665,7 +1669,7 @@ class Settings:
         return f"Settings(data={self.data})"
 
 
-class Shareable:
+class Shareable(Model):
     __slots__ = ("data", "post", "group", "thread")
 
     def __init__(self, data):
@@ -1687,7 +1691,7 @@ class Shareable:
         return f"Shareable(data={self.data})"
 
 
-class SharedUrl:
+class SharedUrl(Model):
     __slots__ = ("data", "url", "title", "description", "image_url")
 
     def __init__(self, data):
@@ -1701,7 +1705,7 @@ class SharedUrl:
         return f"SharedUrl(data={self.data})"
 
 
-class SnsInfo:
+class SnsInfo(Model):
     __slots__ = (
         "data",
         "type",
@@ -1725,7 +1729,7 @@ class SnsInfo:
         return f"SnsInfo(data={self.data})"
 
 
-class Sticker:
+class Sticker(Model):
     __slots__ = ("data", "id", "sticker_pack_id", "width", "height", "url", "extension")
 
     def __init__(self, data):
@@ -1741,7 +1745,7 @@ class Sticker:
         return f"Sticker(data={self.data})"
 
 
-class StickerPack:
+class StickerPack(Model):
     __slots__ = ("data", "id", "name", "description", "cover", "stickers", "order")
 
     def __init__(self, data):
@@ -1761,7 +1765,7 @@ class StickerPack:
         return f"StickerPack(data={self.data})"
 
 
-class Survey:
+class Survey(Model):
     __slots__ = ("data", "id", "votes_count", "choices", "voted")
 
     def __init__(self, data):
@@ -1779,7 +1783,7 @@ class Survey:
         return f"Survey(data={self.data})"
 
 
-class ThreadInfo:
+class ThreadInfo(Model):
     __slots__ = (
         "data",
         "id",
@@ -1820,7 +1824,7 @@ class ThreadInfo:
         return f"ThreadInfo(data={self.data})"
 
 
-class User:
+class User(Model):
     # TODO: last_logged_in_at, created_at, updated_time_millis 確かめる
 
     __slots__ = (
@@ -1922,7 +1926,7 @@ class User:
         return f"User(data={self.data})"
 
 
-class UserAuth:
+class UserAuth(Model):
     __slots__ = ("data", "user_id", "access_token", "refresh_token", "expires_in")
 
     def __init__(self, data):
@@ -1940,7 +1944,7 @@ class UserAuth:
         return f"UserWrapper(data={self.data})"
 
 
-class UserWrapper:
+class UserWrapper(Model):
     __slots__ = ("data", "id", "user")
 
     def __init__(self, data):
@@ -1955,7 +1959,7 @@ class UserWrapper:
         return f"UserWrapper(data={self.data})"
 
 
-class Video:
+class Video(Model):
     __slots__ = (
         "data",
         "id",
@@ -1985,7 +1989,7 @@ class Video:
         return f"Video(data={self.data})"
 
 
-class Walkthrough:
+class Walkthrough(Model):
     __slots__ = ("data", "title", "url")
 
     def __init__(self, data):
@@ -1997,7 +2001,7 @@ class Walkthrough:
         return f"Walkthrough(data={self.data})"
 
 
-class WalletTransaction:
+class WalletTransaction(Model):
     __slots__ = ("data", "id", "created_at", "description", "amount", "coins")
 
     def __init__(self, data):
