@@ -22,32 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from .models import Device
+API_VERSION_NAME = "3.50"
+VERSION_NAME = "3.50.2"
+API_VERSION_KEY = "6dd45d036f124596bed4e43006872d95"
+API_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
+SHARED_KEY = "yayZ1"
+STORE_KEY = "yayZ1payment"
+ID_CARD_CHECK_SECRET_KEY = "4aa6d1c301a97154bc1098c2"
 
+BASE_HOST = "yay.space"
+API_HOST = "api." + BASE_HOST
+REVIEW_HOST_1 = "review." + BASE_HOST
+REVIEW_HOST_2 = "cas-stg." + BASE_HOST
+STAGING_HOST_1 = "stg." + BASE_HOST
+STAGING_HOST_2 = "cas." + BASE_HOST
+CABLE_HOST = "cable." + BASE_HOST
+CONFIG_HOST = "settings." + BASE_HOST
 
-class Configs:
-    API_VERSION_NAME = "3.40"
-    VERSION_NAME = "3.40.0"
-    API_VERSION_KEY = "d175f967bb6444f49ff08b3b6d646527"
-    API_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
-    SHARED_KEY = "yayZ1"
-    STORE_KEY = "yayZ1payment"
-    ID_CARD_CHECK_SECRET_KEY = "4aa6d1c301a97154bc1098c2"
-    REVIEW_HOST_1 = "review.yay.space"
-    REVIEW_HOST_2 = "cas-stg.yay.space"
-    STAGING_HOST_1 = "stg.yay.space"
-    STAGING_HOST_2 = "cas.yay.space"
-    CABLE_HOST = "cable.yay.space"
-    CONFIG_HOST = "settings.yay.space"
-    PRODUCTION_HOST = "api.yay.space"
-    ID_CARD_CHECK_HOST_PRODUCTION = "idcardcheck.com"
-    ID_CARD_CHECK_HOST_STAGING = "stg.idcardcheck.com"
-    DEVICE = Device(
-        device_type="android",
-        os_version="11",
-        screen_density="3.5",
-        screen_size="1440x2960",
-        model="Galaxy S9",
-    )
-    USER_AGENT = f"{DEVICE.device_type} {DEVICE.os_version} ({DEVICE.screen_density}x {DEVICE.screen_size} {DEVICE.model})"
-    DEVICE_INFO = "yay " + VERSION_NAME + " " + USER_AGENT
+ID_CARD_CHECK_BASE_HOST = "idcardcheck.com"

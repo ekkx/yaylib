@@ -603,25 +603,6 @@ class CreateGroupQuota(Model):
         return f"CreateGroupQuota(data={self.data})"
 
 
-class Device(Model):
-    def __init__(
-        self,
-        device_type: str,
-        os_version: str,
-        screen_density: str,
-        screen_size: str,
-        model: str,
-    ):
-        self.device_type = device_type
-        self.os_version = os_version
-        self.screen_density = screen_density
-        self.screen_size = screen_size
-        self.model = model
-
-    def __repr__(self):
-        return f"Device(device_type={self.device_type})"
-
-
 class TimelineSettings(Model):
     __slots__ = (
         "data",
