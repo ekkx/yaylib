@@ -47,8 +47,8 @@ class CallType(object):
 
     voice = "voice"
     """ `voice`: 音声通話用の通話タイプ"""
-    video = "vdo"
-    """ `vdo`: ビデオ通話用の通話タイプ"""
+    video = "video"
+    """ `video`: ビデオ通話用の通話タイプ"""
 
 
 class ImageType(object):
