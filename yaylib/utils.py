@@ -25,7 +25,6 @@ SOFTWARE.
 import base64
 import hmac
 import hashlib
-import jwt
 import re
 import uuid
 
@@ -126,10 +125,33 @@ def generate_uuid(uuid_type=True):
 
 def generate_jwt() -> str:
     timestamp = int(datetime.now().timestamp())
-    return jwt.encode(
-        payload={"exp": timestamp + 5, "iat": timestamp},
-        key=Configs.API_VERSION_KEY.encode("utf-8"),
+    encoded_headers = (
+        urlsafe_b64encode(dumps({"alg": "HS256"}, separators=(",", ":")).encode())
+        .decode()
+        .strip("=")
     )
+    encoded_payload = (
+        urlsafe_b64encode(
+            dumps(
+                {"iat": timestamp, "exp": timestamp + 5}, separators=(",", ":")
+            ).encode()
+        )
+        .decode()
+        .strip("=")
+    )
+    payload = encoded_headers + "." + encoded_payload
+    sig = (
+        urlsafe_b64encode(
+            hmac.new(
+                key=Configs.API_VERSION_KEY.encode(),
+                msg=payload.encode(),
+                digestmod=hashlib.sha256,
+            ).digest()
+        )
+        .decode()
+        .strip("=")
+    )
+    return payload + "." + sig
 
 
 def is_valid_image_format(format):
