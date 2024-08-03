@@ -19,6 +19,7 @@ test_user = User(
 class TestStorage(unittest.TestCase):
     def setUp(self):
         self.clean()
+        self.storage = Storage(db_path)
 
     def tearDown(self):
         self.clean()
@@ -29,63 +30,60 @@ class TestStorage(unittest.TestCase):
             os.remove(db_path)
 
     def test_create_user(self):
-        with Storage(db_path) as storage:
-            result = storage.create_user(test_user)
-            self.assertTrue(result)
+        result = self.storage.create_user(test_user)
+        self.assertTrue(result)
 
-            user = storage.get_user(test_user.user_id)
+        user = self.storage.get_user(test_user.user_id)
 
-            self.assertIsNotNone(user)
-            self.assertEqual(user.user_id, test_user.user_id)
-            self.assertEqual(user.email, test_user.email)
-            self.assertEqual(user.device_uuid, test_user.device_uuid)
-            self.assertEqual(user.access_token, test_user.access_token)
-            self.assertEqual(user.refresh_token, test_user.refresh_token)
+        self.assertIsNotNone(user)
+        self.assertEqual(user.user_id, test_user.user_id)
+        self.assertEqual(user.email, test_user.email)
+        self.assertEqual(user.device_uuid, test_user.device_uuid)
+        self.assertEqual(user.access_token, test_user.access_token)
+        self.assertEqual(user.refresh_token, test_user.refresh_token)
 
-            result = storage.delete_user(user.user_id)
-            self.assertTrue(result)
+        result = self.storage.delete_user(user.user_id)
+        self.assertTrue(result)
 
     def test_update_user(self):
-        with Storage(db_path) as storage:
-            result = storage.create_user(test_user)
-            self.assertTrue(result)
+        result = self.storage.create_user(test_user)
+        self.assertTrue(result)
 
-            updated_user = User(
-                user_id=test_user.user_id,
-                email="updated@email.com",
-                device_uuid="00000000-0000-0000-0000-00000000000",
-                access_token=test_user.refresh_token,
-                refresh_token=test_user.access_token,
-            )
+        updated_user = User(
+            user_id=test_user.user_id,
+            email="updated@email.com",
+            device_uuid="00000000-0000-0000-0000-00000000000",
+            access_token=test_user.refresh_token,
+            refresh_token=test_user.access_token,
+        )
 
-            result = storage.update_user(
-                test_user.user_id,
-                email=updated_user.email,
-                device_uuid=updated_user.device_uuid,
-                access_token=updated_user.access_token,
-                refresh_token=updated_user.refresh_token,
-            )
-            self.assertTrue(result)
+        result = self.storage.update_user(
+            test_user.user_id,
+            email=updated_user.email,
+            device_uuid=updated_user.device_uuid,
+            access_token=updated_user.access_token,
+            refresh_token=updated_user.refresh_token,
+        )
+        self.assertTrue(result)
 
-            user = storage.get_user(test_user.user_id)
+        user = self.storage.get_user(test_user.user_id)
 
-            self.assertIsNotNone(user)
-            self.assertEqual(user.user_id, updated_user.user_id)
-            self.assertEqual(user.email, updated_user.email)
-            self.assertEqual(user.device_uuid, updated_user.device_uuid)
-            self.assertEqual(user.access_token, updated_user.access_token)
-            self.assertEqual(user.refresh_token, updated_user.refresh_token)
+        self.assertIsNotNone(user)
+        self.assertEqual(user.user_id, updated_user.user_id)
+        self.assertEqual(user.email, updated_user.email)
+        self.assertEqual(user.device_uuid, updated_user.device_uuid)
+        self.assertEqual(user.access_token, updated_user.access_token)
+        self.assertEqual(user.refresh_token, updated_user.refresh_token)
 
-            result = storage.delete_user(user.user_id)
-            self.assertTrue(result)
+        result = self.storage.delete_user(user.user_id)
+        self.assertTrue(result)
 
     def test_delete_user(self):
-        with Storage(db_path) as storage:
-            result = storage.create_user(test_user)
-            self.assertTrue(result)
+        result = self.storage.create_user(test_user)
+        self.assertTrue(result)
 
-            result = storage.delete_user(test_user.user_id)
-            self.assertTrue(result)
+        result = self.storage.delete_user(test_user.user_id)
+        self.assertTrue(result)
 
-            user = storage.get_user(test_user.user_id)
-            self.assertIsNone(user)
+        user = self.storage.get_user(test_user.user_id)
+        self.assertIsNone(user)

@@ -24,6 +24,7 @@ SOFTWARE.
 
 import sqlite3
 
+from queue import Queue
 from typing import Optional
 from dataclasses import dataclass
 
@@ -39,39 +40,51 @@ class User:
     refresh_token: str
 
 
+class SQLiteConnectionPool:
+    """`sqlite3` のコネクションマネージャー"""
+
+    def __init__(self, db_path, pool_size=5):
+        self.db_path = db_path
+        self.pool = Queue(maxsize=pool_size)
+        for _ in range(pool_size):
+            self.pool.put(sqlite3.connect(db_path))
+
+    def get_connection(self) -> sqlite3.Connection:
+        """コネクションを取得する"""
+        return self.pool.get()
+
+    def return_connection(self, conn) -> None:
+        """コネクションを返却する"""
+        self.pool.put(conn)
+
+
 class Storage:
     """`yaylib.Client` のステートを保存するローカルデータベースの操作を行う"""
 
-    def __init__(self, path: str):
-        self.path = path
-        self.__con = None
-        self.__cur = None
+    def __init__(self, path: str, pool_size=5):
+        self.__pool = SQLiteConnectionPool(path, pool_size)
 
-    def __enter__(self):
-        self.__con = sqlite3.connect(self.path)
-        self.__cur = self.__con.cursor()
-        self.__cur.execute(
-            """
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY,
-                email TEXT NOT NULL,
-                device_uuid TEXT NOT NULL,
-                access_token TEXT NOT NULL,
-                refresh_token TEXT NOT NULL
-            );
-            """
-        )
-        self.__con.commit()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.__cur.close()
-        self.__con.close()
+        with self.__pool.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY,
+                    email TEXT NOT NULL,
+                    device_uuid TEXT NOT NULL,
+                    access_token TEXT NOT NULL,
+                    refresh_token TEXT NOT NULL
+                );
+                """
+            )
+            conn.commit()
 
     def get_user(self, user_id: int) -> Optional[User]:
         """ユーザーを取得する"""
-        res = self.__cur.execute(f"SELECT * FROM users WHERE id = {user_id}")
-        user = res.fetchone()
+        with self.__pool.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+            user = cursor.fetchone()
 
         if user is None:
             return None
@@ -86,21 +99,23 @@ class Storage:
 
     def create_user(self, user: User) -> bool:
         """ユーザーを作成する"""
-        try:
-            self.__cur.execute(
-                "INSERT INTO users (id, email, device_uuid, access_token, refresh_token) VALUES (?, ?, ?, ?, ?)",
-                (
-                    user.user_id,
-                    user.email,
-                    user.device_uuid,
-                    user.access_token,
-                    user.refresh_token,
-                ),
-            )
-            self.__con.commit()
-            return True
-        except sqlite3.IntegrityError:
-            return False
+        with self.__pool.get_connection() as conn:
+            try:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "INSERT INTO users (id, email, device_uuid, access_token, refresh_token) VALUES (?, ?, ?, ?, ?)",
+                    (
+                        user.user_id,
+                        user.email,
+                        user.device_uuid,
+                        user.access_token,
+                        user.refresh_token,
+                    ),
+                )
+                conn.commit()
+                return True
+            except sqlite3.IntegrityError:
+                return False
 
     def update_user(
         self,
@@ -111,33 +126,41 @@ class Storage:
         refresh_token: Optional[str] = None,
     ) -> bool:
         """ユーザーを更新する"""
-        try:
-            sql = "UPDATE users SET "
-            updates = []
+        with self.__pool.get_connection() as conn:
+            try:
+                cursor = conn.cursor()
+                updates = []
 
-            if email is not None:
-                updates.append(f"email = '{email}'")
-            if device_uuid is not None:
-                updates.append(f"device_uuid = '{device_uuid}'")
-            if access_token is not None:
-                updates.append(f"access_token = '{access_token}'")
-            if refresh_token is not None:
-                updates.append(f"refresh_token = '{refresh_token}'")
+                if email is not None:
+                    updates.append("email = ?")
+                if device_uuid is not None:
+                    updates.append("device_uuid = ?")
+                if access_token is not None:
+                    updates.append("access_token = ?")
+                if refresh_token is not None:
+                    updates.append("refresh_token = ?")
 
-            sql += ", ".join(updates)
-            sql += f" WHERE id = {user_id};"
+                sql = f"UPDATE users SET {', '.join(updates)} WHERE id = ?"
+                params = [
+                    param
+                    for param in [email, device_uuid, access_token, refresh_token]
+                    if param is not None
+                ]
+                params.append(user_id)
 
-            self.__cur.execute(sql)
-            self.__con.commit()
-            return True
-        except sqlite3.IntegrityError:
-            return False
+                cursor.execute(sql, params)
+                conn.commit()
+                return True
+            except sqlite3.IntegrityError:
+                return False
 
     def delete_user(self, user_id: int) -> bool:
         """ユーザーを削除する"""
-        try:
-            self.__cur.execute(f"DELETE FROM users WHERE id = {user_id} ")
-            self.__con.commit()
-            return True
-        except sqlite3.IntegrityError:
-            return False
+        with self.__pool.get_connection() as conn:
+            try:
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+                conn.commit()
+                return True
+            except sqlite3.IntegrityError:
+                return False
