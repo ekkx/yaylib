@@ -195,6 +195,9 @@ class Client(
         headers: Optional[dict] = None,
         return_type: Optional[Model] = None,
     ) -> dict | Model:
+        if not url.startswith("https://"):
+            url = "https://" + url
+
         # interact with headers, strage and make logs
 
         # TODO: filter params and json
