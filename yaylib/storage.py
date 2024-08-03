@@ -79,11 +79,20 @@ class Storage:
             )
             conn.commit()
 
-    def get_user(self, user_id: int) -> Optional[User]:
+    def get_user(
+        self, user_id: Optional[int] = None, email: Optional[str] = None
+    ) -> Optional[User]:
         """ユーザーを取得する"""
         with self.__pool.get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+
+            where = ""
+            if user_id is not None:
+                where += f"id = {user_id}"
+            elif email is not None:
+                where += f"email = {email}"
+
+            cursor.execute(f"SELECT * FROM users WHERE {where}")
             user = cursor.fetchone()
 
         if user is None:

@@ -63,7 +63,7 @@ from .ratelimit import RateLimit
 from .responses import (
     PostsResponse,
 )
-from .storage import Storage, User
+from .state import State
 
 
 __all__ = ["Client"]
@@ -72,8 +72,8 @@ __all__ = ["Client"]
 class HeaderManager:
     """HTTP ヘッダーのマネージャークラス"""
 
-    def __init__(self, device: Device, storage: Storage, locale="ja") -> None:
-        self.__storage = storage
+    def __init__(self, device: Device, state: State, locale="ja") -> None:
+        self.__state = state
         self.__locale = locale
         self.__host = config.API_HOST
         self.__user_agent = device.generate_user_agent()
@@ -86,16 +86,13 @@ class HeaderManager:
 
     def generate(self, jwt_required=False) -> Dict[str, str]:
         """HTTPヘッダーを生成する"""
-        # user = self.__storage.get_user()
-        user = User(1, "", "", "", "")
-
         headers = {
             "Host": self.__host,
             "User-Agent": self.__user_agent,
             "X-Timestamp": str(int(datetime.now().timestamp())),
             "X-App-Version": self.__app_version,
             "X-Device-Info": self.__device_info,
-            "X-Device-UUID": user.device_uuid,
+            "X-Device-UUID": self.__state.device_uuid,
             "X-Client-IP": self.__client_ip,
             "X-Connection-Type": self.__connection_type,
             "X-Connection-Speed": self.__connection_speed,
@@ -109,8 +106,8 @@ class HeaderManager:
         if self.__client_ip != "":
             headers.update({"X-Client-IP": self.__client_ip})
 
-        if user.access_token != "":
-            headers.update({"Authorization": "Bearer " + user.access_token})
+        if self.__state.access_token != "":
+            headers.update({"Authorization": "Bearer " + self.__state.access_token})
 
         return headers
 
@@ -274,7 +271,6 @@ class Client(
         max_delay: float = 1.2,
         err_lang: str = "ja",
         base_path: str = current_path + "/.config/",
-        enable_storage: bool = True,
         storage_password: Optional[str] = None,
         storage_filename: str = "secret.db",
         storage_pool_size: int = 5,
@@ -292,14 +288,31 @@ class Client(
         self.__backoff_factor = backoff_factor
 
         self.__err_lang = err_lang
-        self.__enable_storage = enable_storage
+
+        storage_filepath = base_path + storage_filename
+        self.__state = State(storage_filepath, storage_password, storage_pool_size)
+        self.__header_manager = HeaderManager(Device.instance(), self.__state)
 
         self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
-        self.__storage = Storage(base_path + storage_filename, storage_pool_size)
-        self.__header_manager = HeaderManager(Device.instance(), self.__storage)
 
         # initialize api
         self.post = PostApi(self)
+
+    @property
+    def user_id(self) -> Optional[int]:
+        return None if self.__state.user_id == 0 else self.__state.user_id
+
+    @property
+    def access_token(self) -> Optional[str]:
+        return None if self.__state.access_token == "" else self.__state.access_token
+
+    @property
+    def refresh_token(self) -> Optional[str]:
+        return None if self.__state.refresh_token == "" else self.__state.refresh_token
+
+    @property
+    def device_uuid(self) -> Optional[str]:
+        return None if self.__state.device_uuid == "" else self.__state.device_uuid
 
     async def refresh_access_token(self) -> None:
         pass
@@ -330,8 +343,6 @@ class Client(
         for i in range(max(1, self.__max_retries + 1)):
             try:
                 await asyncio.sleep(backoff_duration)
-
-                # handle ratelimiting
                 while True:
                     try:
                         headers.update(self.__header_manager.generate(jwt_required))
@@ -348,14 +359,18 @@ class Client(
                         await self.__ratelimit.wait()
                 break
             except AccessTokenExpiredError as exc:
+                # /api/v1/oauth/token がエンドポイントということはすでにリトライ済みなので中断
                 if "/api/v1/oauth/token" in url:
-                    # /api/v1/oauth/token がエンドポイントということはすでにリトライ済み
-                    # self.__storage.delete_user(self.user_id)
-                    raise AuthenticationError(
-                        "Unable to refresh access token. Retry logging in."
-                    ) from exc
+                    self.__state.destory()
+                    message = "Unable to refresh access token. Retry logging in."
+                    self.logger.error(message)
+                    raise AuthenticationError(message) from exc
 
-                # そもそもログインしていない場合も AuthenticationError を投げる
+                # そもそもログインしていない場合も処理を中断
+                if self.user_id is None:
+                    message = "Please log in to perform the action."
+                    self.logger.error(message)
+                    raise AuthenticationError(message) from exc
 
                 await self.refresh_access_token()
             except InternalServerError:

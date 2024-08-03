@@ -51,24 +51,16 @@ class Crypto:
         return hashlib.sha256(text.encode()).hexdigest()
 
     def encrypt(self, text: str) -> str:
-        """設定されたパスワードを元に文字列を暗号化します
-
-        Raises:
-            AttributeError: パスワードが設定されていない場合
-        """
+        """設定されたパスワードを元に文字列を暗号化します"""
         if self.__encryption_key is None:
-            raise AttributeError("Encryption key is not defined.")
+            return text
         encoded = text.encode()
         encrypted = self.__encryption_key.encrypt(encoded)
         return encrypted.decode()
 
     def decrypt(self, text: str) -> str:
-        """設定されたパスワードを元に文字列を復号化します
-
-        Raises:
-            AttributeError: パスワードが設定されていない場合
-        """
+        """設定されたパスワードを元に文字列を復号化します"""
         if self.__encryption_key is None:
-            raise AttributeError("Encryption key is not defined.")
+            return text
         decrypted = self.__encryption_key.decrypt(text)
         return decrypted.decode()
