@@ -18,5 +18,5 @@
 ### Testing
 
 ```shell
-python -m unittest tests.main.py
+python -m unittest tests.{ファイル名} -v
 ```
