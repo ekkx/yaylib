@@ -366,21 +366,16 @@ class Client(
 
         return response
 
-    def __perform_sync(self, callback: Awaitable):
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(callback)
-        # return asyncio.run(callback)
-
-    # def insert_delay(self, callback: Callable):
-    #     """リクエスト間の時間が1秒未満のときに遅延を挿入します"""
-    #     if int(datetime.now().timestamp()) - self.__last_request_ts < 1:
-    #         time.sleep(random.uniform(self.__min_delay, self.__max_delay))
-    #     self.__last_request_ts = int(datetime.now().timestamp())
-    #     return callback()
+    def insert_delay(self, callback: Callable):
+        """リクエスト間の時間が1秒未満のときに遅延を挿入します"""
+        if int(datetime.now().timestamp()) - self.__last_request_ts < 1:
+            time.sleep(random.uniform(self.__min_delay, self.__max_delay))
+        self.__last_request_ts = int(datetime.now().timestamp())
+        return callback()
 
     def __sync_request(self, callback: Awaitable):
-        # return self.insert_delay(lambda: self.__perform_sync(callback))
-        return self.__perform_sync(callback)
+        """非同期リクエストを同期リクエストに変換します"""
+        return self.insert_delay(lambda: asyncio.run(callback))
 
     def get_timeline(self, **params) -> PostsResponse:
         return self.__sync_request(self.post.get_timeline(**params))
