@@ -17,7 +17,7 @@ __copyright__ = "Copyright (c) 2023 ekkx"
 __version__ = "1.4.15"
 
 from .client import Client
-from .cookie import Cookie
+from .storage import Storage
 from .errors import *
 from .models import *
 from .responses import *
@@ -26,7 +26,7 @@ from .ws import Intents
 
 __all__ = (
     "Client",
-    "Cookie",
+    "Storage",
     "errors",
     "models",
     "responses",

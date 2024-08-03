@@ -30,7 +30,7 @@ import websocket
 from typing import Optional, Dict, Type, Any
 
 from . import client
-from .config import Configs
+from . import config
 from .models import Message
 
 
