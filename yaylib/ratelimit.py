@@ -45,7 +45,7 @@ class RateLimit:
         """レート制限が解除されるまで待機する
 
         Raises:
-            `RateLimitError`: レート制限エラー
+            RateLimitError: レート制限エラー
         """
         if not self.__wait_on_ratelimit or self.__max_retries_reached():
             raise RateLimitError("Maximum retries reached.")
