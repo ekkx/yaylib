@@ -25,6 +25,7 @@ SOFTWARE.
 import base64
 import hmac
 import hashlib
+import logging
 import re
 import uuid
 
@@ -32,21 +33,32 @@ from json import dumps
 from datetime import datetime
 from typing import Any, Optional
 from base64 import urlsafe_b64encode
-from cryptography.fernet import Fernet
 
+from . import colors
 from . import config
 
 
-class Colors:
-    HEADER = "\033[95m"
-    OKBLUE = "\033[94m"
-    OKCYAN = "\033[96m"
-    OKGREEN = "\033[92m"
-    WARNING = "\033[93m"
-    FAIL = "\033[91m"
-    RESET = "\033[0m"
-    BOLD = "\033[1m"
-    UNDERLINE = "\033[4m"
+class CustomFormatter(logging.Formatter):
+    """ログ用意のフォーマッター"""
+
+    @staticmethod
+    def __get_formats() -> dict:
+        date = colors.HEADER + "%(asctime)s " + colors.RESET
+        level = colors.UNDERLINE + "%(levelname)s" + colors.RESET
+        body = " » %(message)s"
+
+        return {
+            logging.DEBUG: date + colors.OKGREEN + level + colors.RESET + body,
+            logging.INFO: date + colors.OKBLUE + level + colors.RESET + body,
+            logging.WARNING: date + colors.WARNING + level + colors.RESET + body,
+            logging.ERROR: date + colors.FAIL + level + colors.RESET + body,
+            logging.CRITICAL: date + colors.FAIL + level + colors.RESET + body,
+        }
+
+    def format(self, record):
+        fmt = self.__get_formats().get(record.levelno)
+        formatter = logging.Formatter(fmt)
+        return formatter.format(record)
 
 
 class PostType:
@@ -184,6 +196,16 @@ def get_post_type(**kwargs) -> str:
         return "text"
 
 
+def filter_dict(params: Optional[dict] = None) -> Optional[dict]:
+    if params is None:
+        return None
+    new_params = {}
+    for k in params:
+        if params[k] is not None:
+            new_params[k] = params[k]
+    return new_params
+
+
 def generate_uuid(uuid_type=True):
     generated_uuid = str(uuid.uuid4())
     if uuid_type:
@@ -212,7 +234,7 @@ def generate_jwt() -> str:
     sig = (
         urlsafe_b64encode(
             hmac.new(
-                key=Configs.API_VERSION_KEY.encode(),
+                key=config.API_VERSION_KEY.encode(),
                 msg=payload.encode(),
                 digestmod=hashlib.sha256,
             ).digest()
