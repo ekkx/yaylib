@@ -33,7 +33,7 @@ __all__ = (
     "ForbiddenError",
     "NotFoundError",
     "RateLimitError",
-    "YayServerError",
+    "InternalServerError",
     "ErrorCode",
 )
 
@@ -84,8 +84,8 @@ class RateLimitError(HTTPError):
     """
 
 
-class YayServerError(HTTPError):
-    """YayServerError()
+class InternalServerError(HTTPError):
+    """InternalServerError()
 
     Exception raised for a 5xx HTTP status code
     """

@@ -53,7 +53,7 @@ from .errors import (
     ForbiddenError,
     NotFoundError,
     RateLimitError,
-    YayServerError,
+    InternalServerError,
     ErrorCode,
 )
 from .models import (
@@ -213,7 +213,7 @@ class BaseClient:
         if response.status == 404:
             raise NotFoundError(response)
         if response.status >= 500:
-            raise YayServerError(response)
+            raise InternalServerError(response)
         if response.status and not 200 <= response.status < 300:
             raise HTTPError(response)
 
@@ -346,7 +346,6 @@ class Client(
                         break
                     except RateLimitError:
                         await self.__ratelimit.wait()
-
                 break
             except AccessTokenExpiredError as exc:
                 if "/api/v1/oauth/token" in url:
@@ -359,7 +358,7 @@ class Client(
                 # そもそもログインしていない場合も AuthenticationError を投げる
 
                 await self.refresh_access_token()
-            except YayServerError:
+            except InternalServerError:
                 # TODO: エラーオブジェクトから aiohttp.Response を取得できるように
                 self.logger.error("Request failed! Retrying...")
                 backoff_duration = self.__backoff_factor * (2**i)
