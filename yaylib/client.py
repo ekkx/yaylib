@@ -1,7 +1,40 @@
+"""
+MIT License
+
+Copyright (c) 2023 ekkx
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 import asyncio
 import logging
 import os
-from typing import Optional, Awaitable
+import random
+import time
+
+from datetime import datetime
+from typing import (
+    Dict,
+    Optional,
+    Awaitable,
+    Callable,
+)
 
 import aiohttp
 
@@ -10,10 +43,13 @@ from .api.post import PostApi
 from . import __version__
 from . import ws
 from . import config
+from . import utils
+from .device import Device
 from .errors import (
     HTTPError,
     BadRequestError,
     AuthenticationError,
+    AccessTokenExpiredError,
     ForbiddenError,
     NotFoundError,
     RateLimitError,
@@ -27,34 +63,103 @@ from .ratelimit import RateLimit
 from .responses import (
     PostsResponse,
 )
-from .storage import Storage
+from .storage import Storage, User
 
 
 __all__ = ["Client"]
 
 
-class HeaderInterceptor:
-    def __init__(self, storage: Storage, locale="ja") -> None:
+class HeaderManager:
+    """HTTP ヘッダーのマネージャークラス"""
+
+    def __init__(self, device: Device, storage: Storage, locale="ja") -> None:
+        self.__storage = storage
         self.__locale = locale
         self.__host = config.API_HOST
-        self.__user_agent = config.USER_AGENT
-        self.__device_info = config.DEVICE_INFO
+        self.__user_agent = device.generate_user_agent()
+        self.__device_info = device.generate_device_info(config.VERSION_NAME)
         self.__app_version = config.API_VERSION_NAME
-        self.__storage = storage
         self.__client_ip = ""
         self.__connection_speed = ""
         self.__connection_type = "wifi"
         self.__content_type = "application/json;charset=UTF-8"
 
-    def intercept(self, jwt_required=False) -> dict:
-        pass
+    def generate(self, jwt_required=False) -> Dict[str, str]:
+        """HTTPヘッダーを生成する"""
+        # user = self.__storage.get_user()
+        user = User(1, "", "", "", "")
+
+        headers = {
+            "Host": self.__host,
+            "User-Agent": self.__user_agent,
+            "X-Timestamp": str(int(datetime.now().timestamp())),
+            "X-App-Version": self.__app_version,
+            "X-Device-Info": self.__device_info,
+            "X-Device-UUID": user.device_uuid,
+            "X-Client-IP": self.__client_ip,
+            "X-Connection-Type": self.__connection_type,
+            "X-Connection-Speed": self.__connection_speed,
+            "Accept-Language": self.__locale,
+            "Content-Type": self.__content_type,
+        }
+
+        if jwt_required:
+            headers.update({"X-Jwt": utils.generate_jwt()})
+
+        if self.__client_ip != "":
+            headers.update({"X-Client-IP": self.__client_ip})
+
+        if user.access_token != "":
+            headers.update({"Authorization": "Bearer " + user.access_token})
+
+        return headers
+
+    def get_client_ip(self) -> str:
+        return self.__client_ip
+
+    def get_connection_speed(self) -> str:
+        return self.__connection_speed
+
+    def set_client_ip(self, client_ip: str) -> None:
+        self.__client_ip = client_ip
+
+    def set_connection_speed(self, connection_speed: str) -> None:
+        self.__connection_speed = connection_speed
+
+
+current_path = os.path.abspath(os.getcwd())
 
 
 class BaseClient:
-    def __init__(self, proxy_url: Optional[str] = None, timeout: int = 60) -> None:
+    """yaylib クライアントの基底クラス"""
+
+    def __init__(
+        self,
+        proxy_url: Optional[str] = None,
+        timeout: int = 60,
+        base_path: str = current_path + "/.config/",
+        loglevel: int = logging.INFO,
+    ) -> None:
         self.__proxy_url = proxy_url
         self.__timeout = timeout
-        self.__session = aiohttp.ClientSession()
+        self.__session = None
+
+        # initialize logging
+        self.logger: logging.Logger = logging.getLogger(
+            "yaylib version: " + __version__
+        )
+
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+
+        ch: logging.StreamHandler = logging.StreamHandler()
+        ch.setLevel(loglevel)
+        ch.setFormatter(utils.CustomFormatter())
+
+        self.logger.addHandler(ch)
+        self.logger.setLevel(logging.DEBUG)
+
+        self.logger.info("yaylib version: %s started.", __version__)
 
     async def __is_ratelimit_error(self, response: aiohttp.ClientResponse) -> bool:
         if response.status == 429:
@@ -64,6 +169,13 @@ class BaseClient:
             if response_json.get("error_code") == ErrorCode.QuotaLimitExceeded.value:
                 return True
         return False
+
+    async def __is_access_token_expired(self, response: aiohttp.ClientResponse) -> bool:
+        response_json = await response.json()
+        return response.status == 401 and (
+            response_json.get("error_code") == ErrorCode.AccessTokenExpired.value
+            or response_json.get("error_code") == ErrorCode.AccessTokenInvalid.value
+        )
 
     def __construct_response(
         self, response: dict, data_type: Optional[Model] = None
@@ -76,29 +188,21 @@ class BaseClient:
         return response
 
     async def __make_request(
-        self,
-        method: str,
-        url: str,
-        params: Optional[dict] = None,
-        json: Optional[dict] = None,
-        headers: Optional[dict] = None,
+        self, method: str, url: str, **kwargs
     ) -> aiohttp.ClientResponse:
-        async with self.__session.request(
-            method,
-            url,
-            params=params,
-            json=json,
-            headers=headers,
-            proxy=self.__proxy_url,
-            timeout=self.__timeout,
+        session = self.__session or aiohttp.ClientSession()
+        async with session.request(
+            method, url, proxy=self.__proxy_url, timeout=self.__timeout, **kwargs
         ) as response:
             await response.read()
 
-        await self.__session.close()
+        if self.__session is None:
+            await session.close()
 
-        is_ratelimited = await self.__is_ratelimit_error(response)
-        if is_ratelimited:
+        if await self.__is_ratelimit_error(response):
             raise RateLimitError(response)
+        if await self.__is_access_token_expired(response):
+            raise AccessTokenExpiredError(response)
 
         if response.status == 400:
             raise BadRequestError(response)
@@ -124,20 +228,38 @@ class BaseClient:
         headers: Optional[dict] = None,
         return_type: Optional[Model] = None,
     ) -> dict | object:
-        response = await self.__make_request(method, url, params, json, headers)
+        self.logger.debug(
+            "Making API request: [%s] %s\n\nParameters: %s\n\nHeaders: %s\n\nBody: %s\n",
+            method,
+            url,
+            params,
+            headers,
+            json,
+        )
 
+        response = await self.__make_request(
+            method, url, params=params, json=json, headers=headers
+        )
         response_json = await response.json()
 
+        self.logger.debug(
+            "Received API response: [%s] %s\n\nHTTP Status: %s\n\nHeaders: %s\n\nResponse: %s\n",
+            method,
+            url,
+            response.status,
+            response.headers,
+            response_json,
+        )
+
         return self.__construct_response(response_json, return_type)
-
-
-current_path = os.path.abspath(os.getcwd())
 
 
 class Client(
     BaseClient,
     # ws.WebSocketInteractor
 ):
+    """yaylib のエントリーポイント"""
+
     def __init__(
         self,
         *,
@@ -152,86 +274,113 @@ class Client(
         max_delay: float = 1.2,
         err_lang: str = "ja",
         base_path: str = current_path + "/.config/",
-        use_storage: bool = True,
+        enable_storage: bool = True,
         storage_password: Optional[str] = None,
-        storage_filename: str = "cookies",
+        storage_filename: str = "secret.db",
+        storage_pool_size: int = 5,
         loglevel: int = logging.INFO,
     ) -> None:
-        super().__init__(proxy_url=proxy_url, timeout=timeout)
-
-        self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
-        self.__max_retries = max_retries
-        self.__backoff_factor = backoff_factor
-        self.__min_delay = min_delay
-        self.__max_delay = max_delay
-        self.__err_lang = err_lang
-
-        # TODO: init storage
-
-        self.post = PostApi(self)
-
-        self.logger: logging.Logger = logging.getLogger(
-            "yaylib version: " + __version__
+        super().__init__(
+            proxy_url=proxy_url, timeout=timeout, base_path=base_path, loglevel=loglevel
         )
 
-        if not os.path.exists(base_path):
-            os.makedirs(base_path)
+        self.__min_delay = min_delay
+        self.__max_delay = max_delay
+        self.__last_request_ts = 0
 
-        ch: logging.StreamHandler = logging.StreamHandler()
-        ch.setLevel(loglevel)
-        ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+        self.__max_retries = max_retries
+        self.__backoff_factor = backoff_factor
 
-        self.logger.addHandler(ch)
-        self.logger.setLevel(logging.DEBUG)
+        self.__err_lang = err_lang
+        self.__enable_storage = enable_storage
 
-        self.logger.info("yaylib version: " + __version__ + " started.")
+        self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
+        self.__storage = Storage(base_path + storage_filename, storage_pool_size)
+        self.__header_manager = HeaderManager(Device.instance(), self.__storage)
+
+        # initialize api
+        self.post = PostApi(self)
+
+    async def refresh_access_token(self) -> None:
+        pass
 
     async def request(
         self,
         method: str,
         url: str,
-        params: Optional[dict] = None,
-        json: Optional[dict] = None,
-        headers: Optional[dict] = None,
+        params: dict = {},
+        json: dict = {},
+        headers: dict = {},
         return_type: Optional[Model] = None,
+        jwt_required=False,
     ) -> dict | Model:
         if not url.startswith("https://"):
             url = "https://" + url
 
-        # interact with headers, strage and make logs
+        if (
+            not self.__header_manager.get_client_ip()
+            and "v2/users/timestamp" not in url
+        ):
+            # metadata = await self.user.get_timestamp()
+            # self.__header_manager.set_client_ip(metadata.ip_address)
+            pass
 
-        # TODO: filter params and json
-        # TODO: set client ip address to request header if not exists
+        backoff_duration = 0
 
-        # while True:
-        #     try:
-        #         response = await self._make_request(
-        #             method, url, params, json, headers, return_type
-        #         )
-        #         break
-        #     except RateLimitError:
-        #         if self.__ratelimit.max_retries_reached:
-        #             raise RateLimitError("Maximum retries reached.")
-        #         else:
-        #             await self.__ratelimit.wait()
-        #             # TODO: update headers
+        for i in range(max(1, self.__max_retries + 1)):
+            try:
+                await asyncio.sleep(backoff_duration)
 
-        # TODO: handle access token expiries
+                # handle ratelimiting
+                while True:
+                    try:
+                        headers.update(self.__header_manager.generate(jwt_required))
+                        response = await self._request(
+                            method,
+                            url,
+                            utils.filter_dict(params),
+                            utils.filter_dict(json),
+                            headers,
+                            return_type,
+                        )
+                        break
+                    except RateLimitError:
+                        await self.__ratelimit.wait()
 
-        return await self._request(method, url, params, json, headers, return_type)
+                break
+            except AccessTokenExpiredError as exc:
+                if "/api/v1/oauth/token" in url:
+                    # /api/v1/oauth/token がエンドポイントということはすでにリトライ済み
+                    # self.__storage.delete_user(self.user_id)
+                    raise AuthenticationError(
+                        "Unable to refresh access token. Retry logging in."
+                    ) from exc
 
-    def __perfirm_sync(self, callback: Awaitable):
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(callback)
+                # そもそもログインしていない場合も AuthenticationError を投げる
 
-    def __sync_request(self, callback: Awaitable):
-        # TODO: create delay
-
-        response = self.__perfirm_sync(callback)
-
-        # TODO: use backoff factor
+                await self.refresh_access_token()
+            except YayServerError:
+                # TODO: エラーオブジェクトから aiohttp.Response を取得できるように
+                self.logger.error("Request failed! Retrying...")
+                backoff_duration = self.__backoff_factor * (2**i)
 
         return response
+
+    def __perform_sync(self, callback: Awaitable):
+        loop = asyncio.get_event_loop()
+        return loop.run_until_complete(callback)
+        # return asyncio.run(callback)
+
+    # def insert_delay(self, callback: Callable):
+    #     """リクエスト間の時間が1秒未満のときに遅延を挿入します"""
+    #     if int(datetime.now().timestamp()) - self.__last_request_ts < 1:
+    #         time.sleep(random.uniform(self.__min_delay, self.__max_delay))
+    #     self.__last_request_ts = int(datetime.now().timestamp())
+    #     return callback()
+
+    def __sync_request(self, callback: Awaitable):
+        # return self.insert_delay(lambda: self.__perform_sync(callback))
+        return self.__perform_sync(callback)
 
     def get_timeline(self, **params) -> PostsResponse:
         return self.__sync_request(self.post.get_timeline(**params))

@@ -41,16 +41,12 @@ __all__ = (
 class YaylibError(Exception):
     """Base exception for yaylib"""
 
-    pass
-
 
 class HTTPError(YaylibError):
     """HTTPError()
 
     Exception raised when an HTTP request fails
     """
-
-    pass
 
 
 class BadRequestError(HTTPError):
@@ -59,16 +55,12 @@ class BadRequestError(HTTPError):
     Exception raised for a 400 HTTP status code
     """
 
-    pass
-
 
 class AuthenticationError(HTTPError):
     """AuthenticationError()
 
     Exception raised for a 401 HTTP status code
     """
-
-    pass
 
 
 class ForbiddenError(HTTPError):
@@ -77,16 +69,12 @@ class ForbiddenError(HTTPError):
     Exception raised for a 403 HTTP status code
     """
 
-    pass
-
 
 class NotFoundError(HTTPError):
     """NotFoundError()
 
     Exception raised for a 404 HTTP status code
     """
-
-    pass
 
 
 class RateLimitError(HTTPError):
@@ -95,8 +83,6 @@ class RateLimitError(HTTPError):
     Exception raised for a 429 HTTP status code
     """
 
-    pass
-
 
 class YayServerError(HTTPError):
     """YayServerError()
@@ -104,7 +90,12 @@ class YayServerError(HTTPError):
     Exception raised for a 5xx HTTP status code
     """
 
-    pass
+
+class AccessTokenExpiredError(AuthenticationError):
+    """AccessTokenExpiredError()
+
+    Exception raised when access token is invalid or expired
+    """
 
 
 class ErrorCode(Enum):
