@@ -6,6 +6,7 @@
       "source.organizeImports": "explicit"
     }
   },
+  "pylint.ignorePatterns": ["**/tests/*.py"],
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

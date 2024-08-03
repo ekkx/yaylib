@@ -263,9 +263,9 @@ bot.run("your_email", "your_password")
 
 私たちと開発することに興味を持っていただけているなら、ぜひ参加して頂きたいです！
 
-- <a href="https://github.com/ekkx/yaylib/pulls">プルリクエストを送信する</a>
-- <a href="https://discord.gg/MEuBfNtqRN">Discord サーバーに参加する</a>
-- <a href="mailto:nikola.desuga@gmail.com">nikola.desuga@gmail.com にメールを送信する</a>
+-   [プルリクエストを送信する](https://github.com/ekkx/yaylib/pulls)
+-   [Discord サーバーに参加する](https://discord.gg/MEuBfNtqRN)
+-   [nikola.desuga@gmail.com](mailto:nikola.desuga@gmail.com) にメールを送信する
 
 のいずれかの方法で繋がりましょう。詳しくは[こちらから](https://github.com/ekkx/yaylib/blob/master/CONTRIBUTING.md)！
 
