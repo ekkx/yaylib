@@ -1,6 +1,4 @@
-httpx[http2,socks]==0.25.2
 aiohttp==3.9.5
 Pillow==9.3.0
 cryptography==41.0.1
 websocket-client==1.6.0
-PyJWT==2.8.0

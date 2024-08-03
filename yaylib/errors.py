@@ -264,16 +264,20 @@ class ErrorMessage(Enum):
     GroupOwnerOrGroupModeratorOnly = "サークル管理人か副管理人のみ可能な操作です"
     UnableToRegisterUserDueToPolicy = "利用規約に基づき、現在アカウントを登録できません"
     SnsShareRewardAlreadyBeenClaimed = "SNS共有の特典は既に取得済みです"
-    QuotaLimitExceeded = "この機能の上限回数に達しました。1時間ほど時間を置いて再度お試しください。"
+    QuotaLimitExceeded = (
+        "この機能の上限回数に達しました。1時間ほど時間を置いて再度お試しください。"
+    )
     ChatNeedAgeVerified = "チャット送信に年齢確認が必要です"
-    OnlyAgeVerifiedUserCanJoinGroup = "このサークルに参加するには年齢確認をする必要があります"
+    OnlyAgeVerifiedUserCanJoinGroup = (
+        "このサークルに参加するには年齢確認をする必要があります"
+    )
     RequirePhoneVerificationToChat = "チャットをするには電話番号認証が必要です"
     NotPostOwner = "編集は投稿の作成者のみ可能です"
     GroupGenerationNotMatched = "特定の年齢層のみ参加が許可されているサークルです"
-    PhoneNumberCheckVerificationCodeSubmitQuotaExceeded = (
-        "認証コードの送信回数が上限を越えました。1時間ほど時間をおいて再度お試しください"
+    PhoneNumberCheckVerificationCodeSubmitQuotaExceeded = "認証コードの送信回数が上限を越えました。1時間ほど時間をおいて再度お試しください"
+    PhoneNumberCheckVerificationCodeRequestQuotaExceeded = (
+        "チャットをするには電話番号認証が必要です"
     )
-    PhoneNumberCheckVerificationCodeRequestQuotaExceeded = "チャットをするには電話番号認証が必要です"
     GroupOfferHasBeenAccepted = "サークルの招待は承諾されています"
     GroupOfferHasBeenWithdrawn = "サークルの招待は拒否されています"
     IpBanned = "IPがBanされました"
@@ -281,28 +285,42 @@ class ErrorMessage(Enum):
     PrivateUserTimeline = "フォロワーにのみ投稿を公開しています"
     CounterRefreshLimitExceeded = "カウンター更新の回数制限に達しました"
     NotFollowedByOpponent = "このユーザーがあなたをフォローする必要があります"
-    ExceedChangeCountryQuota = "国設定は一度設定すると8時間は変更できません。時間をおいて再度お試しください"
+    ExceedChangeCountryQuota = (
+        "国設定は一度設定すると8時間は変更できません。時間をおいて再度お試しください"
+    )
     NotGroupMember = "サークルメンバーでないため、この通話に参加できません"
     GroupPendingTransfer = "グループ保留中の移動"
     GroupPendingDeputization = "グループ保留中の代理指名"
-    UserRestrictedChatWithCautionUsers = "相手は危険なユーザーとのチャットを許可していません"
+    UserRestrictedChatWithCautionUsers = (
+        "相手は危険なユーザーとのチャットを許可していません"
+    )
     RestrictedCreateChatWithNewUsers = "近日ペナルティなどを受けているため、新規のユーザーとのチャットルーム作成が制限されています"
     RepostPostNotRepostable = "このユーザーの投稿は(´∀｀∩)↑age↑できません"
     TooManyAccountsCreated = "これ以上アカウントを作成することはできません"
     OnlySpecificGenderCanJoinGroup = "特定の性別のみ参加が許可されているサークルです"
-    CreateSpecificGenderGroupRequiredGender = "このサークルを作成するには性別の設定が必要です"
+    CreateSpecificGenderGroupRequiredGender = (
+        "このサークルを作成するには性別の設定が必要です"
+    )
     GroupRelatedExceededNumberOfRelatedGroups = "サークルの追加上限に到達しました"
-    ExceededPinnedLimit = "これ以上ピン留めできません。解除してからもう一度お試しください"
+    ExceededPinnedLimit = (
+        "これ以上ピン留めできません。解除してからもう一度お試しください"
+    )
     GroupShareOnTwitterLimitExceeded = "Twitterでのグループ共有の制限を超えています"
     ReportedContent = "通報を受けているため、この投稿は(´∀｀∩)↑age↑できません"
-    ConferenceCallIsForMutualFollowsOnly = "この通話に参加するには枠主と相互にフォローする必要があります"
+    ConferenceCallIsForMutualFollowsOnly = (
+        "この通話に参加するには枠主と相互にフォローする必要があります"
+    )
     ExceededLimit = "投稿の編集上限に達しています。これ以上の編集はできません"
-    GroupInviteExceeded = "サークルにおける招待の許容数を超えました。時間をあけてから再度行ってください。"
+    GroupInviteExceeded = (
+        "サークルにおける招待の許容数を超えました。時間をあけてから再度行ってください。"
+    )
     PhoneVerificationRequired = "参加するには電話番号認証が必要です。Yay! アプリから電話番号認証を行なってください。"
     ContentTooOld = "一定期間の経過後、投稿の編集はできません"
     PasswordTooShort = "パスワードが短すぎます"
     PasswordTooLong = "パスワードが長すぎます"
-    PasswordNotAllowed = "他のパスワードを使用してください。無効な文字列が含まれています"
+    PasswordNotAllowed = (
+        "他のパスワードを使用してください。無効な文字列が含まれています"
+    )
     CommonPassword = "他のパスワードを使用してください。文字列や数字、または記号などの組み合わせをお試しください"
     EmailNotAuthorized = "このメールアドレスを使用するには承認される必要があります"
     UnableToMovePostToThread = "投稿をスレッドに移動できません"
