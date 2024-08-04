@@ -28,7 +28,7 @@ from .. import config
 from ..responses import ActivitiesResponse
 
 
-class NotificationAPI(object):
+class NotificationApi(object):
     """通知 API"""
 
     def __init__(self, client) -> None:

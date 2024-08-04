@@ -37,7 +37,7 @@ from ..responses import (
 )
 
 
-class CallAPI(object):
+class CallApi(object):
     """通話 API"""
 
     def __init__(self, client) -> None:

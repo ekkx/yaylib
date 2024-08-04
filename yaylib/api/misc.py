@@ -69,7 +69,7 @@ upload_item_types = [
 ]
 
 
-class MiscAPI(object):
+class MiscApi(object):
     """未分類 API"""
 
     def __init__(self, client) -> None:

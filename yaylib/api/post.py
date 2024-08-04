@@ -42,7 +42,9 @@ from ..responses import (
 from ..utils import build_message_tags, get_post_type, md5
 
 
-class PostAPI(object):
+class PostApi(object):
+    """投稿 API"""
+
     def __init__(self, client) -> None:
         self.__client = client
 
