@@ -72,7 +72,7 @@ upload_item_types = [
 class MiscAPI(object):
     """未分類 API"""
 
-    async def __init__(self, client) -> None:
+    def __init__(self, client) -> None:
         self.__client = client
 
     async def accept_policy_agreement(self, agreement_type: str):
