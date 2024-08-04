@@ -17,7 +17,7 @@ __copyright__ = "Copyright (c) 2023 ekkx"
 __version__ = "1.5.0"
 
 from .client import Client
-from .storage import Storage
+from .state import *
 from .errors import *
 from .models import *
 from .responses import *
@@ -26,7 +26,7 @@ from .ws import Intents
 
 __all__ = (
     "Client",
-    "Storage",
+    "state",
     "errors",
     "models",
     "responses",

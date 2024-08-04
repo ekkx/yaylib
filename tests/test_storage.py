@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from yaylib.storage import Storage, User
+from yaylib.state import Storage, User
 
 
 db_path = os.path.dirname(os.path.dirname(__file__)) + "/.config/test.db"
