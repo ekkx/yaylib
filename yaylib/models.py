@@ -1806,7 +1806,7 @@ class ThreadInfo(Model):
 
 
 class User(Model):
-    # TODO: last_logged_in_at, created_at, updated_time_millis 確かめる
+    # last_logged_in_at, created_at, updated_time_millis 確かめる
 
     __slots__ = (
         "data",
