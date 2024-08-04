@@ -35,7 +35,7 @@ from ..utils import md5
 
 
 class AuthApi:
-    """認証API"""
+    """認証 API"""
 
     def __init__(self, client) -> None:
         self.__client = client
