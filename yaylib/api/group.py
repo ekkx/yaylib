@@ -44,64 +44,66 @@ from ..utils import md5
 
 
 class GroupAPI(object):
+    """サークル API"""
+
     def __init__(self, client) -> None:
         self.__client = client
 
-    def accept_moderator_offer(self, group_id: int):
-        return self.__client.request(
+    async def accept_moderator_offer(self, group_id: int):
+        return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/groups/{group_id}/deputize",
         )
 
-    def accept_ownership_offer(
+    async def accept_ownership_offer(
         self,
         group_id: int,
     ):
-        return self.__client.request(
+        return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/groups/{group_id}/transfer",
         )
 
-    def accept_group_join_request(
+    async def accept_group_join_request(
         self,
         group_id: int,
         user_id: int,
     ):
-        return self.__client.request(
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/accept/{user_id}",
         )
 
-    def add_related_groups(self, group_id: int, related_group_id: list[int]):
+    async def add_related_groups(self, group_id: int, related_group_id: list[int]):
         """
 
         関連サークルを追加する
 
         """
-        return self.__client.request(
+        return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/groups/{group_id}/related",
             params={"related_group_id": related_group_id},
         )
 
-    def ban_group_user(self, group_id: int, user_id: int):
-        return self.__client.request(
+    async def ban_group_user(self, group_id: int, user_id: int):
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/ban/{user_id}",
         )
 
-    def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
+    async def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
         params = {}
         if from_time:
             params["from_time"] = from_time
-        return self.__client.request(
+        return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/groups/unread_status",
             params=params,
             return_type=UnreadStatusResponse,
         )
 
-    def create_group(
+    async def create_group(
         self,
         topic: str,
         description: str = None,
@@ -124,7 +126,7 @@ class GroupAPI(object):
         allow_members_to_post_url: bool = None,
         guidelines: str = None,
     ) -> CreateGroupResponse:
-        return self.__client.request(
+        return await self.__client.request(
             "POST",
             config.API_HOST + "/v3/groups/new",
             json={
@@ -158,42 +160,42 @@ class GroupAPI(object):
             return_type=CreateGroupResponse,
         )
 
-    def create_pin_group(self, group_id: int):
-        return self.__client.request(
+    async def create_pin_group(self, group_id: int):
+        return await self.__client.request(
             "POST", config.API_HOST + "/v1/pinned/groups", json={"id": group_id}
         )
 
-    def decline_moderator_offer(self, group_id: int):
-        return self.__client.request(
+    async def decline_moderator_offer(self, group_id: int):
+        return await self.__client.request(
             "DELETE", config.API_HOST + f"/v1/groups/{group_id}/deputize"
         )
 
-    def decline_ownership_offer(self, group_id: int):
-        return self.__client.request(
+    async def decline_ownership_offer(self, group_id: int):
+        return await self.__client.request(
             "DELETE", config.API_HOST + f"/v1/groups/{group_id}/transfer"
         )
 
-    def decline_group_join_request(self, group_id: int, user_id: int):
-        return self.__client.request(
+    async def decline_group_join_request(self, group_id: int, user_id: int):
+        return await self.__client.request(
             "POST", config.API_HOST + f"/v1/groups/{group_id}/decline/{user_id}"
         )
 
-    def delete_pin_group(self, group_id: int):
-        return self.__client.request(
+    async def delete_pin_group(self, group_id: int):
+        return await self.__client.request(
             "DELETE", config.API_HOST + f"/v1/pinned/groups/{group_id}"
         )
 
-    def get_banned_group_members(
+    async def get_banned_group_members(
         self, group_id: int, page: int = None
     ) -> UsersResponse:
         params = {}
         if page:
             params["page"] = page
-        return self.__client.request(
+        return await self.__client.request(
             "GET", config.API_HOST + f"/v1/groups/{group_id}/ban_list", params=params
         )
 
-    def get_group_categories(self, **params) -> GroupCategoriesResponse:
+    async def get_group_categories(self, **params) -> GroupCategoriesResponse:
         """
 
         Parameters:
@@ -203,28 +205,28 @@ class GroupAPI(object):
             - number: int - (optional)
 
         """
-        return self.__client.request(
+        return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/groups/categories",
             params=params,
             return_type=GroupCategoriesResponse,
         )
 
-    def get_create_group_quota(self) -> CreateGroupQuota:
-        return self.__client.request(
+    async def get_create_group_quota(self) -> CreateGroupQuota:
+        return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/groups/created_quota",
             return_type=CreateGroupQuota,
         )
 
-    def get_group(self, group_id: int) -> GroupResponse:
-        return self.__client.request(
+    async def get_group(self, group_id: int) -> GroupResponse:
+        return await self.__client.request(
             "GET",
             config.API_HOST + f"/v1/groups/{group_id}",
             return_type=GroupResponse,
         )
 
-    def get_groups(self, **params) -> GroupsResponse:
+    async def get_groups(self, **params) -> GroupsResponse:
         """
 
         Parameters:
@@ -236,14 +238,16 @@ class GroupAPI(object):
             - sub_category_id: int = None
 
         """
-        return self.__client.request(
+        return await self.__client.request(
             "GET",
             config.API_HOST + "/v2/groups",
             params=params,
             return_type=GroupsResponse,
         )
 
-    def get_invitable_users(self, group_id: int, **params) -> UsersByTimestampResponse:
+    async def get_invitable_users(
+        self, group_id: int, **params
+    ) -> UsersByTimestampResponse:
         """
 
         Parameters:
@@ -253,26 +257,26 @@ class GroupAPI(object):
             - user[nickname]: str - (optional)
 
         """
-        return self.__client.request(
+        return await self.__client.request(
             "GET",
             config.API_HOST + f"/v1/groups/{group_id}/users/invitable",
             params=params,
             return_type=UsersByTimestampResponse,
         )
 
-    def get_joined_statuses(self, ids: list[int]) -> dict:
-        return self.__client.request(
+    async def get_joined_statuses(self, ids: list[int]) -> dict:
+        return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/groups/joined_statuses",
             params={"ids": ids},
         )
 
-    def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
-        return self.__client.request(
+    async def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
+        return await self.__client.request(
             "GET", config.API_HOST + f"/v1/groups/{group_id}/members/{user_id}"
         )
 
-    def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
+    async def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
         """
 
         Parameters:
@@ -287,25 +291,27 @@ class GroupAPI(object):
             - followed_by_me: bool - (optional)
 
         """
-        return self.__client.request(
+        return await self.__client.request(
             "GET",
             config.API_HOST + f"/v2/groups/{group_id}/members",
             params=params,
             return_type=GroupUsersResponse,
         )
 
-    def get_my_groups(self, from_timestamp: None) -> GroupsResponse:
+    async def get_my_groups(self, from_timestamp=None) -> GroupsResponse:
         params = {}
         if from_timestamp:
             params["from_timestamp"] = from_timestamp
-        return self.__client.request(
+        return await self.__client.request(
             "GET",
             config.API_HOST + "/v2/groups/mine",
             params=params,
             return_type=GroupsResponse,
         )
 
-    def get_relatable_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
+    async def get_relatable_groups(
+        self, group_id: int, **params
+    ) -> GroupsRelatedResponse:
         """
 
         Parameters:
@@ -316,14 +322,16 @@ class GroupAPI(object):
             - from: str - (optional)
 
         """
-        return self.__client.request(
+        return await self.__client.request(
             "GET",
             config.API_HOST + f"/v1/groups/{group_id}/relatable",
             params=params,
             return_type=GroupsRelatedResponse,
         )
 
-    def get_related_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
+    async def get_related_groups(
+        self, group_id: int, **params
+    ) -> GroupsRelatedResponse:
         """
 
         Parameters:
@@ -334,14 +342,14 @@ class GroupAPI(object):
             - from: str - (optional)
 
         """
-        return self.__client.request(
+        return await self.__client.request(
             "GET",
             config.API_HOST + f"/v1/groups/{group_id}/related",
             params=params,
             return_type=GroupsRelatedResponse,
         )
 
-    def get_user_groups(self, **params) -> GroupsResponse:
+    async def get_user_groups(self, **params) -> GroupsResponse:
         """
 
         Parameters:
@@ -351,84 +359,84 @@ class GroupAPI(object):
             - page: int - (optional)
 
         """
-        return self.__client.request(
+        return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/groups/user_group_list",
             params=params,
             return_type=GroupsResponse,
         )
 
-    def invite_users_to_group(
+    async def invite_users_to_group(
         self,
         group_id: int,
         user_ids: list[int],
     ):
-        return self.__client.request(
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/invite",
             json={"user_ids": user_ids},
         )
 
-    def join_group(
+    async def join_group(
         self,
         group_id: int,
     ):
-        return self.__client.request(
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/join",
         )
 
-    def leave_group(
+    async def leave_group(
         self,
         group_id: int,
     ):
-        return self.__client.request(
+        return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/groups/{group_id}/leave",
         )
 
-    def post_gruop_social_shared(
+    async def post_gruop_social_shared(
         self,
         group_id: int,
         sns_name: str,
     ):
-        return self.__client.request(
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v2/groups/{group_id}/social_shared",
             params={"sns_name": sns_name},
         )
 
-    def remove_group_cover(
+    async def remove_group_cover(
         self,
         group_id: int,
     ):
-        return self.__client.request(
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/remove_cover",
         )
 
-    def remove_moderator(
+    async def remove_moderator(
         self,
         group_id: int,
         user_id: int,
     ):
-        return self.__client.request(
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/fire/{user_id}",
         )
 
-    def remove_related_groups(
+    async def remove_related_groups(
         self,
         group_id: int,
         related_group_ids: list[int],
     ):
-        return self.__client.request(
+        return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/groups/{group_id}/related",
             params={"related_group_id[]": related_group_ids},
         )
 
-    def report_group(
+    async def report_group(
         self,
         group_id: int,
         category_id: int,
@@ -439,7 +447,7 @@ class GroupAPI(object):
         screenshot_3_filename: str = None,
         screenshot_4_filename: str = None,
     ):
-        return self.__client.request(
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v3/groups/{group_id}/report",
             json={
@@ -453,8 +461,8 @@ class GroupAPI(object):
             },
         )
 
-    def send_moderator_offers(self, group_id: int, user_ids: list[int]):
-        return self.__client.request(
+    async def send_moderator_offers(self, group_id: int, user_ids: list[int]):
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v3/groups/{group_id}/deputize/mass",
             json={
@@ -468,8 +476,8 @@ class GroupAPI(object):
             },
         )
 
-    def send_ownership_offer(self, group_id: int, user_id: int):
-        return self.__client.request(
+    async def send_ownership_offer(self, group_id: int, user_id: int):
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v3/groups/{group_id}/transfer",
             json={
@@ -483,26 +491,26 @@ class GroupAPI(object):
             },
         )
 
-    def set_group_title(self, group_id: int, title: str):
-        return self.__client.request(
+    async def set_group_title(self, group_id: int, title: str):
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/set_title",
             json={"title": title},
         )
 
-    def take_over_group_ownership(self, group_id: int):
-        return self.__client.request(
+    async def take_over_group_ownership(self, group_id: int):
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/take_over",
         )
 
-    def unban_group_member(self, group_id: int, user_id: int):
-        return self.__client.request(
+    async def unban_group_member(self, group_id: int, user_id: int):
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/unban/{user_id}",
         )
 
-    def update_group(
+    async def update_group(
         self,
         group_id: int,
         topic: str,
@@ -526,7 +534,7 @@ class GroupAPI(object):
         allow_members_to_post_url: bool = None,
         guidelines: str = None,
     ) -> GroupResponse:
-        return self.__client.request(
+        return await self.__client.request(
             "POST",
             config.API_HOST + f"/v3/groups/{group_id}/update",
             json={
@@ -560,14 +568,14 @@ class GroupAPI(object):
             return_type=GroupResponse,
         )
 
-    def withdraw_moderator_offer(self, group_id: int, user_id: int):
-        return self.__client.request(
+    async def withdraw_moderator_offer(self, group_id: int, user_id: int):
+        return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/groups/{group_id}/deputize/{user_id}/withdraw",
         )
 
-    def withdraw_ownership_offer(self, group_id: int, user_id: int):
-        return self.__client.request(
+    async def withdraw_ownership_offer(self, group_id: int, user_id: int):
+        return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/groups/{group_id}/transfer/withdraw",
             json={"user_id": user_id},
