@@ -17,6 +17,7 @@ from .group import *
 from .misc import *
 from .notification import *
 from .post import *
+from .review import *
 
 __all__ = [
     "auth",
@@ -26,4 +27,5 @@ __all__ = [
     "misc",
     "notification",
     "post",
+    "review",
 ]
