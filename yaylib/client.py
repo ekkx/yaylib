@@ -316,6 +316,10 @@ class Client(
         self.user = UserApi(self)
 
     @property
+    def state(self) -> State:
+        return self.__state
+
+    @property
     def user_id(self) -> int:
         return None if self.__state.user_id == 0 else self.__state.user_id
 

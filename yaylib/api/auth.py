@@ -89,7 +89,20 @@ class AuthApi:
         )
 
     async def login(self, email: str, password: str) -> LoginUserResponse:
-        return await self.__client.request(
+        user = self.__client.state.get_user_by_email(email=email)
+        if user is not None:
+            self.__client.logger.info(
+                f"User found in local storage - UID: {user.user_id}"
+            )
+            return LoginUserResponse(
+                {
+                    "access_token": self.__client.access_token,
+                    "refresh_token": self.__client.refresh_token,
+                    "user_id": self.__client.user_id,
+                }
+            )
+
+        response: LoginUserResponse = await self.__client.request(
             "POST",
             config.API_HOST + "/v3/users/login_with_email",
             json={
@@ -100,6 +113,18 @@ class AuthApi:
             },
             return_type=LoginUserResponse,
         )
+
+        self.__client.state.user_id = response.user_id
+        self.__client.state.email = email
+        self.__client.state.access_token = response.access_token
+        self.__client.state.refresh_token = response.refresh_token
+        self.__client.state.create()
+
+        self.__client.logger.info(
+            f"Authentication Successful! - UID: {response.user_id}"
+        )
+
+        return response
 
     async def logout(self):
         return await self.__client.request(
