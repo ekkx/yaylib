@@ -18,6 +18,7 @@ from .misc import *
 from .notification import *
 from .post import *
 from .review import *
+from .thread import *
 
 __all__ = [
     "auth",
@@ -28,4 +29,5 @@ __all__ = [
     "notification",
     "post",
     "review",
+    "thread",
 ]
