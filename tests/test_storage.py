@@ -19,7 +19,7 @@ test_user = User(
 class TestStorage(unittest.TestCase):
     def setUp(self):
         self.clean()
-        self.storage = Storage(db_path)
+        self.storage = Storage(db_path, 10)
 
     def tearDown(self):
         self.clean()
@@ -28,6 +28,37 @@ class TestStorage(unittest.TestCase):
     def clean():
         if os.path.isfile(db_path):
             os.remove(db_path)
+
+    def test_get_user(self):
+        result = self.storage.create_user(test_user)
+        self.assertTrue(result)
+
+        user_by_id = self.storage.get_user(user_id=test_user.user_id)
+
+        self.assertIsNotNone(user_by_id)
+        self.assertEqual(user_by_id.user_id, test_user.user_id)
+        self.assertEqual(user_by_id.email, test_user.email)
+        self.assertEqual(user_by_id.device_uuid, test_user.device_uuid)
+        self.assertEqual(user_by_id.access_token, test_user.access_token)
+        self.assertEqual(user_by_id.refresh_token, test_user.refresh_token)
+
+        user_by_email = self.storage.get_user(email=test_user.email)
+
+        self.assertIsNotNone(user_by_email)
+        self.assertEqual(user_by_email.user_id, test_user.user_id)
+        self.assertEqual(user_by_email.email, test_user.email)
+        self.assertEqual(user_by_email.device_uuid, test_user.device_uuid)
+        self.assertEqual(user_by_email.access_token, test_user.access_token)
+        self.assertEqual(user_by_email.refresh_token, test_user.refresh_token)
+
+        no_user_by_id = self.storage.get_user(user_id=0)
+        self.assertIsNone(no_user_by_id)
+
+        no_user_by_email = self.storage.get_user(email="email_that_does_not@exist.com")
+        self.assertIsNone(no_user_by_email)
+
+        result = self.storage.delete_user(test_user.user_id)
+        self.assertTrue(result)
 
     def test_create_user(self):
         result = self.storage.create_user(test_user)

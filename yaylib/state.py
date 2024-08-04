@@ -28,6 +28,7 @@ from queue import Queue
 from typing import Optional
 from dataclasses import dataclass
 
+from . import utils
 from .crypto import Crypto
 
 
@@ -89,12 +90,15 @@ class Storage:
             cursor = conn.cursor()
 
             where = ""
+            params = []
             if user_id is not None:
-                where += f"id = {user_id}"
+                where = "id = ?"
+                params.append(user_id)
             elif email is not None:
-                where += f"email = {email}"
+                where = "email = ?"
+                params.append(email)
 
-            cursor.execute(f"SELECT * FROM users WHERE {where}")
+            cursor.execute(f"SELECT * FROM users WHERE {where}", params)
             user = cursor.fetchone()
 
         if user is None:
@@ -189,9 +193,10 @@ class State(Storage):
     def __init__(self, path: str, password: Optional[str] = None, pool_size=5):
         super().__init__(path, pool_size)
         self.__crypto = Crypto(password)
+        self.device_uuid = utils.generate_uuid(True)
 
-    def exists(self, email: str) -> bool:
-        return bool(self.get_user(email=self.__crypto.hash(email)))
+    def get_user_by_email(self, email: str) -> Optional[User]:
+        return self.get_user(email=self.__crypto.hash(email))
 
     def create(self) -> bool:
         return self.create_user(
