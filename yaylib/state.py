@@ -47,18 +47,17 @@ class SQLiteConnectionPool:
     """`sqlite3` のコネクションマネージャー"""
 
     def __init__(self, db_path, pool_size=5):
-        self.db_path = db_path
-        self.pool = Queue(maxsize=pool_size)
+        self.__pool = Queue(maxsize=pool_size)
         for _ in range(pool_size):
-            self.pool.put(sqlite3.connect(db_path))
+            self.__pool.put(sqlite3.connect(db_path))
 
     def get_connection(self) -> sqlite3.Connection:
         """コネクションを取得する"""
-        return self.pool.get()
+        return self.__pool.get()
 
     def return_connection(self, conn) -> None:
         """コネクションを返却する"""
-        self.pool.put(conn)
+        self.__pool.put(conn)
 
 
 class Storage:
