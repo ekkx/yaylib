@@ -121,7 +121,7 @@ class AuthApi:
         self.__client.state.create()
 
         self.__client.logger.info(
-            f"Authentication Successful! - UID: {response.user_id}"
+            f"Authentication successful! - UID: {response.user_id}"
         )
 
         return response
