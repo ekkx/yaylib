@@ -19,7 +19,7 @@ test_user = User(
 class TestStorage(unittest.TestCase):
     def setUp(self):
         self.clean()
-        self.storage = Storage(db_path, 10)
+        self.storage = Storage(db_path)
 
     def tearDown(self):
         self.clean()
