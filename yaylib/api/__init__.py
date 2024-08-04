@@ -10,8 +10,10 @@ An API wrapper for Yay! (yay.space) written in Python.
 
 """
 
+from .auth import *
 from .post import *
 
 __all__ = [
+    "auth",
     "post",
 ]
