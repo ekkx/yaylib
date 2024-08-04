@@ -38,7 +38,16 @@ from typing import (
 
 import aiohttp
 
+from .api.auth import AuthApi
+from .api.call import CallApi
+from .api.chat import ChatApi
+from .api.group import GroupApi
+from .api.misc import MiscApi
+from .api.notification import NotificationApi
 from .api.post import PostApi
+from .api.review import ReviewApi
+from .api.thread import ThreadApi
+from .api.user import UserApi
 
 from . import __version__
 from . import ws
@@ -295,24 +304,32 @@ class Client(
 
         self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
 
-        # initialize api
+        self.auth = AuthApi(self)
+        self.call = CallApi(self)
+        self.chat = ChatApi(self)
+        self.group = GroupApi(self)
+        self.misc = MiscApi(self)
+        self.notification = NotificationApi(self)
         self.post = PostApi(self)
+        self.review = ReviewApi(self)
+        self.thread = ThreadApi(self)
+        self.user = UserApi(self)
 
     @property
-    def user_id(self) -> Optional[int]:
+    def user_id(self) -> int:
         return None if self.__state.user_id == 0 else self.__state.user_id
 
     @property
-    def access_token(self) -> Optional[str]:
-        return None if self.__state.access_token == "" else self.__state.access_token
+    def access_token(self) -> str:
+        return self.__state.access_token
 
     @property
-    def refresh_token(self) -> Optional[str]:
-        return None if self.__state.refresh_token == "" else self.__state.refresh_token
+    def refresh_token(self) -> str:
+        return self.__state.refresh_token
 
     @property
-    def device_uuid(self) -> Optional[str]:
-        return None if self.__state.device_uuid == "" else self.__state.device_uuid
+    def device_uuid(self) -> str:
+        return self.__state.device_uuid
 
     async def refresh_access_token(self) -> None:
         pass
@@ -391,5 +408,26 @@ class Client(
         """非同期リクエストを同期リクエストに変換します"""
         return self.insert_delay(lambda: asyncio.run(callback))
 
+    def login(self, email: str, password: str):
+        """_summary_
+
+        Args:
+            email (str): _description_
+            password (str): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        return self.__sync_request(self.auth.login(email, password))
+
     def get_timeline(self, **params) -> PostsResponse:
+        """タイムラインを取得する
+
+        Args:
+            number (int):
+            number (int, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_timeline(**params))
