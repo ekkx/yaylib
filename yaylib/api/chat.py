@@ -39,7 +39,7 @@ from ..responses import (
 )
 
 
-class ChatApi(object):
+class ChatApi:
     """チャット API"""
 
     def __init__(self, client) -> None:

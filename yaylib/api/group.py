@@ -43,7 +43,7 @@ from ..responses import (
 from ..utils import md5
 
 
-class GroupApi(object):
+class GroupApi:
     """サークル API"""
 
     def __init__(self, client) -> None:

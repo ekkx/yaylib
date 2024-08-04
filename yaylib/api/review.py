@@ -24,15 +24,14 @@ SOFTWARE.
 
 from __future__ import annotations
 
-from .. import client
 from .. import config
 from ..responses import ReviewsResponse
 
 
-class ReviewAPI(object):
+class ReviewApi:
     """レビュー API"""
 
-    def __init__(self, client: client.Client) -> None:
+    def __init__(self, client) -> None:
         self.__client = client
 
     async def create_review(self, user_id: int, comment: str):
