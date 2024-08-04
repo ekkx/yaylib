@@ -14,6 +14,7 @@ from .auth import *
 from .call import *
 from .chat import *
 from .group import *
+from .misc import *
 from .post import *
 
 __all__ = [
@@ -21,5 +22,6 @@ __all__ = [
     "call",
     "chat",
     "group",
+    "misc",
     "post",
 ]
