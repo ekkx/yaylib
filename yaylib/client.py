@@ -139,33 +139,10 @@ current_path = os.path.abspath(os.getcwd())
 class BaseClient:
     """yaylib クライアントの基底クラス"""
 
-    def __init__(
-        self,
-        proxy_url: Optional[str] = None,
-        timeout: int = 60,
-        base_path: str = current_path + "/.config/",
-        loglevel: int = logging.INFO,
-    ) -> None:
+    def __init__(self, proxy_url: Optional[str] = None, timeout: int = 60) -> None:
         self.__proxy_url = proxy_url
         self.__timeout = timeout
         self.__session = None
-
-        # initialize logging
-        self.logger: logging.Logger = logging.getLogger(
-            "yaylib version: " + __version__
-        )
-
-        if not os.path.exists(base_path):
-            os.makedirs(base_path)
-
-        ch: logging.StreamHandler = logging.StreamHandler()
-        ch.setLevel(loglevel)
-        ch.setFormatter(utils.CustomFormatter())
-
-        self.logger.addHandler(ch)
-        self.logger.setLevel(logging.DEBUG)
-
-        self.logger.info("yaylib version: %s started.", __version__)
 
     async def __is_ratelimit_error(self, response: aiohttp.ClientResponse) -> bool:
         if response.status == 429:
@@ -183,17 +160,7 @@ class BaseClient:
             or response_json.get("error_code") == ErrorCode.AccessTokenInvalid.value
         )
 
-    def __construct_response(
-        self, response: dict, data_type: Optional[Model] = None
-    ) -> dict | Model:
-        if data_type is not None:
-            if isinstance(response, list):
-                response = [data_type(result) for result in response]
-            elif response is not None:
-                response = data_type(response)
-        return response
-
-    async def __make_request(
+    async def base_request(
         self, method: str, url: str, **kwargs
     ) -> aiohttp.ClientResponse:
         session = self.__session or aiohttp.ClientSession()
@@ -225,40 +192,6 @@ class BaseClient:
 
         return response
 
-    async def _request(
-        self,
-        method: str,
-        url: str,
-        params: Optional[dict] = None,
-        json: Optional[dict] = None,
-        headers: Optional[dict] = None,
-        return_type: Optional[Model] = None,
-    ) -> dict | object:
-        self.logger.debug(
-            "Making API request: [%s] %s\n\nParameters: %s\n\nHeaders: %s\n\nBody: %s\n",
-            method,
-            url,
-            params,
-            headers,
-            json,
-        )
-
-        response = await self.__make_request(
-            method, url, params=params, json=json, headers=headers
-        )
-        response_json = await response.json()
-
-        self.logger.debug(
-            "Received API response: [%s] %s\n\nHTTP Status: %s\n\nHeaders: %s\n\nResponse: %s\n",
-            method,
-            url,
-            response.status,
-            response.headers,
-            response_json,
-        )
-
-        return self.__construct_response(response_json, return_type)
-
 
 class Client(
     BaseClient,
@@ -285,9 +218,7 @@ class Client(
         storage_pool_size: int = 5,
         loglevel: int = logging.INFO,
     ) -> None:
-        super().__init__(
-            proxy_url=proxy_url, timeout=timeout, base_path=base_path, loglevel=loglevel
-        )
+        super().__init__(proxy_url=proxy_url, timeout=timeout)
 
         self.__min_delay = min_delay
         self.__max_delay = max_delay
@@ -299,6 +230,7 @@ class Client(
         self.__err_lang = err_lang
 
         storage_filepath = base_path + storage_filename
+        # TODO: Clientインスタンスが増えるとプールの数も増えるので利用者が同じStorageを共有できるようにオプショナルのコンストラクタとして設定してもよいかもしれない
         self.__state = State(storage_filepath, storage_password, storage_pool_size)
         self.__header_manager = HeaderManager(Device.instance(), self.__state)
 
@@ -314,6 +246,20 @@ class Client(
         self.review = ReviewApi(self)
         self.thread = ThreadApi(self)
         self.user = UserApi(self)
+
+        self.logger = logging.getLogger("yaylib version: " + __version__)
+
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+
+        ch: logging.StreamHandler = logging.StreamHandler()
+        ch.setLevel(loglevel)
+        ch.setFormatter(utils.CustomFormatter())
+
+        self.logger.addHandler(ch)
+        self.logger.setLevel(logging.DEBUG)
+
+        self.logger.info("yaylib version: %s started.", __version__)
 
     @property
     def state(self) -> State:
@@ -335,7 +281,51 @@ class Client(
     def device_uuid(self) -> str:
         return self.__state.device_uuid
 
-    async def refresh_access_token(self) -> None:
+    def __construct_response(
+        self, response: dict, data_type: Optional[Model] = None
+    ) -> dict | Model:
+        if data_type is not None:
+            if isinstance(response, list):
+                response = [data_type(result) for result in response]
+            elif response is not None:
+                response = data_type(response)
+        return response
+
+    async def __make_request(
+        self,
+        method: str,
+        url: str,
+        params: Optional[dict] = None,
+        json: Optional[dict] = None,
+        headers: Optional[dict] = None,
+        return_type: Optional[Model] = None,
+    ) -> dict | object:
+        self.logger.debug(
+            "Making API request: [%s] %s\n\nParameters: %s\n\nHeaders: %s\n\nBody: %s\n",
+            method,
+            url,
+            params,
+            headers,
+            json,
+        )
+
+        response = await self.base_request(
+            method, url, params=params, json=json, headers=headers
+        )
+        response_json = await response.json()
+
+        self.logger.debug(
+            "Received API response: [%s] %s\n\nHTTP Status: %s\n\nHeaders: %s\n\nResponse: %s\n",
+            method,
+            url,
+            response.status,
+            response.headers,
+            response_json,
+        )
+
+        return self.__construct_response(response_json, return_type)
+
+    async def __refresh_client_tokens(self) -> None:
         pass
 
     async def request(
@@ -367,7 +357,7 @@ class Client(
                 while True:
                     try:
                         headers.update(self.__header_manager.generate(jwt_required))
-                        response = await self._request(
+                        response = await self.__make_request(
                             method,
                             url,
                             utils.filter_dict(params),
@@ -393,7 +383,7 @@ class Client(
                     self.logger.error(message)
                     raise AuthenticationError(message) from exc
 
-                await self.refresh_access_token()
+                await self.__refresh_client_tokens()
             except InternalServerError:
                 # TODO: エラーオブジェクトから aiohttp.Response を取得できるように
                 self.logger.error("Request failed! Retrying...")
