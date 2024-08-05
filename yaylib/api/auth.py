@@ -114,11 +114,15 @@ class AuthApi:
             return_type=LoginUserResponse,
         )
 
-        self.__client.state.user_id = response.user_id
-        self.__client.state.email = email
-        self.__client.state.access_token = response.access_token
-        self.__client.state.refresh_token = response.refresh_token
-        self.__client.state.create()
+        self.__client.state.set_user(
+            user_id=response.user_id,
+            email=email,
+            access_token=response.access_token,
+            refresh_token=response.refresh_token,
+        )
+        if not self.__client.state.has_encryption_key():
+            self.__client.state.set_encryption_key(password)
+        self.__client.state.save(password)
 
         self.__client.logger.info(
             f"Authentication successful! - UID: {response.user_id}"

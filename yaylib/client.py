@@ -213,9 +213,7 @@ class Client(
         max_delay: float = 1.2,
         err_lang: str = "ja",
         base_path: str = current_path + "/.config/",
-        storage_password: Optional[str] = None,
-        storage_filename: str = "secret.db",
-        storage_pool_size: int = 5,
+        state: Optional[State] = None,
         loglevel: int = logging.INFO,
     ) -> None:
         super().__init__(proxy_url=proxy_url, timeout=timeout)
@@ -229,9 +227,7 @@ class Client(
 
         self.__err_lang = err_lang
 
-        storage_filepath = base_path + storage_filename
-        # TODO: Clientインスタンスが増えるとプールの数も増えるので利用者が同じStorageを共有できるようにオプショナルのコンストラクタとして設定してもよいかもしれない
-        self.__state = State(storage_filepath, storage_password, storage_pool_size)
+        self.__state = state if state is not None else State(base_path + "secret.db")
         self.__header_manager = HeaderManager(Device.instance(), self.__state)
 
         self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
