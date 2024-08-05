@@ -139,10 +139,30 @@ current_path = os.path.abspath(os.getcwd())
 class BaseClient:
     """yaylib クライアントの基底クラス"""
 
-    def __init__(self, proxy_url: Optional[str] = None, timeout: int = 60) -> None:
+    def __init__(
+        self,
+        proxy_url: Optional[str] = None,
+        timeout=60,
+        base_path=current_path + "/.config/",
+        loglevel=logging.INFO,
+    ) -> None:
         self.__proxy_url = proxy_url
         self.__timeout = timeout
         self.__session = None
+
+        self.logger = logging.getLogger("yaylib version: " + __version__)
+
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+
+        ch = logging.StreamHandler()
+        ch.setLevel(loglevel)
+        ch.setFormatter(utils.CustomFormatter())
+
+        self.logger.addHandler(ch)
+        self.logger.setLevel(logging.DEBUG)
+
+        self.logger.info("yaylib version: %s started.", __version__)
 
     async def __is_ratelimit_error(self, response: aiohttp.ClientResponse) -> bool:
         if response.status == 429:
@@ -163,6 +183,15 @@ class BaseClient:
     async def base_request(
         self, method: str, url: str, **kwargs
     ) -> aiohttp.ClientResponse:
+        self.logger.debug(
+            "Making API request: [%s] %s\n\nParameters: %s\n\nHeaders: %s\n\nBody: %s\n",
+            method,
+            url,
+            kwargs.get("params"),
+            kwargs.get("headers"),
+            kwargs.get("json"),
+        )
+
         session = self.__session or aiohttp.ClientSession()
         async with session.request(
             method, url, proxy=self.__proxy_url, timeout=self.__timeout, **kwargs
@@ -171,6 +200,15 @@ class BaseClient:
 
         if self.__session is None:
             await session.close()
+
+        self.logger.debug(
+            "Received API response: [%s] %s\n\nHTTP Status: %s\n\nHeaders: %s\n\nResponse: %s\n",
+            method,
+            url,
+            response.status,
+            response.headers,
+            await response.text(),
+        )
 
         if await self.__is_ratelimit_error(response):
             raise RateLimitError(response)
@@ -204,33 +242,28 @@ class Client(
         *,
         intents: Optional[ws.Intents] = None,
         proxy_url: Optional[str] = None,
-        timeout: int = 30,
-        max_retries: int = 3,
-        backoff_factor: float = 1.5,
-        wait_on_ratelimit: bool = True,
-        max_ratelimit_retries: int = 15,
-        min_delay: float = 0.3,
-        max_delay: float = 1.2,
-        err_lang: str = "ja",
-        base_path: str = current_path + "/.config/",
+        timeout=30,
+        max_retries=3,
+        backoff_factor=1.5,
+        wait_on_ratelimit=True,
+        max_ratelimit_retries=15,
+        min_delay=0.3,
+        max_delay=1.2,
+        err_lang="ja",
+        base_path=current_path + "/.config/",
         state: Optional[State] = None,
-        loglevel: int = logging.INFO,
+        loglevel=logging.INFO,
     ) -> None:
-        super().__init__(proxy_url=proxy_url, timeout=timeout)
+        super().__init__(
+            proxy_url=proxy_url, timeout=timeout, base_path=base_path, loglevel=loglevel
+        )
 
         self.__min_delay = min_delay
         self.__max_delay = max_delay
         self.__last_request_ts = 0
-
         self.__max_retries = max_retries
         self.__backoff_factor = backoff_factor
-
         self.__err_lang = err_lang
-
-        self.__state = state if state is not None else State(base_path + "secret.db")
-        self.__header_manager = HeaderManager(Device.instance(), self.__state)
-
-        self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
 
         self.auth = AuthApi(self)
         self.call = CallApi(self)
@@ -243,19 +276,10 @@ class Client(
         self.thread = ThreadApi(self)
         self.user = UserApi(self)
 
-        self.logger = logging.getLogger("yaylib version: " + __version__)
+        self.__state = state if state is not None else State(base_path + "secret.db")
+        self.__header_manager = HeaderManager(Device.instance(), self.__state)
 
-        if not os.path.exists(base_path):
-            os.makedirs(base_path)
-
-        ch = logging.StreamHandler()
-        ch.setLevel(loglevel)
-        ch.setFormatter(utils.CustomFormatter())
-
-        self.logger.addHandler(ch)
-        self.logger.setLevel(logging.DEBUG)
-
-        self.logger.info("yaylib version: %s started.", __version__)
+        self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
 
     @property
     def state(self) -> State:
@@ -296,29 +320,10 @@ class Client(
         headers: Optional[dict] = None,
         return_type: Optional[Model] = None,
     ) -> dict | object:
-        self.logger.debug(
-            "Making API request: [%s] %s\n\nParameters: %s\n\nHeaders: %s\n\nBody: %s\n",
-            method,
-            url,
-            params,
-            headers,
-            json,
-        )
-
         response = await self.base_request(
             method, url, params=params, json=json, headers=headers
         )
         response_json = await response.json(content_type=None)
-
-        self.logger.debug(
-            "Received API response: [%s] %s\n\nHTTP Status: %s\n\nHeaders: %s\n\nResponse: %s\n",
-            method,
-            url,
-            response.status,
-            response.headers,
-            response_json,
-        )
-
         return self.__construct_response(response_json, return_type)
 
     async def __refresh_client_tokens(self) -> None:
