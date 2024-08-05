@@ -263,7 +263,7 @@ class Client(
 
     @property
     def user_id(self) -> int:
-        return None if self.__state.user_id == 0 else self.__state.user_id
+        return self.__state.user_id
 
     @property
     def access_token(self) -> str:
@@ -368,21 +368,24 @@ class Client(
             except AccessTokenExpiredError as exc:
                 # /api/v1/oauth/token がエンドポイントということはすでにリトライ済みなので中断
                 if "/api/v1/oauth/token" in url:
-                    self.__state.destory()
-                    message = "Unable to refresh access token. Retry logging in."
+                    self.__state.destory(self.user_id)
+                    message = (
+                        "Unable to refresh access token. Please try logging in again."
+                    )
                     self.logger.error(message)
                     raise AuthenticationError(message) from exc
 
                 # そもそもログインしていない場合も処理を中断
-                if self.user_id is None:
-                    message = "Please log in to perform the action."
+                if self.user_id == 0:
+                    message = "Authentication required to perform the action."
                     self.logger.error(message)
                     raise AuthenticationError(message) from exc
 
                 await self.__refresh_client_tokens()
-            except InternalServerError:
-                # TODO: エラーオブジェクトから aiohttp.Response を取得できるように
-                self.logger.error("Request failed! Retrying...")
+            except InternalServerError as exc:
+                self.logger.error(
+                    "Request failed with status %s! Retrying...", exc.response.status
+                )
                 backoff_duration = self.__backoff_factor * (2**i)
 
         return response

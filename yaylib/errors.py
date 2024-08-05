@@ -24,6 +24,8 @@ SOFTWARE.
 
 from enum import Enum
 
+import aiohttp
+
 
 __all__ = (
     "YaylibError",
@@ -47,6 +49,14 @@ class HTTPError(YaylibError):
 
     Exception raised when an HTTP request fails
     """
+
+    def __init__(self, response: aiohttp.ClientResponse):
+        self.__response = response
+        super().__init__(f"HTTP request failed with status: {response.status}")
+
+    @property
+    def response(self) -> aiohttp.ClientResponse:
+        return self.__response
 
 
 class BadRequestError(HTTPError):
