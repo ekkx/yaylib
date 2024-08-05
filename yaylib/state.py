@@ -297,9 +297,7 @@ class State(Storage):
 
         self.__crypto = Crypto(password)
 
-    def set_user(
-        self, user_id: int, email: str, access_token: str, refresh_token: str
-    ) -> None:
+    def set_user(self, user: User) -> None:
         """ユーザーを設定する
 
         Args:
@@ -308,10 +306,11 @@ class State(Storage):
             access_token (str):
             refresh_token (str):
         """
-        self.user_id = user_id
-        self.email = email
-        self.access_token = access_token
-        self.refresh_token = refresh_token
+        self.user_id = user.user_id
+        self.email = user.email
+        self.access_token = user.access_token
+        self.refresh_token = user.refresh_token
+        self.device_uuid = user.device_uuid
 
     def get_user_by_email(self, email: str) -> Optional[User]:
         """メールアドレスからユーザーを取得する
@@ -322,7 +321,11 @@ class State(Storage):
         Returns:
             Optional[User]: ユーザーが存在しない場合は None を返す
         """
-        return self.get_user(email=self.__crypto.hash(email))
+        user = self.get_user(email=self.__crypto.hash(email))
+        if user is None:
+            return None
+        user.email = email
+        return user
 
     def set_encryption_key(self, password: str):
         """ローカルストレージ内のユーザーを暗号化するためのパスワードを設定する
@@ -341,8 +344,25 @@ class State(Storage):
         """
         return self.__crypto.has_encryption_key()
 
+    def decrypt(self, user: User) -> User:
+        """設定された鍵からユーザー情報を復号化する
+
+        Args:
+            user (User): 暗号化されたユーザー
+
+        Returns:
+            User: 復号化されたユーザー
+        """
+        user.device_uuid = self.__crypto.decrypt(user.device_uuid)
+        user.access_token = self.__crypto.decrypt(user.access_token)
+        user.refresh_token = self.__crypto.decrypt(user.refresh_token)
+        return user
+
     def save(self) -> bool:
         """設定されたユーザーをデータベースに保存する
+
+        Note:
+            自動的にメールアドレスのハッシュ化、その他認証情報を暗号化して保存する
 
         Returns:
             bool:
@@ -366,15 +386,15 @@ class State(Storage):
         return self.update_user(
             self.user_id,
             email=self.__crypto.hash(self.email),
-            device_uuid=self.__crypto.encrypt(self.device_uuid),
-            access_token=self.__crypto.encrypt(self.access_token),
-            refresh_token=self.__crypto.encrypt(self.refresh_token),
+            device_uuid=self.device_uuid,
+            access_token=self.access_token,
+            refresh_token=self.refresh_token,
         )
 
-    def destory(self) -> bool:
+    def destory(self, user_id: int) -> bool:
         """データベース内のテーブルからユーザーを削除する
 
         Returns:
             bool:
         """
-        return self.delete_user(self.user_id)
+        return self.delete_user(user_id)

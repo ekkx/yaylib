@@ -25,12 +25,15 @@ SOFTWARE.
 from datetime import datetime
 from typing import Optional
 
+from cryptography import fernet
+
 from .. import config
 from ..responses import (
     LoginUserResponse,
     LoginUpdateResponse,
     TokenResponse,
 )
+from ..state import User
 from ..utils import md5
 
 
@@ -89,11 +92,24 @@ class AuthApi:
         )
 
     async def login(self, email: str, password: str) -> LoginUserResponse:
+        if not self.__client.state.has_encryption_key():
+            self.__client.state.set_encryption_key(password)
+
         user = self.__client.state.get_user_by_email(email=email)
         if user is not None:
+            try:
+                self.__client.state.set_user(self.__client.state.decrypt(user))
+            except fernet.InvalidToken as exc:
+                self.__client.state.destory(user.user_id)
+                self.__client.logger.error(
+                    "Failed to decrypt the credentials stored locally. This might be due to a recent password change. Please try logging in again."
+                )
+                raise exc
+
             self.__client.logger.info(
                 f"User found in local storage - UID: {user.user_id}"
             )
+
             return LoginUserResponse(
                 {
                     "access_token": self.__client.access_token,
@@ -115,14 +131,15 @@ class AuthApi:
         )
 
         self.__client.state.set_user(
-            user_id=response.user_id,
-            email=email,
-            access_token=response.access_token,
-            refresh_token=response.refresh_token,
+            User(
+                user_id=response.user_id,
+                email=email,
+                device_uuid=self.__client.device_uuid,
+                access_token=response.access_token,
+                refresh_token=response.refresh_token,
+            )
         )
-        if not self.__client.state.has_encryption_key():
-            self.__client.state.set_encryption_key(password)
-        self.__client.state.save(password)
+        self.__client.state.save()
 
         self.__client.logger.info(
             f"Authentication successful! - UID: {response.user_id}"
