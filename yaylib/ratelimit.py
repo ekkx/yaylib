@@ -36,6 +36,24 @@ class RateLimit:
         self.__retries_performed = 0
         self.__retry_after = 60 * 5  # retry after 5 minutes
 
+    @property
+    def retries_performed(self) -> int:
+        """レート制限に引き起こされたリトライ回数
+
+        Returns:
+            int: リトライ回数
+        """
+        return self.__retries_performed
+
+    @property
+    def max_retries(self) -> int:
+        """レート制限によるリトライ回数の上限
+
+        Returns:
+            int: リトライ回数の上限
+        """
+        return self.__max_retries
+
     def __max_retries_reached(self) -> bool:
         return not self.__wait_on_ratelimit or (
             self.__retries_performed >= self.__max_retries
@@ -45,13 +63,13 @@ class RateLimit:
         """レート制限をリセットする"""
         self.__retries_performed = 0
 
-    async def wait(self):
+    async def wait(self, exc: RateLimitError) -> None:
         """レート制限が解除されるまで待機する
 
         Raises:
             RateLimitError: レート制限エラー
         """
         if not self.__wait_on_ratelimit or self.__max_retries_reached():
-            raise RateLimitError("Maximum retries reached.")
+            raise exc
         await asyncio.sleep(self.__retry_after)
         self.__retries_performed += 1

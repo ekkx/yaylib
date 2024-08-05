@@ -328,9 +328,9 @@ class Client(
         self,
         method: str,
         url: str,
-        params: dict = {},
-        json: dict = {},
-        headers: dict = {},
+        params: Optional[dict] = None,
+        json: Optional[dict] = None,
+        headers: Optional[dict] = None,
         return_type: Optional[Model] = None,
         jwt_required=False,
     ) -> dict | Model:
@@ -346,6 +346,7 @@ class Client(
             pass
 
         backoff_duration = 0
+        headers = headers or {}
 
         for i in range(max(1, self.__max_retries + 1)):
             try:
@@ -362,8 +363,13 @@ class Client(
                             return_type,
                         )
                         break
-                    except RateLimitError:
-                        await self.__ratelimit.wait()
+                    except RateLimitError as exc:
+                        self.logger.warning(
+                            "Rate limit exceeded. Waiting... (%s/%s)",
+                            self.__ratelimit.retries_performed,
+                            self.__ratelimit.max_retries,
+                        )
+                        await self.__ratelimit.wait(exc)
                 self.__ratelimit.reset()
                 break
             except AccessTokenExpiredError as exc:
