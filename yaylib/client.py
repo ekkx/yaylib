@@ -248,7 +248,7 @@ class Client(
         if not os.path.exists(base_path):
             os.makedirs(base_path)
 
-        ch: logging.StreamHandler = logging.StreamHandler()
+        ch = logging.StreamHandler()
         ch.setLevel(loglevel)
         ch.setFormatter(utils.CustomFormatter())
 
@@ -353,9 +353,8 @@ class Client(
             not self.__header_manager.get_client_ip()
             and "v2/users/timestamp" not in url
         ):
-            # metadata = await self.user.get_timestamp()
-            # self.__header_manager.set_client_ip(metadata.ip_address)
-            pass
+            metadata = await self.user.get_timestamp()
+            self.__header_manager.set_client_ip(metadata.ip_address)
 
         backoff_duration = 0
         headers = headers or {}

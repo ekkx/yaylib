@@ -377,6 +377,9 @@ class State(Storage):
     def update(self) -> bool:
         """設定されたユーザー情報を元にデータベースをアップデートする
 
+        Note:
+            自動的にメールアドレスのハッシュ化、その他認証情報を暗号化して保存する
+
         Returns:
             bool:
         """
