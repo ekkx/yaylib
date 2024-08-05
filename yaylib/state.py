@@ -383,9 +383,9 @@ class State(Storage):
         return self.update_user(
             self.user_id,
             email=self.__crypto.hash(self.email),
-            device_uuid=self.device_uuid,
-            access_token=self.access_token,
-            refresh_token=self.refresh_token,
+            device_uuid=self.__crypto.encrypt(self.device_uuid),
+            access_token=self.__crypto.encrypt(self.access_token),
+            refresh_token=self.__crypto.encrypt(self.refresh_token),
         )
 
     def destory(self, user_id: int) -> bool:

@@ -72,7 +72,7 @@ from .ratelimit import RateLimit
 from .responses import (
     PostsResponse,
 )
-from .state import State
+from .state import State, LocalUser
 
 
 __all__ = ["Client"]
@@ -322,7 +322,19 @@ class Client(
         return self.__construct_response(response_json, return_type)
 
     async def __refresh_client_tokens(self) -> None:
-        pass
+        response = await self.auth.get_token(
+            grant_type="refresh_token", refresh_token=self.__state.refresh_token
+        )
+        self.__state.set_user(
+            LocalUser(
+                user_id=self.__state.user_id,
+                email=self.__state.email,
+                device_uuid=self.__state.device_uuid,
+                access_token=response.access_token,
+                refresh_token=response.refresh_token,
+            )
+        )
+        self.__state.update()
 
     async def request(
         self,
@@ -373,22 +385,17 @@ class Client(
                 self.__ratelimit.reset()
                 break
             except AccessTokenExpiredError as exc:
-                # /api/v1/oauth/token がエンドポイントということはすでにリトライ済みなので中断
+                if self.user_id == 0:
+                    self.logger.error("Authentication required to perform the action.")
+                    raise AuthenticationError(exc.response) from exc
+                await self.__refresh_client_tokens()
+            except AuthenticationError as exc:
                 if "/api/v1/oauth/token" in url:
                     self.__state.destory(self.user_id)
-                    message = (
-                        "Unable to refresh access token. Please try logging in again."
+                    self.logger.error(
+                        "Failed to refresh credentials. Please try logging in again."
                     )
-                    self.logger.error(message)
-                    raise AuthenticationError(message) from exc
-
-                # そもそもログインしていない場合も処理を中断
-                if self.user_id == 0:
-                    message = "Authentication required to perform the action."
-                    self.logger.error(message)
-                    raise AuthenticationError(message) from exc
-
-                await self.__refresh_client_tokens()
+                    raise exc
             except InternalServerError as exc:
                 self.logger.error(
                     "Request failed with status %s! Retrying...", exc.response.status
