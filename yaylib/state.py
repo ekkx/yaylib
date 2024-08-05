@@ -22,14 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import base64
+import hashlib
 import sqlite3
 
 from queue import Queue
 from typing import Optional
 from dataclasses import dataclass
 
+from cryptography.fernet import Fernet
+
 from . import utils
-from .crypto import Crypto
 
 
 @dataclass(slots=True)
@@ -41,6 +44,89 @@ class User:
     device_uuid: str
     access_token: str
     refresh_token: str
+
+
+class Crypto:
+    """暗号化を行うクラス"""
+
+    def __init__(self, password: Optional[str] = None) -> None:
+        self.__encryption_key: Optional[Fernet] = None
+        if password is not None:
+            self.__encryption_key = self.generate_key(password)
+
+    @staticmethod
+    def generate_key(password: str) -> Fernet:
+        """鍵を生成する
+
+        Args:
+            password (str):
+
+        Returns:
+            Fernet: 鍵
+        """
+        hashed = hashlib.sha256(password.encode()).digest()
+        key = base64.urlsafe_b64encode(hashed[:32])
+        return Fernet(key)
+
+    @staticmethod
+    def hash(text: str) -> str:
+        """`sha256` を用いてハッシュ化を行う
+
+        Returns:
+            str:
+        """
+        return hashlib.sha256(text.encode()).hexdigest()
+
+    def set_encryption_key(self, key: Fernet) -> None:
+        """鍵を設定する
+
+        Args:
+            key (Fernet): 鍵
+        """
+        self.__encryption_key = key
+
+    def has_encryption_key(self) -> bool:
+        """鍵が設定されているか確認する
+
+        Returns:
+            bool: 鍵が設定されている場合は True, そうでない場合 False
+        """
+        return self.__encryption_key is not None
+
+    def encrypt(self, text: str) -> str:
+        """設定された鍵から文字列を暗号化する
+
+        Note:
+            鍵が設定されていない場合は、引数で受け取った文字列をそのまま返す
+
+        Args:
+            text (str):
+
+        Returns:
+            str: 暗号化された文字列
+        """
+        if self.__encryption_key is None:
+            return text
+        encoded = text.encode()
+        encrypted = self.__encryption_key.encrypt(encoded)
+        return encrypted.decode()
+
+    def decrypt(self, text: str) -> str:
+        """設定された鍵から文字列を復号化する
+
+        Note:
+            鍵が設定されていない場合は、引数で受け取った文字列をそのまま返す
+
+        Args:
+            text (str):
+
+        Returns:
+            str: 複合化された文字列
+        """
+        if self.__encryption_key is None:
+            return text
+        decrypted = self.__encryption_key.decrypt(text)
+        return decrypted.decode()
 
 
 class SQLiteConnectionPool:
@@ -61,7 +147,7 @@ class SQLiteConnectionPool:
 
 
 class Storage:
-    """`yaylib.Client` のステートを保存するローカルデータベースの操作を行う"""
+    """クライアントのステートのデータベース操作を行う"""
 
     def __init__(self, path: str, pool_size=5):
         self.__pool = SQLiteConnectionPool(path, pool_size)
@@ -193,23 +279,74 @@ class Storage:
 
 
 class State(Storage):
-    """揮発性メモリ上にステートを保持するクラス"""
+    """単一クライアントのステートを管理するクラス"""
 
-    user_id = 0
-    email = ""
-    device_uuid = ""
-    access_token = ""
-    refresh_token = ""
+    def __init__(
+        self,
+        storage_path: str,
+        storage_pool_size=5,
+        password: Optional[str] = None,
+    ):
+        super().__init__(storage_path, storage_pool_size)
 
-    def __init__(self, path: str, password: Optional[str] = None, pool_size=5):
-        super().__init__(path, pool_size)
-        self.__crypto = Crypto(password)
+        self.user_id = 0
+        self.email = ""
         self.device_uuid = utils.generate_uuid(True)
+        self.access_token = ""
+        self.refresh_token = ""
+
+        self.__crypto = Crypto(password)
+
+    def set_user(
+        self, user_id: int, email: str, access_token: str, refresh_token: str
+    ) -> None:
+        """ユーザーを設定する
+
+        Args:
+            user_id (int):
+            email (str):
+            access_token (str):
+            refresh_token (str):
+        """
+        self.user_id = user_id
+        self.email = email
+        self.access_token = access_token
+        self.refresh_token = refresh_token
 
     def get_user_by_email(self, email: str) -> Optional[User]:
+        """メールアドレスからユーザーを取得する
+
+        Args:
+            email (str): ハッシュ化されていないメールアドレス
+
+        Returns:
+            Optional[User]: ユーザーが存在しない場合は None を返す
+        """
         return self.get_user(email=self.__crypto.hash(email))
 
-    def create(self) -> bool:
+    def set_encryption_key(self, password: str):
+        """ローカルストレージ内のユーザーを暗号化するためのパスワードを設定する
+
+        Args:
+            password (str): 任意のパスワード
+        """
+        key = self.__crypto.generate_key(password)
+        self.__crypto.set_encryption_key(key)
+
+    def has_encryption_key(self) -> bool:
+        """鍵が設定されているか確認する
+
+        Returns:
+            bool: 鍵が設定されている場合は True, そうでない場合 False
+        """
+        return self.__crypto.has_encryption_key()
+
+    def save(self) -> bool:
+        """設定されたユーザーをデータベースに保存する
+
+        Returns:
+            bool:
+        """
         return self.create_user(
             User(
                 self.user_id,
@@ -221,6 +358,11 @@ class State(Storage):
         )
 
     def update(self) -> bool:
+        """設定されたユーザー情報を元にデータベースをアップデートする
+
+        Returns:
+            bool:
+        """
         return self.update_user(
             self.user_id,
             email=self.__crypto.hash(self.email),
@@ -230,4 +372,9 @@ class State(Storage):
         )
 
     def destory(self) -> bool:
+        """データベース内のテーブルからユーザーを削除する
+
+        Returns:
+            bool:
+        """
         return self.delete_user(self.user_id)
