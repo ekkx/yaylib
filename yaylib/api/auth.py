@@ -33,7 +33,7 @@ from ..responses import (
     LoginUpdateResponse,
     TokenResponse,
 )
-from ..state import User
+from ..state import LocalUser
 from ..utils import md5
 
 
@@ -95,7 +95,7 @@ class AuthApi:
         if not self.__client.state.has_encryption_key():
             self.__client.state.set_encryption_key(password)
 
-        user = self.__client.state.get_user_by_email(email=email)
+        user = self.__client.state.get_user_by_email(email)
         if user is not None:
             try:
                 self.__client.state.set_user(self.__client.state.decrypt(user))
@@ -131,7 +131,7 @@ class AuthApi:
         )
 
         self.__client.state.set_user(
-            User(
+            LocalUser(
                 user_id=response.user_id,
                 email=email,
                 device_uuid=self.__client.device_uuid,

@@ -36,7 +36,7 @@ from . import utils
 
 
 @dataclass(slots=True)
-class User:
+class LocalUser:
     """ストレージ内のユーザー型"""
 
     user_id: int
@@ -172,7 +172,7 @@ class Storage:
 
     def get_user(
         self, user_id: Optional[int] = None, email: Optional[str] = None
-    ) -> Optional[User]:
+    ) -> Optional[LocalUser]:
         """ユーザーを取得する"""
         conn = self.__pool.get_connection()
         try:
@@ -195,7 +195,7 @@ class Storage:
         if user is None:
             return None
 
-        return User(
+        return LocalUser(
             user_id=user[0],
             email=user[1],
             device_uuid=user[2],
@@ -203,7 +203,7 @@ class Storage:
             refresh_token=user[4],
         )
 
-    def create_user(self, user: User) -> bool:
+    def create_user(self, user: LocalUser) -> bool:
         """ユーザーを作成する"""
         conn = self.__pool.get_connection()
         try:
@@ -297,14 +297,11 @@ class State(Storage):
 
         self.__crypto = Crypto(password)
 
-    def set_user(self, user: User) -> None:
+    def set_user(self, user: LocalUser) -> None:
         """ユーザーを設定する
 
         Args:
-            user_id (int):
-            email (str):
-            access_token (str):
-            refresh_token (str):
+            user (LocalUser):
         """
         self.user_id = user.user_id
         self.email = user.email
@@ -312,14 +309,14 @@ class State(Storage):
         self.refresh_token = user.refresh_token
         self.device_uuid = user.device_uuid
 
-    def get_user_by_email(self, email: str) -> Optional[User]:
+    def get_user_by_email(self, email: str) -> Optional[LocalUser]:
         """メールアドレスからユーザーを取得する
 
         Args:
             email (str): ハッシュ化されていないメールアドレス
 
         Returns:
-            Optional[User]: ユーザーが存在しない場合は None を返す
+            Optional[LocalUser]: ユーザーが存在しない場合は None を返す
         """
         user = self.get_user(email=self.__crypto.hash(email))
         if user is None:
@@ -344,14 +341,14 @@ class State(Storage):
         """
         return self.__crypto.has_encryption_key()
 
-    def decrypt(self, user: User) -> User:
+    def decrypt(self, user: LocalUser) -> LocalUser:
         """設定された鍵からユーザー情報を復号化する
 
         Args:
-            user (User): 暗号化されたユーザー
+            user (LocalUser): 暗号化されたユーザー
 
         Returns:
-            User: 復号化されたユーザー
+            LocalUser: 復号化されたユーザー
         """
         user.device_uuid = self.__crypto.decrypt(user.device_uuid)
         user.access_token = self.__crypto.decrypt(user.access_token)
@@ -368,7 +365,7 @@ class State(Storage):
             bool:
         """
         return self.create_user(
-            User(
+            LocalUser(
                 self.user_id,
                 email=self.__crypto.hash(self.email),
                 device_uuid=self.__crypto.encrypt(self.device_uuid),

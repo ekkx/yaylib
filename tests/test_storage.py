@@ -1,13 +1,13 @@
 import os
 import unittest
 
-from yaylib.state import Storage, User
+from yaylib.state import Storage, LocalUser
 
 
 db_path = os.path.dirname(os.path.dirname(__file__)) + "/.config/test.db"
 
 
-test_user = User(
+test_user = LocalUser(
     user_id=2342713,
     email="test@email.com",
     device_uuid="0d060774-2d1b-4ce1-avb3-e5a2d0523124",
@@ -80,7 +80,7 @@ class TestStorage(unittest.TestCase):
         result = self.storage.create_user(test_user)
         self.assertTrue(result)
 
-        updated_user = User(
+        updated_user = LocalUser(
             user_id=test_user.user_id,
             email="updated@email.com",
             device_uuid="00000000-0000-0000-0000-00000000000",
