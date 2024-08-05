@@ -364,6 +364,7 @@ class Client(
                         break
                     except RateLimitError:
                         await self.__ratelimit.wait()
+                self.__ratelimit.reset()
                 break
             except AccessTokenExpiredError as exc:
                 # /api/v1/oauth/token がエンドポイントということはすでにリトライ済みなので中断

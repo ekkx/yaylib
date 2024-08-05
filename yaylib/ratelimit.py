@@ -41,6 +41,10 @@ class RateLimit:
             self.__retries_performed >= self.__max_retries
         )
 
+    def reset(self) -> None:
+        """レート制限をリセットする"""
+        self.__retries_performed = 0
+
     async def wait(self):
         """レート制限が解除されるまで待機する
 
