@@ -148,13 +148,13 @@ class BaseClient:
         if response.status == 429:
             return True
         if response.status == 400:
-            response_json = await response.json()
+            response_json = await response.json(content_type=None)
             if response_json.get("error_code") == ErrorCode.QuotaLimitExceeded.value:
                 return True
         return False
 
     async def __is_access_token_expired(self, response: aiohttp.ClientResponse) -> bool:
-        response_json = await response.json()
+        response_json = await response.json(content_type=None)
         return response.status == 401 and (
             response_json.get("error_code") == ErrorCode.AccessTokenExpired.value
             or response_json.get("error_code") == ErrorCode.AccessTokenInvalid.value
@@ -308,7 +308,7 @@ class Client(
         response = await self.base_request(
             method, url, params=params, json=json, headers=headers
         )
-        response_json = await response.json()
+        response_json = await response.json(content_type=None)
 
         self.logger.debug(
             "Received API response: [%s] %s\n\nHTTP Status: %s\n\nHeaders: %s\n\nResponse: %s\n",
