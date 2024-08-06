@@ -37,14 +37,14 @@ from ..responses import (
     FollowUsersResponse,
     FootprintsResponse,
     HiddenResponse,
+    HimaUsersResponse,
+    RankingUsersResponse,
     RefreshCounterRequestsResponse,
     SocialShareUsersResponse,
-    UserResponse,
-    UsersResponse,
-    RankingUsersResponse,
     UserEmailResponse,
-    HimaUsersResponse,
+    UserResponse,
     UsersByTimestampResponse,
+    UsersResponse,
     UserTimestampResponse,
 )
 from ..utils import md5, sha256
@@ -54,7 +54,9 @@ class UserApi:
     """ユーザー API"""
 
     def __init__(self, client) -> None:
-        self.__client = client
+        from ..client import Client  # pylint: disable=import-outside-toplevel
+
+        self.__client: Client = client
 
     async def delete_footprint(self, user_id: int, footprint_id: int):
         return await self.__client.request(

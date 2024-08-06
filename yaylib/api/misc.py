@@ -24,37 +24,36 @@ SOFTWARE.
 
 from __future__ import annotations
 
+import os
 from datetime import datetime
 from io import BytesIO
 from urllib import parse
 
-import os
 import httpx
 from PIL import Image
 
 from .. import config
 from ..models import Attachment
 from ..responses import (
-    EmailGrantTokenResponse,
-    EmailVerificationPresignedUrlResponse,
-    PresignedUrlResponse,
-    PresignedUrlsResponse,
-    IdCheckerPresignedUrlResponse,
-    VerifyDeviceResponse,
-    WebSocketTokenResponse,
     ApplicationConfigResponse,
     BanWordsResponse,
-    PopularWordsResponse,
+    EmailGrantTokenResponse,
+    EmailVerificationPresignedUrlResponse,
+    IdCheckerPresignedUrlResponse,
     PolicyAgreementsResponse,
+    PopularWordsResponse,
+    PresignedUrlResponse,
+    PresignedUrlsResponse,
+    VerifyDeviceResponse,
+    WebSocketTokenResponse,
 )
 from ..utils import (
     ImageType,
+    generate_uuid,
+    get_hashed_filename,
     is_valid_image_format,
     is_valid_video_format,
-    get_hashed_filename,
-    generate_uuid,
 )
-
 
 upload_item_types = [
     "post",
@@ -73,7 +72,9 @@ class MiscApi:
     """未分類 API"""
 
     def __init__(self, client) -> None:
-        self.__client = client
+        from ..client import Client  # pylint: disable=import-outside-toplevel
+
+        self.__client: Client = client
 
     async def accept_policy_agreement(self, agreement_type: str):
         return await self.__client.request(

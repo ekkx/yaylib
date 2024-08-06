@@ -33,7 +33,9 @@ class ThreadApi:
     """スレッド API"""
 
     def __init__(self, client) -> None:
-        self.__client = client
+        from ..client import Client  # pylint: disable=import-outside-toplevel
+
+        self.__client: Client = client
 
     async def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
         return await self.__client.request(

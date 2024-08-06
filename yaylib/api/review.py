@@ -32,7 +32,9 @@ class ReviewApi:
     """レビュー API"""
 
     def __init__(self, client) -> None:
-        self.__client = client
+        from ..client import Client  # pylint: disable=import-outside-toplevel
+
+        self.__client: Client = client
 
     async def create_review(self, user_id: int, comment: str):
         return await self.__client.request(

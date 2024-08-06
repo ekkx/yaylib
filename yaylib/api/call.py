@@ -41,7 +41,9 @@ class CallApi:
     """通話 API"""
 
     def __init__(self, client) -> None:
-        self.__client = client
+        from ..client import Client  # pylint: disable=import-outside-toplevel
+
+        self.__client: Client = client
 
     async def bump_call(self, call_id: int, participant_limit: Optional[int] = None):
         params = {}

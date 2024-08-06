@@ -37,8 +37,8 @@ from ..responses import (
     GroupUserResponse,
     GroupUsersResponse,
     UnreadStatusResponse,
-    UsersResponse,
     UsersByTimestampResponse,
+    UsersResponse,
 )
 from ..utils import md5
 
@@ -47,7 +47,9 @@ class GroupApi:
     """サークル API"""
 
     def __init__(self, client) -> None:
-        self.__client = client
+        from ..client import Client  # pylint: disable=import-outside-toplevel
+
+        self.__client: Client = client
 
     async def accept_moderator_offer(self, group_id: int):
         return await self.__client.request(

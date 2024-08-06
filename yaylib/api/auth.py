@@ -28,11 +28,7 @@ from typing import Optional
 from cryptography import fernet
 
 from .. import config
-from ..responses import (
-    LoginUserResponse,
-    LoginUpdateResponse,
-    TokenResponse,
-)
+from ..responses import LoginUpdateResponse, LoginUserResponse, TokenResponse
 from ..state import LocalUser
 from ..utils import md5
 
@@ -41,7 +37,9 @@ class AuthApi:
     """認証 API"""
 
     def __init__(self, client) -> None:
-        self.__client = client
+        from ..client import Client  # pylint: disable=import-outside-toplevel
+
+        self.__client: Client = client
 
     async def change_email(
         self, email: str, password: str, email_grant_token: Optional[str] = None

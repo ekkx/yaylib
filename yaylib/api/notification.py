@@ -32,7 +32,9 @@ class NotificationApi:
     """通知 API"""
 
     def __init__(self, client) -> None:
-        self.__client = client
+        from ..client import Client  # pylint: disable=import-outside-toplevel
+
+        self.__client: Client = client
 
     async def get_user_activities(self, **params) -> ActivitiesResponse:
         """

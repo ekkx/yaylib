@@ -28,13 +28,13 @@ from .. import config
 from ..responses import (
     ChatRoomResponse,
     ChatRoomsResponse,
-    TotalChatRequestResponse,
     CreateChatRoomResponse,
     FollowUsersResponse,
     GifsDataResponse,
     MessageResponse,
     MessagesResponse,
     StickerPacksResponse,
+    TotalChatRequestResponse,
     UnreadStatusResponse,
 )
 
@@ -43,7 +43,9 @@ class ChatApi:
     """チャット API"""
 
     def __init__(self, client) -> None:
-        self.__client = client
+        from ..client import Client  # pylint: disable=import-outside-toplevel
+
+        self.__client: Client = client
 
     async def accept_chat_requests(self, chat_room_ids: list[int]):
         return await self.__client.request(

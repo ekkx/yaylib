@@ -32,11 +32,11 @@ from ..models import Post, SharedUrl
 from ..responses import (
     BookmarkPostResponse,
     CreatePostResponse,
+    LikePostsResponse,
+    PostLikersResponse,
     PostResponse,
     PostsResponse,
-    PostLikersResponse,
     PostTagsResponse,
-    LikePostsResponse,
     VoteSurveyResponse,
 )
 from ..utils import build_message_tags, get_post_type, md5
@@ -46,7 +46,9 @@ class PostApi:
     """投稿 API"""
 
     def __init__(self, client) -> None:
-        self.__client = client
+        from ..client import Client  # pylint: disable=import-outside-toplevel
+
+        self.__client: Client = client
 
     async def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
         return await self.__client.request(
