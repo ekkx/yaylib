@@ -228,6 +228,7 @@ class Storage:
     def update_user(
         self,
         user_id: int,
+        *,
         email: Optional[str] = None,
         device_uuid: Optional[str] = None,
         access_token: Optional[str] = None,
@@ -283,6 +284,7 @@ class State(Storage):
 
     def __init__(
         self,
+        *,
         storage_path: str,
         storage_pool_size=5,
         password: Optional[str] = None,

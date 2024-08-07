@@ -27,17 +27,12 @@ import logging
 import os
 import random
 import time
-
 from datetime import datetime
-from typing import (
-    Dict,
-    Optional,
-    Awaitable,
-    Callable,
-)
+from typing import Awaitable, Callable, Dict, Optional
 
 import aiohttp
 
+from . import __version__, config, utils, ws
 from .api.auth import AuthApi
 from .api.call import CallApi
 from .api.chat import ChatApi
@@ -48,32 +43,22 @@ from .api.post import PostApi
 from .api.review import ReviewApi
 from .api.thread import ThreadApi
 from .api.user import UserApi
-
-from . import __version__
-from . import ws
-from . import config
-from . import utils
 from .device import Device
 from .errors import (
-    HTTPError,
-    BadRequestError,
-    AuthenticationError,
     AccessTokenExpiredError,
+    AuthenticationError,
+    BadRequestError,
+    ErrorCode,
     ForbiddenError,
+    HTTPError,
+    InternalServerError,
     NotFoundError,
     RateLimitError,
-    InternalServerError,
-    ErrorCode,
 )
-from .models import (
-    Model,
-)
+from .models import Model
 from .ratelimit import RateLimit
-from .responses import (
-    PostsResponse,
-)
-from .state import State, LocalUser
-
+from .responses import PostsResponse
+from .state import LocalUser, State
 
 __all__ = ["Client"]
 
@@ -141,6 +126,7 @@ class BaseClient:
 
     def __init__(
         self,
+        *,
         proxy_url: Optional[str] = None,
         timeout=60,
         base_path=current_path + "/.config/",
@@ -276,7 +262,7 @@ class Client(
         self.thread = ThreadApi(self)
         self.user = UserApi(self)
 
-        self.__state = state if state is not None else State(base_path + "secret.db")
+        self.__state = state if state is not None else State(storage_path=base_path + "secret.db")
         self.__header_manager = HeaderManager(Device.instance(), self.__state)
 
         self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
@@ -315,6 +301,7 @@ class Client(
         self,
         method: str,
         url: str,
+        *,
         params: Optional[dict] = None,
         json: Optional[dict] = None,
         headers: Optional[dict] = None,
@@ -345,6 +332,7 @@ class Client(
         self,
         method: str,
         url: str,
+        *,
         params: Optional[dict] = None,
         json: Optional[dict] = None,
         headers: Optional[dict] = None,
@@ -373,10 +361,10 @@ class Client(
                         response = await self.__make_request(
                             method,
                             url,
-                            utils.filter_dict(params),
-                            utils.filter_dict(json),
-                            headers,
-                            return_type,
+                            params=utils.filter_dict(params),
+                            json=utils.filter_dict(json),
+                            headers=headers,
+                            return_type=return_type,
                         )
                         break
                     except RateLimitError as exc:
