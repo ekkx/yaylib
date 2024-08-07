@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "yaylib"
+version = "0.0.0"
+description = "同世代と趣味の通話コミュニティ - Yay! (イェイ) で投稿やタイムラインの取得、リツイートやいいねの実行、フォローや投稿の検索など様々な機能をPythonプログラムから利用可能なAPIクライアントツールです。"
+authors = ["ekkx <https://github.com/ekkx>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiohttp = "3.9.5"
+pillow = "9.3.0"
+cryptography = "41.0.1"
+
+[tool.poetry.group.dev.dependencies]
+sphinx = "*"
+sphinx-rtd-theme = "*"
+
+[tool.poetry-version-plugin]
+source = "init"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
