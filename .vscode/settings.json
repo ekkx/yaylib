@@ -8,7 +8,7 @@
   },
   "autoDocstring.docstringFormat": "google",
   "pylint.ignorePatterns": ["**/tests/*.py"],
-  "pylint.args": ["--rcfil=.pylintrc"],
+  "pylint.args": ["--rcfile=.pylintrc"],
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
