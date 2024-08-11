@@ -32,7 +32,6 @@ from .errors import (
 from .models import *
 from .responses import *
 from .utils import mention
-from .ws import Intents
 
 __all__ = (
     "Client",
@@ -51,5 +50,4 @@ __all__ = (
     "models",
     "responses",
     "mention",
-    "Intents",
 )
