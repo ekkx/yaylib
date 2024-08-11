@@ -1,13 +1,15 @@
 FROM python:3.11-slim
 
-RUN apt-get update && apt-get install make
-
 WORKDIR /yaylib
 
-COPY Pipfile .
+RUN apt-get update && apt-get install make curl -y
+RUN curl -sSL https://install.python-poetry.org | python3 -
 
-RUN pip install pipenv
-RUN pipenv install --dev
-RUN echo 'pipenv shell' >> ~/.bashrc
+ENV PATH /root/.local/bin:$PATH
+
+COPY pyproject.toml* poetry.lock* ./
+
+# RUN poetry config virtualenvs.in-project true
+RUN poetry install
 
 COPY . .
