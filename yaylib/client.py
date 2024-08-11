@@ -32,7 +32,7 @@ from typing import Awaitable, Callable, Dict, Optional
 
 import aiohttp
 
-from . import __version__, config, utils, ws
+from . import __version__, config, utils
 from .api.auth import AuthApi
 from .api.call import CallApi
 from .api.chat import ChatApi
@@ -56,11 +56,58 @@ from .errors import (
     RateLimitError,
 )
 from .models import Model
-from .ratelimit import RateLimit
 from .responses import PostsResponse
 from .state import LocalUser, State
 
 __all__ = ["Client"]
+
+
+class RateLimit:
+    """レート制限を管理するクラス"""
+
+    def __init__(self, wait_on_ratelimit: bool, max_retries: int) -> None:
+        self.__wait_on_ratelimit = wait_on_ratelimit
+        self.__max_retries = max_retries
+        self.__retries_performed = 0
+        self.__retry_after = 60 * 5
+
+    @property
+    def retries_performed(self) -> int:
+        """レート制限によるリトライ回数
+
+        Returns:
+            int: リトライ回数
+        """
+        return self.__retries_performed
+
+    @property
+    def max_retries(self) -> int:
+        """レート制限によるリトライ回数の上限
+
+        Returns:
+            int: リトライ回数の上限
+        """
+        return self.__max_retries
+
+    def __max_retries_reached(self) -> bool:
+        return not self.__wait_on_ratelimit or (
+            self.__retries_performed >= self.__max_retries
+        )
+
+    def reset(self) -> None:
+        """レート制限をリセットする"""
+        self.__retries_performed = 0
+
+    async def wait(self, exc: RateLimitError) -> None:
+        """レート制限が解除されるまで待機する
+
+        Raises:
+            RateLimitError: レート制限エラー
+        """
+        if not self.__wait_on_ratelimit or self.__max_retries_reached():
+            raise exc
+        await asyncio.sleep(self.__retry_after)
+        self.__retries_performed += 1
 
 
 class HeaderManager:
@@ -262,7 +309,7 @@ class Client(
         self.thread = ThreadApi(self)
         self.user = UserApi(self)
 
-        self.__state = state if state is not None else State(storage_path=base_path + "secret.db")
+        self.__state = state or State(storage_path=base_path + "secret.db")
         self.__header_manager = HeaderManager(Device.instance(), self.__state)
 
         self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
