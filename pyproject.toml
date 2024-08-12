@@ -2,12 +2,27 @@
 name = "yaylib"
 version = "0.0.0"
 description = "同世代と趣味の通話コミュニティ - Yay! (イェイ) で投稿やタイムラインの取得、リツイートやいいねの実行、フォローや投稿の検索など様々な機能をPythonプログラムから利用可能なAPIクライアントツールです。"
-authors = ["ekkx <https://github.com/ekkx>"]
+authors = ["ekkx <nikola.desuga@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+homepage = "https://github.com/ekkx/yaylib"
+repository = "https://github.com/ekkx/yaylib"
+keywords = [
+    "yay",
+    "yaylib",
+    "api",
+    "bot",
+    "tool",
+    "client",
+    "library",
+    "wrapper",
+    "ボット",
+    "ライブラリ",
+    "ツール"
+]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.10,<3.12"
 aiohttp = "3.9.5"
 pillow = "9.3.0"
 cryptography = "41.0.1"
