@@ -273,7 +273,7 @@ class Client(
     def __init__(
         self,
         *,
-        intents: Optional[ws.Intents] = None,
+        # intents: Optional[ws.Intents] = None,
         proxy_url: Optional[str] = None,
         timeout=30,
         max_retries=3,
@@ -282,7 +282,6 @@ class Client(
         max_ratelimit_retries=15,
         min_delay=0.3,
         max_delay=1.2,
-        err_lang="ja",
         base_path=current_path + "/.config/",
         state: Optional[State] = None,
         loglevel=logging.INFO,
@@ -296,7 +295,6 @@ class Client(
         self.__last_request_ts = 0
         self.__max_retries = max_retries
         self.__backoff_factor = backoff_factor
-        self.__err_lang = err_lang
 
         self.auth = AuthApi(self)
         self.call = CallApi(self)
