@@ -29,7 +29,6 @@ from datetime import datetime
 from io import BytesIO
 from urllib import parse
 
-import httpx
 from PIL import Image
 
 from .. import config
@@ -234,7 +233,7 @@ class MiscApi:
 
         """
         if image_type not in upload_item_types:
-            raise TypeError(f"Invalid image type. [{image_type}]")
+            raise ValueError(f"Invalid image type. [{image_type}]")
 
         _files = []
 
@@ -285,16 +284,17 @@ class MiscApi:
             _files.append(thumbnail_attachment)
 
         file_names = [x.filename for x in _files]
-        res_presigned_url = self.get_file_upload_presigned_urls(
-            file_names
-        ).presigned_urls
+        res_presigned_url: PresignedUrlsResponse = (
+            await self.get_file_upload_presigned_urls(file_names)
+        )
+        presigned_urls = res_presigned_url.presigned_urls
 
         res_upload = []
 
         x: Attachment
         for x in _files:
             p_url = next(
-                (p.url for p in res_presigned_url if x.filename in p.filename), None
+                (p.url for p in presigned_urls if x.filename in p.filename), None
             )
             if not p_url:
                 continue
@@ -306,8 +306,7 @@ class MiscApi:
                 x.file.save(image_data, format=x.file.format)
             image_data.seek(0)
 
-            response = httpx.put(p_url, data=image_data.read())
-            response.raise_for_status()
+            await self.__client.base_request("PUT", p_url, data=image_data.read())
 
             x.filename = parse.urlsplit(p_url).path.replace("/uploads/", "")
 
@@ -324,17 +323,17 @@ class MiscApi:
         uuid = generate_uuid(False)[:16]
         filename = f"{uuid}_{int(datetime.now().timestamp())}{extension}"
 
-        res_presigned_url = self.get_old_file_upload_presigned_url(
-            filename
-        ).presigned_url
+        res_presigned_url: PresignedUrlResponse = (
+            await self.get_old_file_upload_presigned_url(filename)
+        )
+        presigned_url = res_presigned_url.presigned_url
 
         with open(video_path, "br") as f:
             video = f.read()
 
         self.__client.logger.debug(f"Uploading video: {video_path}")
 
-        response = httpx.put(res_presigned_url, data=video)
-        response.raise_for_status()
+        await self.__client.base_request("PUT", presigned_url, data=video)
 
         return filename
 
