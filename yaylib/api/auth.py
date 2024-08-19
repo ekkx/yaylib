@@ -34,7 +34,11 @@ from ..utils import md5
 
 
 class AuthApi:
-    """認証 API"""
+    """認証 API
+
+    Args:
+        client (Client):
+    """
 
     def __init__(self, client) -> None:
         from ..client import Client  # pylint: disable=import-outside-toplevel
@@ -44,6 +48,16 @@ class AuthApi:
     async def change_email(
         self, email: str, password: str, email_grant_token: Optional[str] = None
     ) -> LoginUpdateResponse:
+        """メールアドレスを変更する
+
+        Args:
+            email (str):
+            password (str):
+            email_grant_token (Optional[str]):
+
+        Returns:
+            LoginUpdateResponse:
+        """
         return await self.__client.request(
             "PUT",
             config.API_HOST + "/v1/users/change_email",
@@ -59,6 +73,15 @@ class AuthApi:
     async def change_password(
         self, current_password: str, new_password: str
     ) -> LoginUpdateResponse:
+        """パスワードを変更する
+
+        Args:
+            current_password (str):
+            new_password (str):
+
+        Returns:
+            LoginUpdateResponse:
+        """
         return await self.__client.request(
             "PUT",
             config.API_HOST + "/v1/users/change_email",
@@ -77,6 +100,17 @@ class AuthApi:
         email: Optional[str] = None,
         password: Optional[str] = None,
     ) -> TokenResponse:
+        """認証トークンを取得する
+
+        Args:
+            grant_type (str):
+            refresh_token (Optional[str]):
+            email (Optional[str]):
+            password (Optional[str]):
+
+        Returns:
+            TokenResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/api/v1/oauth/token",
@@ -90,6 +124,15 @@ class AuthApi:
         )
 
     async def login(self, email: str, password: str) -> LoginUserResponse:
+        """メールアドレスでログインする
+
+        Args:
+            email (str):
+            password (str):
+
+        Returns:
+            LoginUserResponse:
+        """
         if not self.__client.state.has_encryption_key():
             self.__client.state.set_encryption_key(password)
 

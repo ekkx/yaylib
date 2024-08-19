@@ -26,7 +26,6 @@ from enum import Enum
 
 import aiohttp
 
-
 __all__ = (
     "YaylibError",
     "HTTPError",
