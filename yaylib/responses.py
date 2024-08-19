@@ -668,7 +668,7 @@ class HiddenResponse(Model):
         return f"HiddenResponse(data={self.data})"
 
 
-class LoginUserResponse:
+class LoginUserResponse(Model):
     __slots__ = (
         "data",
         "user_id",
