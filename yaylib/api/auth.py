@@ -160,21 +160,15 @@ class AuthApi:
                     "user_id": self.__client.user_id,
                 }
             )
-        if two_fa_code:
-            payload = {
-                "api_key": config.API_KEY,
-                "email": email,
-                "password": password,
-                "uuid": self.__client.device_uuid,
-                "two_fa_code": two_fa_code,
-            }
-        elif two_fa_code is None:
-            payload = {
-                "api_key": config.API_KEY,
-                "email": email,
-                "password": password,
-                "uuid": self.__client.device_uuid,
-            }
+
+        payload = {
+            "api_key": config.API_KEY,
+            "email": email,
+            "password": password,
+            "uuid": self.__client.device_uuid,
+        }
+        if two_fa_code is not None:
+            payload["two_fa_code"] = two_fa_code
 
         response: LoginUserResponse = await self.__client.request(
             "POST",
