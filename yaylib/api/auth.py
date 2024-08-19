@@ -89,7 +89,9 @@ class AuthApi:
             return_type=TokenResponse,
         )
 
-    async def login(self, email: str, password: str) -> LoginUserResponse:
+    async def login(
+        self, email: str, password: str, two_fa_code: str = None
+    ) -> LoginUserResponse:
         if not self.__client.state.has_encryption_key():
             self.__client.state.set_encryption_key(password)
 
@@ -115,16 +117,26 @@ class AuthApi:
                     "user_id": self.__client.user_id,
                 }
             )
-
-        response: LoginUserResponse = await self.__client.request(
-            "POST",
-            config.API_HOST + "/v3/users/login_with_email",
-            json={
+        if two_fa_code:
+            payload = {
                 "api_key": config.API_KEY,
                 "email": email,
                 "password": password,
                 "uuid": self.__client.device_uuid,
-            },
+                "two_fa_code": two_fa_code,
+            }
+        elif two_fa_code is None:
+            payload = {
+                "api_key": config.API_KEY,
+                "email": email,
+                "password": password,
+                "uuid": self.__client.device_uuid,
+            }
+
+        response: LoginUserResponse = await self.__client.request(
+            "POST",
+            config.API_HOST + "/v3/users/login_with_email",
+            json=payload,
             return_type=LoginUserResponse,
         )
 

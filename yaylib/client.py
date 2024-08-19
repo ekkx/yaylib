@@ -452,17 +452,34 @@ class Client(
         """非同期リクエストを同期リクエストに変換します"""
         return self.insert_delay(lambda: asyncio.run(callback))
 
-    def login(self, email: str, password: str):
+    def login(self, email: str, password: str, two_fa_code: str = None):
         """_summary_
 
         Args:
             email (str): _description_
             password (str): _description_
+            two_fa_code (str): __description_
 
         Returns:
             _type_: _description_
         """
-        return self.__sync_request(self.auth.login(email, password))
+        response = self.__sync_request(self.auth.login(email, password))
+
+        if response.result == "error" and response.message == "Require 2FA":
+            two_fa_code = str(
+                input("Enter your 6-digit 2-step verification code or backup code\n-> ")
+            )
+            response = self.__sync_request(
+                self.auth.login(email, password, two_fa_code)
+            )
+
+        if response.result == "error" and response.message == "2FA code invalid":
+            raise ForbiddenError("Invalid 2-step verification code")
+
+        if response.access_token is None:
+            raise ForbiddenError("Invalid email or password.")
+
+        return response
 
     def get_timeline(self, **params) -> PostsResponse:
         """タイムラインを取得する
