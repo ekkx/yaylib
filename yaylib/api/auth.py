@@ -131,6 +131,7 @@ class AuthApi:
         Args:
             email (str):
             password (str):
+            two_fa_code (str):
 
         Returns:
             LoginUserResponse:

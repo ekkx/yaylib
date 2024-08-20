@@ -456,23 +456,7 @@ class Client(
         Returns:
             LoginUserResponse:
         """
-        response = self.__sync_request(self.auth.login(email, password))
-
-        if response.result == "error" and response.message == "Require 2FA":
-            two_fa_code = str(
-                input("Enter your 6-digit 2-step verification code or backup code\n-> ")
-            )
-            response = self.__sync_request(
-                self.auth.login(email, password, two_fa_code)
-            )
-
-        if response.result == "error" and response.message == "2FA code invalid":
-            raise ForbiddenError("Invalid 2-step verification code")
-
-        if response.access_token is None:
-            raise ForbiddenError("Invalid email or password.")
-
-        return response
+        return self.__sync_request(self.auth.login(email, password, two_fa_code))
 
     def get_timeline(self, **params) -> PostsResponse:
         """タイムラインを取得する
