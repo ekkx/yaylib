@@ -23,19 +23,18 @@ SOFTWARE.
 """
 
 import base64
-import hmac
 import hashlib
+import hmac
 import logging
 import re
 import uuid
-
-from json import dumps
-from datetime import datetime
-from typing import Any, Optional
 from base64 import urlsafe_b64encode
+from datetime import datetime
+from json import dumps
+from typing import Any, Optional
 
-from . import colors
-from . import config
+from . import colors, config
+from .models import Attachment
 
 
 class CustomFormatter(logging.Formatter):
@@ -245,33 +244,33 @@ def generate_jwt() -> str:
     return payload + "." + sig
 
 
-def is_valid_image_format(format):
+def is_valid_image_format(image_format: str):
     allowed_formats = [".jpg", ".jpeg", ".png", ".gif"]
-    return format in allowed_formats
+    return image_format in allowed_formats
 
 
-def is_valid_video_format(format):
+def is_valid_video_format(video_format: str):
     allowed_formats = [".mp4"]
-    return format in allowed_formats
+    return video_format in allowed_formats
 
 
-def get_hashed_filename(att, type, key, uuid):
+def get_hashed_filename(att: Attachment, file_type: str, key: int, uuid_str: str):
     today = datetime.now()
     full_date = today.strftime("%Y/%m/%d")
     thumbnail = "thumb_" if att.is_thumb else ""
-    file_name = f"{thumbnail}{uuid}_{int(today.timestamp())}_{key}"
+    file_name = f"{thumbnail}{uuid_str}_{int(today.timestamp())}_{key}"
     sizes = f"_size_{att.natural_width}x{att.natural_height}"
     extension = f"{att.original_file_extension}"
 
-    hashed_filename = f"{type}/{full_date}/{file_name}{sizes}{extension}"
+    hashed_filename = f"{file_type}/{full_date}/{file_name}{sizes}{extension}"
 
     return hashed_filename
 
 
-def md5(uuid: str, timestamp: int, require_shared_key: bool) -> str:
+def md5(device_uuid: str, timestamp: int, require_shared_key: bool) -> str:
     shared_key: str = config.SHARED_KEY if require_shared_key else ""
     return hashlib.md5(
-        (config.API_KEY + uuid + str(timestamp) + shared_key).encode()
+        (config.API_KEY + device_uuid + str(timestamp) + shared_key).encode()
     ).hexdigest()
 
 
