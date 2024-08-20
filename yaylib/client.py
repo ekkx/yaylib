@@ -121,9 +121,17 @@ class HeaderManager:
         self.__device_info = device.generate_device_info(config.VERSION_NAME)
         self.__app_version = config.API_VERSION_NAME
         self.__client_ip = ""
-        self.__connection_speed = ""
+        self.__connection_speed = "0 kbps"
         self.__connection_type = "wifi"
         self.__content_type = "application/json;charset=UTF-8"
+
+    @property
+    def client_ip(self) -> str:
+        return self.__client_ip
+
+    @client_ip.setter
+    def client_ip(self, value: str) -> None:
+        self.__client_ip = value
 
     def generate(self, jwt_required=False) -> Dict[str, str]:
         """HTTPヘッダーを生成する"""
@@ -151,18 +159,6 @@ class HeaderManager:
             headers.update({"Authorization": "Bearer " + self.__state.access_token})
 
         return headers
-
-    def get_client_ip(self) -> str:
-        return self.__client_ip
-
-    def get_connection_speed(self) -> str:
-        return self.__connection_speed
-
-    def set_client_ip(self, client_ip: str) -> None:
-        self.__client_ip = client_ip
-
-    def set_connection_speed(self, connection_speed: str) -> None:
-        self.__connection_speed = connection_speed
 
 
 current_path = os.path.abspath(os.getcwd())
@@ -351,7 +347,7 @@ class Client(
         json: Optional[dict] = None,
         headers: Optional[dict] = None,
         return_type: Optional[Model] = None,
-    ) -> dict | object:
+    ) -> dict | Model:
         response = await self.base_request(
             method, url, params=params, json=json, headers=headers
         )
@@ -387,12 +383,9 @@ class Client(
         if not url.startswith("https://"):
             url = "https://" + url
 
-        if (
-            not self.__header_manager.get_client_ip()
-            and "v2/users/timestamp" not in url
-        ):
+        if not self.__header_manager.client_ip and "v2/users/timestamp" not in url:
             metadata = await self.user.get_timestamp()
-            self.__header_manager.set_client_ip(metadata.ip_address)
+            self.__header_manager.client_ip = metadata.ip_address
 
         backoff_duration = 0
         headers = headers or {}
@@ -453,15 +446,15 @@ class Client(
         return self.insert_delay(lambda: asyncio.run(callback))
 
     def login(self, email: str, password: str, two_fa_code: str = None):
-        """_summary_
+        """メールアドレスでログインする
 
         Args:
-            email (str): _description_
-            password (str): _description_
-            two_fa_code (str): __description_
+            email (str):
+            password (str):
+            two_fa_code (str):
 
         Returns:
-            _type_: _description_
+            LoginUserResponse:
         """
         response = self.__sync_request(self.auth.login(email, password))
 
