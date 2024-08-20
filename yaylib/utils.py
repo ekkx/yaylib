@@ -29,12 +29,28 @@ import logging
 import re
 import uuid
 from base64 import urlsafe_b64encode
+from dataclasses import dataclass
 from datetime import datetime
 from json import dumps
 from typing import Any, Optional
 
-from . import colors, config
+from . import config
 from .models import Attachment
+
+
+@dataclass
+class Color:
+    """カラー定数"""
+
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKCYAN = "\033[96m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
 
 
 class CustomFormatter(logging.Formatter):
@@ -42,16 +58,16 @@ class CustomFormatter(logging.Formatter):
 
     @staticmethod
     def __get_formats() -> dict:
-        date = colors.HEADER + "%(asctime)s " + colors.RESET
-        level = colors.UNDERLINE + "%(levelname)s" + colors.RESET
+        date = Color.HEADER + "%(asctime)s " + Color.RESET
+        level = Color.UNDERLINE + "%(levelname)s" + Color.RESET
         body = " » %(message)s"
 
         return {
-            logging.DEBUG: date + colors.OKGREEN + level + colors.RESET + body,
-            logging.INFO: date + colors.OKBLUE + level + colors.RESET + body,
-            logging.WARNING: date + colors.WARNING + level + colors.RESET + body,
-            logging.ERROR: date + colors.FAIL + level + colors.RESET + body,
-            logging.CRITICAL: date + colors.FAIL + level + colors.RESET + body,
+            logging.DEBUG: date + Color.OKGREEN + level + Color.RESET + body,
+            logging.INFO: date + Color.OKBLUE + level + Color.RESET + body,
+            logging.WARNING: date + Color.WARNING + level + Color.RESET + body,
+            logging.ERROR: date + Color.FAIL + level + Color.RESET + body,
+            logging.CRITICAL: date + Color.FAIL + level + Color.RESET + body,
         }
 
     def format(self, record):
