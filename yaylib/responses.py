@@ -673,8 +673,6 @@ class LoginUserResponse(Model):
         "data",
         "user_id",
         "username",
-        "result",
-        "message",
         "is_new",
         "sns_info",
         "access_token",
@@ -686,8 +684,6 @@ class LoginUserResponse(Model):
         self.data = data
         self.user_id = data.get("user_id")
         self.username = data.get("username")
-        self.result = data.get("result")
-        self.message = data.get("message")
         self.is_new = data.get("is_new")
 
         self.sns_info = data.get("sns_info")
