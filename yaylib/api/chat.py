@@ -22,8 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import List, Optional
-
 from .. import config
 from ..responses import (
     ChatRoomResponse,
@@ -48,59 +46,84 @@ class ChatApi:
 
         self.__client: Client = client
 
-    async def accept_chat_requests(self, chat_room_ids: List[int]) -> Response:
+    async def accept_chat_requests(self, **params) -> Response:
+        """チャットリクエストを承認する
+
+        Args:
+            chat_room_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/chat_rooms/accept_chat_request",
-            json={"chat_room_ids": chat_room_ids},
+            json=params,
             return_type=Response,
         )
 
-    async def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
+    async def check_unread_status(self, **params) -> UnreadStatusResponse:
+        """チャットの未読ステータスを確認する
+
+        Args:
+            from_time (int):
+
+        Returns:
+            UnreadStatusResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/chat_rooms/unread_status",
-            params={"from_time": from_time},
+            params=params,
             return_type=UnreadStatusResponse,
         )
 
-    async def create_group_chat(
-        self,
-        name: str,
-        with_user_ids: List[int],
-        icon_filename: Optional[str] = None,
-        background_filename: Optional[str] = None,
-    ) -> CreateChatRoomResponse:
+    async def create_group_chat(self, **params) -> CreateChatRoomResponse:
+        """グループチャットを作成する
+
+        Args:
+            name (str):
+            with_user_ids (List[int]):
+            icon_filename (str, optional):
+            background_filename (str, optional):
+
+        Returns:
+            CreateChatRoomResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v3/chat_rooms/new",
-            json={
-                "name": name,
-                "with_user_ids": with_user_ids,
-                "icon_filename": icon_filename,
-                "background_filename": background_filename,
-            },
+            json=params,
             return_type=CreateChatRoomResponse,
         )
 
-    async def create_private_chat(
-        self,
-        with_user_id: int,
-        matching_id: Optional[int] = None,
-        hima_chat: bool = False,
-    ) -> CreateChatRoomResponse:
+    async def create_private_chat(self, **params) -> CreateChatRoomResponse:
+        """個人チャットを作成する
+
+        Args:
+            with_user_id (int):
+            matching_id (int, optional):
+            hima_chat (bool, optional):
+
+        Returns:
+            CreateChatRoomResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/chat_rooms/new",
-            json={
-                "with_user_id": with_user_id,
-                "matching_id": matching_id,
-                "hima_chat": hima_chat,
-            },
+            json=params,
             return_type=CreateChatRoomResponse,
         )
 
-    async def delete_background(self, room_id: int) -> Response:
+    async def delete_chat_background(self, room_id: int) -> Response:
+        """チャットの背景を削除する
+
+        Args:
+            room_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v2/chat_rooms/{room_id}/background",
@@ -108,49 +131,68 @@ class ChatApi:
         )
 
     async def delete_message(self, room_id: int, message_id: int) -> Response:
+        """チャットメッセージを削除する
+
+        Args:
+            room_id (int):
+            message_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/chat_rooms/{room_id}/messages/{message_id}/delete",
             return_type=Response,
         )
 
-    async def edit_chat_room(
-        self,
-        chat_room_id: int,
-        name: str,
-        icon_filename: Optional[str] = None,
-        background_filename: Optional[str] = None,
-    ) -> Response:
+    async def edit_chat_room(self, chat_room_id: int, **params) -> Response:
+        """チャットルームを編集する
+
+        Args:
+            chat_room_id (int):
+            name (str):
+            icon_filename (str, optional):
+            background_filename (str, optional):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/chat_rooms/{chat_room_id}/edit",
-            json={
-                "name": name,
-                "icon_filename": icon_filename,
-                "background_filename": background_filename,
-            },
+            json=params,
             return_type=Response,
         )
 
     async def get_chatable_users(
         self,
         # @Body @Nullable SearchUsersRequest searchUsersRequest
-        from_follow_id: Optional[int] = None,
-        from_timestamp: Optional[int] = None,
-        order_by: Optional[str] = None,
+        **params,
     ) -> FollowUsersResponse:
+        """チャット可能なユーザーを取得する
+
+        Args:
+            from_follow_id (int, optional):
+            from_timestamp (int, optional):
+            order_by (str, optional):
+
+        Returns:
+            FollowUsersResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/users/followings/chatable",
-            json={
-                "from_follow_id": from_follow_id,
-                "from_timestamp": from_timestamp,
-                "order_by": order_by,
-            },
+            json=params,
             return_type=FollowUsersResponse,
         )
 
     async def get_gifs_data(self) -> GifsDataResponse:
+        """チャット用 GIF データを取得する
+
+        Returns:
+            GifsDataResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/hidden/chats",
@@ -158,14 +200,14 @@ class ChatApi:
         )
 
     async def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
-        """
+        """非表示に設定したチャットルームを取得する
 
-        Parameters:
-        ---------------
+        Args:
+            from_timestamp (int, optional):
+            number (int, optional)
 
-            - from_timestamp: int - (optional)
-            - number: int - (optional)
-
+        Returns:
+            ChatRoomsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -174,12 +216,15 @@ class ChatApi:
             return_type=ChatRoomsResponse,
         )
 
-    async def get_main_chat_rooms(
-        self, from_timestamp: Optional[int] = None
-    ) -> ChatRoomsResponse:
-        params = {}
-        if from_timestamp:
-            params["from_timestamp"] = from_timestamp
+    async def get_main_chat_rooms(self, **params) -> ChatRoomsResponse:
+        """メインのチャットルームを取得する
+
+        Args:
+            from_timestamp (int, optional):
+
+        Returns:
+            ChatRoomsResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/chat_rooms/main_list",
@@ -188,13 +233,14 @@ class ChatApi:
         )
 
     async def get_messages(self, chat_room_id: int, **params) -> MessagesResponse:
-        """
+        """メッセージを取得する
 
-        Parameters:
-        ---------------
-            - from_message_id: int - (optional)
-            - to_message_id: int - (optional)
+        Args:
+            from_message_id (int, optional):
+            to_message_id (int, optional):
 
+        Returns:
+            MessagesResponse:
         """
         return await self.__client.request(
             "GET",
@@ -203,15 +249,15 @@ class ChatApi:
             return_type=MessagesResponse,
         )
 
-    async def get_request_chat_rooms(self, **params) -> ChatRoomsResponse:
-        """
+    async def get_chat_requests(self, **params) -> ChatRoomsResponse:
+        """チャットリクエストを取得する
 
-        Parameters:
-        -----------
+        Args:
+            number (int, optional):
+            from_timestamp (int, optional):
 
-            - number: int (optional)
-            - from_timestamp: int (optional)
-
+        Returns:
+            ChatRoomsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -221,6 +267,14 @@ class ChatApi:
         )
 
     async def get_chat_room(self, chat_room_id: int) -> ChatRoomResponse:
+        """チャットルームを取得する
+
+        Args:
+            chat_room_id (int):
+
+        Returns:
+            ChatRoomResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + f"/v2/chat_rooms/{chat_room_id}",
@@ -228,6 +282,11 @@ class ChatApi:
         )
 
     async def get_sticker_packs(self) -> StickerPacksResponse:
+        """チャット用のスタンプを取得する
+
+        Returns:
+            StickerPacksResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v2/sticker_packs",
@@ -235,39 +294,76 @@ class ChatApi:
         )
 
     async def get_total_chat_requests(self) -> TotalChatRequestResponse:
+        """チャットリクエストの総数を取得する
+
+        Returns:
+            TotalChatRequestResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/chat_rooms/total_chat_request",
             return_type=TotalChatRequestResponse,
         )
 
-    async def hide_chat(self, chat_room_id: int) -> Response:
+    async def hide_chat(self, **params) -> Response:
+        """チャットルームを非表示にする
+
+        Args:
+            chat_room_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/hidden/chats",
-            json={"chat_room_id": chat_room_id},
+            json=params,
             return_type=Response,
         )
 
-    async def invite_to_chat(self, chat_room_id: int, user_ids: List[int]) -> Response:
+    async def invite_to_chat(self, chat_room_id: int, **params) -> Response:
+        """チャットルームにユーザーを招待する
+
+        Args:
+            chat_room_id (int):
+            with_user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v2/chat_rooms/{chat_room_id}/invite",
-            json={"with_user_ids": user_ids},
+            json=params,
             return_type=Response,
         )
 
-    async def kick_users_from_chat(
-        self, chat_room_id: int, user_ids: List[int]
-    ) -> Response:
+    async def kick_users_from_chat(self, chat_room_id: int, **params) -> Response:
+        """チャットルームからユーザーを追放する
+
+        Args:
+            chat_room_id (int):
+            with_user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v2/chat_rooms/{chat_room_id}/kick",
-            json={"with_user_ids": user_ids},
+            json=params,
             return_type=Response,
         )
 
     async def pin_chat(self, room_id: int) -> Response:
+        """チャットルームをピン留めする
+
+        Args:
+            room_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/chat_rooms/{room_id}/pinned",
@@ -275,6 +371,15 @@ class ChatApi:
         )
 
     async def read_message(self, chat_room_id: int, message_id: int) -> Response:
+        """メッセージを既読にする
+
+        Args:
+            chat_room_id (int):
+            message_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST
@@ -282,12 +387,15 @@ class ChatApi:
             return_type=Response,
         )
 
-    async def refresh_chat_rooms(
-        self, from_time: Optional[int] = None
-    ) -> ChatRoomsResponse:
-        params = {}
-        if from_time:
-            params["from_time"] = from_time
+    async def refresh_chat_rooms(self, **params) -> ChatRoomsResponse:
+        """チャットルームを更新する
+
+        Args:
+            from_time (int, optional):
+
+        Returns:
+            ChatRoomsResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v2/chat_rooms/update",
@@ -295,45 +403,31 @@ class ChatApi:
             return_type=ChatRoomsResponse,
         )
 
-    async def delete_chat_rooms(self, chat_room_ids: List[int]) -> Response:
-        chat_room_ids = (
-            [chat_room_ids] if isinstance(chat_room_ids, int) else chat_room_ids
-        )
+    async def delete_chat_rooms(self, **params) -> Response:
+        """チャットルームを削除する
+
+        Args:
+            chat_room_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/chat_rooms/mass_destroy",
-            json={"chat_room_ids": chat_room_ids},
-            return_type=Response,
-        )
-
-    async def report_chat_room(
-        self,
-        chat_room_id: int,
-        opponent_id: int,
-        category_id: int,
-        reason: Optional[str] = None,
-        screenshot_filename: Optional[str] = None,
-        screenshot_2_filename: Optional[str] = None,
-        screenshot_3_filename: Optional[str] = None,
-        screenshot_4_filename: Optional[str] = None,
-    ) -> Response:
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + f"/v3/chat_rooms/{chat_room_id}/report",
-            json={
-                "chat_room_id": chat_room_id,
-                "opponent_id": opponent_id,
-                "category_id": category_id,
-                "reason": reason,
-                "screenshot_filename": screenshot_filename,
-                "screenshot_2_filename": screenshot_2_filename,
-                "screenshot_3_filename": screenshot_3_filename,
-                "screenshot_4_filename": screenshot_4_filename,
-            },
+            json=params,
             return_type=Response,
         )
 
     async def send_message(self, chat_room_id: int, **params) -> MessageResponse:
+        """チャットを送信する
+
+        Args:
+            chat_room_id (int):
+
+        Returns:
+            MessageResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v3/chat_rooms/{chat_room_id}/messages/new",
@@ -341,15 +435,31 @@ class ChatApi:
             return_type=MessageResponse,
         )
 
-    async def unhide_chat(self, chat_room_ids: int) -> Response:
+    async def unhide_chat(self, **params) -> Response:
+        """非表示に設定したチャットルームを表示する
+
+        Args:
+            chat_room_ids (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + "/v1/hidden/chats",
-            params={"chat_room_ids": chat_room_ids},
+            params=params,
             return_type=Response,
         )
 
     async def unpin_chat(self, chat_room_id: int) -> Response:
+        """チャットのピン留めを解除する
+
+        Args:
+            chat_room_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/chat_rooms/{chat_room_id}/pinned",
