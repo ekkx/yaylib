@@ -94,7 +94,7 @@ class GroupApi:
             config.API_HOST + f"/v1/groups/{group_id}/ban/{user_id}",
         )
 
-    async def check_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
+    async def check_group_unread_status(self, from_time: int = None) -> UnreadStatusResponse:
         params = {}
         if from_time:
             params["from_time"] = from_time
@@ -162,7 +162,7 @@ class GroupApi:
             return_type=CreateGroupResponse,
         )
 
-    async def create_pin_group(self, group_id: int):
+    async def pin_group(self, group_id: int):
         return await self.__client.request(
             "POST", config.API_HOST + "/v1/pinned/groups", json={"id": group_id}
         )
@@ -182,7 +182,7 @@ class GroupApi:
             "POST", config.API_HOST + f"/v1/groups/{group_id}/decline/{user_id}"
         )
 
-    async def delete_pin_group(self, group_id: int):
+    async def unpin_group(self, group_id: int):
         return await self.__client.request(
             "DELETE", config.API_HOST + f"/v1/pinned/groups/{group_id}"
         )
@@ -397,17 +397,6 @@ class GroupApi:
             config.API_HOST + f"/v1/groups/{group_id}/leave",
         )
 
-    async def post_gruop_social_shared(
-        self,
-        group_id: int,
-        sns_name: str,
-    ):
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + f"/v2/groups/{group_id}/social_shared",
-            params={"sns_name": sns_name},
-        )
-
     async def remove_group_cover(
         self,
         group_id: int,
@@ -436,31 +425,6 @@ class GroupApi:
             "DELETE",
             config.API_HOST + f"/v1/groups/{group_id}/related",
             params={"related_group_id[]": related_group_ids},
-        )
-
-    async def report_group(
-        self,
-        group_id: int,
-        category_id: int,
-        reason: str = None,
-        opponent_id: int = None,
-        screenshot_filename: str = None,
-        screenshot_2_filename: str = None,
-        screenshot_3_filename: str = None,
-        screenshot_4_filename: str = None,
-    ):
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + f"/v3/groups/{group_id}/report",
-            json={
-                "category_id": category_id,
-                "reason": reason,
-                "opponent_id": opponent_id,
-                "screenshot_filename": screenshot_filename,
-                "screenshot_2_filename": screenshot_2_filename,
-                "screenshot_3_filename": screenshot_3_filename,
-                "screenshot_4_filename": screenshot_4_filename,
-            },
         )
 
     async def send_moderator_offers(self, group_id: int, user_ids: list[int]):
