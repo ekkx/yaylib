@@ -151,7 +151,9 @@ class CallApi:
             return_type=PostsResponse,
         )
 
-    async def invite_to_call_bulk(self, call_id: int, group_id: Optional[int] = None):
+    async def invite_online_followings_to_call(
+        self, call_id: int, group_id: Optional[int] = None
+    ):
         """通話に一括で招待します
 
         Args:
@@ -193,7 +195,7 @@ class CallApi:
             },
         )
 
-    async def kick_and_ban_from_call(self, call_id: int, user_id: int):
+    async def kick_user_from_call(self, call_id: int, user_id: int):
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/calls/conference_calls/{call_id}/kick",
@@ -224,7 +226,7 @@ class CallApi:
             payload={"role": role},
         )
 
-    async def start_call(
+    async def join_call(
         self, conference_id: int, call_sid: Optional[str] = None
     ) -> ConferenceCallResponse:
         return await self.__client.request(
@@ -234,7 +236,14 @@ class CallApi:
             return_type=ConferenceCallResponse,
         )
 
-    async def start_anonymous_call(
+    async def leave_call(self, conference_id: int, call_sid: Optional[str] = None):
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v1/calls/leave_conference_call",
+            payload={"conference_id": conference_id, "call_sid": call_sid},
+        )
+
+    async def join_call_as_anonymous(
         self, conference_id: int, agora_uid: str
     ) -> ConferenceCallResponse:
         return await self.__client.request(
@@ -244,18 +253,11 @@ class CallApi:
             return_type=ConferenceCallResponse,
         )
 
-    async def stop_anonymous_call(
+    async def leave_call_as_anonymous(
         self, conference_id: int, agora_uid: Optional[str] = None
     ):
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/anonymous_calls/leave_conference_call",
             payload={"conference_id": conference_id, "agora_uid": agora_uid},
-        )
-
-    async def stop_call(self, conference_id: int, call_sid: Optional[str] = None):
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v1/calls/leave_conference_call",
-            payload={"conference_id": conference_id, "call_sid": call_sid},
         )
