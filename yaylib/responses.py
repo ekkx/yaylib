@@ -61,10 +61,11 @@ from .models import (
 
 
 class Response(Model):
-    __slots__ = "result"
+    __slots__ = ("data", "result")
 
     def __init__(self, data):
-        self.result = data.get("result")
+        self.data: dict = data
+        self.result: str = data.get("result")
 
     def __repr__(self):
         return f"Response(result={self.result})"
@@ -91,7 +92,6 @@ class ActiveFollowingsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.last_loggedin_at = data.get("last_loggedin_at")
 
         self.users = data.get("users")
@@ -107,8 +107,6 @@ class ActivitiesResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.activities = data.get("activities")
         if self.activities is not None:
@@ -126,8 +124,6 @@ class AdditionalSettingsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.settings = data.get("settings")
         if self.settings is not None:
             self.settings = Settings(self.settings)
@@ -142,7 +138,6 @@ class AppReviewStatusResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.is_app_reviewed = data.get("is_app_reviewed")
 
     def __repr__(self):
@@ -154,8 +149,6 @@ class BgmsResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.bgm = data.get("bgm")
         if self.bgm is not None:
@@ -171,8 +164,6 @@ class BlockedUserIdsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.block_ids = data.get("block_ids")
 
     def __repr__(self):
@@ -185,7 +176,6 @@ class BlockedUsersResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.blocked_count = data.get("blocked_count")
         self.last_id = data.get("last_id")
 
@@ -203,7 +193,6 @@ class BookmarkPostResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.is_bookmarked = data.get("is_bookmarked")
 
     def __repr__(self):
@@ -216,7 +205,6 @@ class CallStatusResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.phone_status = data.get("phone_status")
         self.video_status = data.get("video_status")
         self.room_url = data.get("room_url")
@@ -231,8 +219,6 @@ class ChatRoomResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.chat = data.get("chat")
         if self.chat is not None:
             self.chat = ChatRoom(self.chat)
@@ -246,8 +232,6 @@ class ChatRoomsResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.pinned_chat_rooms = data.get("pinned_chat_rooms")
         if self.pinned_chat_rooms is not None:
@@ -272,7 +256,6 @@ class TotalChatRequestResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.total = data.get("total")
 
     def __repr__(self):
@@ -284,8 +267,6 @@ class ConferenceCallResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.conference_call = data.get("conference_call")
         if self.conference_call is not None:
@@ -301,7 +282,6 @@ class ContactStatusResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.contacts = data.get("contacts")
 
     def __repr__(self):
@@ -314,7 +294,6 @@ class CreateGroupResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.group_id = data.get("group_id")
 
     def __repr__(self):
@@ -326,8 +305,6 @@ class CreateQuotaResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.create = data.get("create")
         if self.create is not None:
@@ -343,7 +320,6 @@ class CreateChatRoomResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.room_id = data.get("room_id")
 
     def __repr__(self):
@@ -355,8 +331,6 @@ class CreatePostResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.conference_call = data.get("conference_call")
         if self.conference_call is not None:
@@ -376,7 +350,6 @@ class CreateUserResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.id = data.get("id")
         self.access_token = data.get("access_token")
         self.refresh_token = data.get("refresh_token")
@@ -392,7 +365,6 @@ class EmailGrantTokenResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.email_grant_token = data.get("email_grant_token")
 
     def __repr__(self):
@@ -405,7 +377,6 @@ class EmailVerificationPresignedUrlResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.url = data.get("url")
         self.presigned_url = data.get("presigned_url")
         self.expires_at = data.get("expires_at")
@@ -421,7 +392,6 @@ class PresignedUrlResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.presigned_url = data.get("presigned_url")
 
     def __repr__(self):
@@ -433,8 +403,6 @@ class PresignedUrlsResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.presigned_urls = data.get("presigned_urls")
         if self.presigned_urls is not None:
@@ -452,7 +420,6 @@ class IdCheckerPresignedUrlResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.presigned_url = data.get("presigned_url")
 
     def __repr__(self):
@@ -464,8 +431,6 @@ class DefaultSettingsResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.timeline_settings = data.get("timeline_settings")
         if self.timeline_settings is not None:
@@ -481,7 +446,6 @@ class FollowRecommendationsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.total = data.get("total")
 
         self.users = data.get("users")
@@ -500,7 +464,6 @@ class FollowRequestCountResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.users_count = data.get("users_count")
 
     def __repr__(self):
@@ -513,7 +476,6 @@ class FollowUsersResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.last_follow_id = data.get("last_follow_id")
 
         self.users = data.get("users")
@@ -530,8 +492,6 @@ class FootprintsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.footprints = data.get("footprints")
         if self.footprints is not None:
             self.footprints = [Footprint(footprint) for footprint in self.footprints]
@@ -545,8 +505,6 @@ class GamesResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.games = data.get("games")
         if self.games is not None:
@@ -564,8 +522,6 @@ class GenresResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.genres = data.get("genres")
         if self.genres is not None:
             self.genres = [Genre(genre) for genre in self.genres]
@@ -581,8 +537,6 @@ class GroupCategoriesResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.group_categories = data.get("group_categories")
         if self.group_categories is not None:
@@ -600,8 +554,6 @@ class GroupGiftHistoryResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.gift_history = data.get("gift_history")
         if self.gift_history is not None:
@@ -621,8 +573,6 @@ class GroupNotificationSettingsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.setting = data.get("setting")
         if self.setting is not None:
             self.setting = Setting(self.setting)
@@ -637,8 +587,6 @@ class GroupResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.group = data.get("group")
         if self.group is not None:
             self.group = Group(self.group)
@@ -652,8 +600,6 @@ class GroupsRelatedResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.groups = data.get("groups")
         if self.groups is not None:
@@ -670,8 +616,6 @@ class GroupsResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.pinned_groups = data.get("pinned_groups")
         if self.pinned_groups is not None:
@@ -693,8 +637,6 @@ class GroupThreadListResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.threads = data.get("threads")
         if self.threads is not None:
             self.threads = [ThreadInfo(thread) for thread in self.threads]
@@ -711,8 +653,6 @@ class GroupUserResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.group_user = data.get("group_user")
         if self.group_user is not None:
             self.group_user = GroupUser(self.group_user)
@@ -726,8 +666,6 @@ class GroupUsersResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.group_users = data.get("group_users")
         if self.group_users is not None:
@@ -745,8 +683,6 @@ class GifsDataResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.gif_categories = data.get("gif_categories")
         if self.gif_categories is not None:
             self.gif_categories = [
@@ -762,8 +698,6 @@ class HiddenResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.hidden_users = data.get("hidden_users")
         if self.hidden_users is not None:
@@ -792,7 +726,6 @@ class LoginUserResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.user_id = data.get("user_id")
         self.username = data.get("username")
         self.is_new = data.get("is_new")
@@ -822,7 +755,6 @@ class LoginUpdateResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.user_id = data.get("user_id")
         self.username = data.get("username")
         self.access_token = data.get("access_token")
@@ -839,7 +771,6 @@ class MessageResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.id = data.get("id")
 
         self.conference_call = data.get("conference_call")
@@ -856,8 +787,6 @@ class MessagesResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.messages = data.get("messages")
         if self.messages is not None:
             self.messages = [Message(message) for message in self.messages]
@@ -872,7 +801,6 @@ class PolicyAgreementsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.latest_privacy_policy_agreed = data.get("latest_privacy_policy_agreed")
         self.latest_terms_of_use_agreed = data.get("latest_terms_of_use_agreed")
 
@@ -885,8 +813,6 @@ class PostResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.post = data.get("post")
         if self.post is not None:
@@ -902,7 +828,6 @@ class PostsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.next_page_value = data.get("next_page_value")
 
         self.posts = data.get("posts")
@@ -923,7 +848,6 @@ class PostLikersResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.last_id = data.get("last_id")
 
         self.users = data.get("users")
@@ -940,8 +864,6 @@ class PostTagsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.tags = data.get("tags")
         if self.tags is not None:
             self.tags = [PostTag(tag) for tag in self.tags]
@@ -955,8 +877,6 @@ class PromotionsResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.promotions = data.get("promotions")
         if self.promotions is not None:
@@ -972,7 +892,6 @@ class LikePostsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.like_ids = data.get("like_ids")
 
     def __repr__(self):
@@ -985,7 +904,6 @@ class ValidationPostResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.is_allow_to_post = data.get("is_allow_to_post")
 
     def __repr__(self):
@@ -997,8 +915,6 @@ class RefreshCounterRequestsResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.reset_counter_requests = data.get("reset_counter_requests")
         if self.reset_counter_requests is not None:
@@ -1016,8 +932,6 @@ class ReviewsResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.reviews = data.get("reviews")
         if self.reviews is not None:
@@ -1039,8 +953,6 @@ class SocialShareUsersResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.social_shared_users = data.get("social_shared_users")
         if self.social_shared_users is not None:
             self.social_shared_users = [
@@ -1057,8 +969,6 @@ class StickerPacksResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.sticker_packs = data.get("sticker_packs")
         if self.sticker_packs is not None:
@@ -1083,7 +993,6 @@ class TokenResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.user_id = data.get("id")
         self.created_at = data.get("created_at")
         self.access_token = data.get("access_token")
@@ -1100,7 +1009,6 @@ class VerifyDeviceResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.verified = data.get("verified")
         self.verified_at = data.get("verified_at")
 
@@ -1114,7 +1022,6 @@ class VipGameRewardUrlResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.url = data.get("url")
 
     def __repr__(self):
@@ -1126,8 +1033,6 @@ class VoteSurveyResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.survey = data.get("survey")
         if self.survey is not None:
@@ -1143,7 +1048,6 @@ class UnreadStatusResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.is_unread = data.get("is_unread")
 
     def __repr__(self):
@@ -1152,7 +1056,6 @@ class UnreadStatusResponse(Response):
 
 class UserResponse(Response):
     __slots__ = (
-        "data",
         "user",
         "masked_email",
         "twitter_id",
@@ -1174,8 +1077,6 @@ class UserResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.user = data.get("user")
         if self.user is not None:
@@ -1211,8 +1112,6 @@ class UsersResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.users = data.get("users")
         if self.users is not None:
             self.users = [User(user) for user in self.users]
@@ -1228,8 +1127,6 @@ class RankingUsersResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.users = data.get("users")
         if self.users is not None:
@@ -1253,7 +1150,6 @@ class UserCustomDefinitionsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.age = data.get("age")
         self.followers_count = data.get("followers_count")
         self.followings_count = data.get("followings_count")
@@ -1272,8 +1168,6 @@ class HimaUsersResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.hima_users = data.get("hima_users")
         if self.hima_users is not None:
             self.hima_users = [UserWrapper(hima_user) for hima_user in self.hima_users]
@@ -1288,7 +1182,6 @@ class UsersByTimestampResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.last_timestamp = data.get("last_timestamp")
 
         self.users = data.get("users")
@@ -1305,7 +1198,6 @@ class UserTimestampResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.time = data.get("time")
         self.ip_address = data.get("ip_address")
         self.country = data.get("country")
@@ -1320,7 +1212,6 @@ class ChannelResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.identifier = data.get("identifier")
 
         self.message = data.get("message")
@@ -1354,7 +1245,6 @@ class WebSocketTokenResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
         self.token = data.get("token")
 
     def __repr__(self):
@@ -1366,8 +1256,6 @@ class ApplicationConfigResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.app = data.get("app")
         if self.app is not None:
@@ -1383,8 +1271,6 @@ class BanWordsResponse(Response):
     def __init__(self, data):
         super().__init__(data)
 
-        self.data = data
-
         self.ban_words = data.get("ban_words")
         if self.ban_words is not None:
             self.ban_words = [BanWord(ban_word) for ban_word in self.ban_words]
@@ -1398,8 +1284,6 @@ class PopularWordsResponse(Response):
 
     def __init__(self, data):
         super().__init__(data)
-
-        self.data = data
 
         self.popular_words = data.get("popular_words")
         if self.popular_words is not None:

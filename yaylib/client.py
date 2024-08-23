@@ -426,7 +426,7 @@ class Client(
         params: Optional[Dict] = None,
         json: Optional[Dict] = None,
         headers: Optional[Dict] = None,
-        return_type: Optional[Dict] = None,
+        return_type: Optional[Model] = None,
         jwt_required=False,
     ) -> Dict | Model:
         if not url.startswith("https://"):
@@ -483,12 +483,12 @@ class Client(
 
         return response
 
-    def insert_delay(self, callback: Callable) -> None:
+    def insert_delay(self, callback: Callable) -> Any:
         """リクエスト間の時間が1秒未満のときに遅延を挿入します"""
         if int(datetime.now().timestamp()) - self.__last_request_ts < 1:
             time.sleep(random.uniform(self.__min_delay, self.__max_delay))
         self.__last_request_ts = int(datetime.now().timestamp())
-        callback()
+        return callback()
 
     def __sync_request(self, callback: Awaitable) -> Any:
         """非同期リクエストを同期リクエストに変換します"""
