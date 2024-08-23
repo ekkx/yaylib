@@ -28,7 +28,7 @@ import os
 import random
 import time
 from datetime import datetime
-from typing import Awaitable, Callable, Dict, Optional
+from typing import Any, Awaitable, Callable, Dict, Optional
 
 import aiohttp
 
@@ -75,6 +75,7 @@ from .responses import (
     CreateChatRoomResponse,
     CreateGroupResponse,
     CreatePostResponse,
+    CreateUserResponse,
     EmailGrantTokenResponse,
     EmailVerificationPresignedUrlResponse,
     FollowRecommendationsResponse,
@@ -109,6 +110,7 @@ from .responses import (
     PresignedUrlsResponse,
     RankingUsersResponse,
     RefreshCounterRequestsResponse,
+    Response,
     ReviewsResponse,
     SocialShareUsersResponse,
     StickerPacksResponse,
@@ -377,7 +379,7 @@ class Client(
 
     def __construct_response(
         self, response: dict, data_type: Optional[Model] = None
-    ) -> dict | Model:
+    ) -> Dict | Model:
         if data_type is not None:
             if isinstance(response, list):
                 response = [data_type(result) for result in response]
@@ -390,11 +392,11 @@ class Client(
         method: str,
         url: str,
         *,
-        params: Optional[dict] = None,
-        json: Optional[dict] = None,
-        headers: Optional[dict] = None,
-        return_type: Optional[Model] = None,
-    ) -> dict | Model:
+        params: Optional[Dict] = None,
+        json: Optional[Dict] = None,
+        headers: Optional[Dict] = None,
+        return_type: Optional[Dict] = None,
+    ) -> Dict | Model:
         response = await self.base_request(
             method, url, params=params, json=json, headers=headers
         )
@@ -421,12 +423,12 @@ class Client(
         method: str,
         url: str,
         *,
-        params: Optional[dict] = None,
-        json: Optional[dict] = None,
-        headers: Optional[dict] = None,
-        return_type: Optional[Model] = None,
+        params: Optional[Dict] = None,
+        json: Optional[Dict] = None,
+        headers: Optional[Dict] = None,
+        return_type: Optional[Dict] = None,
         jwt_required=False,
-    ) -> dict | Model:
+    ) -> Dict | Model:
         if not url.startswith("https://"):
             url = "https://" + url
 
@@ -481,14 +483,14 @@ class Client(
 
         return response
 
-    def insert_delay(self, callback: Callable):
+    def insert_delay(self, callback: Callable) -> None:
         """リクエスト間の時間が1秒未満のときに遅延を挿入します"""
         if int(datetime.now().timestamp()) - self.__last_request_ts < 1:
             time.sleep(random.uniform(self.__min_delay, self.__max_delay))
         self.__last_request_ts = int(datetime.now().timestamp())
-        return callback()
+        callback()
 
-    def __sync_request(self, callback: Awaitable):
+    def __sync_request(self, callback: Awaitable) -> Any:
         """非同期リクエストを同期リクエストに変換します"""
         return self.insert_delay(lambda: asyncio.run(callback))
 
@@ -534,13 +536,13 @@ class Client(
         self,
         call_id: int,
         group_id: Optional[int] = None,
-    ) -> dict:
+    ) -> Response:
         """オンラインの友達をまとめて通話に招待します"""
         return self.__sync_request(
             self.call.invite_online_followings_to_call(call_id, group_id)
         )
 
-    def invite_users_to_call(self, call_id: int, user_ids: list[int]) -> dict:
+    def invite_users_to_call(self, call_id: int, user_ids: list[int]) -> Response:
         """ユーザーを通話に招待します"""
         return self.__sync_request(self.call.invite_users_to_call(call_id, user_ids))
 
@@ -549,13 +551,13 @@ class Client(
         chat_room_id: int,
         room_id: int,
         room_url: str,
-    ) -> dict:
+    ) -> Response:
         """チャット通話にユーザーを招待します"""
         return self.__sync_request(
             self.call.invite_users_to_chat_call(chat_room_id, room_id, room_url)
         )
 
-    def kick_user_from_call(self, call_id: int, user_id: int) -> dict:
+    def kick_user_from_call(self, call_id: int, user_id: int) -> Response:
         """ユーザーを通話からキックします"""
         self.__sync_request(self.call.kick_user_from_call(call_id, user_id))
 
@@ -565,13 +567,13 @@ class Client(
         joinable_by: str,
         game_title: Optional[str] = None,
         category_id: Optional[str] = None,
-    ) -> dict:
+    ) -> Response:
         """通話を開始します"""
         return self.__sync_request(
             self.call.set_call(call_id, joinable_by, game_title, category_id)
         )
 
-    def set_user_role(self, call_id: int, user_id: int, role: str) -> dict:
+    def set_user_role(self, call_id: int, user_id: int, role: str) -> Response:
         """通話に参加中のユーザーに役職を与えます"""
         return self.__sync_request(self.call.set_user_role(call_id, user_id, role))
 
@@ -593,13 +595,13 @@ class Client(
         self,
         conference_id: int,
         call_sid: Optional[str] = None,
-    ) -> dict:
+    ) -> Response:
         """通話から退出します"""
         return self.__sync_request(self.call.leave_call(conference_id, call_sid))
 
     def leave_call_as_anonymous(
         self, conference_id: int, agora_uid: Optional[str] = None
-    ):
+    ) -> Response:
         """通話から退出します"""
         return self.__sync_request(
             self.call.leave_call_as_anonymous(conference_id, agora_uid)
@@ -617,7 +619,7 @@ class Client(
 
     # ---------- chat api ----------
 
-    def accept_chat_requests(self, chat_room_ids: list[int]) -> dict:
+    def accept_chat_requests(self, chat_room_ids: list[int]) -> Response:
         """チャットリクエストを承認します"""
         return self.__sync_request(self.chat.accept_chat_requests(chat_room_ids))
 
@@ -650,11 +652,11 @@ class Client(
             self.chat.create_private_chat(with_user_id, matching_id, hima_chat)
         )
 
-    def delete_background(self, room_id: int) -> dict:
+    def delete_background(self, room_id: int) -> Response:
         """チャットの背景画像を削除します"""
         return self.__sync_request(self.chat.delete_background(room_id))
 
-    def delete_message(self, room_id: int, message_id: int) -> dict:
+    def delete_message(self, room_id: int, message_id: int) -> Response:
         """メッセージを削除します"""
         return self.__sync_request(self.chat.delete_message(room_id, message_id))
 
@@ -664,7 +666,7 @@ class Client(
         name: str,
         icon_filename: Optional[str] = None,
         background_filename: Optional[str] = None,
-    ) -> dict:
+    ) -> Response:
         """チャットルームを編集します"""
         return self.__sync_request(
             self.chat.edit_chat_room(
@@ -717,25 +719,25 @@ class Client(
         """チャットリクエストの数を取得します"""
         return self.__sync_request(self.chat.get_total_chat_requests())
 
-    def hide_chat(self, chat_room_id: int) -> dict:
+    def hide_chat(self, chat_room_id: int) -> Response:
         """チャットルームを非表示にします"""
         return self.__sync_request(self.chat.hide_chat(chat_room_id))
 
-    def invite_to_chat(self, chat_room_id: int, user_ids: list[int]) -> dict:
+    def invite_to_chat(self, chat_room_id: int, user_ids: list[int]) -> Response:
         """チャットルームにユーザーを招待します"""
         return self.__sync_request(self.chat.invite_to_chat(chat_room_id, user_ids))
 
-    def kick_users_from_chat(self, chat_room_id: int, user_ids: list[int]) -> dict:
+    def kick_users_from_chat(self, chat_room_id: int, user_ids: list[int]) -> Response:
         """チャットルームからユーザーを追放します"""
         return self.__sync_request(
             self.chat.kick_users_from_chat(chat_room_id, user_ids)
         )
 
-    def pin_chat(self, room_id: int) -> dict:
+    def pin_chat(self, room_id: int) -> Response:
         """チャットルームをピン止めします"""
         return self.__sync_request(self.chat.pin_chat(room_id))
 
-    def read_message(self, chat_room_id: int, message_id: int) -> dict:
+    def read_message(self, chat_room_id: int, message_id: int) -> Response:
         """メッセージを既読にします"""
         return self.__sync_request(self.chat.read_message(chat_room_id, message_id))
 
@@ -743,7 +745,7 @@ class Client(
         """チャットルームを更新します"""
         return self.__sync_request(self.chat.refresh_chat_rooms(from_time))
 
-    def delete_chat_rooms(self, chat_room_ids: list[int]) -> dict:
+    def delete_chat_rooms(self, chat_room_ids: list[int]) -> Response:
         """チャットルームを削除します"""
         return self.__sync_request(self.chat.delete_chat_rooms(chat_room_ids))
 
@@ -757,7 +759,7 @@ class Client(
         screenshot_2_filename: Optional[str] = None,
         screenshot_3_filename: Optional[str] = None,
         screenshot_4_filename: Optional[str] = None,
-    ) -> dict:
+    ) -> Response:
         """チャットルームを通報します"""
         return self.__sync_request(
             self.chat.report_chat_room(
@@ -780,37 +782,39 @@ class Client(
         """チャットルームにメッセージを送信します"""
         return self.__sync_request(self.chat.send_message(chat_room_id, **params))
 
-    def unhide_chat(self, chat_room_ids: int) -> dict:
+    def unhide_chat(self, chat_room_ids: int) -> Response:
         """非表示に設定したチャットルームを表示する"""
         return self.__sync_request(self.chat.unhide_chat(chat_room_ids))
 
-    def unpin_chat(self, chat_room_id: int) -> dict:
+    def unpin_chat(self, chat_room_id: int) -> Response:
         """チャットルームのピン止めを解除します"""
         return self.__sync_request(self.chat.unpin_chat(chat_room_id))
 
     # ---------- group api ----------
 
-    def accept_moderator_offer(self, group_id: int) -> dict:
+    def accept_moderator_offer(self, group_id: int) -> Response:
         """サークル副管理人の権限オファーを引き受けます"""
         return self.__sync_request(self.group.accept_moderator_offer(group_id))
 
-    def accept_ownership_offer(self, group_id: int) -> dict:
+    def accept_ownership_offer(self, group_id: int) -> Response:
         """サークル管理人の権限オファーを引き受けます"""
         return self.__sync_request(self.group.accept_ownership_offer(group_id))
 
-    def accept_group_join_request(self, group_id: int, user_id: int) -> dict:
+    def accept_group_join_request(self, group_id: int, user_id: int) -> Response:
         """サークル参加リクエストを承認します"""
         return self.__sync_request(
             self.group.accept_group_join_request(group_id, user_id)
         )
 
-    def add_related_groups(self, group_id: int, related_group_id: list[int]) -> dict:
+    def add_related_groups(
+        self, group_id: int, related_group_id: list[int]
+    ) -> Response:
         """関連サークルを追加します"""
         return self.__sync_request(
             self.group.add_related_groups(group_id, related_group_id)
         )
 
-    def ban_group_user(self, group_id: int, user_id: int) -> dict:
+    def ban_group_user(self, group_id: int, user_id: int) -> Response:
         """サークルからユーザーを追放します"""
         return self.__sync_request(self.group.ban_group_user(group_id, user_id))
 
@@ -869,25 +873,25 @@ class Client(
             )
         )
 
-    def pin_group(self, group_id: int) -> dict:
+    def pin_group(self, group_id: int) -> Response:
         """サークルをピンします"""
         return self.__sync_request(self.group.pin_group(group_id))
 
-    def decline_moderator_offer(self, group_id: int) -> dict:
+    def decline_moderator_offer(self, group_id: int) -> Response:
         """サークル副管理人の権限オファーを断ります"""
         return self.__sync_request(self.group.decline_moderator_offer(group_id))
 
-    def decline_ownership_offer(self, group_id: int) -> dict:
+    def decline_ownership_offer(self, group_id: int) -> Response:
         """サークル管理人の権限オファーを断ります"""
         return self.__sync_request(self.group.decline_ownership_offer(group_id))
 
-    def decline_group_join_request(self, group_id: int, user_id: int) -> dict:
+    def decline_group_join_request(self, group_id: int, user_id: int) -> Response:
         """サークル参加リクエストを断ります"""
         return self.__sync_request(
             self.group.decline_group_join_request(group_id, user_id)
         )
 
-    def unpin_group(self, group_id: int) -> dict:
+    def unpin_group(self, group_id: int) -> Response:
         """サークルのピン止めを解除します"""
         return self.__sync_request(self.group.unpin_group(group_id))
 
@@ -919,7 +923,7 @@ class Client(
         """サークルに招待可能なユーザーを取得します"""
         return self.__sync_request(self.group.get_invitable_users(group_id, **params))
 
-    def get_joined_statuses(self, ids: list[int]) -> dict:
+    def get_joined_statuses(self, ids: list[int]) -> Response:
         """サークルの参加ステータスを取得します"""
         return self.__sync_request(self.group.get_joined_statuses(ids))
 
@@ -947,51 +951,51 @@ class Client(
         """特定のユーザーが参加しているサークルを取得します"""
         return self.__sync_request(self.group.get_user_groups(**params))
 
-    def invite_users_to_group(self, group_id: int, user_ids: list[int]) -> dict:
+    def invite_users_to_group(self, group_id: int, user_ids: list[int]) -> Response:
         """サークルにユーザーを招待します"""
         return self.__sync_request(self.group.invite_users_to_group(group_id, user_ids))
 
-    def join_group(self, group_id: int) -> dict:
+    def join_group(self, group_id: int) -> Response:
         """サークルに参加します"""
         return self.__sync_request(self.group.join_group(group_id))
 
-    def leave_group(self, group_id: int) -> dict:
+    def leave_group(self, group_id: int) -> Response:
         """サークルから脱退します"""
         return self.__sync_request(self.group.leave_group(group_id))
 
-    def remove_group_cover(self, group_id: int) -> dict:
+    def remove_group_cover(self, group_id: int) -> Response:
         """サークルのカバー画像を削除します"""
         return self.__sync_request(self.group.remove_group_cover(group_id))
 
-    def remove_moderator(self, group_id: int, user_id: int) -> dict:
+    def remove_moderator(self, group_id: int, user_id: int) -> Response:
         """サークルの副管理人を削除します"""
         return self.__sync_request(self.group.remove_moderator(group_id, user_id))
 
     def remove_related_groups(
         self, group_id: int, related_group_ids: list[int]
-    ) -> dict:
+    ) -> Response:
         """関連のあるサークルを削除します"""
         return self.__sync_request(
             self.group.remove_related_groups(group_id, related_group_ids)
         )
 
-    def send_moderator_offers(self, group_id: int, user_ids: list[int]) -> dict:
+    def send_moderator_offers(self, group_id: int, user_ids: list[int]) -> Response:
         """複数人にサークル副管理人のオファーを送信します"""
         return self.__sync_request(self.group.send_moderator_offers(group_id, user_ids))
 
-    def send_ownership_offer(self, group_id: int, user_id: int) -> dict:
+    def send_ownership_offer(self, group_id: int, user_id: int) -> Response:
         """サークル管理人権限のオファーを送信します"""
         return self.__sync_request(self.group.send_ownership_offer(group_id, user_id))
 
-    def set_group_title(self, group_id: int, title: str) -> dict:
+    def set_group_title(self, group_id: int, title: str) -> Response:
         """サークルのタイトルを設定します"""
         return self.__sync_request(self.group.set_group_title(group_id, title))
 
-    def take_over_group_ownership(self, group_id: int) -> dict:
+    def take_over_group_ownership(self, group_id: int) -> Response:
         """サークル管理人の権限を引き継ぎます"""
         return self.__sync_request(self.group.take_over_group_ownership(group_id))
 
-    def unban_group_member(self, group_id: int, user_id: int) -> dict:
+    def unban_group_member(self, group_id: int, user_id: int) -> Response:
         """特定のサークルメンバーの追放を解除します"""
         return self.__sync_request(self.group.unban_group_member(group_id, user_id))
 
@@ -1046,13 +1050,13 @@ class Client(
             )
         )
 
-    def withdraw_moderator_offer(self, group_id: int, user_id: int) -> dict:
+    def withdraw_moderator_offer(self, group_id: int, user_id: int) -> Response:
         """サークル副管理人のオファーを取り消します"""
         return self.__sync_request(
             self.group.withdraw_moderator_offer(group_id, user_id)
         )
 
-    def withdraw_ownership_offer(self, group_id: int, user_id: int) -> dict:
+    def withdraw_ownership_offer(self, group_id: int, user_id: int) -> Response:
         """サークル管理人のオファーを取り消します"""
         return self.__sync_request(
             self.group.withdraw_ownership_offer(group_id, user_id)
@@ -1086,7 +1090,7 @@ class Client(
         """メールアドレスでログインします"""
         return self.__sync_request(self.auth.login(email, password, two_fa_code))
 
-    def resend_confirm_email(self) -> dict:
+    def resend_confirm_email(self) -> Response:
         """確認メールを再送信します"""
         return self.__sync_request(self.auth.resend_confirm_email())
 
@@ -1110,11 +1114,11 @@ class Client(
 
     # ---------- misc api ----------
 
-    def accept_policy_agreement(self, agreement_type: str) -> dict:
+    def accept_policy_agreement(self, agreement_type: str) -> Response:
         """利用規約、ポリシー同意書に同意します"""
         return self.__sync_request(self.misc.accept_policy_agreement(agreement_type))
 
-    def send_verification_code(self, email: str, intent: str, locale="ja") -> Dict:
+    def send_verification_code(self, email: str, intent: str, locale="ja") -> Response:
         """認証コードを送信します"""
         return self.__sync_request(
             self.misc.send_verification_code(email, intent, locale)
@@ -1187,7 +1191,7 @@ class Client(
         """ブックマークに追加します"""
         return self.__sync_request(self.post.add_bookmark(user_id, post_id))
 
-    def add_group_highlight_post(self, group_id: int, post_id: int) -> dict:
+    def add_group_highlight_post(self, group_id: int, post_id: int) -> Response:
         """投稿をグループのまとめに追加します"""
         return self.__sync_request(
             self.post.add_group_highlight_post(group_id, post_id)
@@ -1238,11 +1242,11 @@ class Client(
             )
         )
 
-    def pin_group_post(self, post_id: int, group_id: int) -> dict:
+    def pin_group_post(self, post_id: int, group_id: int) -> Response:
         """グループの投稿をピンします"""
         return self.__sync_request(self.post.create_group_pin_post(post_id, group_id))
 
-    def pin_post(self, post_id: int) -> dict:
+    def pin_post(self, post_id: int) -> Response:
         """投稿をピンします"""
         return self.__sync_request(self.post.create_pin_post(post_id))
 
@@ -1407,15 +1411,15 @@ class Client(
             )
         )
 
-    def delete_all_posts(self) -> dict:
+    def delete_all_posts(self) -> Response:
         """すべての自分の投稿を削除します"""
         return self.__sync_request(self.post.delete_all_posts())
 
-    def unpin_group_post(self, group_id: int) -> dict:
+    def unpin_group_post(self, group_id: int) -> Response:
         """グループのピン投稿を解除します"""
         return self.__sync_request(self.post.unpin_group_post(group_id))
 
-    def unpin_post(self, post_id: int) -> dict:
+    def unpin_post(self, post_id: int) -> Response:
         """投稿のピンを解除します"""
         return self.__sync_request(self.post.unpin_post(post_id))
 
@@ -1527,21 +1531,21 @@ class Client(
         """投稿にいいねします ※ 一度にいいねできる投稿数は最大25個"""
         return self.__sync_request(self.post.like(post_ids))
 
-    def remove_bookmark(self, user_id: int, post_id: int) -> dict:
+    def remove_bookmark(self, user_id: int, post_id: int) -> Response:
         """ブックマークを削除します"""
         return self.__sync_request(self.post.remove_bookmark(user_id, post_id))
 
-    def remove_group_highlight_post(self, group_id: int, post_id: int) -> dict:
+    def remove_group_highlight_post(self, group_id: int, post_id: int) -> Response:
         """サークルのハイライト投稿を解除します"""
         return self.__sync_request(
             self.post.remove_group_highlight_post(group_id, post_id)
         )
 
-    def remove_posts(self, post_ids: list[int]) -> dict:
+    def remove_posts(self, post_ids: list[int]) -> Response:
         """複数の投稿を削除します"""
         return self.__sync_request(self.post.remove_posts(post_ids))
 
-    def unlike(self, post_id: int) -> dict:
+    def unlike(self, post_id: int) -> Response:
         """投稿のいいねを解除します"""
         return self.__sync_request(self.post.unlike(post_id))
 
@@ -1558,7 +1562,7 @@ class Client(
             self.post.update_post(post_id, text, font_size, color, message_tags)
         )
 
-    def view_video(self, video_id: int) -> dict:
+    def view_video(self, video_id: int) -> Response:
         """動画を視聴します"""
         return self.__sync_request(self.post.view_video(video_id))
 
@@ -1568,11 +1572,11 @@ class Client(
 
     # ---------- review api ----------
 
-    def create_review(self, user_id: int, comment: str) -> dict:
+    def create_review(self, user_id: int, comment: str) -> Response:
         """レターを送信します"""
         return self.__sync_request(self.review.create_review(user_id, comment))
 
-    def delete_reviews(self, review_ids: list[int]) -> dict:
+    def delete_reviews(self, review_ids: list[int]) -> Response:
         """レターを削除します"""
         return self.__sync_request(self.review.delete_reviews(review_ids))
 
@@ -1584,11 +1588,11 @@ class Client(
         """ユーザーが受け取ったレターを取得します"""
         return self.__sync_request(self.review.get_reviews(user_id, **params))
 
-    def pin_review(self, review_id: int) -> dict:
+    def pin_review(self, review_id: int) -> Response:
         """レターをピンします"""
         return self.__sync_request(self.review.pin_review(review_id))
 
-    def unpin_review(self, review_id: int) -> dict:
+    def unpin_review(self, review_id: int) -> Response:
         """レターのピン止めを解除します"""
         return self.__sync_request(self.review.unpin_review(review_id))
 
@@ -1631,7 +1635,7 @@ class Client(
             self.thread.get_group_thread_list(group_id, from_str, **params)
         )
 
-    def get_thread_joined_statuses(self, ids: list[int]) -> dict:
+    def get_thread_joined_statuses(self, ids: list[int]) -> Response:
         """スレッド参加ステータスを取得します"""
         return self.__sync_request(self.thread.get_thread_joined_statuses(ids))
 
@@ -1646,15 +1650,15 @@ class Client(
             self.thread.get_thread_posts(thread_id, from_str, **params)
         )
 
-    def join_thread(self, thread_id: int, user_id: int) -> dict:
+    def join_thread(self, thread_id: int, user_id: int) -> Response:
         """スレッドに参加します"""
         return self.__sync_request(self.thread.join_thread(thread_id, user_id))
 
-    def leave_thread(self, thread_id: int, user_id: int) -> dict:
+    def leave_thread(self, thread_id: int, user_id: int) -> Response:
         """スレッドから脱退します"""
         return self.__sync_request(self.thread.leave_thread(thread_id, user_id))
 
-    def remove_thread(self, thread_id: int) -> dict:
+    def remove_thread(self, thread_id: int) -> Response:
         """スレッドを削除します"""
         return self.__sync_request(self.thread.remove_thread(thread_id))
 
@@ -1663,7 +1667,7 @@ class Client(
         thread_id: int,
         title: str,
         thread_icon_filename: str,
-    ) -> dict:
+    ) -> Response:
         """スレッドを編集します"""
         return self.__sync_request(
             self.thread.update_thread(thread_id, title, thread_icon_filename)
@@ -1671,15 +1675,15 @@ class Client(
 
     # ---------- user api ----------
 
-    def delete_footprint(self, user_id: int, footprint_id: int) -> dict:
+    def delete_footprint(self, user_id: int, footprint_id: int) -> Response:
         """足跡を削除します"""
         return self.__sync_request(self.user.delete_footprint(user_id, footprint_id))
 
-    def follow_user(self, user_id: int) -> dict:
+    def follow_user(self, user_id: int) -> Response:
         """ユーザーをフォローします"""
         return self.__sync_request(self.user.follow_user(user_id))
 
-    def follow_users(self, user_ids: list[int]) -> dict:
+    def follow_users(self, user_ids: list[int]) -> Response:
         """複数のユーザーをフォローします"""
         return self.__sync_request(self.user.follow_users(user_ids))
 
@@ -1761,7 +1765,7 @@ class Client(
         """複数のユーザーの情報を取得します"""
         return self.__sync_request(self.user.get_users(user_ids))
 
-    def refresh_profile_counter(self, counter: str) -> dict:
+    def refresh_profile_counter(self, counter: str) -> Response:
         """プロフィールのカウンターを更新します"""
         return self.__sync_request(self.user.refresh_profile_counter(counter))
 
@@ -1780,7 +1784,7 @@ class Client(
         cover_image_filename: Optional[str] = None,
         en: Optional[int] = None,
         vn: Optional[int] = None,
-    ):
+    ) -> CreateUserResponse:
         return self.__sync_request(
             self.user.register(
                 email,
@@ -1799,11 +1803,11 @@ class Client(
             )
         )
 
-    def remove_user_avatar(self) -> dict:
+    def remove_user_avatar(self) -> Response:
         """ユーザーのアイコンを削除します"""
         return self.__sync_request(self.user.remove_user_avatar())
 
-    def remove_user_cover(self) -> dict:
+    def remove_user_cover(self) -> Response:
         """ユーザーのカバー画像を削除します"""
         return self.__sync_request(self.user.remove_user_cover())
 
@@ -1812,7 +1816,7 @@ class Client(
         email: str,
         email_grant_token: str,
         password: str,
-    ) -> dict:
+    ) -> Response:
         """パスワードをリセットします"""
         return self.__sync_request(
             self.user.reset_password(email, email_grant_token, password)
@@ -1830,31 +1834,31 @@ class Client(
         self,
         nickname: str,
         is_private: Optional[bool] = None,
-    ) -> dict:
+    ) -> Response:
         """フォローを許可制にするかを設定します"""
         return self.__sync_request(
             self.user.set_follow_permission_enabled(nickname, is_private)
         )
 
-    def take_action_follow_request(self, user_id: int, action: str) -> dict:
+    def take_action_follow_request(self, user_id: int, action: str) -> Response:
         """フォローリクエストを操作する"""
         return self.__sync_request(
             self.user.take_action_follow_request(user_id, action)
         )
 
-    def turn_on_hima(self) -> dict:
+    def turn_on_hima(self) -> Response:
         """ひまなうを有効にする"""
         return self.__sync_request(self.user.turn_on_hima())
 
-    def unfollow_user(self, user_id: int) -> dict:
+    def unfollow_user(self, user_id: int) -> Response:
         """ユーザーをアンフォローします"""
         return self.__sync_request(self.user.unfollow_user(user_id))
 
-    def update_user(self, nickname: str, **params) -> dict:
+    def update_user(self, nickname: str, **params) -> Response:
         """プロフィールを更新します"""
         return self.__sync_request(self.user.update_user(nickname, **params))
 
-    def block_user(self, user_id: int) -> dict:
+    def block_user(self, user_id: int) -> Response:
         """ユーザーをブロックします"""
         return self.__sync_request(self.user.block_user(user_id))
 
@@ -1866,7 +1870,7 @@ class Client(
         """ブロックしたユーザーを取得します"""
         return self.__sync_request(self.user.get_blocked_users(from_id))
 
-    def unblock_user(self, user_id: int) -> dict:
+    def unblock_user(self, user_id: int) -> Response:
         """ユーザーをアンブロックします"""
         return self.__sync_request(self.user.unblock_user(user_id))
 
@@ -1874,10 +1878,10 @@ class Client(
         """非表示のユーザー一覧を取得します"""
         return self.__sync_request(self.user.get_hidden_users_list(**params))
 
-    def hide_user(self, user_id: int) -> dict:
+    def hide_user(self, user_id: int) -> Response:
         """ユーザーを非表示にします"""
         return self.__sync_request(self.user.hide_user(user_id))
 
-    def unhide_users(self, user_ids: list[int]) -> dict:
+    def unhide_users(self, user_ids: list[int]) -> Response:
         """ユーザーの非表示を解除します"""
         return self.__sync_request(self.user.unhide_users(user_ids))
