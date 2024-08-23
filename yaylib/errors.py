@@ -22,8 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from enum import Enum
-
 import aiohttp
 
 __all__ = (
@@ -107,8 +105,8 @@ class AccessTokenExpiredError(AuthenticationError):
     """
 
 
-class ErrorCode(Enum):
-    Unknown = "unknown"
+class ErrorCode:
+    Unknown = 0
     InvalidParameter = -1
     RegisteredUser = -2
     AccessTokenExpired = -3
@@ -134,6 +132,8 @@ class ErrorCode(Enum):
     CannotDeleteNewUser = -26
     CaptchaRequired = -29
     FailedToVerifyCaptcha = -30
+    Required2FA = -31
+    Incorrect2FA = -32
     GroupIsFull = -100
     BannedFromGroup = -103
     InvalidCurrentPassword = -200
@@ -192,6 +192,7 @@ class ErrorCode(Enum):
     ExceededPinnedLimit = -383
     GroupShareOnTwitterLimitExceeded = -384
     ReportedContent = -385
+    InsufficientCoins = -400
     ConferenceCallIsForMutualFollowsOnly = -402
     ExceededLimit = -403
     GroupInviteExceeded = -404
@@ -204,12 +205,33 @@ class ErrorCode(Enum):
     EmailNotAuthorized = -411
     UnableToMovePostToThread = -412
     UnableToPostUrl = -413
+    ReferralAlreadyRegistered = -415
+    MuteUserOverLimit = -416
+    InvalidAppVersion = -800
     UnableToSetCall = -977
+    DynamicErrorMessage = -999
     PhoneNumberBanned = -1000
-    TooManyRequests = -5302
+    BadRequest = 400
+    Unauthorized = 401
+    AccessForbidden = 403
+    NotFound = 404
+    Conflict = 409
+    TooManyRequests = 429
+    InternalServerError = 500
+    Web3AccountAlreadyLinkedToAnotherWallet = 4002
+    Web3WalletAlreadyLinkedToAnotherAccount = 4003
+    Web3PalLevelUpBattlesRequired = 4005
+    Web3PalLevelUpMaximumLevelReached = 4006
+    Web3PalPoolCooldown = 4010
+    Web3PalPoolEmpty = 4011
+    Web3PalAlreadyBattle = 4012
+    Web3WalletHasPendingTransactions = 4017
+    Web3WalletNetworkError = 5003
+    Web3EMPLInsufficientFunds = 6001
+    Web3EMPLFeeExceedsBalance = 6002
 
 
-class ErrorMessage(Enum):
+class ErrorMessage:
     Unknown = "原因不明"
     RegisteredUser = "このアカウントはすでに登録されています"
     AccessTokenExpired = "アクセストークンの有効期限切れ"
