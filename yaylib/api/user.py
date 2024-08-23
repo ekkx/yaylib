@@ -40,6 +40,7 @@ from ..responses import (
     HimaUsersResponse,
     RankingUsersResponse,
     RefreshCounterRequestsResponse,
+    Response,
     SocialShareUsersResponse,
     UserResponse,
     UsersByTimestampResponse,
@@ -57,13 +58,14 @@ class UserApi:
 
         self.__client: Client = client
 
-    async def delete_footprint(self, user_id: int, footprint_id: int):
+    async def delete_footprint(self, user_id: int, footprint_id: int) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v2/users/{user_id}/footprints/{footprint_id}",
+            return_type=Response,
         )
 
-    async def destroy_user(self):
+    async def destroy_user(self) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/users/destroy",
@@ -75,18 +77,22 @@ class UserApi:
                     self.__client.device_uuid, int(datetime.now().timestamp()), True
                 ),
             },
+            return_type=Response,
         )
 
-    async def follow_user(self, user_id: int):
+    async def follow_user(self, user_id: int) -> Response:
         return await self.__client.request(
-            "POST", config.API_HOST + f"/v2/users/{user_id}/follow"
+            "POST",
+            config.API_HOST + f"/v2/users/{user_id}/follow",
+            return_type=Response,
         )
 
-    async def follow_users(self, user_ids: list[int]):
+    async def follow_users(self, user_ids: list[int]) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/users/follow",
             params={"user_ids[]": user_ids},
+            return_type=Response,
         )
 
     async def get_active_followings(self, **params) -> ActiveFollowingsResponse:
@@ -231,7 +237,9 @@ class UserApi:
             return_type=RankingUsersResponse,
         )
 
-    async def get_profile_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
+    async def get_profile_refresh_counter_requests(
+        self,
+    ) -> RefreshCounterRequestsResponse:
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/users/reset_counters",
@@ -333,11 +341,12 @@ class UserApi:
             jwt_required=True,
         )
 
-    async def refresh_profile_counter(self, counter: str):
+    async def refresh_profile_counter(self, counter: str) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/users/reset_counters",
             json={"counter": counter},
+            return_type=Response,
         )
 
     async def register(
@@ -386,17 +395,23 @@ class UserApi:
             return_type=CreateUserResponse,
         )
 
-    async def remove_user_avatar(self):
+    async def remove_user_avatar(self) -> Response:
         return await self.__client.request(
-            "POST", config.API_HOST + "/v2/users/remove_profile_photo"
+            "POST",
+            config.API_HOST + "/v2/users/remove_profile_photo",
+            return_type=Response,
         )
 
-    async def remove_user_cover(self):
+    async def remove_user_cover(self) -> Response:
         return await self.__client.request(
-            "POST", config.API_HOST + "/v2/users/remove_cover_image"
+            "POST",
+            config.API_HOST + "/v2/users/remove_cover_image",
+            return_type=Response,
         )
 
-    async def reset_password(self, email: str, email_grant_token: str, password: str):
+    async def reset_password(
+        self, email: str, email_grant_token: str, password: str
+    ) -> Response:
         return await self.__client.request(
             "PUT",
             config.API_HOST + "/v1/users/reset_password",
@@ -405,6 +420,7 @@ class UserApi:
                 "email_grant_token": email_grant_token,
                 "password": password,
             },
+            return_type=Response,
         )
 
     async def search_lobi_users(self, **params) -> UsersResponse:
@@ -454,7 +470,7 @@ class UserApi:
 
     async def set_follow_permission_enabled(
         self, nickname: str, is_private: bool = None
-    ):
+    ) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/users/edit",
@@ -469,34 +485,40 @@ class UserApi:
                 ),
                 "signed_version": sha256(),
             },
+            return_type=Response,
         )
 
-    async def set_setting_follow_recommendation_enabled(self, on: bool):
+    async def set_setting_follow_recommendation_enabled(self, on: bool) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/users/visible_on_sns_friend_recommendation_setting",
             params={"on": on},
+            return_type=Response,
         )
 
-    async def take_action_follow_request(self, user_id: int, action: str):
+    async def take_action_follow_request(self, user_id: int, action: str) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v2/users/{user_id}/follow_request",
             json={"action": action},
+            return_type=Response,
         )
 
-    async def turn_on_hima(self):
+    async def turn_on_hima(self) -> Response:
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/users/hima",
+            return_type=Response,
         )
 
-    async def unfollow_user(self, user_id: int):
+    async def unfollow_user(self, user_id: int) -> Response:
         return await self.__client.request(
-            "POST", config.API_HOST + f"/v2/users/{user_id}/unfollow"
+            "POST",
+            config.API_HOST + f"/v2/users/{user_id}/unfollow",
+            return_type=Response,
         )
 
-    async def update_language(self, language: str):
+    async def update_language(self, language: str) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/users/language",
@@ -509,9 +531,10 @@ class UserApi:
                 ),
                 "language": language,
             },
+            return_type=Response,
         )
 
-    async def update_user(self, nickname: str, **params):
+    async def update_user(self, nickname: str, **params) -> Response:
         """
 
         プロフィールを更新します
@@ -544,6 +567,7 @@ class UserApi:
             "POST",
             config.API_HOST + "/v3/users/edit",
             json=params,
+            return_type=Response,
         )
 
     # BlockApi
@@ -551,9 +575,11 @@ class UserApi:
     async def block_user(
         self,
         user_id: int,
-    ):
+    ) -> Response:
         return await self.__client.request(
-            "POST", config.API_HOST + f"/v1/users/{user_id}/block"
+            "POST",
+            config.API_HOST + f"/v1/users/{user_id}/block",
+            return_type=Response,
         )
 
     async def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
@@ -575,9 +601,11 @@ class UserApi:
             return_type=BlockedUsersResponse,
         )
 
-    async def unblock_user(self, user_id: int):
+    async def unblock_user(self, user_id: int) -> Response:
         return await self.__client.request(
-            "POST", config.API_HOST + f"/v2/users/{user_id}/unblock"
+            "POST",
+            config.API_HOST + f"/v2/users/{user_id}/unblock",
+            return_type=Response,
         )
 
     # HiddenApi
@@ -599,16 +627,18 @@ class UserApi:
             return_type=HiddenResponse,
         )
 
-    async def hide_user(self, user_id: int):
+    async def hide_user(self, user_id: int) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/hidden/users",
             json={"user_id": user_id},
+            return_type=Response,
         )
 
-    async def unhide_users(self, user_ids: list[int]):
+    async def unhide_users(self, user_ids: list[int]) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + "/v1/hidden/users",
             params={"user_ids[]": user_ids},
+            return_type=Response,
         )
