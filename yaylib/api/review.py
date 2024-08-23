@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from __future__ import annotations
+from typing import List
 
 from .. import config
 from ..responses import Response, ReviewsResponse
@@ -44,7 +44,7 @@ class ReviewApi:
             return_type=Response,
         )
 
-    async def delete_reviews(self, review_ids: list[int]) -> Response:
+    async def delete_reviews(self, review_ids: List[int]) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + "/v1/users/reviews",

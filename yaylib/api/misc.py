@@ -22,12 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from __future__ import annotations
-
 import os
 from datetime import datetime
 from io import BytesIO
-from typing import List
+from typing import Dict, List, Optional
 from urllib import parse
 
 from PIL import Image
@@ -124,7 +122,7 @@ class MiscApi:
         )
 
     async def get_email_verification_presigned_url(
-        self, email: str, locale: str, intent: str = None
+        self, email: str, locale: str, intent: Optional[str] = None
     ) -> EmailVerificationPresignedUrlResponse:
         return await self.__client.request(
             "POST",
@@ -139,7 +137,7 @@ class MiscApi:
         )
 
     async def get_file_upload_presigned_urls(
-        self, file_names: list[str]
+        self, file_names: List[str]
     ) -> PresignedUrlsResponse:
         return await self.__client.request(
             "GET",
@@ -180,7 +178,7 @@ class MiscApi:
         )
 
     async def get_web_socket_token(
-        self, headers: dict = None
+        self, headers: Optional[Dict] = None
     ) -> WebSocketTokenResponse:
         return await self.__client.request(
             "GET",
@@ -210,8 +208,8 @@ class MiscApi:
         )
 
     async def upload_image(
-        self, image_paths: list[str], image_type: str
-    ) -> list[Attachment]:
+        self, image_paths: List[str], image_type: str
+    ) -> List[Attachment]:
         """
 
         画像をアップロードして、サーバー上のファイル名のリストを返します。
