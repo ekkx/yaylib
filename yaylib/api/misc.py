@@ -44,6 +44,7 @@ from ..responses import (
     PopularWordsResponse,
     PresignedUrlResponse,
     PresignedUrlsResponse,
+    Response,
     VerifyDeviceResponse,
     WebSocketTokenResponse,
 )
@@ -76,13 +77,14 @@ class MiscApi:
 
         self.__client: Client = client
 
-    async def accept_policy_agreement(self, agreement_type: str):
+    async def accept_policy_agreement(self, agreement_type: str) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/users/policy_agreements/{agreement_type}",
+            return_type=Response,
         )
 
-    async def generate_sns_thumbnail(self, **params):
+    async def generate_sns_thumbnail(self, **params) -> Response:
         """
 
         Parameters:
@@ -96,17 +98,19 @@ class MiscApi:
             "GET",
             config.API_HOST + "/v1/sns_thumbnail/generate",
             params=params,
+            return_type=Response,
         )
 
     async def send_verification_code(
         self, email: str, intent: str, locale: str
-    ) -> dict:
+    ) -> Response:
         return await self.__client.request(
             "POST",
             self.get_email_verification_presigned_url(
                 email=email, locale=locale, intent=intent
             ).url,
             json={"locale": "ja", "email": email},
+            return_type=Response,
         )
 
     async def get_email_grant_token(
