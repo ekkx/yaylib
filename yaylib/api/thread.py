@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from __future__ import annotations
+from typing import List, Optional
 
 from .. import config
 from ..models import ThreadInfo
@@ -45,7 +45,10 @@ class ThreadApi:
         )
 
     async def convert_post_to_thread(
-        self, post_id: int, title: str = None, thread_icon_filename: str = None
+        self,
+        post_id: int,
+        title: Optional[str] = None,
+        thread_icon_filename: Optional[str] = None,
     ) -> ThreadInfo:
         return await self.__client.request(
             "POST",
@@ -69,7 +72,7 @@ class ThreadApi:
         )
 
     async def get_group_thread_list(
-        self, group_id: int, from_str: str = None, **params
+        self, group_id: int, from_str: Optional[str] = None, **params
     ) -> GroupThreadListResponse:
         """
 
@@ -91,7 +94,7 @@ class ThreadApi:
             return_type=GroupThreadListResponse,
         )
 
-    async def get_thread_joined_statuses(self, ids: list[int]) -> Response:
+    async def get_thread_joined_statuses(self, ids: List[int]) -> Response:
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/threads/joined_statuses",
@@ -100,7 +103,7 @@ class ThreadApi:
         )
 
     async def get_thread_posts(
-        self, thread_id: int, from_str: str = None, **params
+        self, thread_id: int, from_str: Optional[str] = None, **params
     ) -> PostsResponse:
         """
 
