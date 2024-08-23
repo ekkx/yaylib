@@ -25,7 +25,7 @@ SOFTWARE.
 from __future__ import annotations
 
 from .. import config
-from ..responses import ReviewsResponse
+from ..responses import Response, ReviewsResponse
 
 
 class ReviewApi:
@@ -36,18 +36,20 @@ class ReviewApi:
 
         self.__client: Client = client
 
-    async def create_review(self, user_id: int, comment: str):
+    async def create_review(self, user_id: int, comment: str) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/users/reviews/{user_id}",
             json={"comment": comment},
+            return_type=Response,
         )
 
-    async def delete_reviews(self, review_ids: list[int]):
+    async def delete_reviews(self, review_ids: list[int]) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + "/v1/users/reviews",
             params={"review_ids[]": review_ids},
+            return_type=Response,
         )
 
     async def get_my_reviews(self, **params) -> ReviewsResponse:
@@ -85,15 +87,17 @@ class ReviewApi:
             return_type=ReviewsResponse,
         )
 
-    async def pin_review(self, review_id: int):
+    async def pin_review(self, review_id: int) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/pinned/reviews",
             json={"id": review_id},
+            return_type=Response,
         )
 
-    async def unpin_review(self, review_id: int):
+    async def unpin_review(self, review_id: int) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/pinned/reviews{review_id}",
+            return_type=Response,
         )
