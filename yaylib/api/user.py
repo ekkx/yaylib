@@ -22,9 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from __future__ import annotations
-
 from datetime import datetime
+from typing import List, Optional
 
 from .. import config
 from ..responses import (
@@ -87,7 +86,7 @@ class UserApi:
             return_type=Response,
         )
 
-    async def follow_users(self, user_ids: list[int]) -> Response:
+    async def follow_users(self, user_ids: List[int]) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/users/follow",
@@ -133,7 +132,7 @@ class UserApi:
         )
 
     async def get_follow_request(
-        self, from_timestamp: int = None
+        self, from_timestamp: Optional[int] = None
     ) -> UsersByTimestampResponse:
         params = {}
         if from_timestamp:
@@ -152,7 +151,9 @@ class UserApi:
             return_type=FollowRequestCountResponse,
         )
 
-    async def get_following_users_born(self, birthdate: int = None) -> UsersResponse:
+    async def get_following_users_born(
+        self, birthdate: Optional[int] = None
+    ) -> UsersResponse:
         params = {}
         if birthdate:
             params["birthdate"] = birthdate
@@ -332,7 +333,7 @@ class UserApi:
             return_type=UserResponse,
         )
 
-    async def get_users(self, user_ids: list[int]) -> UsersResponse:
+    async def get_users(self, user_ids: List[int]) -> UsersResponse:
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/users/list_id",
@@ -358,13 +359,13 @@ class UserApi:
         birth_date: str,
         gender: int = -1,
         country_code: str = "JP",
-        biography: str = None,
-        prefecture: str = None,
-        profile_icon_filename: str = None,
-        cover_image_filename: str = None,
+        biography: Optional[str] = None,
+        prefecture: Optional[str] = None,
+        profile_icon_filename: Optional[str] = None,
+        cover_image_filename: Optional[str] = None,
         # @Nullable @Part("sns_info") SignUpSnsInfoRequest signUpSnsInfoRequest,
-        en: int = None,
-        vn: int = None,
+        en: Optional[int] = None,
+        vn: Optional[int] = None,
     ) -> CreateUserResponse:
         return await self.__client.request(
             "POST",
@@ -469,7 +470,7 @@ class UserApi:
         )
 
     async def set_follow_permission_enabled(
-        self, nickname: str, is_private: bool = None
+        self, nickname: str, is_private: Optional[bool] = None
     ) -> Response:
         return await self.__client.request(
             "POST",
@@ -589,7 +590,9 @@ class UserApi:
             return_type=BlockedUserIdsResponse,
         )
 
-    async def get_blocked_users(self, from_id: int = None) -> BlockedUsersResponse:
+    async def get_blocked_users(
+        self, from_id: Optional[int] = None
+    ) -> BlockedUsersResponse:
         # @Body @NotNull SearchUsersRequest searchUsersRequest
         params = {}
         if from_id:
@@ -635,7 +638,7 @@ class UserApi:
             return_type=Response,
         )
 
-    async def unhide_users(self, user_ids: list[int]) -> Response:
+    async def unhide_users(self, user_ids: List[int]) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + "/v1/hidden/users",
