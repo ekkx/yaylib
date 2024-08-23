@@ -36,7 +36,7 @@ class NotificationApi:
 
         self.__client: Client = client
 
-    async def get_user_activities(self, **params) -> ActivitiesResponse:
+    async def get_activities(self, **params) -> ActivitiesResponse:
         """
 
         Parameters
@@ -53,7 +53,7 @@ class NotificationApi:
             return_type=ActivitiesResponse,
         )
 
-    async def get_user_merged_activities(self, **params) -> ActivitiesResponse:
+    async def get_merged_activities(self, **params) -> ActivitiesResponse:
         """
         Parameters
         ----------
@@ -67,12 +67,4 @@ class NotificationApi:
             config.STAGING_HOST_2 + "/api/v2/user_activities",
             params=params,
             return_type=ActivitiesResponse,
-        )
-
-    async def received_notification(self, pid: str, type: str, opened_at: int = None):
-        # opened_atはnullalbeか確認する
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/api/received_push_notifications",
-            json={"pid": pid, "type": type, "opened_at": opened_at},
         )
