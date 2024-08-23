@@ -33,6 +33,7 @@ from ..responses import (
     GifsDataResponse,
     MessageResponse,
     MessagesResponse,
+    Response,
     StickerPacksResponse,
     TotalChatRequestResponse,
     UnreadStatusResponse,
@@ -47,11 +48,12 @@ class ChatApi:
 
         self.__client: Client = client
 
-    async def accept_chat_requests(self, chat_room_ids: list[int]):
+    async def accept_chat_requests(self, chat_room_ids: list[int]) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/chat_rooms/accept_chat_request",
             json={"chat_room_ids": chat_room_ids},
+            return_type=Response,
         )
 
     async def check_unread_status(self, from_time: int) -> UnreadStatusResponse:
@@ -95,16 +97,18 @@ class ChatApi:
             return_type=CreateChatRoomResponse,
         )
 
-    async def delete_background(self, room_id: int):
+    async def delete_background(self, room_id: int) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v2/chat_rooms/{room_id}/background",
+            return_type=Response,
         )
 
-    async def delete_message(self, room_id: int, message_id: int):
+    async def delete_message(self, room_id: int, message_id: int) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/chat_rooms/{room_id}/messages/{message_id}/delete",
+            return_type=Response,
         )
 
     async def edit_chat_room(
@@ -113,7 +117,7 @@ class ChatApi:
         name: str,
         icon_filename: str = None,
         background_filename: str = None,
-    ):
+    ) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/chat_rooms/{chat_room_id}/edit",
@@ -122,6 +126,7 @@ class ChatApi:
                 "icon_filename": icon_filename,
                 "background_filename": background_filename,
             },
+            return_type=Response,
         )
 
     async def get_chatable_users(
@@ -233,38 +238,45 @@ class ChatApi:
             return_type=TotalChatRequestResponse,
         )
 
-    async def hide_chat(self, chat_room_id: int):
+    async def hide_chat(self, chat_room_id: int) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/hidden/chats",
             json={"chat_room_id": chat_room_id},
+            return_type=Response,
         )
 
-    async def invite_to_chat(self, chat_room_id: int, user_ids: list[int]):
+    async def invite_to_chat(self, chat_room_id: int, user_ids: list[int]) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v2/chat_rooms/{chat_room_id}/invite",
             json={"with_user_ids": user_ids},
+            return_type=Response,
         )
 
-    async def kick_users_from_chat(self, chat_room_id: int, user_ids: list[int]):
+    async def kick_users_from_chat(
+        self, chat_room_id: int, user_ids: list[int]
+    ) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v2/chat_rooms/{chat_room_id}/kick",
             json={"with_user_ids": user_ids},
+            return_type=Response,
         )
 
-    async def pin_chat(self, room_id: int):
+    async def pin_chat(self, room_id: int) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/chat_rooms/{room_id}/pinned",
+            return_type=Response,
         )
 
-    async def read_message(self, chat_room_id: int, message_id: int):
+    async def read_message(self, chat_room_id: int, message_id: int) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST
             + f"/v2/chat_rooms/{chat_room_id}/messages/{message_id}/read",
+            return_type=Response,
         )
 
     async def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
@@ -278,7 +290,7 @@ class ChatApi:
             return_type=ChatRoomsResponse,
         )
 
-    async def delete_chat_rooms(self, chat_room_ids: list[int]):
+    async def delete_chat_rooms(self, chat_room_ids: list[int]) -> Response:
         chat_room_ids = (
             [chat_room_ids] if isinstance(chat_room_ids, int) else chat_room_ids
         )
@@ -286,6 +298,7 @@ class ChatApi:
             "POST",
             config.API_HOST + "/v1/chat_rooms/mass_destroy",
             json={"chat_room_ids": chat_room_ids},
+            return_type=Response,
         )
 
     async def report_chat_room(
@@ -298,7 +311,7 @@ class ChatApi:
         screenshot_2_filename: str = None,
         screenshot_3_filename: str = None,
         screenshot_4_filename: str = None,
-    ):
+    ) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v3/chat_rooms/{chat_room_id}/report",
@@ -312,6 +325,7 @@ class ChatApi:
                 "screenshot_3_filename": screenshot_3_filename,
                 "screenshot_4_filename": screenshot_4_filename,
             },
+            return_type=Response,
         )
 
     async def send_message(self, chat_room_id: int, **params) -> MessageResponse:
@@ -322,15 +336,17 @@ class ChatApi:
             return_type=MessageResponse,
         )
 
-    async def unhide_chat(self, chat_room_ids: int):
+    async def unhide_chat(self, chat_room_ids: int) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + "/v1/hidden/chats",
             params={"chat_room_ids": chat_room_ids},
+            return_type=Response,
         )
 
-    async def unpin_chat(self, chat_room_id: int):
+    async def unpin_chat(self, chat_room_id: int) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/chat_rooms/{chat_room_id}/pinned",
+            return_type=Response,
         )
