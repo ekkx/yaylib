@@ -124,7 +124,7 @@ class AuthApi:
         )
 
     async def login(
-        self, email: str, password: str, two_fa_code: str = None
+        self, email: str, password: str, two_fa_code: Optional[str] = None
     ) -> LoginUserResponse:
         """メールアドレスでログインする
 
@@ -194,13 +194,6 @@ class AuthApi:
         )
 
         return response
-
-    async def logout(self):
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v1/users/logout",
-            json={"uuid": self.__client.device_uuid},
-        )
 
     async def resend_confirm_email(self):
         return await self.__client.request(
