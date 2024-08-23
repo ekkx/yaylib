@@ -30,7 +30,6 @@ from .models import (
     ChatRoom,
     ConferenceCall,
     CreateGroupQuota,
-    TimelineSettings,
     Footprint,
     Game,
     Genre,
@@ -55,6 +54,7 @@ from .models import (
     StickerPack,
     Survey,
     ThreadInfo,
+    TimelineSettings,
     User,
     UserWrapper,
 )
@@ -876,21 +876,6 @@ class RefreshCounterRequestsResponse(Model):
         return f"RefreshCounterRequestsResponse(data={self.data})"
 
 
-class RegisterDeviceTokenResponse(Model):
-    __slots__ = ("data", "id", "server_device_id", "uuid", "created_at", "updated_at")
-
-    def __init__(self, data):
-        self.data = data
-        self.id = data.get("id")
-        self.server_device_id = data.get("server_device_id")
-        self.uuid = data.get("uuid")
-        self.created_at = data.get("created_at")
-        self.updated_at = data.get("updated_at")
-
-    def __repr__(self):
-        return f"RegisterDeviceTokenResponse(data={self.data})"
-
-
 class ReviewsResponse(Model):
     __slots__ = ("data", "reviews", "pinned_reviews")
 
@@ -1120,17 +1105,6 @@ class UserCustomDefinitionsResponse(Model):
 
     def __repr__(self):
         return f"UserCustomDefinitionsResponse(data={self.data})"
-
-
-class UserEmailResponse(Model):
-    __slots__ = ("data", "email")
-
-    def __init__(self, data):
-        self.data = data
-        self.email = data.get("email")
-
-    def __repr__(self):
-        return f"UserEmailResponse(data={self.data})"
 
 
 class HimaUsersResponse(Model):
