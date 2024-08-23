@@ -278,7 +278,7 @@ class ChatApi:
             return_type=ChatRoomsResponse,
         )
 
-    async def remove_chat_rooms(self, chat_room_ids: list[int]):
+    async def delete_chat_rooms(self, chat_room_ids: list[int]):
         chat_room_ids = (
             [chat_room_ids] if isinstance(chat_room_ids, int) else chat_room_ids
         )
