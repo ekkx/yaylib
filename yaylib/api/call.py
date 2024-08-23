@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import List, Optional
+from typing import List
 
 from .. import config
 from ..responses import (
@@ -90,21 +90,18 @@ class CallApi:
         )
 
     async def get_call_invitable_users(
-        self, call_id: int, from_timestamp: Optional[int] = None
+        self, call_id: int, **params
     ) -> UsersByTimestampResponse:
         """通話に招待可能なユーザーを取得する
 
         Args:
             call_id (int):
-            from_timestamp (Optional[int]):
+            from_timestamp (int, optional):
 
         Returns:
             UsersByTimestampResponse:
         """
         # @Nullable @Query("user[nickname]")
-        params = {}
-        if from_timestamp:
-            params["from_timestamp"] = from_timestamp
         return await self.__client.request(
             "GET",
             config.API_HOST + f"/v1/calls/{call_id}/users/invitable",
@@ -131,9 +128,9 @@ class CallApi:
         """通話に設定可能なゲームを取得する
 
         Args:
-            number (Optional[int]):
-            ids (Optional[List[int]]):
-            from_id (Optional[int]):
+            number (int, optional):
+            ids (List[int], optional):
+            from_id (int, optional):
 
         Returns:
             GamesResponse:
@@ -149,8 +146,8 @@ class CallApi:
         """通話のジャンルを取得する
 
         Args:
-            number (Optional[int]):
-            from (Optional[int]):
+            number (int, optional):
+            from (int, optional):
 
         Returns:
             GenresResponse:
@@ -166,10 +163,10 @@ class CallApi:
         """サークル内の通話を取得する
 
         Args:
-            number (Optional[int]):
-            group_category_id (Optional[int]):
-            from_timestamp (Optional[int]):
-            scope (Optional[str]):
+            number (int, optional):
+            group_category_id (int, optional):
+            from_timestamp (int, optional):
+            scope (str, optional):
 
         Returns:
             PostsResponse:
@@ -182,20 +179,17 @@ class CallApi:
         )
 
     async def invite_online_followings_to_call(
-        self, call_id: int, group_id: Optional[int] = None
+        self, call_id: int, **params
     ) -> Response:
         """オンラインの友達をまとめて通話に招待します
 
         Args:
-            call_id (Optional[int]):
-            group_id (Optional[str]):
+            call_id (int, optional):
+            group_id (str, optional):
 
         Returns:
             Response:
         """
-        params = {}
-        if group_id:
-            params["group_id"] = group_id
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/calls/{call_id}/bulk_invite",
@@ -220,9 +214,7 @@ class CallApi:
             return_type=Response,
         )
 
-    async def invite_users_to_chat_call(
-        self, chat_room_id: int, room_id: int, room_url: str
-    ) -> Response:
+    async def invite_users_to_chat_call(self, **params) -> Response:
         """ユーザーをチャット通話に招待する
 
         Args:
@@ -236,11 +228,7 @@ class CallApi:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/calls/invite",
-            payload={
-                "chat_room_id": chat_room_id,
-                "room_id": room_id,
-                "room_url": room_url,
-            },
+            payload=params,
             return_type=Response,
         )
 
@@ -261,20 +249,14 @@ class CallApi:
             return_type=Response,
         )
 
-    async def start_call(
-        self,
-        call_id: int,
-        joinable_by: str,
-        game_title: Optional[str] = None,
-        category_id: Optional[str] = None,
-    ) -> Response:
+    async def start_call(self, call_id: int, **params) -> Response:
         """通話を開始する
 
         Args:
             call_id (int):
             joinable_by (str):
-            game_title (Optional[str]):
-            category_id (Optional[str]):
+            game_title (str, optional):
+            category_id (str, optional):
 
         Returns:
             Response:
@@ -282,11 +264,7 @@ class CallApi:
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/calls/{call_id}",
-            payload={
-                "joinable_by": joinable_by,
-                "game_title": game_title,
-                "category_id": category_id,
-            },
+            payload=params,
             return_type=Response,
         )
 
@@ -308,14 +286,12 @@ class CallApi:
             return_type=Response,
         )
 
-    async def join_call(
-        self, conference_id: int, call_sid: Optional[str] = None
-    ) -> ConferenceCallResponse:
+    async def join_call(self, **params) -> ConferenceCallResponse:
         """通話に参加する
 
         Args:
             conference_id (int):
-            call_sid (Optional[str]):
+            call_sid (str, optional):
 
         Returns:
             ConferenceCallResponse:
@@ -323,18 +299,16 @@ class CallApi:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/calls/start_conference_call",
-            payload={"conference_id": conference_id, "call_sid": call_sid},
+            payload=params,
             return_type=ConferenceCallResponse,
         )
 
-    async def leave_call(
-        self, conference_id: int, call_sid: Optional[str] = None
-    ) -> Response:
+    async def leave_call(self, **params) -> Response:
         """通話から退出する
 
         Args:
             conference_id (int):
-            call_sid (Optional[str]):
+            call_sid (str, optional):
 
         Returns:
             Response:
@@ -342,13 +316,11 @@ class CallApi:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/calls/leave_conference_call",
-            payload={"conference_id": conference_id, "call_sid": call_sid},
+            payload=params,
             return_type=Response,
         )
 
-    async def join_call_as_anonymous(
-        self, conference_id: int, agora_uid: str
-    ) -> ConferenceCallResponse:
+    async def join_call_as_anonymous(self, **params) -> ConferenceCallResponse:
         """匿名で通話に参加する
 
         Args:
@@ -361,18 +333,16 @@ class CallApi:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/anonymous_calls/start_conference_call",
-            payload={"conference_id": conference_id, "agora_uid": agora_uid},
+            payload=params,
             return_type=ConferenceCallResponse,
         )
 
-    async def leave_call_as_anonymous(
-        self, conference_id: int, agora_uid: Optional[str] = None
-    ) -> Response:
+    async def leave_call_as_anonymous(self, **params) -> Response:
         """匿名で参加した通話を退出する
 
         Args:
             conference_id (int):
-            agora_uid (Optional[str]):
+            agora_uid (str, optional):
 
         Returns:
             Response: _description_
@@ -380,6 +350,6 @@ class CallApi:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/anonymous_calls/leave_conference_call",
-            payload={"conference_id": conference_id, "agora_uid": agora_uid},
+            payload=params,
             return_type=Response,
         )

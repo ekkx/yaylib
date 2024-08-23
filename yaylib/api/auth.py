@@ -45,15 +45,13 @@ class AuthApi:
 
         self.__client: Client = client
 
-    async def change_email(
-        self, email: str, password: str, email_grant_token: Optional[str] = None
-    ) -> LoginUpdateResponse:
+    async def change_email(self, **params) -> LoginUpdateResponse:
         """メールアドレスを変更する
 
         Args:
             email (str):
             password (str):
-            email_grant_token (Optional[str]):
+            email_grant_token (str, optional):
 
         Returns:
             LoginUpdateResponse:
@@ -61,18 +59,11 @@ class AuthApi:
         return await self.__client.request(
             "PUT",
             config.API_HOST + "/v1/users/change_email",
-            json={
-                "api_key": config.API_KEY,
-                "email": email,
-                "password": password,
-                "email_grant_token": email_grant_token,
-            },
+            json=params,
             return_type=LoginUpdateResponse,
         )
 
-    async def change_password(
-        self, current_password: str, new_password: str
-    ) -> LoginUpdateResponse:
+    async def change_password(self, **params) -> LoginUpdateResponse:
         """パスワードを変更する
 
         Args:
@@ -85,28 +76,18 @@ class AuthApi:
         return await self.__client.request(
             "PUT",
             config.API_HOST + "/v1/users/change_email",
-            json={
-                "api_key": config.API_KEY,
-                "current_password": current_password,
-                "password": new_password,
-            },
+            json=params,
             return_type=LoginUpdateResponse,
         )
 
-    async def get_token(
-        self,
-        grant_type: str,
-        refresh_token: Optional[str] = None,
-        email: Optional[str] = None,
-        password: Optional[str] = None,
-    ) -> TokenResponse:
+    async def get_token(self, **params) -> TokenResponse:
         """認証トークンを取得する
 
         Args:
             grant_type (str):
-            refresh_token (Optional[str]):
-            email (Optional[str]):
-            password (Optional[str]):
+            refresh_token (str, optional):
+            email (str, optional):
+            password (str, optional):
 
         Returns:
             TokenResponse:
@@ -114,12 +95,7 @@ class AuthApi:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/api/v1/oauth/token",
-            json={
-                "grant_type": grant_type,
-                "email": email,
-                "password": password,
-                "refresh_token": refresh_token,
-            },
+            json=params,
             return_type=TokenResponse,
         )
 
@@ -131,7 +107,7 @@ class AuthApi:
         Args:
             email (str):
             password (str):
-            two_fa_code (str):
+            two_fa_code (str, optional):
 
         Returns:
             LoginUserResponse:
@@ -207,7 +183,7 @@ class AuthApi:
             return_type=Response,
         )
 
-    async def restore_user(self, user_id: int) -> LoginUserResponse:
+    async def restore_user(self, **params) -> LoginUserResponse:
         """ユーザーを復元する
 
         Args:
@@ -220,30 +196,25 @@ class AuthApi:
             "POST",
             config.API_HOST + "/v2/users/restore",
             json={
-                "user_id": user_id,
                 "api_key": config.API_KEY,
                 "uuid": self.__client.device_uuid,
                 "timestamp": int(datetime.now().timestamp()),
                 "signed_info": md5(
-                    self.__client.device_uuid, int(datetime.now().timestamp()), False
+                    self.__client.device_uuid,
+                    int(datetime.now().timestamp()),
+                    False,
                 ),
-            },
+            }.update(params),
         )
 
-    async def save_account_with_email(
-        self,
-        email: str,
-        password: Optional[str] = None,
-        current_password: Optional[str] = None,
-        email_grant_token: Optional[str] = None,
-    ) -> LoginUpdateResponse:
+    async def save_account_with_email(self, **params) -> LoginUpdateResponse:
         """メールアドレスでアカウントを保存する
 
         Args:
             email (str):
-            password (Optional[str]):
-            current_password (Optional[str]):
-            email_grant_token (Optional[str]):
+            password (str, optional):
+            current_password (str, optional):
+            email_grant_token (str, optional):
 
         Returns:
             LoginUpdateResponse:
@@ -253,10 +224,6 @@ class AuthApi:
             config.API_HOST + "/v3/users/login_update",
             json={
                 "api_key": config.API_KEY,
-                "email": email,
-                "password": password,
-                "current_password": current_password,
-                "email_grant_token": email_grant_token,
-            },
+            }.update(params),
             return_type=LoginUpdateResponse,
         )
