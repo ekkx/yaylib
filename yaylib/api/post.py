@@ -27,7 +27,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from .. import config
-from ..errors import ClientError, NotFoundError
+from ..errors import ClientError
 from ..models import Post, SharedUrl
 from ..responses import (
     BookmarkPostResponse,
@@ -37,6 +37,7 @@ from ..responses import (
     PostResponse,
     PostsResponse,
     PostTagsResponse,
+    Response,
     VoteSurveyResponse,
 )
 from ..utils import build_message_tags, get_post_type, md5
@@ -57,7 +58,7 @@ class PostApi:
             return_type=BookmarkPostResponse,
         )
 
-    async def add_group_highlight_post(self, group_id: int, post_id: int):
+    async def add_group_highlight_post(self, group_id: int, post_id: int) -> Response:
         """
 
         投稿をグループのまとめに追加します
@@ -66,6 +67,7 @@ class PostApi:
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/groups/{group_id}/highlights/{post_id}",
+            return_type=Response,
         )
 
     async def create_call_post(
@@ -123,16 +125,20 @@ class PostApi:
             return_type=CreatePostResponse,
         )
 
-    async def create_group_pin_post(self, post_id: int, group_id: int):
+    async def create_group_pin_post(self, post_id: int, group_id: int) -> Response:
         return await self.__client.request(
             "PUT",
             config.API_HOST + "/v2/posts/group_pinned_post",
             json={"post_id": post_id, "group_id": group_id},
+            return_type=Response,
         )
 
-    async def create_pin_post(self, post_id: int):
+    async def create_pin_post(self, post_id: int) -> Response:
         return await self.__client.request(
-            "POST", config.API_HOST + "/v1/pinned/posts", json={"id": post_id}
+            "POST",
+            config.API_HOST + "/v1/pinned/posts",
+            json={"id": post_id},
+            return_type=Response,
         )
 
     async def create_post(
@@ -375,24 +381,26 @@ class PostApi:
             jwt_required=True,
         )
 
-    async def delete_all_posts(self):
-        try:
-            return await self.__client.request(
-                "POST", config.API_HOST + "/v1/posts/delete_all_post"
-            )
-        except NotFoundError:
-            self.__client.logger.info("Post not found. Skipping...")
+    async def delete_all_posts(self) -> Response:
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v1/posts/delete_all_post",
+            return_type=Response,
+        )
 
-    async def unpin_group_post(self, group_id: int):
+    async def unpin_group_post(self, group_id: int) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + "/v2/posts/group_pinned_post",
             json={"group_id": group_id},
+            return_type=Response,
         )
 
-    async def unpin_post(self, post_id: int):
+    async def unpin_post(self, post_id: int) -> Response:
         return await self.__client.request(
-            "DELETE", config.API_HOST + f"/v1/pinned/posts/{post_id}"
+            "DELETE",
+            config.API_HOST + f"/v1/pinned/posts/{post_id}",
+            return_type=Response,
         )
 
     async def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
@@ -762,28 +770,35 @@ class PostApi:
             return_type=LikePostsResponse,
         )
 
-    async def remove_bookmark(self, user_id: int, post_id: int):
+    async def remove_bookmark(self, user_id: int, post_id: int) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/users/{user_id}/bookmarks/{post_id}",
+            return_type=Response,
         )
 
-    async def remove_group_highlight_post(self, group_id: int, post_id: int):
+    async def remove_group_highlight_post(
+        self, group_id: int, post_id: int
+    ) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/groups/{group_id}/highlights/{post_id}",
+            return_type=Response,
         )
 
-    async def remove_posts(self, post_ids: list[int]):
+    async def remove_posts(self, post_ids: list[int]) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/posts/mass_destroy",
             json={"posts_ids": post_ids},
+            return_type=Response,
         )
 
-    async def unlike(self, post_id: int):
+    async def unlike(self, post_id: int) -> Response:
         return await self.__client.request(
-            "POST", config.API_HOST + f"/v1/posts/{post_id}/unlike"
+            "POST",
+            config.API_HOST + f"/v1/posts/{post_id}/unlike",
+            return_type=Response,
         )
 
     async def update_post(
@@ -813,10 +828,11 @@ class PostApi:
             },
         )
 
-    async def view_video(self, video_id: int):
+    async def view_video(self, video_id: int) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/posts/videos/{video_id}/view",
+            return_type=Response,
         )
 
     async def vote_survey(self, survey_id: int, choice_id: int) -> VoteSurveyResponse:
