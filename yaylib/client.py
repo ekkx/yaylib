@@ -46,14 +46,17 @@ from .api.user import UserApi
 from .device import Device
 from .errors import (
     AccessTokenExpiredError,
-    AuthenticationError,
-    BadRequestError,
-    ErrorCode,
-    ForbiddenError,
+    AccessTokenInvalidError,
+    HTTPAuthenticationError,
+    HTTPBadRequestError,
     HTTPError,
-    InternalServerError,
-    NotFoundError,
-    RateLimitError,
+    HTTPForbiddenError,
+    HTTPInternalServerError,
+    HTTPNotFoundError,
+    QuotaLimitExceededError,
+    TooManyRequestsError,
+    UnauthorizedError,
+    raise_for_code,
 )
 from .models import Attachment, CreateGroupQuota, Model, Post, SharedUrl, ThreadInfo
 from .responses import (
@@ -160,14 +163,14 @@ class RateLimit:
         """レート制限をリセットする"""
         self.__retries_performed = 0
 
-    async def wait(self, exc: RateLimitError) -> None:
+    async def wait(self, err: Exception) -> None:
         """レート制限が解除されるまで待機する
 
         Raises:
-            RateLimitError: レート制限エラー
+            err: リトライ回数の上限でスロー
         """
         if not self.__wait_on_ratelimit or self.__max_retries_reached():
-            raise exc
+            raise err
         await asyncio.sleep(self.__retry_after)
         self.__retries_performed += 1
 
@@ -255,22 +258,6 @@ class BaseClient:
 
         self.logger.info("yaylib version: %s started.", __version__)
 
-    async def __is_ratelimit_error(self, response: aiohttp.ClientResponse) -> bool:
-        if response.status == 429:
-            return True
-        if response.status == 400:
-            response_json = await response.json(content_type=None)
-            if response_json.get("error_code") == ErrorCode.QuotaLimitExceeded.value:
-                return True
-        return False
-
-    async def __is_access_token_expired(self, response: aiohttp.ClientResponse) -> bool:
-        response_json = await response.json(content_type=None)
-        return response.status == 401 and (
-            response_json.get("error_code") == ErrorCode.AccessTokenExpired.value
-            or response_json.get("error_code") == ErrorCode.AccessTokenInvalid.value
-        )
-
     async def base_request(
         self, method: str, url: str, **kwargs
     ) -> aiohttp.ClientResponse:
@@ -301,21 +288,19 @@ class BaseClient:
             await response.text(),
         )
 
-        if await self.__is_ratelimit_error(response):
-            raise RateLimitError(response)
-        if await self.__is_access_token_expired(response):
-            raise AccessTokenExpiredError(response)
+        await raise_for_code(response)
 
+        # 取りこぼしたHTTP関係のエラーハンドリング
         if response.status == 400:
-            raise BadRequestError(response)
+            raise HTTPBadRequestError(response)
         if response.status == 401:
-            raise AuthenticationError(response)
+            raise HTTPAuthenticationError(response)
         if response.status == 403:
-            raise ForbiddenError(response)
+            raise HTTPForbiddenError(response)
         if response.status == 404:
-            raise NotFoundError(response)
+            raise HTTPNotFoundError(response)
         if response.status >= 500:
-            raise InternalServerError(response)
+            raise HTTPInternalServerError(response)
         if response.status and not 200 <= response.status < 300:
             raise HTTPError(response)
 
@@ -467,30 +452,30 @@ class Client(
                             return_type=return_type,
                         )
                         break
-                    except RateLimitError as exc:
+                    except (QuotaLimitExceededError, TooManyRequestsError) as err:
                         self.logger.warning(
                             "Rate limit exceeded. Waiting... (%s/%s)",
                             self.__ratelimit.retries_performed,
                             self.__ratelimit.max_retries,
                         )
-                        await self.__ratelimit.wait(exc)
+                        await self.__ratelimit.wait(err)
                 self.__ratelimit.reset()
                 break
-            except AccessTokenExpiredError as exc:
+            except (AccessTokenExpiredError, AccessTokenInvalidError) as err:
                 if self.user_id == 0:
                     self.logger.error("Authentication required to perform the action.")
-                    raise AuthenticationError(exc.response) from exc
+                    raise err
                 await self.__refresh_client_tokens()
-            except AuthenticationError as exc:
+            except UnauthorizedError as err:
                 if "/api/v1/oauth/token" in url:
                     self.__state.destory(self.user_id)
                     self.logger.error(
                         "Failed to refresh credentials. Please try logging in again."
                     )
-                    raise exc
-            except InternalServerError as exc:
+                    raise err
+            except HTTPInternalServerError as err:
                 self.logger.error(
-                    "Request failed with status %s! Retrying...", exc.response.status
+                    "Request failed with status %s! Retrying...", err.response.status
                 )
                 backoff_duration = self.__backoff_factor * (2**i)
 
