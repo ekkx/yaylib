@@ -22,9 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from __future__ import annotations
-
 from datetime import datetime
+from typing import List, Optional
 
 from .. import config
 from ..models import CreateGroupQuota
@@ -81,7 +80,7 @@ class GroupApi:
         )
 
     async def add_related_groups(
-        self, group_id: int, related_group_id: list[int]
+        self, group_id: int, related_group_id: List[int]
     ) -> Response:
         """
 
@@ -103,7 +102,7 @@ class GroupApi:
         )
 
     async def check_group_unread_status(
-        self, from_time: int = None
+        self, from_time: Optional[int] = None
     ) -> UnreadStatusResponse:
         params = {}
         if from_time:
@@ -118,25 +117,25 @@ class GroupApi:
     async def create_group(
         self,
         topic: str,
-        description: str = None,
-        secret: bool = None,
-        hide_reported_posts: bool = None,
-        hide_conference_call: bool = None,
-        is_private: bool = None,
-        only_verified_age: bool = None,
-        only_mobile_verified: bool = None,
-        call_timeline_display: bool = None,
-        allow_ownership_transfer: bool = None,
-        allow_thread_creation_by: str = None,
-        gender: int = None,
-        generation_groups_limit: int = None,
-        group_category_id: int = None,
-        cover_image_filename: str = None,
-        sub_category_id: str = None,
-        hide_from_game_eight: bool = None,
-        allow_members_to_post_media: bool = None,
-        allow_members_to_post_url: bool = None,
-        guidelines: str = None,
+        description: Optional[str] = None,
+        secret: Optional[bool] = None,
+        hide_reported_posts: Optional[bool] = None,
+        hide_conference_call: Optional[bool] = None,
+        is_private: Optional[bool] = None,
+        only_verified_age: Optional[bool] = None,
+        only_mobile_verified: Optional[bool] = None,
+        call_timeline_display: Optional[bool] = None,
+        allow_ownership_transfer: Optional[bool] = None,
+        allow_thread_creation_by: Optional[str] = None,
+        gender: Optional[int] = None,
+        generation_groups_limit: Optional[int] = None,
+        group_category_id: Optional[int] = None,
+        cover_image_filename: Optional[str] = None,
+        sub_category_id: Optional[str] = None,
+        hide_from_game_eight: Optional[bool] = None,
+        allow_members_to_post_media: Optional[bool] = None,
+        allow_members_to_post_url: Optional[bool] = None,
+        guidelines: Optional[str] = None,
     ) -> CreateGroupResponse:
         return await self.__client.request(
             "POST",
@@ -209,7 +208,7 @@ class GroupApi:
         )
 
     async def get_banned_group_members(
-        self, group_id: int, page: int = None
+        self, group_id: int, page: Optional[int] = None
     ) -> UsersResponse:
         params = {}
         if page:
@@ -287,7 +286,7 @@ class GroupApi:
             return_type=UsersByTimestampResponse,
         )
 
-    async def get_joined_statuses(self, ids: list[int]) -> Response:
+    async def get_joined_statuses(self, ids: List[int]) -> Response:
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/groups/joined_statuses",
@@ -393,7 +392,7 @@ class GroupApi:
     async def invite_users_to_group(
         self,
         group_id: int,
-        user_ids: list[int],
+        user_ids: List[int],
     ) -> Response:
         return await self.__client.request(
             "POST",
@@ -446,7 +445,7 @@ class GroupApi:
     async def remove_related_groups(
         self,
         group_id: int,
-        related_group_ids: list[int],
+        related_group_ids: List[int],
     ) -> Response:
         return await self.__client.request(
             "DELETE",
@@ -456,7 +455,7 @@ class GroupApi:
         )
 
     async def send_moderator_offers(
-        self, group_id: int, user_ids: list[int]
+        self, group_id: int, user_ids: List[int]
     ) -> Response:
         return await self.__client.request(
             "POST",
@@ -515,25 +514,25 @@ class GroupApi:
         self,
         group_id: int,
         topic: str,
-        description: str = None,
-        secret: bool = None,
-        hide_reported_posts: bool = None,
-        hide_conference_call: bool = None,
-        is_private: bool = None,
-        only_verified_age: bool = None,
-        only_mobile_verified: bool = None,
-        call_timeline_display: bool = None,
-        allow_ownership_transfer: bool = None,
-        allow_thread_creation_by: str = None,
-        gender: int = None,
-        generation_groups_limit: int = None,
-        group_category_id: int = None,
-        cover_image_filename: str = None,
-        sub_category_id: str = None,
-        hide_from_game_eight: bool = None,
-        allow_members_to_post_media: bool = None,
-        allow_members_to_post_url: bool = None,
-        guidelines: str = None,
+        description: Optional[str] = None,
+        secret: Optional[bool] = None,
+        hide_reported_posts: Optional[bool] = None,
+        hide_conference_call: Optional[bool] = None,
+        is_private: Optional[bool] = None,
+        only_verified_age: Optional[bool] = None,
+        only_mobile_verified: Optional[bool] = None,
+        call_timeline_display: Optional[bool] = None,
+        allow_ownership_transfer: Optional[bool] = None,
+        allow_thread_creation_by: Optional[str] = None,
+        gender: Optional[int] = None,
+        generation_groups_limit: Optional[int] = None,
+        group_category_id: Optional[int] = None,
+        cover_image_filename: Optional[str] = None,
+        sub_category_id: Optional[str] = None,
+        hide_from_game_eight: Optional[bool] = None,
+        allow_members_to_post_media: Optional[bool] = None,
+        allow_members_to_post_url: Optional[bool] = None,
+        guidelines: Optional[str] = None,
     ) -> GroupResponse:
         return await self.__client.request(
             "POST",
