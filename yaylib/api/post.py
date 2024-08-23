@@ -22,9 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from __future__ import annotations
-
 from datetime import datetime
+from typing import Dict, List, Optional
 
 from .. import config
 from ..errors import ClientError
@@ -72,24 +71,24 @@ class PostApi:
 
     async def create_call_post(
         self,
-        text: str = None,
-        font_size: int = None,
-        color: int = None,
-        group_id: int = None,
-        call_type: str = None,
-        category_id: int = None,
-        game_title: str = None,
-        joinable_by: str = None,
-        message_tags: list = None,
-        attachment_filename: str = None,
-        attachment_2_filename: str = None,
-        attachment_3_filename: str = None,
-        attachment_4_filename: str = None,
-        attachment_5_filename: str = None,
-        attachment_6_filename: str = None,
-        attachment_7_filename: str = None,
-        attachment_8_filename: str = None,
-        attachment_9_filename: str = None,
+        text: Optional[str] = None,
+        font_size: Optional[int] = None,
+        color: Optional[int] = None,
+        group_id: Optional[int] = None,
+        call_type: Optional[str] = None,
+        category_id: Optional[int] = None,
+        game_title: Optional[str] = None,
+        joinable_by: Optional[str] = None,
+        message_tags: Optional[str] = None,
+        attachment_filename: Optional[str] = None,
+        attachment_2_filename: Optional[str] = None,
+        attachment_3_filename: Optional[str] = None,
+        attachment_4_filename: Optional[str] = None,
+        attachment_5_filename: Optional[str] = None,
+        attachment_6_filename: Optional[str] = None,
+        attachment_7_filename: Optional[str] = None,
+        attachment_8_filename: Optional[str] = None,
+        attachment_9_filename: Optional[str] = None,
     ) -> CreatePostResponse:
         text, message_tags = build_message_tags(text)
 
@@ -143,25 +142,25 @@ class PostApi:
 
     async def create_post(
         self,
-        text: str = None,
+        text: Optional[str] = None,
         font_size: int = 0,
         color: int = 0,
-        in_reply_to: int = None,
-        group_id: int = None,
-        mention_ids: list[int] = None,
-        choices: list[str] = None,
-        shared_url: str = None,
-        message_tags: list = None,
-        attachment_filename: str = None,
-        attachment_2_filename: str = None,
-        attachment_3_filename: str = None,
-        attachment_4_filename: str = None,
-        attachment_5_filename: str = None,
-        attachment_6_filename: str = None,
-        attachment_7_filename: str = None,
-        attachment_8_filename: str = None,
-        attachment_9_filename: str = None,
-        video_file_name: str = None,
+        in_reply_to: Optional[int] = None,
+        group_id: Optional[int] = None,
+        mention_ids: Optional[List[int]] = None,
+        choices: Optional[List[str]] = None,
+        shared_url: Optional[str] = None,
+        message_tags: Optional[List] = None,
+        attachment_filename: Optional[str] = None,
+        attachment_2_filename: Optional[str] = None,
+        attachment_3_filename: Optional[str] = None,
+        attachment_4_filename: Optional[str] = None,
+        attachment_5_filename: Optional[str] = None,
+        attachment_6_filename: Optional[str] = None,
+        attachment_7_filename: Optional[str] = None,
+        attachment_8_filename: Optional[str] = None,
+        attachment_9_filename: Optional[str] = None,
+        video_file_name: Optional[str] = None,
     ) -> Post:
         result = build_message_tags(text)
         if result is not None:
@@ -213,25 +212,25 @@ class PostApi:
     async def create_repost(
         self,
         post_id: int,
-        text: str = None,
-        font_size: int = None,
-        color: int = None,
-        in_reply_to: int = None,
-        group_id: int = None,
-        mention_ids: list[int] = None,
-        choices: list[str] = None,
-        shared_url: dict[str, str | int] = None,
-        message_tags: list = None,
-        attachment_filename: str = None,
-        attachment_2_filename: str = None,
-        attachment_3_filename: str = None,
-        attachment_4_filename: str = None,
-        attachment_5_filename: str = None,
-        attachment_6_filename: str = None,
-        attachment_7_filename: str = None,
-        attachment_8_filename: str = None,
-        attachment_9_filename: str = None,
-        video_file_name: str = None,
+        text: Optional[str] = None,
+        font_size: Optional[int] = None,
+        color: Optional[int] = None,
+        in_reply_to: Optional[int] = None,
+        group_id: Optional[int] = None,
+        mention_ids: Optional[List[int]] = None,
+        choices: Optional[List[str]] = None,
+        shared_url: Optional[Dict[str, str | int]] = None,
+        message_tags: Optional[List] = None,
+        attachment_filename: Optional[str] = None,
+        attachment_2_filename: Optional[str] = None,
+        attachment_3_filename: Optional[str] = None,
+        attachment_4_filename: Optional[str] = None,
+        attachment_5_filename: Optional[str] = None,
+        attachment_6_filename: Optional[str] = None,
+        attachment_7_filename: Optional[str] = None,
+        attachment_8_filename: Optional[str] = None,
+        attachment_9_filename: Optional[str] = None,
+        video_file_name: Optional[str] = None,
     ) -> CreatePostResponse:
         result = build_message_tags(text)
         if result is not None:
@@ -285,10 +284,10 @@ class PostApi:
         self,
         shareable_type: str,
         shareable_id: int,
-        text: str = None,
-        font_size: int = None,
-        color: int = None,
-        group_id: int = None,
+        text: Optional[str] = None,
+        font_size: Optional[int] = None,
+        color: Optional[int] = None,
+        group_id: Optional[int] = None,
     ) -> Post:
         return await self.__client.request(
             "POST",
@@ -313,25 +312,25 @@ class PostApi:
     async def create_thread_post(
         self,
         post_id: int,
-        text: str = None,
-        font_size: int = None,
-        color: int = None,
-        in_reply_to: int = None,
-        group_id: int = None,
-        mention_ids: list[int] = None,
-        choices: list[str] = None,
-        shared_url: dict[str, str | int] = None,
-        message_tags: list = None,
-        attachment_filename: str = None,
-        attachment_2_filename: str = None,
-        attachment_3_filename: str = None,
-        attachment_4_filename: str = None,
-        attachment_5_filename: str = None,
-        attachment_6_filename: str = None,
-        attachment_7_filename: str = None,
-        attachment_8_filename: str = None,
-        attachment_9_filename: str = None,
-        video_file_name: str = None,
+        text: Optional[str] = None,
+        font_size: Optional[int] = None,
+        color: Optional[int] = None,
+        in_reply_to: Optional[int] = None,
+        group_id: Optional[int] = None,
+        mention_ids: Optional[List[int]] = None,
+        choices: Optional[list[str]] = None,
+        shared_url: Optional[Dict[str, str | int]] = None,
+        message_tags: Optional[List] = None,
+        attachment_filename: Optional[str] = None,
+        attachment_2_filename: Optional[str] = None,
+        attachment_3_filename: Optional[str] = None,
+        attachment_4_filename: Optional[str] = None,
+        attachment_5_filename: Optional[str] = None,
+        attachment_6_filename: Optional[str] = None,
+        attachment_7_filename: Optional[str] = None,
+        attachment_8_filename: Optional[str] = None,
+        attachment_9_filename: Optional[str] = None,
+        video_file_name: Optional[str] = None,
     ) -> Post:
         result = build_message_tags(text)
         if result is not None:
@@ -403,7 +402,9 @@ class PostApi:
             return_type=Response,
         )
 
-    async def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
+    async def get_bookmark(
+        self, user_id: int, from_str: Optional[str] = None
+    ) -> PostsResponse:
         params = {}
         if from_str:
             params = {"from": from_str}
@@ -459,7 +460,7 @@ class PostApi:
             return_type=PostsResponse,
         )
 
-    async def get_conversation_root_posts(self, post_ids: list[int]) -> PostsResponse:
+    async def get_conversation_root_posts(self, post_ids: List[int]) -> PostsResponse:
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v2/conversations/root_posts",
@@ -651,7 +652,7 @@ class PostApi:
             return_type=PostsResponse,
         )
 
-    async def get_posts(self, post_ids: list[int]) -> PostsResponse:
+    async def get_posts(self, post_ids: List[int]) -> PostsResponse:
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v2/posts/multiple",
@@ -660,7 +661,7 @@ class PostApi:
         )
 
     async def get_recommended_post_tags(
-        self, tag: str = None, save_recent_search: bool = False
+        self, tag: Optional[str] = None, save_recent_search: bool = False
     ) -> PostTagsResponse:
         return await self.__client.request(
             "GET",
@@ -688,7 +689,7 @@ class PostApi:
         )
 
     async def get_timeline_by_keyword(
-        self, keyword: str = None, **params
+        self, keyword: Optional[str] = None, **params
     ) -> PostsResponse:
         """
 
@@ -762,7 +763,7 @@ class PostApi:
             return_type=PostsResponse,
         )
 
-    async def like(self, post_ids: list[int]) -> LikePostsResponse:
+    async def like(self, post_ids: List[int]) -> LikePostsResponse:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/posts/like",
@@ -786,7 +787,7 @@ class PostApi:
             return_type=Response,
         )
 
-    async def remove_posts(self, post_ids: list[int]) -> Response:
+    async def remove_posts(self, post_ids: List[int]) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/posts/mass_destroy",
@@ -804,10 +805,10 @@ class PostApi:
     async def update_post(
         self,
         post_id: int,
-        text: str = None,
-        font_size: int = None,
-        color: int = None,
-        message_tags: list = None,
+        text: Optional[str] = None,
+        font_size: Optional[int] = None,
+        color: Optional[int] = None,
+        message_tags: Optional[List] = None,
     ) -> Post:
         result = build_message_tags(text)
         if result is not None:
