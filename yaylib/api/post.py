@@ -375,7 +375,7 @@ class PostApi:
             jwt_required=True,
         )
 
-    async def delete_all_post(self):
+    async def delete_all_posts(self):
         try:
             return await self.__client.request(
                 "POST", config.API_HOST + "/v1/posts/delete_all_post"
@@ -383,14 +383,14 @@ class PostApi:
         except NotFoundError:
             self.__client.logger.info("Post not found. Skipping...")
 
-    async def delete_group_pin_post(self, group_id: int):
+    async def unpin_group_post(self, group_id: int):
         return await self.__client.request(
             "DELETE",
             config.API_HOST + "/v2/posts/group_pinned_post",
             json={"group_id": group_id},
         )
 
-    async def delete_pin_post(self, post_id: int):
+    async def unpin_post(self, post_id: int):
         return await self.__client.request(
             "DELETE", config.API_HOST + f"/v1/pinned/posts/{post_id}"
         )
@@ -754,7 +754,7 @@ class PostApi:
             return_type=PostsResponse,
         )
 
-    async def like_posts(self, post_ids: list[int]) -> LikePostsResponse:
+    async def like(self, post_ids: list[int]) -> LikePostsResponse:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/posts/like",
@@ -781,32 +781,7 @@ class PostApi:
             json={"posts_ids": post_ids},
         )
 
-    async def report_post(
-        self,
-        post_id: int,
-        opponent_id: int,
-        category_id: int,
-        reason: str = None,
-        screenshot_filename: str = None,
-        screenshot_2_filename: str = None,
-        screenshot_3_filename: str = None,
-        screenshot_4_filename: str = None,
-    ):
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + f"/v3/posts/{post_id}/report",
-            json={
-                "opponent_id": opponent_id,
-                "category_id": category_id,
-                "reason": reason,
-                "screenshot_filename": screenshot_filename,
-                "screenshot_2_filename": screenshot_2_filename,
-                "screenshot_3_filename": screenshot_3_filename,
-                "screenshot_4_filename": screenshot_4_filename,
-            },
-        )
-
-    async def unlike_post(self, post_id: int):
+    async def unlike(self, post_id: int):
         return await self.__client.request(
             "POST", config.API_HOST + f"/v1/posts/{post_id}/unlike"
         )
