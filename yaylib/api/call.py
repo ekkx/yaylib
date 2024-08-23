@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from typing import Optional
+from typing import List, Optional
 
 from .. import config
 from ..responses import (
@@ -174,7 +174,7 @@ class CallApi:
             return_type=Response,
         )
 
-    async def invite_users_to_call(self, call_id: int, user_ids: list[int]) -> Response:
+    async def invite_users_to_call(self, call_id: int, user_ids: List[int]) -> Response:
         """通話に複数のユーザーを招待します
 
         Args:
