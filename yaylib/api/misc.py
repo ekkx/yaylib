@@ -27,6 +27,7 @@ from __future__ import annotations
 import os
 from datetime import datetime
 from io import BytesIO
+from typing import List
 from urllib import parse
 
 from PIL import Image
@@ -97,7 +98,9 @@ class MiscApi:
             params=params,
         )
 
-    async def send_verification_code(self, email: str, intent: str, locale: str):
+    async def send_verification_code(
+        self, email: str, intent: str, locale: str
+    ) -> dict:
         return await self.__client.request(
             "POST",
             self.get_email_verification_presigned_url(
@@ -118,7 +121,7 @@ class MiscApi:
 
     async def get_email_verification_presigned_url(
         self, email: str, locale: str, intent: str = None
-    ) -> str:
+    ) -> EmailVerificationPresignedUrlResponse:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/email_verification_urls",
@@ -289,7 +292,7 @@ class MiscApi:
         )
         presigned_urls = res_presigned_url.presigned_urls
 
-        res_upload = []
+        res_upload: List[Attachment] = []
 
         x: Attachment
         for x in _files:
