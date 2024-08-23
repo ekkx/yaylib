@@ -17,37 +17,17 @@ __copyright__ = "Copyright (c) 2023 ekkx"
 __version__ = "1.5.0"
 
 from .client import Client
-from .state import State
-from .errors import (
-    YaylibError,
-    HTTPError,
-    BadRequestError,
-    AuthenticationError,
-    ForbiddenError,
-    NotFoundError,
-    RateLimitError,
-    InternalServerError,
-    ErrorCode,
-)
+from .errors import *
 from .models import *
 from .responses import *
+from .state import State
 from .utils import mention
 
 __all__ = (
     "Client",
-    "State",
-    # errors - start
-    "YaylibError",
-    "HTTPError",
-    "BadRequestError",
-    "AuthenticationError",
-    "ForbiddenError",
-    "NotFoundError",
-    "RateLimitError",
-    "InternalServerError",
-    "ErrorCode",
-    # errors - end
+    "errors",
     "models",
     "responses",
+    "State",
     "mention",
 )
