@@ -561,7 +561,7 @@ class Client(
         """ユーザーを通話からキックします"""
         self.__sync_request(self.call.kick_user_from_call(call_id, user_id))
 
-    def set_call(
+    def start_call(
         self,
         call_id: int,
         joinable_by: str,
@@ -570,7 +570,7 @@ class Client(
     ) -> Response:
         """通話を開始します"""
         return self.__sync_request(
-            self.call.set_call(call_id, joinable_by, game_title, category_id)
+            self.call.start_call(call_id, joinable_by, game_title, category_id)
         )
 
     def set_user_role(self, call_id: int, user_id: int, role: str) -> Response:
