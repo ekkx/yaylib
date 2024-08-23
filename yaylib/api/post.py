@@ -27,7 +27,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from .. import config
-from ..errors import ForbiddenError, NotFoundError
+from ..errors import ClientError, NotFoundError
 from ..models import Post, SharedUrl
 from ..responses import (
     BookmarkPostResponse,
@@ -170,8 +170,8 @@ class PostApi:
 
         if shared_url is not None:
             try:
-                shared_url = self.get_url_metadata(url=shared_url).data
-            except ForbiddenError:
+                shared_url = (await self.get_url_metadata(url=shared_url)).data
+            except ClientError:
                 self.__client.logger.error("Unable to get the URL metadata.")
                 shared_url = None
 
@@ -240,8 +240,8 @@ class PostApi:
 
         if shared_url is not None:
             try:
-                shared_url = self.get_url_metadata(url=shared_url).data
-            except ForbiddenError:
+                shared_url = (await self.get_url_metadata(url=shared_url)).data
+            except ClientError:
                 self.__client.logger.error("Unable to get the URL metadata.")
                 shared_url = None
 
@@ -340,8 +340,8 @@ class PostApi:
 
         if shared_url is not None:
             try:
-                shared_url = self.get_url_metadata(url=shared_url).data
-            except ForbiddenError:
+                shared_url = (await self.get_url_metadata(url=shared_url)).data
+            except ClientError:
                 self.__client.logger.error("Unable to get the URL metadata.")
                 shared_url = None
 
