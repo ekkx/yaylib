@@ -35,7 +35,9 @@ class ClientError(YaylibError):
     """yaylib クライアントに関する例外クラス"""
 
     def __init__(self, response: ErrorResponse):
-        super().__init__(f"Server returned error code: {response.error_code}")
+        super().__init__(
+            f'Server returned error code: {response.error_code}, with message "{response.message}"'
+        )
 
         self.__response = response
 
