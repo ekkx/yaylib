@@ -33,6 +33,7 @@ from ..responses import (
     GenresResponse,
     PostResponse,
     PostsResponse,
+    Response,
     UsersByTimestampResponse,
 )
 
@@ -45,7 +46,9 @@ class CallApi:
 
         self.__client: Client = client
 
-    async def bump_call(self, call_id: int, participant_limit: Optional[int] = None):
+    async def bump_call(
+        self, call_id: int, participant_limit: Optional[int] = None
+    ) -> Response:
         params = {}
         if participant_limit:
             params["participant_limit"] = participant_limit
@@ -53,6 +56,7 @@ class CallApi:
             "POST",
             config.API_HOST + f"/v1/calls/{call_id}/bump",
             params=params,
+            return_type=Response,
         )
 
     async def get_user_active_call(self, user_id: int) -> PostResponse:
@@ -153,7 +157,7 @@ class CallApi:
 
     async def invite_online_followings_to_call(
         self, call_id: int, group_id: Optional[int] = None
-    ):
+    ) -> Response:
         """通話に一括で招待します
 
         Args:
@@ -167,9 +171,10 @@ class CallApi:
             "POST",
             config.API_HOST + f"/v1/calls/{call_id}/bulk_invite",
             params=params,
+            return_type=Response,
         )
 
-    async def invite_users_to_call(self, call_id: int, user_ids: list[int]):
+    async def invite_users_to_call(self, call_id: int, user_ids: list[int]) -> Response:
         """通話に複数のユーザーを招待します
 
         Args:
@@ -180,11 +185,12 @@ class CallApi:
             "POST",
             config.API_HOST + f"/v1/calls/conference_calls/{call_id}/invite",
             payload={"call_id": call_id, "user_ids": user_ids},
+            return_type=Response,
         )
 
     async def invite_users_to_chat_call(
         self, chat_room_id: int, room_id: int, room_url: str
-    ):
+    ) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/calls/invite",
@@ -193,13 +199,15 @@ class CallApi:
                 "room_id": room_id,
                 "room_url": room_url,
             },
+            return_type=Response,
         )
 
-    async def kick_user_from_call(self, call_id: int, user_id: int):
+    async def kick_user_from_call(self, call_id: int, user_id: int) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/calls/conference_calls/{call_id}/kick",
             payload={"user_id": user_id},
+            return_type=Response,
         )
 
     async def set_call(
@@ -208,7 +216,7 @@ class CallApi:
         joinable_by: str,
         game_title: Optional[str] = None,
         category_id: Optional[str] = None,
-    ):
+    ) -> Response:
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/calls/{call_id}",
@@ -217,13 +225,15 @@ class CallApi:
                 "game_title": game_title,
                 "category_id": category_id,
             },
+            return_type=Response,
         )
 
-    async def set_user_role(self, call_id: int, user_id: int, role: str):
+    async def set_user_role(self, call_id: int, user_id: int, role: str) -> Response:
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/calls/{call_id}/users/{user_id}",
             payload={"role": role},
+            return_type=Response,
         )
 
     async def join_call(
@@ -236,11 +246,14 @@ class CallApi:
             return_type=ConferenceCallResponse,
         )
 
-    async def leave_call(self, conference_id: int, call_sid: Optional[str] = None):
+    async def leave_call(
+        self, conference_id: int, call_sid: Optional[str] = None
+    ) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/calls/leave_conference_call",
             payload={"conference_id": conference_id, "call_sid": call_sid},
+            return_type=Response,
         )
 
     async def join_call_as_anonymous(
@@ -255,9 +268,10 @@ class CallApi:
 
     async def leave_call_as_anonymous(
         self, conference_id: int, agora_uid: Optional[str] = None
-    ):
+    ) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/anonymous_calls/leave_conference_call",
             payload={"conference_id": conference_id, "agora_uid": agora_uid},
+            return_type=Response,
         )
