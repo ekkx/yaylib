@@ -533,6 +533,44 @@ class Web3EMPLFeeExceedsBalanceError(ClientError):
     """Web3EMPLFeeExceedsBalanceError"""
 
 
+class HTTPError(YaylibError):
+    """HTTP に関する例外クラス"""
+
+    def __init__(self, response: aiohttp.ClientResponse):
+        super().__init__(f"HTTP request failed with status: {response.status}")
+
+        self.__response = response
+
+    @property
+    def response(self) -> aiohttp.ClientResponse:
+        """HTTP レスポンス"""
+        return self.__response
+
+
+class HTTPBadRequestError(HTTPError):
+    """Exception raised for a 400 HTTP status code"""
+
+
+class HTTPAuthenticationError(HTTPError):
+    """Exception raised for a 401 HTTP status code"""
+
+
+class HTTPForbiddenError(HTTPError):
+    """Exception raised for a 403 HTTP status code"""
+
+
+class HTTPNotFoundError(HTTPError):
+    """Exception raised for a 404 HTTP status code"""
+
+
+class HTTPRateLimitError(HTTPError):
+    """Exception raised for a 429 HTTP status code"""
+
+
+class HTTPInternalServerError(HTTPError):
+    """Exception raised for a 5xx HTTP status code"""
+
+
 class ErrorMessage:
     Unknown = "原因不明"
     RegisteredUser = "このアカウントはすでに登録されています"
