@@ -26,7 +26,7 @@ from __future__ import annotations
 
 from .. import config
 from ..models import ThreadInfo
-from ..responses import GroupThreadListResponse, PostsResponse
+from ..responses import GroupThreadListResponse, PostsResponse, Response
 
 
 class ThreadApi:
@@ -120,32 +120,36 @@ class ThreadApi:
             return_type=PostsResponse,
         )
 
-    async def join_thread(self, thread_id: int, user_id: int):
+    async def join_thread(self, thread_id: int, user_id: int) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/threads/{thread_id}/members/{user_id}",
+            return_type=Response,
         )
 
-    async def leave_thread(self, thread_id: int, user_id: int):
+    async def leave_thread(self, thread_id: int, user_id: int) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/threads/{thread_id}/members/{user_id}",
+            return_type=Response,
         )
 
     async def remove_thread(
         self,
         thread_id: int,
-    ):
+    ) -> Response:
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/threads/{thread_id}",
+            return_type=Response,
         )
 
     async def update_thread(
         self, thread_id: int, title: str, thread_icon_filename: str
-    ):
+    ) -> Response:
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/threads/{thread_id}",
             json={"title": title, "thread_icon_filename": thread_icon_filename},
+            return_type=Response,
         )
