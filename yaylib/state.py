@@ -25,10 +25,9 @@ SOFTWARE.
 import base64
 import hashlib
 import sqlite3
-
+from dataclasses import dataclass
 from queue import Queue
 from typing import Optional
-from dataclasses import dataclass
 
 from cryptography.fernet import Fernet
 

@@ -28,7 +28,7 @@ import os
 import random
 import time
 from datetime import datetime
-from typing import Any, Awaitable, Callable, Dict, Optional
+from typing import Any, Awaitable, Callable, Dict, List, Optional
 
 import aiohttp
 
@@ -378,7 +378,7 @@ class Client(
         return self.__state.device_uuid
 
     def __construct_response(
-        self, response: dict, data_type: Optional[Model] = None
+        self, response: Dict, data_type: Optional[Model] = None
     ) -> Dict | Model:
         if data_type is not None:
             if isinstance(response, list):
@@ -542,7 +542,7 @@ class Client(
             self.call.invite_online_followings_to_call(call_id, group_id)
         )
 
-    def invite_users_to_call(self, call_id: int, user_ids: list[int]) -> Response:
+    def invite_users_to_call(self, call_id: int, user_ids: List[int]) -> Response:
         """ユーザーを通話に招待します"""
         return self.__sync_request(self.call.invite_users_to_call(call_id, user_ids))
 
@@ -619,7 +619,7 @@ class Client(
 
     # ---------- chat api ----------
 
-    def accept_chat_requests(self, chat_room_ids: list[int]) -> Response:
+    def accept_chat_requests(self, chat_room_ids: List[int]) -> Response:
         """チャットリクエストを承認します"""
         return self.__sync_request(self.chat.accept_chat_requests(chat_room_ids))
 
@@ -630,7 +630,7 @@ class Client(
     def create_group_chat(
         self,
         name: str,
-        with_user_ids: list[int],
+        with_user_ids: List[int],
         icon_filename: Optional[str] = None,
         background_filename: Optional[str] = None,
     ) -> CreateChatRoomResponse:
@@ -645,7 +645,7 @@ class Client(
         self,
         with_user_id: int,
         matching_id: Optional[int] = None,
-        hima_chat: Optional[bool] = False,
+        hima_chat: bool = False,
     ) -> CreateChatRoomResponse:
         """個人チャットを作成します"""
         return self.__sync_request(
@@ -723,11 +723,11 @@ class Client(
         """チャットルームを非表示にします"""
         return self.__sync_request(self.chat.hide_chat(chat_room_id))
 
-    def invite_to_chat(self, chat_room_id: int, user_ids: list[int]) -> Response:
+    def invite_to_chat(self, chat_room_id: int, user_ids: List[int]) -> Response:
         """チャットルームにユーザーを招待します"""
         return self.__sync_request(self.chat.invite_to_chat(chat_room_id, user_ids))
 
-    def kick_users_from_chat(self, chat_room_id: int, user_ids: list[int]) -> Response:
+    def kick_users_from_chat(self, chat_room_id: int, user_ids: List[int]) -> Response:
         """チャットルームからユーザーを追放します"""
         return self.__sync_request(
             self.chat.kick_users_from_chat(chat_room_id, user_ids)
@@ -745,7 +745,7 @@ class Client(
         """チャットルームを更新します"""
         return self.__sync_request(self.chat.refresh_chat_rooms(from_time))
 
-    def delete_chat_rooms(self, chat_room_ids: list[int]) -> Response:
+    def delete_chat_rooms(self, chat_room_ids: List[int]) -> Response:
         """チャットルームを削除します"""
         return self.__sync_request(self.chat.delete_chat_rooms(chat_room_ids))
 
@@ -807,7 +807,7 @@ class Client(
         )
 
     def add_related_groups(
-        self, group_id: int, related_group_id: list[int]
+        self, group_id: int, related_group_id: List[int]
     ) -> Response:
         """関連サークルを追加します"""
         return self.__sync_request(
@@ -923,7 +923,7 @@ class Client(
         """サークルに招待可能なユーザーを取得します"""
         return self.__sync_request(self.group.get_invitable_users(group_id, **params))
 
-    def get_joined_statuses(self, ids: list[int]) -> Response:
+    def get_joined_statuses(self, ids: List[int]) -> Response:
         """サークルの参加ステータスを取得します"""
         return self.__sync_request(self.group.get_joined_statuses(ids))
 
@@ -951,7 +951,7 @@ class Client(
         """特定のユーザーが参加しているサークルを取得します"""
         return self.__sync_request(self.group.get_user_groups(**params))
 
-    def invite_users_to_group(self, group_id: int, user_ids: list[int]) -> Response:
+    def invite_users_to_group(self, group_id: int, user_ids: List[int]) -> Response:
         """サークルにユーザーを招待します"""
         return self.__sync_request(self.group.invite_users_to_group(group_id, user_ids))
 
@@ -972,14 +972,14 @@ class Client(
         return self.__sync_request(self.group.remove_moderator(group_id, user_id))
 
     def remove_related_groups(
-        self, group_id: int, related_group_ids: list[int]
+        self, group_id: int, related_group_ids: List[int]
     ) -> Response:
         """関連のあるサークルを削除します"""
         return self.__sync_request(
             self.group.remove_related_groups(group_id, related_group_ids)
         )
 
-    def send_moderator_offers(self, group_id: int, user_ids: list[int]) -> Response:
+    def send_moderator_offers(self, group_id: int, user_ids: List[int]) -> Response:
         """複数人にサークル副管理人のオファーを送信します"""
         return self.__sync_request(self.group.send_moderator_offers(group_id, user_ids))
 
@@ -1137,7 +1137,7 @@ class Client(
         )
 
     def get_file_upload_presigned_urls(
-        self, file_names: list[str]
+        self, file_names: List[str]
     ) -> PresignedUrlsResponse:
         """ファイルアップロード用の署名付きURLを取得します"""
         return self.__sync_request(self.misc.get_file_upload_presigned_urls(file_names))
@@ -1165,7 +1165,7 @@ class Client(
         """Web Socket トークンを取得します"""
         return self.__sync_request(self.misc.get_web_socket_token())
 
-    def upload_image(self, image_paths: list[str], image_type: str) -> list[Attachment]:
+    def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachment]:
         """画像をアップロードして、サーバー上のファイルのリストを返します。"""
         return self.__sync_request(self.misc.upload_image(image_paths, image_type))
 
@@ -1207,7 +1207,7 @@ class Client(
         category_id: Optional[int] = None,
         game_title: Optional[str] = None,
         joinable_by: Optional[str] = None,
-        message_tags: Optional[list] = None,
+        message_tags: Optional[List] = None,
         attachment_filename: Optional[str] = None,
         attachment_2_filename: Optional[str] = None,
         attachment_3_filename: Optional[str] = None,
@@ -1253,14 +1253,14 @@ class Client(
     def create_post(
         self,
         text: Optional[str] = None,
-        font_size: Optional[int] = 0,
-        color: Optional[int] = 0,
+        font_size: int = 0,
+        color: int = 0,
         in_reply_to: Optional[int] = None,
         group_id: Optional[int] = None,
-        mention_ids: Optional[list[int]] = None,
-        choices: Optional[list[str]] = None,
+        mention_ids: Optional[List[int]] = None,
+        choices: Optional[List[str]] = None,
         shared_url: Optional[str] = None,
-        message_tags: Optional[list] = None,
+        message_tags: Optional[List] = None,
         attachment_filename: Optional[str] = None,
         attachment_2_filename: Optional[str] = None,
         attachment_3_filename: Optional[str] = None,
@@ -1301,14 +1301,14 @@ class Client(
         self,
         post_id: int,
         text: Optional[str] = None,
-        font_size: Optional[int] = 0,
-        color: Optional[int] = 0,
+        font_size: int = 0,
+        color: int = 0,
         in_reply_to: Optional[int] = None,
         group_id: Optional[int] = None,
-        mention_ids: Optional[list[int]] = None,
-        choices: Optional[list[str]] = None,
+        mention_ids: Optional[List[int]] = None,
+        choices: Optional[List[str]] = None,
         shared_url: Optional[str] = None,
-        message_tags: Optional[list] = None,
+        message_tags: Optional[List] = None,
         attachment_filename: Optional[str] = None,
         attachment_2_filename: Optional[str] = None,
         attachment_3_filename: Optional[str] = None,
@@ -1366,14 +1366,14 @@ class Client(
         self,
         post_id: int,
         text: Optional[str] = None,
-        font_size: Optional[int] = 0,
-        color: Optional[int] = 0,
+        font_size: int = 0,
+        color: int = 0,
         in_reply_to: Optional[int] = None,
         group_id: Optional[int] = None,
-        mention_ids: Optional[list[int]] = None,
-        choices: Optional[list[str]] = None,
+        mention_ids: Optional[List[int]] = None,
+        choices: Optional[List[str]] = None,
         shared_url: Optional[str] = None,
-        message_tags: Optional[list] = None,
+        message_tags: Optional[List] = None,
         attachment_filename: Optional[str] = None,
         attachment_2_filename: Optional[str] = None,
         attachment_3_filename: Optional[str] = None,
@@ -1441,7 +1441,7 @@ class Client(
             self.post.get_conversation(conversation_id, **params)
         )
 
-    def get_conversation_root_posts(self, post_ids: list[int]) -> PostsResponse:
+    def get_conversation_root_posts(self, post_ids: List[int]) -> PostsResponse:
         """会話の原点の投稿を取得します"""
         return self.__sync_request(self.post.get_conversation_root_posts(post_ids))
 
@@ -1491,12 +1491,12 @@ class Client(
         """投稿の(´∀｀∩)↑age↑を取得します"""
         return self.__sync_request(self.post.get_post_reposts(post_id, **params))
 
-    def get_posts(self, post_ids: list[int]) -> PostsResponse:
+    def get_posts(self, post_ids: List[int]) -> PostsResponse:
         """複数の投稿を取得します"""
         return self.__sync_request(self.post.get_posts(post_ids))
 
     def get_recommended_post_tags(
-        self, tag: Optional[str] = None, save_recent_search: Optional[bool] = False
+        self, tag: Optional[str] = None, save_recent_search: bool = False
     ) -> PostTagsResponse:
         """おすすめのタグ候補を取得します"""
         return self.__sync_request(
@@ -1527,7 +1527,7 @@ class Client(
         """ユーザーのタイムラインを取得します"""
         return self.__sync_request(self.post.get_user_timeline(user_id, **params))
 
-    def like(self, post_ids: list[int]) -> LikePostsResponse:
+    def like(self, post_ids: List[int]) -> LikePostsResponse:
         """投稿にいいねします ※ 一度にいいねできる投稿数は最大25個"""
         return self.__sync_request(self.post.like(post_ids))
 
@@ -1541,7 +1541,7 @@ class Client(
             self.post.remove_group_highlight_post(group_id, post_id)
         )
 
-    def remove_posts(self, post_ids: list[int]) -> Response:
+    def remove_posts(self, post_ids: List[int]) -> Response:
         """複数の投稿を削除します"""
         return self.__sync_request(self.post.remove_posts(post_ids))
 
@@ -1555,7 +1555,7 @@ class Client(
         text: Optional[str] = None,
         font_size: Optional[int] = None,
         color: Optional[int] = None,
-        message_tags: Optional[list] = None,
+        message_tags: Optional[List] = None,
     ) -> Post:
         """投稿を編集します"""
         return self.__sync_request(
@@ -1576,7 +1576,7 @@ class Client(
         """レターを送信します"""
         return self.__sync_request(self.review.create_review(user_id, comment))
 
-    def delete_reviews(self, review_ids: list[int]) -> Response:
+    def delete_reviews(self, review_ids: List[int]) -> Response:
         """レターを削除します"""
         return self.__sync_request(self.review.delete_reviews(review_ids))
 
@@ -1635,7 +1635,7 @@ class Client(
             self.thread.get_group_thread_list(group_id, from_str, **params)
         )
 
-    def get_thread_joined_statuses(self, ids: list[int]) -> Response:
+    def get_thread_joined_statuses(self, ids: List[int]) -> Response:
         """スレッド参加ステータスを取得します"""
         return self.__sync_request(self.thread.get_thread_joined_statuses(ids))
 
@@ -1683,7 +1683,7 @@ class Client(
         """ユーザーをフォローします"""
         return self.__sync_request(self.user.follow_user(user_id))
 
-    def follow_users(self, user_ids: list[int]) -> Response:
+    def follow_users(self, user_ids: List[int]) -> Response:
         """複数のユーザーをフォローします"""
         return self.__sync_request(self.user.follow_users(user_ids))
 
@@ -1761,7 +1761,7 @@ class Client(
             self.user.get_user_without_leaving_footprint(user_id)
         )
 
-    def get_users(self, user_ids: list[int]) -> UsersResponse:
+    def get_users(self, user_ids: List[int]) -> UsersResponse:
         """複数のユーザーの情報を取得します"""
         return self.__sync_request(self.user.get_users(user_ids))
 
@@ -1776,8 +1776,8 @@ class Client(
         password: str,
         nickname: str,
         birth_date: str,
-        gender: Optional[int] = -1,
-        country_code: Optional[str] = "JP",
+        gender: int = -1,
+        country_code: str = "JP",
         biography: Optional[str] = None,
         prefecture: Optional[str] = None,
         profile_icon_filename: Optional[str] = None,
@@ -1882,6 +1882,6 @@ class Client(
         """ユーザーを非表示にします"""
         return self.__sync_request(self.user.hide_user(user_id))
 
-    def unhide_users(self, user_ids: list[int]) -> Response:
+    def unhide_users(self, user_ids: List[int]) -> Response:
         """ユーザーの非表示を解除します"""
         return self.__sync_request(self.user.unhide_users(user_ids))

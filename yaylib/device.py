@@ -1,6 +1,5 @@
 import random
-from typing import Optional, Self
-
+from typing import Dict, Optional, Self
 
 DEVICES = [
     {
@@ -29,7 +28,7 @@ class Device:
         self.model = model
 
     @classmethod
-    def instance(cls, device: Optional[dict] = None) -> Self:
+    def instance(cls, device: Optional[Dict] = None) -> Self:
         if device is None:
             device = random.choice(DEVICES)
         return cls(**device)
