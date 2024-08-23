@@ -41,7 +41,6 @@ from ..responses import (
     RankingUsersResponse,
     RefreshCounterRequestsResponse,
     SocialShareUsersResponse,
-    UserEmailResponse,
     UserResponse,
     UsersByTimestampResponse,
     UsersResponse,
@@ -232,7 +231,7 @@ class UserApi:
             return_type=RankingUsersResponse,
         )
 
-    async def get_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
+    async def get_profile_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/users/reset_counters",
@@ -269,13 +268,6 @@ class UserApi:
     async def get_user(self, user_id: int) -> UserResponse:
         return await self.__client.request(
             "GET", config.API_HOST + f"/v2/users/{user_id}", return_type=UserResponse
-        )
-
-    async def get_user_email(self, user_id: int) -> UserEmailResponse:
-        return await self.__client.request(
-            "GET",
-            config.API_HOST + f"/v2/users/fresh/{user_id}",
-            return_type=UserEmailResponse,
         )
 
     async def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
@@ -341,7 +333,7 @@ class UserApi:
             jwt_required=True,
         )
 
-    async def refresh_counter(self, counter: str):
+    async def refresh_profile_counter(self, counter: str):
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/users/reset_counters",
@@ -404,29 +396,6 @@ class UserApi:
             "POST", config.API_HOST + "/v2/users/remove_cover_image"
         )
 
-    async def report_user(
-        self,
-        user_id: int,
-        category_id: int,
-        reason: str = None,
-        screenshot_filename: str = None,
-        screenshot_2_filename: str = None,
-        screenshot_3_filename: str = None,
-        screenshot_4_filename: str = None,
-    ):
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + f"/v3/users/{user_id}/report",
-            json={
-                "category_id": category_id,
-                "reason": reason,
-                "screenshot_filename": screenshot_filename,
-                "screenshot_2_filename": screenshot_2_filename,
-                "screenshot_3_filename": screenshot_3_filename,
-                "screenshot_4_filename": screenshot_4_filename,
-            },
-        )
-
     async def reset_password(self, email: str, email_grant_token: str, password: str):
         return await self.__client.request(
             "PUT",
@@ -459,8 +428,10 @@ class UserApi:
     async def search_users(self, **params) -> UsersResponse:
         """
 
-        Parameters:
-        -----------
+        ユーザーを検索します
+
+        Parameters
+        ----------
 
             - gender: int = None
             - nickname: str = None
@@ -507,10 +478,10 @@ class UserApi:
             params={"on": on},
         )
 
-    async def take_action_follow_request(self, target_id: int, action: str):
+    async def take_action_follow_request(self, user_id: int, action: str):
         return await self.__client.request(
             "POST",
-            config.API_HOST + f"/v2/users/{target_id}/follow_request",
+            config.API_HOST + f"/v2/users/{user_id}/follow_request",
             json={"action": action},
         )
 
