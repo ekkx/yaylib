@@ -196,6 +196,11 @@ class AuthApi:
         return response
 
     async def resend_confirm_email(self) -> Response:
+        """確認メールを再送信する
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/users/resend_confirm_email",
@@ -203,6 +208,14 @@ class AuthApi:
         )
 
     async def restore_user(self, user_id: int) -> LoginUserResponse:
+        """ユーザーを復元する
+
+        Args:
+            user_id (int):
+
+        Returns:
+            LoginUserResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/users/restore",
@@ -224,6 +237,17 @@ class AuthApi:
         current_password: Optional[str] = None,
         email_grant_token: Optional[str] = None,
     ) -> LoginUpdateResponse:
+        """メールアドレスでアカウントを保存する
+
+        Args:
+            email (str):
+            password (Optional[str]):
+            current_password (Optional[str]):
+            email_grant_token (Optional[str]):
+
+        Returns:
+            LoginUpdateResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v3/users/login_update",
