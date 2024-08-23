@@ -28,7 +28,7 @@ from typing import Optional
 from cryptography import fernet
 
 from .. import config
-from ..responses import LoginUpdateResponse, LoginUserResponse, TokenResponse
+from ..responses import LoginUpdateResponse, LoginUserResponse, Response, TokenResponse
 from ..state import LocalUser
 from ..utils import md5
 
@@ -195,9 +195,11 @@ class AuthApi:
 
         return response
 
-    async def resend_confirm_email(self):
+    async def resend_confirm_email(self) -> Response:
         return await self.__client.request(
-            "POST", config.API_HOST + "/v2/users/resend_confirm_email"
+            "POST",
+            config.API_HOST + "/v2/users/resend_confirm_email",
+            return_type=Response,
         )
 
     async def restore_user(self, user_id: int) -> LoginUserResponse:

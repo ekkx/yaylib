@@ -91,11 +91,12 @@ class ThreadApi:
             return_type=GroupThreadListResponse,
         )
 
-    async def get_thread_joined_statuses(self, ids: list[int]) -> dict:
+    async def get_thread_joined_statuses(self, ids: list[int]) -> Response:
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/threads/joined_statuses",
             params={"ids[]": ids},
+            return_type=Response,
         )
 
     async def get_thread_posts(

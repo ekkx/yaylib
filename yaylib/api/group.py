@@ -287,11 +287,12 @@ class GroupApi:
             return_type=UsersByTimestampResponse,
         )
 
-    async def get_joined_statuses(self, ids: list[int]) -> dict:
+    async def get_joined_statuses(self, ids: list[int]) -> Response:
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/groups/joined_statuses",
             params={"ids": ids},
+            return_type=Response,
         )
 
     async def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
