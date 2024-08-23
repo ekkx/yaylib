@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from __future__ import annotations
+from typing import List, Optional
 
 from .. import config
 from ..responses import (
@@ -48,7 +48,7 @@ class ChatApi:
 
         self.__client: Client = client
 
-    async def accept_chat_requests(self, chat_room_ids: list[int]) -> Response:
+    async def accept_chat_requests(self, chat_room_ids: List[int]) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/chat_rooms/accept_chat_request",
@@ -67,9 +67,9 @@ class ChatApi:
     async def create_group_chat(
         self,
         name: str,
-        with_user_ids: list[int],
-        icon_filename: str = None,
-        background_filename: str = None,
+        with_user_ids: List[int],
+        icon_filename: Optional[str] = None,
+        background_filename: Optional[str] = None,
     ) -> CreateChatRoomResponse:
         return await self.__client.request(
             "POST",
@@ -84,7 +84,10 @@ class ChatApi:
         )
 
     async def create_private_chat(
-        self, with_user_id: int, matching_id: int = None, hima_chat: bool = False
+        self,
+        with_user_id: int,
+        matching_id: Optional[int] = None,
+        hima_chat: bool = False,
     ) -> CreateChatRoomResponse:
         return await self.__client.request(
             "POST",
@@ -115,8 +118,8 @@ class ChatApi:
         self,
         chat_room_id: int,
         name: str,
-        icon_filename: str = None,
-        background_filename: str = None,
+        icon_filename: Optional[str] = None,
+        background_filename: Optional[str] = None,
     ) -> Response:
         return await self.__client.request(
             "POST",
@@ -132,9 +135,9 @@ class ChatApi:
     async def get_chatable_users(
         self,
         # @Body @Nullable SearchUsersRequest searchUsersRequest
-        from_follow_id: int = None,
-        from_timestamp: int = None,
-        order_by: str = None,
+        from_follow_id: Optional[int] = None,
+        from_timestamp: Optional[int] = None,
+        order_by: Optional[str] = None,
     ) -> FollowUsersResponse:
         return await self.__client.request(
             "POST",
@@ -172,7 +175,7 @@ class ChatApi:
         )
 
     async def get_main_chat_rooms(
-        self, from_timestamp: int = None
+        self, from_timestamp: Optional[int] = None
     ) -> ChatRoomsResponse:
         params = {}
         if from_timestamp:
@@ -246,7 +249,7 @@ class ChatApi:
             return_type=Response,
         )
 
-    async def invite_to_chat(self, chat_room_id: int, user_ids: list[int]) -> Response:
+    async def invite_to_chat(self, chat_room_id: int, user_ids: List[int]) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v2/chat_rooms/{chat_room_id}/invite",
@@ -255,7 +258,7 @@ class ChatApi:
         )
 
     async def kick_users_from_chat(
-        self, chat_room_id: int, user_ids: list[int]
+        self, chat_room_id: int, user_ids: List[int]
     ) -> Response:
         return await self.__client.request(
             "POST",
@@ -279,7 +282,9 @@ class ChatApi:
             return_type=Response,
         )
 
-    async def refresh_chat_rooms(self, from_time: int = None) -> ChatRoomsResponse:
+    async def refresh_chat_rooms(
+        self, from_time: Optional[int] = None
+    ) -> ChatRoomsResponse:
         params = {}
         if from_time:
             params["from_time"] = from_time
@@ -290,7 +295,7 @@ class ChatApi:
             return_type=ChatRoomsResponse,
         )
 
-    async def delete_chat_rooms(self, chat_room_ids: list[int]) -> Response:
+    async def delete_chat_rooms(self, chat_room_ids: List[int]) -> Response:
         chat_room_ids = (
             [chat_room_ids] if isinstance(chat_room_ids, int) else chat_room_ids
         )
@@ -306,11 +311,11 @@ class ChatApi:
         chat_room_id: int,
         opponent_id: int,
         category_id: int,
-        reason: str = None,
-        screenshot_filename: str = None,
-        screenshot_2_filename: str = None,
-        screenshot_3_filename: str = None,
-        screenshot_4_filename: str = None,
+        reason: Optional[str] = None,
+        screenshot_filename: Optional[str] = None,
+        screenshot_2_filename: Optional[str] = None,
+        screenshot_3_filename: Optional[str] = None,
+        screenshot_4_filename: Optional[str] = None,
     ) -> Response:
         return await self.__client.request(
             "POST",
