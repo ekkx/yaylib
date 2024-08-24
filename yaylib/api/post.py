@@ -129,7 +129,7 @@ class PostApi:
         )
 
     async def pin_group_post(self, post_id: int, group_id: int) -> Response:
-        """サークルの投稿をピンする
+        """サークルの投稿をピン留めする
         Args:
             post_id (int):
             group_id (int):
@@ -145,7 +145,7 @@ class PostApi:
         )
 
     async def pin_post(self, post_id: int) -> Response:
-        """投稿をピンする
+        """プロフィールに投稿をピン留めする
 
         Args:
             post_id (int):
@@ -403,7 +403,7 @@ class PostApi:
         )
 
     async def unpin_post(self, post_id: int) -> Response:
-        """投稿のピンを解除する
+        """プロフィール投稿のピンを解除する
 
         Args:
             post_id (int):

@@ -1813,11 +1813,27 @@ class Client(
     # ---------- post api ----------
 
     def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
-        """ブックマークに追加します"""
+        """ブックマークに追加する
+
+        Args:
+            user_id (int):
+            post_id (int):
+
+        Returns:
+            BookmarkPostResponse:
+        """
         return self.__sync_request(self.post.add_bookmark(user_id, post_id))
 
     def add_group_highlight_post(self, group_id: int, post_id: int) -> Response:
-        """投稿をグループのまとめに追加します"""
+        """投稿をグループのまとめに追加する
+
+        Args:
+            group_id (int):
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(
             self.post.add_group_highlight_post(group_id, post_id)
         )
@@ -1825,25 +1841,114 @@ class Client(
     def create_call_post(
         self, text: Optional[str] = None, **params
     ) -> CreatePostResponse:
-        """通話の投稿を作成します"""
+        """通話の投稿を作成する
+
+        Args:
+            text (str, optional):
+            font_size (int, optional):
+            color (int, optional):
+            group_id (int, optional):
+            call_type (str, optional):
+            category_id (int, optional):
+            game_title (str, optional):
+            joinable_by (str, optional):
+            message_tags (List, optional):
+            attachment_filename (str, optional):
+            attachment_2_filename (str, optional):
+            attachment_3_filename (str, optional):
+            attachment_4_filename (str, optional):
+            attachment_5_filename (str, optional):
+            attachment_6_filename (str, optional):
+            attachment_7_filename (str, optional):
+            attachment_8_filename (str, optional):
+            attachment_9_filename (str, optional):
+
+        Returns:
+            CreatePostResponse:
+        """
         return self.__sync_request(self.post.create_call_post(text, **params))
 
     def pin_group_post(self, post_id: int, group_id: int) -> Response:
-        """グループの投稿をピンします"""
+        """サークルの投稿をピン留めする
+        Args:
+            post_id (int):
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.post.pin_group_post(post_id, group_id))
 
     def pin_post(self, post_id: int) -> Response:
-        """投稿をピンします"""
+        """プロフィールに投稿をピン留めする
+
+        Args:
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.post.pin_post(post_id))
 
     def create_post(self, text: Optional[str] = None, **params) -> Post:
-        """投稿を作成します"""
+        """投稿を作成する
+
+        Args:
+            text (str, optional):
+            font_size (int, optional): . Defaults to 0.
+            color (int, optional): . Defaults to 0.
+            in_reply_to (int, optional):
+            group_id (int, optional):
+            mention_ids (List[int], optional):
+            choices (List[str], optional):
+            shared_url (str, optional):
+            message_tags (List, optional):
+            attachment_filename (str, optional):
+            attachment_2_filename (str, optional):
+            attachment_3_filename (str, optional):
+            attachment_4_filename (str, optional):
+            attachment_5_filename (str, optional):
+            attachment_6_filename (str, optional):
+            attachment_7_filename (str, optional):
+            attachment_8_filename (str, optional):
+            attachment_9_filename (str, optional):
+            video_file_name (str, optional):
+
+        Returns:
+            Post:
+        """
         return self.__sync_request(self.post.create_post(text, **params))
 
     def create_repost(
         self, post_id: int, text: Optional[str] = None, **params
     ) -> CreatePostResponse:
-        """投稿を(´∀｀∩)↑age↑します"""
+        """投稿を(´∀｀∩)↑age↑する
+
+        Args:
+            post_id (int):
+            text (str, optional):
+            font_size (int, optional):
+            color (int, optional):
+            in_reply_to (int, optional):
+            group_id (int, optional):
+            mention_ids (List[int], optional):
+            choices (List[str], optional):
+            shared_url (Dict[str, str  |  int], optional):
+            message_tags (List, optional):
+            attachment_filename (str, optional):
+            attachment_2_filename (str, optional):
+            attachment_3_filename (str, optional):
+            attachment_4_filename (str, optional):
+            attachment_5_filename (str, optional):
+            attachment_6_filename (str, optional):
+            attachment_7_filename (str, optional):
+            attachment_8_filename (str, optional):
+            attachment_9_filename (str, optional):
+            video_file_name (str, optional):
+
+        Returns:
+            CreatePostResponse:
+        """
         return self.__sync_request(self.post.create_repost(post_id, text, **params))
 
     def create_share_post(
@@ -1853,7 +1958,19 @@ class Client(
         text: Optional[str] = None,
         **params,
     ) -> Post:
-        """シェア投稿を作成します"""
+        """シェア投稿を作成する
+
+        Args:
+            shareable_type (str):
+            shareable_id (int):
+            text (str, optional):
+            font_size (int, optional):
+            color (int, optional):
+            group_id (int, optional):
+
+        Returns:
+            Post:
+        """
         return self.__sync_request(
             self.post.create_share_post(shareable_type, shareable_id, text, **params)
         )
@@ -1861,51 +1978,170 @@ class Client(
     def create_thread_post(
         self, post_id: int, text: Optional[str] = None, **params
     ) -> Post:
-        """スレッドの投稿を作成します"""
+        """スレッドの投稿を作成する
+
+        Args:
+            thread_id (int):
+            text (str, optional):
+            font_size (int, optional):
+            color (int, optional):
+            in_reply_to (int, optional):
+            group_id (int, optional):
+            mention_ids (List[int], optional):
+            choices (list[str], optional):
+            shared_url (Dict[str, str  |  int], optional):
+            message_tags (List, optional):
+            attachment_filename (str, optional):
+            attachment_2_filename (str, optional):
+            attachment_3_filename (str, optional):
+            attachment_4_filename (str, optional):
+            attachment_5_filename (str, optional):
+            attachment_6_filename (str, optional):
+            attachment_7_filename (str, optional):
+            attachment_8_filename (str, optional):
+            attachment_9_filename (str, optional):
+            video_file_name (str, optional):
+
+        Returns:
+            Post:
+        """
         return self.__sync_request(
             self.post.create_thread_post(post_id, text, **params)
         )
 
     def delete_all_posts(self) -> Response:
-        """すべての自分の投稿を削除します"""
+        """すべての自分の投稿を削除する
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.post.delete_all_posts())
 
     def unpin_group_post(self, group_id: int) -> Response:
-        """グループのピン投稿を解除します"""
+        """グループのピン投稿を解除する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.post.unpin_group_post(group_id))
 
     def unpin_post(self, post_id: int) -> Response:
-        """投稿のピンを解除します"""
+        """プロフィール投稿のピンを解除する
+
+        Args:
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.post.unpin_post(post_id))
 
     def get_bookmark(self, user_id: int, **params) -> PostsResponse:
-        """ブックマークを取得します"""
+        """ブックマークを取得する
+
+        Args:
+            user_id (int):
+            from_str (str, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_bookmark(user_id, **params))
 
     def get_timeline_calls(self, **params) -> PostsResponse:
-        """誰でも通話を取得します"""
+        """誰でも通話を取得する
+
+        Args:
+            group_id (int, optional):
+            from_timestamp (int, optional):
+            number (int, optional):
+            category_id (int, optional):
+            call_type (str, optional): Defaults to "voice".
+            include_circle_call (bool, optional):
+            cross_generation (bool, optional):
+            exclude_recent_gomimushi (bool, optional):
+            shared_interest_categories (bool, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_timeline_calls(**params))
 
     def get_conversation(self, conversation_id: int, **params) -> PostsResponse:
-        """リプライを含める投稿の会話を取得します"""
+        """リプライを含める投稿の会話を取得する
+
+        Args:
+            conversation_id (int):
+            group_id (int, optional):
+            thread_id (int, optional):
+            from_post_id (int, optional):
+            number (int, optional):
+            reverse (bool, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(
             self.post.get_conversation(conversation_id, **params)
         )
 
     def get_conversation_root_posts(self, post_ids: List[int]) -> PostsResponse:
-        """会話の原点の投稿を取得します"""
+        """会話の原点の投稿を取得する
+
+        Args:
+            post_ids (List[int]):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_conversation_root_posts(post_ids))
 
     def get_following_call_timeline(self, **params) -> PostsResponse:
-        """フォロー中の通話を取得します"""
+        """フォロー中の通話を取得する
+
+        Args:
+            from_timestamp (int, optional):
+            number (int, optional):
+            category_id (int, optional):
+            include_circle_call (bool, optional):
+            exclude_recent_gomimushi (bool, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_following_call_timeline(**params))
 
     def get_following_timeline(self, **params) -> PostsResponse:
-        """フォロー中のタイムラインを取得します"""
+        """フォロー中のタイムラインを取得する
+
+        Args:
+            from_str (str, optional):
+            only_root (bool, optional):
+            order_by (str, optional):
+            number (int, optional):
+            mxn (int, optional):
+            reduce_selfie (bool, optional):
+            custom_generation_range (bool, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_following_timeline(**params))
 
     def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
-        """グループのハイライト投稿を取得します"""
+        """グループのまとめ投稿を取得する
+
+        Args:
+            group_id (int):
+            from_post (int, optional):
+            number (int, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(
             self.post.get_group_highlight_posts(group_id, **params)
         )
@@ -1913,45 +2149,136 @@ class Client(
     def get_group_timeline_by_keyword(
         self, group_id: int, keyword: str, **params
     ) -> PostsResponse:
-        """グループの投稿をキーワードで検索します"""
+        """グループの投稿をキーワードで検索する
+
+        Args:
+            group_id (int):
+            keyword (str):
+            from_post_id (int, optional):
+            number (int, optional):
+            only_thread_posts (bool, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(
             self.post.get_group_timeline_by_keyword(group_id, keyword, **params)
         )
 
     def get_group_timeline(self, group_id: int, **params) -> PostsResponse:
-        """グループのタイムラインを取得します"""
+        """グループのタイムラインを取得する
+
+        Args:
+            group_id (int):
+            from_post_id (int, optional):
+            reverse (bool, optional):
+            post_type (str, optional):
+            number (int, optional):
+            only_root (bool, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_group_timeline(group_id, **params))
 
     def get_timeline_by_hashtag(self, hashtag: str, **params) -> PostsResponse:
-        """ハッシュタグでタイムラインを検索します"""
+        """ハッシュタグでタイムラインを検索する
+
+        Args:
+            hashtag (str):
+            from_post_id (int, optional):
+            number (int, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_timeline_by_hashtag(hashtag, **params))
 
     def get_my_posts(self, **params) -> PostsResponse:
-        """自分の投稿を取得します"""
+        """自分の投稿を取得する
+
+        Args:
+            from_post_id (int, optional):
+            number (int, optional):
+            include_group_post (bool, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_my_posts(**params))
 
     def get_post(self, post_id: int) -> PostResponse:
-        """投稿の詳細を取得します"""
+        """投稿の詳細を取得する
+
+        Args:
+            post_id (int):
+
+        Returns:
+            PostResponse:
+        """
         return self.__sync_request(self.post.get_post(post_id))
 
     def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
-        """投稿にいいねしたユーザーを取得します"""
+        """投稿にいいねしたユーザーを取得する
+
+        Args:
+            post_id (int):
+            from_id (int, optional):
+            number (int, optional):
+
+        Returns:
+            PostLikersResponse:
+        """
         return self.__sync_request(self.post.get_post_likers(post_id, **params))
 
     def get_reposts(self, post_id: int, **params: int) -> PostsResponse:
-        """投稿の(´∀｀∩)↑age↑を取得します"""
+        """投稿の(´∀｀∩)↑age↑を取得する
+
+        Args:
+            post_id (int):
+            from_post_id (int, optional):
+            number (int, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_reposts(post_id, **params))
 
     def get_posts(self, post_ids: List[int]) -> PostsResponse:
-        """複数の投稿を取得します"""
+        """複数の投稿を取得する
+
+        Args:
+            post_ids (List[int]):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_posts(post_ids))
 
     def get_recommended_post_tags(self, **params) -> PostTagsResponse:
-        """おすすめのタグ候補を取得します"""
+        """おすすめのタグ候補を取得する
+
+        Args:
+            tag (str, optional):
+            save_recent_search (bool, optional):
+
+        Returns:
+            PostTagsResponse:
+        """
         return self.__sync_request(self.post.get_recommended_post_tags(**params))
 
     def get_recommended_posts(self, **params) -> PostsResponse:
-        """おすすめの投稿を取得します"""
+        """おすすめの投稿を取得する
+
+        Args:
+            experiment_num (int):
+            variant_num (int, optional):
+            number (int, optional):
+
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_recommended_posts(**params))
 
     def get_timeline_by_keyword(
@@ -1959,53 +2286,159 @@ class Client(
         keyword: Optional[str] = None,
         **params,
     ) -> PostsResponse:
-        """キーワードでタイムラインを検索します"""
+        """キーワードでタイムラインを検索する
+
+        Args:
+            keyword (str, optional):
+            from_post_id (int, optional):
+            number (int, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_timeline_by_keyword(keyword, **params))
 
     def get_timeline(self, **params) -> PostsResponse:
-        """タイムラインを取得します"""
+        """タイムラインを取得する
+
+        Args:
+            noreply_mode (bool, optional):
+            from_post_id (int, optional):
+            number (int, optional):
+            order_by (str, optional):
+            experiment_older_age_rules (bool, optional):
+            shared_interest_categories (bool, optional):
+            mxn (int, optional):
+            en (int, optional):
+            vn (int, optional):
+            reduce_selfie (bool, optional):
+            custom_generation_range (bool, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_timeline(**params))
 
     def get_url_metadata(self, url: str) -> SharedUrl:
-        """URLのメタデータを取得します"""
+        """URLのメタデータを取得する
+
+        Args:
+            url (str):
+
+        Returns:
+            SharedUrl:
+        """
         return self.__sync_request(self.post.get_url_metadata(url))
 
     def get_user_timeline(self, user_id: int, **params) -> PostsResponse:
-        """ユーザーのタイムラインを取得します"""
+        """ユーザーのタイムラインを取得する
+
+        Args:
+            user_id (int):
+            from_post_id (int, optional):
+            number (int, optional):
+            post_type (str, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.post.get_user_timeline(user_id, **params))
 
     def like(self, post_ids: List[int]) -> LikePostsResponse:
-        """投稿にいいねします ※ 一度にいいねできる投稿数は最大25個"""
+        """投稿にいいねする
+
+        Args:
+            post_ids (List[int]):
+
+        Returns:
+            LikePostsResponse:
+        """
         return self.__sync_request(self.post.like(post_ids))
 
     def delete_bookmark(self, user_id: int, post_id: int) -> Response:
-        """ブックマークを削除します"""
+        """ブックマークを削除する
+
+        Args:
+            user_id (int):
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.post.delete_bookmark(user_id, post_id))
 
     def delete_group_highlight_post(self, group_id: int, post_id: int) -> Response:
-        """サークルのハイライト投稿を解除します"""
+        """サークルのまとめから投稿を解除する
+
+        Args:
+            group_id (int):
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(
             self.post.delete_group_highlight_post(group_id, post_id)
         )
 
     def delete_posts(self, post_ids: List[int]) -> Response:
-        """複数の投稿を削除します"""
+        """投稿を削除する
+
+        Args:
+            post_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.post.delete_posts(post_ids))
 
     def unlike(self, post_id: int) -> Response:
-        """投稿のいいねを解除します"""
+        """いいねを解除する
+
+        Args:
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.post.unlike(post_id))
 
     def update_post(self, **params) -> Post:
-        """投稿を編集します"""
+        """投稿を編集する
+
+        Args:
+            post_id (int):
+            text (str, optional):
+            font_size (int, optional):
+            color (int, optional):
+            message_tags (List, optional):
+
+        Returns:
+            Post:
+        """
         return self.__sync_request(self.post.update_post(**params))
 
     def view_video(self, video_id: int) -> Response:
-        """動画を視聴します"""
+        """動画を視聴する
+
+        Args:
+            video_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.post.view_video(video_id))
 
     def vote_survey(self, survey_id: int, choice_id: int) -> VoteSurveyResponse:
-        """アンケートに投票します"""
+        """アンケートに投票する
+
+        Args:
+            survey_id (int):
+            choice_id (int):
+
+        Returns:
+            VoteSurveyResponse:
+        """
         return self.__sync_request(self.post.vote_survey(survey_id, choice_id))
 
     # ---------- review api ----------
