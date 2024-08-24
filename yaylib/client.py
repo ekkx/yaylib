@@ -680,11 +680,28 @@ class Client(
     # ---------- notification api ----------
 
     def get_activities(self, **params) -> ActivitiesResponse:
-        """通知を取得します"""
+        """通知を取得する
+
+        Args:
+            important (bool):
+            from_timestamp (int, optional):
+            number (int, optional):
+
+        Returns:
+            ActivitiesResponse:
+        """
         return self.__sync_request(self.notification.get_activities(**params))
 
     def get_merged_activities(self, **params) -> ActivitiesResponse:
-        """全種類の通知を取得します"""
+        """全種類の通知を取得する
+
+        Args:
+            from_timestamp (int, optional):
+            number (int, optional):
+
+        Returns:
+            ActivitiesResponse:
+        """
         return self.__sync_request(self.notification.get_merged_activities(**params))
 
     # ---------- chat api ----------
