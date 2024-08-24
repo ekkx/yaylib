@@ -462,75 +462,219 @@ class Client(
     # ---------- call api ----------
 
     def get_user_active_call(self, user_id: int) -> PostResponse:
-        """ユーザーが参加中の通話を取得します"""
+        """ユーザーが参加中の通話を取得する
+
+        Args:
+            user_id (int):
+
+        Returns:
+            PostResponse:
+        """
         return self.__sync_request(self.call.get_user_active_call(user_id))
 
     def get_bgms(self) -> BgmsResponse:
-        """通話のBGMを取得します"""
+        """通話のBGMを取得する
+
+        Returns:
+            BgmsResponse:
+        """
         return self.__sync_request(self.call.get_bgms())
 
     def get_call(self, call_id: int) -> ConferenceCallResponse:
-        """通話の詳細を取得します"""
+        """通話を取得する
+
+        Args:
+            call_id (int):
+
+        Returns:
+            ConferenceCallResponse:
+        """
         return self.__sync_request(self.call.get_call(call_id))
 
     def get_call_invitable_users(self, **params) -> UsersByTimestampResponse:
-        """通話に招待可能なユーザーを取得します"""
+        """通話に招待可能なユーザーを取得する
+
+        Args:
+            call_id (int):
+            from_timestamp (int, optional):
+
+        Returns:
+            UsersByTimestampResponse:
+        """
         return self.__sync_request(self.call.get_call_invitable_users(**params))
 
     def get_call_status(self, opponent_id: int) -> CallStatusResponse:
-        """通話の状態を取得します"""
+        """通話の状態を取得します
+
+        Args:
+            opponent_id (int):
+
+        Returns:
+            CallStatusResponse:
+        """
         return self.__sync_request(self.call.get_call_status(opponent_id))
 
     def get_games(self, **params) -> GamesResponse:
-        """ゲームを取得します"""
+        """通話に設定可能なゲームを取得する
+
+        Args:
+            number (int, optional):
+            ids (List[int], optional):
+            from_id (int, optional):
+
+        Returns:
+            GamesResponse:
+        """
         return self.__sync_request(self.call.get_games(**params))
 
     def get_genres(self, **params) -> GenresResponse:
-        """通話のジャンルを取得します"""
+        """通話のジャンルを取得する
+
+        Args:
+            number (int, optional):
+            from (int, optional):
+
+        Returns:
+            GenresResponse:
+        """
         return self.__sync_request(self.call.get_genres(**params))
 
     def get_group_calls(self, **params) -> PostsResponse:
-        """サークルの通話を取得します"""
+        """サークル内の通話を取得する
+
+        Args:
+            number (int, optional):
+            group_category_id (int, optional):
+            from_timestamp (int, optional):
+            scope (str, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.call.get_group_calls(**params))
 
     def invite_online_followings_to_call(self, **params) -> Response:
-        """オンラインの友達をまとめて通話に招待します"""
+        """オンラインの友達をまとめて通話に招待します
+
+        Args:
+            call_id (int, optional):
+            group_id (str, optional):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.call.invite_online_followings_to_call(**params))
 
     def invite_users_to_call(self, call_id: int, user_ids: List[int]) -> Response:
-        """ユーザーを通話に招待します"""
+        """通話に複数のユーザーを招待する
+
+        Args:
+            call_id (int):
+            user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.call.invite_users_to_call(call_id, user_ids))
 
     def invite_users_to_chat_call(self, **params) -> Response:
-        """チャット通話にユーザーを招待します"""
+        """ユーザーをチャット通話に招待する
+
+        Args:
+            chat_room_id (int):
+            room_id (int):
+            room_url (str):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.call.invite_users_to_chat_call(**params))
 
     def kick_user_from_call(self, call_id: int, user_id: int) -> Response:
-        """ユーザーを通話からキックします"""
+        """ユーザーを通話からキックしますする
+
+        Args:
+            call_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         self.__sync_request(self.call.kick_user_from_call(call_id, user_id))
 
     def start_call(self, call_id: int, **params) -> Response:
-        """通話を開始します"""
+        """通話を開始する
+
+        Args:
+            call_id (int):
+            joinable_by (str):
+            game_title (str, optional):
+            category_id (str, optional):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.call.start_call(call_id, **params))
 
     def set_user_role(self, call_id: int, user_id: int, role: str) -> Response:
-        """通話に参加中のユーザーに役職を与えます"""
+        """通話の参加者に役職を付与する
+
+        Args:
+            call_id (int):
+            user_id (int):
+            role (str):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.call.set_user_role(call_id, user_id, role))
 
     def join_call(self, **params) -> ConferenceCallResponse:
-        """通話に参加します"""
+        """通話に参加する
+
+        Args:
+            conference_id (int):
+            call_sid (str, optional):
+
+        Returns:
+            ConferenceCallResponse:
+        """
         return self.__sync_request(self.call.join_call(**params))
 
-    def join_call_as_anonymous(self, **params) -> ConferenceCallResponse:
-        """無名くんとして通話に参加します"""
-        return self.__sync_request(self.call.join_call_as_anonymous(**params))
-
     def leave_call(self, **params) -> Response:
-        """通話から退出します"""
+        """通話から退出する
+
+        Args:
+            conference_id (int):
+            call_sid (str, optional):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.call.leave_call(**params))
 
+    def join_call_as_anonymous(self, **params) -> ConferenceCallResponse:
+        """匿名で通話に参加する
+
+        Args:
+            conference_id (int):
+            agora_uid (str):
+
+        Returns:
+            ConferenceCallResponse:
+        """
+        return self.__sync_request(self.call.join_call_as_anonymous(**params))
+
     def leave_call_as_anonymous(self, **params) -> Response:
-        """通話から退出します"""
+        """匿名で参加した通話を退出する
+
+        Args:
+            conference_id (int):
+            agora_uid (str, optional):
+
+        Returns:
+            Response: _description_
+        """
         return self.__sync_request(self.call.leave_call_as_anonymous(**params))
 
     # ---------- notification api ----------
