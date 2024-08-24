@@ -139,9 +139,7 @@ class GroupApi:
             return_type=Response,
         )
 
-    async def check_group_unread_status(
-        self, from_time: int = None
-    ) -> UnreadStatusResponse:
+    async def check_group_unread_status(self, **params) -> UnreadStatusResponse:
         """サークルの未読ステータスを取得する
 
         Args:
@@ -150,9 +148,6 @@ class GroupApi:
         Returns:
             UnreadStatusResponse:
         """
-        params = {}
-        if from_time:
-            params["from_time"] = from_time
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/groups/unread_status",
@@ -160,29 +155,7 @@ class GroupApi:
             return_type=UnreadStatusResponse,
         )
 
-    async def create_group(
-        self,
-        topic: str,
-        description: str = None,
-        secret: bool = None,
-        hide_reported_posts: bool = None,
-        hide_conference_call: bool = None,
-        is_private: bool = None,
-        only_verified_age: bool = None,
-        only_mobile_verified: bool = None,
-        call_timeline_display: bool = None,
-        allow_ownership_transfer: bool = None,
-        allow_thread_creation_by: str = None,
-        gender: int = None,
-        generation_groups_limit: int = None,
-        group_category_id: int = None,
-        cover_image_filename: str = None,
-        sub_category_id: str = None,
-        hide_from_game_eight: bool = None,
-        allow_members_to_post_media: bool = None,
-        allow_members_to_post_url: bool = None,
-        guidelines: str = None,
-    ) -> CreateGroupResponse:
+    async def create_group(self, **params) -> CreateGroupResponse:
         """サークルを作成する
 
         Args:
@@ -214,33 +187,13 @@ class GroupApi:
             "POST",
             config.API_HOST + "/v3/groups/new",
             json={
-                "topic": topic,
-                "description": description,
-                "secret": secret,
-                "hide_reported_posts": hide_reported_posts,
-                "hide_conference_call": hide_conference_call,
-                "is_private": is_private,
-                "only_verified_age": only_verified_age,
-                "only_mobile_verified": only_mobile_verified,
-                "call_timeline_display": call_timeline_display,
-                "allow_ownership_transfer": allow_ownership_transfer,
-                "allow_thread_creation_by": allow_thread_creation_by,
-                "gender": gender,
-                "generation_groups_limit": generation_groups_limit,
-                "group_category_id": group_category_id,
-                "cover_image_filename": cover_image_filename,
                 "uuid": self.__client.device_uuid,
                 "api_key": config.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), True
                 ),
-                "sub_category_id": sub_category_id,
-                "hide_from_game_eight": hide_from_game_eight,
-                "allow_members_to_post_image_and_video": allow_members_to_post_media,
-                "allow_members_to_post_url": allow_members_to_post_url,
-                "guidelines": guidelines,
-            },
+            }.update(params),
             return_type=CreateGroupResponse,
         )
 
@@ -321,9 +274,7 @@ class GroupApi:
             return_type=Response,
         )
 
-    async def get_banned_group_members(
-        self, group_id: int, page: int = None
-    ) -> UsersResponse:
+    async def get_banned_group_members(self, group_id: int, **params) -> UsersResponse:
         """追放されたサークルメンバーを取得する
 
         Args:
@@ -333,9 +284,6 @@ class GroupApi:
         Returns:
             UsersResponse:
         """
-        params = {}
-        if page:
-            params["page"] = page
         return await self.__client.request(
             "GET", config.API_HOST + f"/v1/groups/{group_id}/ban_list", params=params
         )
@@ -476,7 +424,7 @@ class GroupApi:
             return_type=GroupUsersResponse,
         )
 
-    async def get_my_groups(self, from_timestamp=None) -> GroupsResponse:
+    async def get_my_groups(self, **params) -> GroupsResponse:
         """自分のサークルを取得する
 
         Args:
@@ -485,9 +433,6 @@ class GroupApi:
         Returns:
             GroupsResponse:
         """
-        params = {}
-        if from_timestamp:
-            params["from_timestamp"] = from_timestamp
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v2/groups/mine",
@@ -768,30 +713,7 @@ class GroupApi:
             return_type=Response,
         )
 
-    async def update_group(
-        self,
-        group_id: int,
-        topic: str,
-        description: str = None,
-        secret: bool = None,
-        hide_reported_posts: bool = None,
-        hide_conference_call: bool = None,
-        is_private: bool = None,
-        only_verified_age: bool = None,
-        only_mobile_verified: bool = None,
-        call_timeline_display: bool = None,
-        allow_ownership_transfer: bool = None,
-        allow_thread_creation_by: str = None,
-        gender: int = None,
-        generation_groups_limit: int = None,
-        group_category_id: int = None,
-        cover_image_filename: str = None,
-        sub_category_id: str = None,
-        hide_from_game_eight: bool = None,
-        allow_members_to_post_media: bool = None,
-        allow_members_to_post_url: bool = None,
-        guidelines: str = None,
-    ) -> GroupResponse:
+    async def update_group(self, group_id: int, **params) -> GroupResponse:
         """サークルを編集する
 
         Args:
@@ -824,33 +746,13 @@ class GroupApi:
             "POST",
             config.API_HOST + f"/v3/groups/{group_id}/update",
             json={
-                "topic": topic,
-                "description": description,
-                "secret": secret,
-                "hide_reported_posts": hide_reported_posts,
-                "hide_conference_call": hide_conference_call,
-                "is_private": is_private,
-                "only_verified_age": only_verified_age,
-                "only_mobile_verified": only_mobile_verified,
-                "call_timeline_display": call_timeline_display,
-                "allow_ownership_transfer": allow_ownership_transfer,
-                "allow_thread_creation_by": allow_thread_creation_by,
-                "gender": gender,
-                "generation_groups_limit": generation_groups_limit,
-                "group_category_id": group_category_id,
-                "cover_image_filename": cover_image_filename,
-                "sub_category_id": sub_category_id,
                 "uuid": self.__client.device_uuid,
                 "api_key": config.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), True
                 ),
-                "hide_from_game_eight": hide_from_game_eight,
-                "allow_members_to_post_image_and_video": allow_members_to_post_media,
-                "allow_members_to_post_url": allow_members_to_post_url,
-                "guidelines": guidelines,
-            },
+            }.update(params),
             return_type=GroupResponse,
         )
 
