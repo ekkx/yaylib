@@ -43,6 +43,7 @@ from ..responses import (
 from ..utils import md5
 
 
+# pylint: disable=too-many-public-methods
 class GroupApi:
     """サークル API"""
 

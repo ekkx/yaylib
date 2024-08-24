@@ -1007,15 +1007,37 @@ class Client(
     # ---------- group api ----------
 
     def accept_moderator_offer(self, group_id: int) -> Response:
-        """サークル副管理人の権限オファーを引き受けます"""
+        """サークル副管理人の権限オファーを引き受ける
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.accept_moderator_offer(group_id))
 
     def accept_ownership_offer(self, group_id: int) -> Response:
-        """サークル管理人の権限オファーを引き受けます"""
+        """サークル管理人の権限オファーを引き受けます
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.accept_ownership_offer(group_id))
 
     def accept_group_join_request(self, group_id: int, user_id: int) -> Response:
-        """サークル参加リクエストを承認します"""
+        """サークル参加リクエストを承認します
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(
             self.group.accept_group_join_request(group_id, user_id)
         )
@@ -1023,157 +1045,477 @@ class Client(
     def add_related_groups(
         self, group_id: int, related_group_id: List[int]
     ) -> Response:
-        """関連サークルを追加します"""
+        """関連サークルを追加する
+
+        Args:
+            group_id (int):
+            related_group_id (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(
             self.group.add_related_groups(group_id, related_group_id)
         )
 
     def ban_group_user(self, group_id: int, user_id: int) -> Response:
-        """サークルからユーザーを追放します"""
+        """サークルからユーザーを追放する
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.ban_group_user(group_id, user_id))
 
     def check_group_unread_status(self, **params) -> UnreadStatusResponse:
-        """サークルの未読ステータスを取得します"""
+        """サークルの未読ステータスを取得する
+
+        Args:
+            from_time (int, optional):
+
+        Returns:
+            UnreadStatusResponse:
+        """
         return self.__sync_request(self.group.check_group_unread_status(**params))
 
     def create_group(self, **params) -> CreateGroupResponse:
-        """サークルを作成します"""
+        """サークルを作成する
+
+        Args:
+            topic (str):
+            description (str, optional):
+            secret (bool, optional):
+            hide_reported_posts (bool, optional):
+            hide_conference_call (bool, optional):
+            is_private (bool, optional):
+            only_verified_age (bool, optional):
+            only_mobile_verified (bool, optional):
+            call_timeline_display (bool, optional):
+            allow_ownership_transfer (bool, optional):
+            allow_thread_creation_by (str, optional):
+            gender (int, optional):
+            generation_groups_limit (int, optional):
+            group_category_id (int, optional):
+            cover_image_filename (str, optional):
+            sub_category_id (str, optional):
+            hide_from_game_eight (bool, optional):
+            allow_members_to_post_media (bool, optional):
+            allow_members_to_post_url (bool, optional):
+            guidelines (str, optional):
+
+        Returns:
+            CreateGroupResponse:
+        """
         return self.__sync_request(self.group.create_group(**params))
 
     def pin_group(self, group_id: int) -> Response:
-        """サークルをピンします"""
+        """サークルをピン留めする
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.pin_group(group_id))
 
     def decline_moderator_offer(self, group_id: int) -> Response:
-        """サークル副管理人の権限オファーを断ります"""
+        """サークル副管理人の権限オファーを断る
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.decline_moderator_offer(group_id))
 
     def decline_ownership_offer(self, group_id: int) -> Response:
-        """サークル管理人の権限オファーを断ります"""
+        """サークル管理人の権限オファーを断る
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.decline_ownership_offer(group_id))
 
     def decline_group_join_request(self, group_id: int, user_id: int) -> Response:
-        """サークル参加リクエストを断ります"""
+        """サークル参加リクエストを断る
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(
             self.group.decline_group_join_request(group_id, user_id)
         )
 
     def unpin_group(self, group_id: int) -> Response:
-        """サークルのピン止めを解除します"""
+        """サークルのピン留めを解除する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.unpin_group(group_id))
 
     def get_banned_group_members(self, **params) -> UsersResponse:
-        """追放されたサークルメンバーを取得します"""
+        """追放されたサークルメンバーを取得する
+
+        Args:
+            group_id (int):
+            page (int, optional):
+
+        Returns:
+            UsersResponse:
+        """
         return self.__sync_request(self.group.get_banned_group_members(**params))
 
     def get_group_categories(self, **params) -> GroupCategoriesResponse:
-        """サークルのカテゴリーを取得します"""
+        """サークルのカテゴリーを取得する
+
+        Args:
+            page (int, optional):
+            number (int, optional):
+
+        Returns:
+            GroupCategoriesResponse:
+        """
         return self.__sync_request(self.group.get_group_categories(**params))
 
     def get_create_group_quota(self) -> CreateGroupQuota:
-        """残りのサークル作成可能回数を取得します"""
+        """残りのサークル作成可能回数を取得する
+
+        Returns:
+            CreateGroupQuota:
+        """
         return self.__sync_request(self.group.get_create_group_quota())
 
     def get_group(self, group_id: int) -> GroupResponse:
-        """サークルの詳細を取得します"""
+        """サークルの詳細を取得する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            GroupResponse:
+        """
         return self.__sync_request(self.group.get_group(group_id))
 
     def get_groups(self, **params) -> GroupsResponse:
-        """複数のサークルの詳細を取得します"""
+        """複数のサークル情報を取得する
+
+        Args:
+            group_category_id (int, optional):
+            keyword (str, optional):
+            from_timestamp (int, optional):
+            sub_category_id (int, optional):
+
+        Returns:
+            GroupsResponse:
+        """
         return self.__sync_request(self.group.get_groups(**params))
 
     def get_invitable_users(self, group_id: int, **params) -> UsersByTimestampResponse:
-        """サークルに招待可能なユーザーを取得します"""
+        """サークルに招待可能なユーザーを取得する
+
+        Args:
+            group_id (int):
+            from_timestamp (int, optional):
+            user[nickname] (str, optional):
+
+        Returns:
+            UsersByTimestampResponse:
+        """
         return self.__sync_request(self.group.get_invitable_users(group_id, **params))
 
     def get_joined_statuses(self, ids: List[int]) -> Response:
-        """サークルの参加ステータスを取得します"""
+        """サークルの参加ステータスを取得する
+
+        Args:
+            ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.get_joined_statuses(ids))
 
     def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
-        """特定のサークルメンバーの情報を取得します"""
+        """特定のサークルメンバーの情報を取得する
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            GroupUserResponse:
+        """
         return self.__sync_request(self.group.get_group_member(group_id, user_id))
 
     def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
-        """サークルメンバーを取得します"""
+        """サークルメンバーを取得する
+
+        Args:
+            group_id (int):
+            id (int):
+            mode (str, optional):
+            keyword (str, optional):
+            from_id (int, optional):
+            from_timestamp (int, optional):
+            order_by (str, optional):
+            followed_by_me: (bool, optional)
+
+        Returns:
+            GroupUsersResponse:
+        """
         return self.__sync_request(self.group.get_group_members(group_id, **params))
 
     def get_my_groups(self, **params) -> GroupsResponse:
-        """自分のサークルを取得します"""
+        """自分のサークルを取得する
+
+        Args:
+            from_timestamp (_type_, optional):
+
+        Returns:
+            GroupsResponse:
+        """
         return self.__sync_request(self.group.get_my_groups(**params))
 
     def get_relatable_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
-        """関連がある可能性があるサークルを取得します"""
+        """関連がある可能性があるサークルを取得する
+
+        Args:
+            group_id (int):
+            keyword (str, optional):
+            from (str, optional):
+
+        Returns:
+            GroupsRelatedResponse:
+        """
         return self.__sync_request(self.group.get_relatable_groups(group_id, **params))
 
     def get_related_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
-        """関連があるサークルを取得します"""
+        """関連があるサークルを取得する
+
+        Args:
+            group_id (int):
+            keyword (str, optional):
+            from (str, optional):
+
+        Returns:
+            GroupsRelatedResponse:
+        """
         return self.__sync_request(self.group.get_related_groups(group_id, **params))
 
     def get_user_groups(self, **params) -> GroupsResponse:
-        """特定のユーザーが参加しているサークルを取得します"""
+        """特定のユーザーが参加しているサークルを取得する
+
+        Args:
+            user_id (int):
+            page (int, optional):
+
+        Returns:
+            GroupsResponse:
+        """
         return self.__sync_request(self.group.get_user_groups(**params))
 
     def invite_users_to_group(self, group_id: int, user_ids: List[int]) -> Response:
-        """サークルにユーザーを招待します"""
+        """サークルにユーザーを招待する
+
+        Args:
+            group_id (int):
+            user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.invite_users_to_group(group_id, user_ids))
 
     def join_group(self, group_id: int) -> Response:
-        """サークルに参加します"""
+        """サークルに参加する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.join_group(group_id))
 
     def leave_group(self, group_id: int) -> Response:
-        """サークルから脱退します"""
+        """サークルから脱退する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.leave_group(group_id))
 
     def delete_group_cover(self, group_id: int) -> Response:
-        """サークルのカバー画像を削除します"""
+        """サークルのカバー画像を削除する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.delete_group_cover(group_id))
 
     def delete_moderator(self, group_id: int, user_id: int) -> Response:
-        """サークルの副管理人を削除します"""
+        """サークルの副管理人を削除する
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.delete_moderator(group_id, user_id))
 
     def delete_related_groups(
         self, group_id: int, related_group_ids: List[int]
     ) -> Response:
-        """関連のあるサークルを削除します"""
+        """関連のあるサークルを削除する
+
+        Args:
+            group_id (int):
+            related_group_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(
             self.group.delete_related_groups(group_id, related_group_ids)
         )
 
     def send_moderator_offers(self, group_id: int, user_ids: List[int]) -> Response:
-        """複数人にサークル副管理人のオファーを送信します"""
+        """複数人にサークル副管理人のオファーを送信する
+
+        Args:
+            group_id (int):
+            user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.send_moderator_offers(group_id, user_ids))
 
     def send_ownership_offer(self, group_id: int, user_id: int) -> Response:
-        """サークル管理人権限のオファーを送信します"""
+        """サークル管理人権限のオファーを送信する
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.send_ownership_offer(group_id, user_id))
 
     def set_group_title(self, group_id: int, title: str) -> Response:
-        """サークルのタイトルを設定します"""
+        """サークルのタイトルを設定する
+
+        Args:
+            group_id (int):
+            title (str):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.set_group_title(group_id, title))
 
     def take_over_group_ownership(self, group_id: int) -> Response:
-        """サークル管理人の権限を引き継ぎます"""
+        """サークル管理人の権限を引き継ぐ
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.take_over_group_ownership(group_id))
 
     def unban_group_member(self, group_id: int, user_id: int) -> Response:
-        """特定のサークルメンバーの追放を解除します"""
+        """特定のサークルメンバーの追放を解除する
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.group.unban_group_member(group_id, user_id))
 
     def update_group(self, group_id: int, **params) -> GroupResponse:
-        """サークルを編集します"""
+        """サークルを編集する
+
+        Args:
+            group_id (int):
+            topic (str):
+            description (str, optional):
+            secret (bool, optional):
+            hide_reported_posts (bool, optional):
+            hide_conference_call (bool, optional):
+            is_private (bool, optional):
+            only_verified_age (bool, optional):
+            only_mobile_verified (bool, optional):
+            call_timeline_display (bool, optional):
+            allow_ownership_transfer (bool, optional):
+            allow_thread_creation_by (str, optional):
+            gender (int, optional):
+            generation_groups_limit (int, optional):
+            group_category_id (int, optional):
+            cover_image_filename (str, optional):
+            sub_category_id (str, optional):
+            hide_from_game_eight (bool, optional):
+            allow_members_to_post_media (bool, optional):
+            allow_members_to_post_url (bool, optional):
+            guidelines (str, optional):
+
+        Returns:
+            GroupResponse:
+        """
         return self.__sync_request(self.group.update_group(group_id, **params))
 
     def withdraw_moderator_offer(self, group_id: int, user_id: int) -> Response:
-        """サークル副管理人のオファーを取り消します"""
+        """サークル副管理人のオファーを取り消す
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(
             self.group.withdraw_moderator_offer(group_id, user_id)
         )
 
     def withdraw_ownership_offer(self, group_id: int, user_id: int) -> Response:
-        """サークル管理人のオファーを取り消します"""
+        """サークル管理人のオファーを取り消す
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(
             self.group.withdraw_ownership_offer(group_id, user_id)
         )
