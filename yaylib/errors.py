@@ -836,6 +836,8 @@ async def raise_for_code(response: aiohttp.ClientResponse) -> None:
             raise Web3EMPLInsufficientFundsError(err)
         case 6002:
             raise Web3EMPLFeeExceedsBalanceError(err)
+        case _:
+            raise ClientError(err)
 
 
 async def raise_for_status(response: aiohttp.ClientResponse):
