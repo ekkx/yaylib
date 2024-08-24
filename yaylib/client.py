@@ -2444,27 +2444,73 @@ class Client(
     # ---------- review api ----------
 
     def create_review(self, user_id: int, comment: str) -> Response:
-        """レターを送信します"""
+        """レターを送信する
+
+        Args:
+            user_id (int):
+            comment (str):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.review.create_review(user_id, comment))
 
     def delete_reviews(self, review_ids: List[int]) -> Response:
-        """レターを削除します"""
+        """レターを削除する
+
+        Args:
+            review_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.review.delete_reviews(review_ids))
 
     def get_my_reviews(self, **params) -> ReviewsResponse:
-        """送信したレターを取得します"""
+        """送信したレターを取得する
+
+        Args:
+            from_id (int, optional):
+            number (int, optional):
+
+        Returns:
+            ReviewsResponse:
+        """
         return self.__sync_request(self.review.get_my_reviews(**params))
 
     def get_reviews(self, user_id: int, **params) -> ReviewsResponse:
-        """ユーザーが受け取ったレターを取得します"""
+        """ユーザーが受け取ったレターを取得する
+
+        Args:
+            user_id (int):
+            from_id (int, optional):
+            number (int, optional):
+
+        Returns:
+            ReviewsResponse:
+        """
         return self.__sync_request(self.review.get_reviews(user_id, **params))
 
     def pin_review(self, review_id: int) -> Response:
-        """レターをピンします"""
+        """レターをピン留めする
+
+        Args:
+            review_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.review.pin_review(review_id))
 
     def unpin_review(self, review_id: int) -> Response:
-        """レターのピン止めを解除します"""
+        """レターのピン留めを解除する
+
+        Args:
+            review_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.review.unpin_review(review_id))
 
     # ---------- thread api ----------
