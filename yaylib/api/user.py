@@ -49,11 +49,13 @@ from ..responses import (
 from ..utils import md5, sha256
 
 
-class UserApi:  # pylint: disable=too-many-public-methods
+# pylint: disable=too-many-public-methods
+class UserApi:
     """ユーザー API"""
 
     def __init__(self, client) -> None:
-        from ..client import Client  # pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
+        from ..client import Client
 
         self.__client: Client = client
 

@@ -41,7 +41,8 @@ class AuthApi:
     """
 
     def __init__(self, client) -> None:
-        from ..client import Client  # pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
+        from ..client import Client
 
         self.__client: Client = client
 
@@ -122,6 +123,7 @@ class AuthApi:
             except fernet.InvalidToken as exc:
                 self.__client.state.destory(user.user_id)
                 self.__client.logger.error(
+                    # pylint: disable=line-too-long
                     "Failed to decrypt the credentials stored locally. This might be due to a recent password change. Please try logging in again."
                 )
                 raise exc

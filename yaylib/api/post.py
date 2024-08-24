@@ -42,11 +42,13 @@ from ..responses import (
 from ..utils import build_message_tags, get_post_type, md5
 
 
-class PostApi:  # pylint: disable=too-many-public-methods
+# pylint: disable=too-many-public-methods
+class PostApi:
     """投稿 API"""
 
     def __init__(self, client) -> None:
-        from ..client import Client  # pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
+        from ..client import Client
 
         self.__client: Client = client
 
