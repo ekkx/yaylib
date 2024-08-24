@@ -1003,19 +1003,6 @@ class TokenResponse(Response):
         return f"TokenResponse(data={self.data})"
 
 
-class VerifyDeviceResponse(Response):
-    __slots__ = ("verified", "verified_at")
-
-    def __init__(self, data):
-        super().__init__(data)
-
-        self.verified = data.get("verified")
-        self.verified_at = data.get("verified_at")
-
-    def __repr__(self):
-        return f"VerifyDeviceResponse(data={self.data})"
-
-
 class VipGameRewardUrlResponse(Response):
     __slots__ = "url"
 
