@@ -17,6 +17,7 @@ __copyright__ = "Copyright (c) 2023 ekkx"
 __version__ = "1.5.0"
 
 from .client import Client
+from .constants import *
 from .errors import *
 from .models import *
 from .responses import *
@@ -25,6 +26,7 @@ from .utils import mention
 
 __all__ = (
     "Client",
+    "constants",
     "errors",
     "models",
     "responses",
