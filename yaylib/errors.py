@@ -27,7 +27,7 @@ import aiohttp
 from .responses import ErrorResponse
 
 
-class YaylibError(Exception):  # pylint: disable=used-before-assignment
+class YaylibError(Exception):
     """yaylib における例外基底クラス"""
 
 
@@ -573,8 +573,16 @@ class HTTPInternalServerError(HTTPError):
     """Exception raised for a 5xx HTTP status code"""
 
 
+# pylint: disable=too-many-statements
 async def raise_for_code(response: aiohttp.ClientResponse) -> None:
-    """`error_code` によって例外を発生させる"""
+    """`error_code` によって例外を発生させる
+
+    Args:
+        response (aiohttp.ClientResponse):
+
+    Raises:
+        ClientError:
+    """
     response_json = await response.json(content_type=None)
     err = ErrorResponse(response_json)
 
@@ -826,3 +834,27 @@ async def raise_for_code(response: aiohttp.ClientResponse) -> None:
             raise Web3EMPLInsufficientFundsError(err)
         case 6002:
             raise Web3EMPLFeeExceedsBalanceError(err)
+
+
+async def raise_for_status(response: aiohttp.ClientResponse):
+    """HTTP ステータスコードを元に例外を発生させる
+
+    Args:
+        response (aiohttp.ClientResponse):
+
+    Raises:
+        HTTPError:
+    """
+    match response.status:
+        case 400:
+            raise HTTPBadRequestError(response)
+        case 401:
+            raise HTTPAuthenticationError(response)
+        case 403:
+            raise HTTPForbiddenError(response)
+        case 404:
+            raise HTTPNotFoundError(response)
+        case status if status >= 500:
+            raise HTTPInternalServerError(response)
+        case status if status and not 200 <= status < 300:
+            raise HTTPError(response)
