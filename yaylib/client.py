@@ -1522,30 +1522,91 @@ class Client(
 
     # ---------- auth api ----------
 
+    def change_email(self, **params) -> LoginUpdateResponse:
+        """メールアドレスを変更する
+
+        Args:
+            email (str):
+            password (str):
+            email_grant_token (str, optional):
+
+        Returns:
+            LoginUpdateResponse:
+        """
+        return self.__sync_request(self.auth.change_email(**params))
+
     def change_password(self, **params) -> LoginUpdateResponse:
-        """パスワードを変更します"""
+        """パスワードを変更する
+
+        Args:
+            current_password (str):
+            new_password (str):
+
+        Returns:
+            LoginUpdateResponse:
+        """
         return self.__sync_request(self.auth.change_password(**params))
 
     def get_token(self, **params) -> TokenResponse:
-        """トークンを再発行します"""
+        """認証トークンを取得する
+
+        Args:
+            grant_type (str):
+            refresh_token (str, optional):
+            email (str, optional):
+            password (str, optional):
+
+        Returns:
+            TokenResponse:
+        """
         return self.__sync_request(self.auth.get_token(**params))
 
     def login(
         self, email: str, password: str, two_fa_code: Optional[str] = None
     ) -> LoginUserResponse:
-        """メールアドレスでログインします"""
+        """メールアドレスでログインする
+
+        Args:
+            email (str):
+            password (str):
+            two_fa_code (str, optional):
+
+        Returns:
+            LoginUserResponse:
+        """
         return self.__sync_request(self.auth.login(email, password, two_fa_code))
 
     def resend_confirm_email(self) -> Response:
-        """確認メールを再送信します"""
+        """確認メールを再送信する
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.auth.resend_confirm_email())
 
     def restore_user(self, **params) -> LoginUserResponse:
-        """ユーザーを復元します"""
+        """ユーザーを復元する
+
+        Args:
+            user_id (int):
+
+        Returns:
+            LoginUserResponse:
+        """
         return self.__sync_request(self.auth.restore_user(**params))
 
     def save_account_with_email(self, **params) -> LoginUpdateResponse:
-        """メールアドレスでアカウントを保存します"""
+        """メールアドレスでアカウントを保存する
+
+        Args:
+            email (str):
+            password (str, optional):
+            current_password (str, optional):
+            email_grant_token (str, optional):
+
+        Returns:
+            LoginUpdateResponse:
+        """
         return self.__sync_request(self.auth.save_account_with_email(**params))
 
     # ---------- misc api ----------
