@@ -4,6 +4,7 @@
 *_test.py
 
 *.jpg
+*.jpeg
 *.png
 *.gif
 *.mp4
