@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from .. import config
 from ..models import CreateGroupQuota
@@ -52,6 +52,14 @@ class GroupApi:
         self.__client: Client = client
 
     async def accept_moderator_offer(self, group_id: int) -> Response:
+        """サークル副管理人の権限オファーを引き受ける
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/groups/{group_id}/deputize",
@@ -62,6 +70,14 @@ class GroupApi:
         self,
         group_id: int,
     ) -> Response:
+        """サークル管理人の権限オファーを引き受けます
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/groups/{group_id}/transfer",
@@ -73,6 +89,15 @@ class GroupApi:
         group_id: int,
         user_id: int,
     ) -> Response:
+        """サークル参加リクエストを承認します
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/accept/{user_id}",
@@ -82,10 +107,14 @@ class GroupApi:
     async def add_related_groups(
         self, group_id: int, related_group_id: List[int]
     ) -> Response:
-        """
+        """関連サークルを追加する
 
-        関連サークルを追加する
+        Args:
+            group_id (int):
+            related_group_id (List[int]):
 
+        Returns:
+            Response:
         """
         return await self.__client.request(
             "PUT",
@@ -95,6 +124,15 @@ class GroupApi:
         )
 
     async def ban_group_user(self, group_id: int, user_id: int) -> Response:
+        """サークルからユーザーを追放する
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/ban/{user_id}",
@@ -102,8 +140,16 @@ class GroupApi:
         )
 
     async def check_group_unread_status(
-        self, from_time: Optional[int] = None
+        self, from_time: int = None
     ) -> UnreadStatusResponse:
+        """サークルの未読ステータスを取得する
+
+        Args:
+            from_time (int, optional):
+
+        Returns:
+            UnreadStatusResponse:
+        """
         params = {}
         if from_time:
             params["from_time"] = from_time
@@ -117,26 +163,53 @@ class GroupApi:
     async def create_group(
         self,
         topic: str,
-        description: Optional[str] = None,
-        secret: Optional[bool] = None,
-        hide_reported_posts: Optional[bool] = None,
-        hide_conference_call: Optional[bool] = None,
-        is_private: Optional[bool] = None,
-        only_verified_age: Optional[bool] = None,
-        only_mobile_verified: Optional[bool] = None,
-        call_timeline_display: Optional[bool] = None,
-        allow_ownership_transfer: Optional[bool] = None,
-        allow_thread_creation_by: Optional[str] = None,
-        gender: Optional[int] = None,
-        generation_groups_limit: Optional[int] = None,
-        group_category_id: Optional[int] = None,
-        cover_image_filename: Optional[str] = None,
-        sub_category_id: Optional[str] = None,
-        hide_from_game_eight: Optional[bool] = None,
-        allow_members_to_post_media: Optional[bool] = None,
-        allow_members_to_post_url: Optional[bool] = None,
-        guidelines: Optional[str] = None,
+        description: str = None,
+        secret: bool = None,
+        hide_reported_posts: bool = None,
+        hide_conference_call: bool = None,
+        is_private: bool = None,
+        only_verified_age: bool = None,
+        only_mobile_verified: bool = None,
+        call_timeline_display: bool = None,
+        allow_ownership_transfer: bool = None,
+        allow_thread_creation_by: str = None,
+        gender: int = None,
+        generation_groups_limit: int = None,
+        group_category_id: int = None,
+        cover_image_filename: str = None,
+        sub_category_id: str = None,
+        hide_from_game_eight: bool = None,
+        allow_members_to_post_media: bool = None,
+        allow_members_to_post_url: bool = None,
+        guidelines: str = None,
     ) -> CreateGroupResponse:
+        """サークルを作成する
+
+        Args:
+            topic (str):
+            description (str, optional):
+            secret (bool, optional):
+            hide_reported_posts (bool, optional):
+            hide_conference_call (bool, optional):
+            is_private (bool, optional):
+            only_verified_age (bool, optional):
+            only_mobile_verified (bool, optional):
+            call_timeline_display (bool, optional):
+            allow_ownership_transfer (bool, optional):
+            allow_thread_creation_by (str, optional):
+            gender (int, optional):
+            generation_groups_limit (int, optional):
+            group_category_id (int, optional):
+            cover_image_filename (str, optional):
+            sub_category_id (str, optional):
+            hide_from_game_eight (bool, optional):
+            allow_members_to_post_media (bool, optional):
+            allow_members_to_post_url (bool, optional):
+            guidelines (str, optional):
+
+        Returns:
+            CreateGroupResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v3/groups/new",
@@ -172,6 +245,14 @@ class GroupApi:
         )
 
     async def pin_group(self, group_id: int) -> Response:
+        """サークルをピン留めする
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/pinned/groups",
@@ -180,6 +261,14 @@ class GroupApi:
         )
 
     async def decline_moderator_offer(self, group_id: int) -> Response:
+        """サークル副管理人の権限オファーを断る
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/groups/{group_id}/deputize",
@@ -187,6 +276,14 @@ class GroupApi:
         )
 
     async def decline_ownership_offer(self, group_id: int) -> Response:
+        """サークル管理人の権限オファーを断る
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/groups/{group_id}/transfer",
@@ -194,6 +291,15 @@ class GroupApi:
         )
 
     async def decline_group_join_request(self, group_id: int, user_id: int) -> Response:
+        """サークル参加リクエストを断る
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/decline/{user_id}",
@@ -201,6 +307,14 @@ class GroupApi:
         )
 
     async def unpin_group(self, group_id: int) -> Response:
+        """サークルのピン留めを解除する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/pinned/groups/{group_id}",
@@ -208,8 +322,17 @@ class GroupApi:
         )
 
     async def get_banned_group_members(
-        self, group_id: int, page: Optional[int] = None
+        self, group_id: int, page: int = None
     ) -> UsersResponse:
+        """追放されたサークルメンバーを取得する
+
+        Args:
+            group_id (int):
+            page (int, optional):
+
+        Returns:
+            UsersResponse:
+        """
         params = {}
         if page:
             params["page"] = page
@@ -218,14 +341,14 @@ class GroupApi:
         )
 
     async def get_group_categories(self, **params) -> GroupCategoriesResponse:
-        """
+        """サークルのカテゴリーを取得する
 
-        Parameters:
-        -----------
+        Args:
+            page (int, optional):
+            number (int, optional):
 
-            - page: int - (optional)
-            - number: int - (optional)
-
+        Returns:
+            GroupCategoriesResponse:
         """
         return await self.__client.request(
             "GET",
@@ -235,6 +358,11 @@ class GroupApi:
         )
 
     async def get_create_group_quota(self) -> CreateGroupQuota:
+        """残りのサークル作成可能回数を取得する
+
+        Returns:
+            CreateGroupQuota:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/groups/created_quota",
@@ -242,6 +370,14 @@ class GroupApi:
         )
 
     async def get_group(self, group_id: int) -> GroupResponse:
+        """サークルの詳細を取得する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            GroupResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + f"/v1/groups/{group_id}",
@@ -249,16 +385,16 @@ class GroupApi:
         )
 
     async def get_groups(self, **params) -> GroupsResponse:
-        """
+        """複数のサークル情報を取得する
 
-        Parameters:
-        -----------
+        Args:
+            group_category_id (int, optional):
+            keyword (str, optional):
+            from_timestamp (int, optional):
+            sub_category_id (int, optional):
 
-            - group_category_id: int = None
-            - keyword: str = None
-            - from_timestamp: int = None
-            - sub_category_id: int = None
-
+        Returns:
+            GroupsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -270,14 +406,15 @@ class GroupApi:
     async def get_invitable_users(
         self, group_id: int, **params
     ) -> UsersByTimestampResponse:
-        """
+        """サークルに招待可能なユーザーを取得する
 
-        Parameters:
-        -----------
+        Args:
+            group_id (int):
+            from_timestamp (int, optional):
+            user[nickname] (str, optional):
 
-            - from_timestamp: int - (optional)
-            - user[nickname]: str - (optional)
-
+        Returns:
+            UsersByTimestampResponse:
         """
         return await self.__client.request(
             "GET",
@@ -287,6 +424,14 @@ class GroupApi:
         )
 
     async def get_joined_statuses(self, ids: List[int]) -> Response:
+        """サークルの参加ステータスを取得する
+
+        Args:
+            ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/groups/joined_statuses",
@@ -295,24 +440,34 @@ class GroupApi:
         )
 
     async def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
+        """特定のサークルメンバーの情報を取得する
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            GroupUserResponse:
+        """
         return await self.__client.request(
             "GET", config.API_HOST + f"/v1/groups/{group_id}/members/{user_id}"
         )
 
     async def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
-        """
+        """サークルメンバーを取得する
 
-        Parameters:
-        -----------
+        Args:
+            group_id (int):
+            id (int):
+            mode (str, optional):
+            keyword (str, optional):
+            from_id (int, optional):
+            from_timestamp (int, optional):
+            order_by (str, optional):
+            followed_by_me: (bool, optional)
 
-            - id: int - (required)
-            - mode: str - (optional)
-            - keyword: str - (optional)
-            - from_id: int - (optional)
-            - from_timestamp: int - (optional)
-            - order_by: str - (optional)
-            - followed_by_me: bool - (optional)
-
+        Returns:
+            GroupUsersResponse:
         """
         return await self.__client.request(
             "GET",
@@ -322,6 +477,14 @@ class GroupApi:
         )
 
     async def get_my_groups(self, from_timestamp=None) -> GroupsResponse:
+        """自分のサークルを取得する
+
+        Args:
+            from_timestamp (_type_, optional):
+
+        Returns:
+            GroupsResponse:
+        """
         params = {}
         if from_timestamp:
             params["from_timestamp"] = from_timestamp
@@ -335,15 +498,15 @@ class GroupApi:
     async def get_relatable_groups(
         self, group_id: int, **params
     ) -> GroupsRelatedResponse:
-        """
+        """関連がある可能性があるサークルを取得する
 
-        Parameters:
-        -----------
+        Args:
+            group_id (int):
+            keyword (str, optional):
+            from (str, optional):
 
-            - group_id: int - (required)
-            - keyword: str - (optional)
-            - from: str - (optional)
-
+        Returns:
+            GroupsRelatedResponse:
         """
         return await self.__client.request(
             "GET",
@@ -355,15 +518,15 @@ class GroupApi:
     async def get_related_groups(
         self, group_id: int, **params
     ) -> GroupsRelatedResponse:
-        """
+        """関連があるサークルを取得する
 
-        Parameters:
-        -----------
+        Args:
+            group_id (int):
+            keyword (str, optional):
+            from (str, optional):
 
-            - group_id: int - (required)
-            - keyword: str - (optional)
-            - from: str - (optional)
-
+        Returns:
+            GroupsRelatedResponse:
         """
         return await self.__client.request(
             "GET",
@@ -373,14 +536,14 @@ class GroupApi:
         )
 
     async def get_user_groups(self, **params) -> GroupsResponse:
-        """
+        """特定のユーザーが参加しているサークルを取得する
 
-        Parameters:
-        -----------
+        Args:
+            user_id (int):
+            page (int, optional):
 
-            - user_id: int - (required)
-            - page: int - (optional)
-
+        Returns:
+            GroupsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -394,6 +557,15 @@ class GroupApi:
         group_id: int,
         user_ids: List[int],
     ) -> Response:
+        """サークルにユーザーを招待する
+
+        Args:
+            group_id (int):
+            user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/invite",
@@ -405,6 +577,14 @@ class GroupApi:
         self,
         group_id: int,
     ) -> Response:
+        """サークルに参加する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/join",
@@ -415,6 +595,14 @@ class GroupApi:
         self,
         group_id: int,
     ) -> Response:
+        """サークルから脱退する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/groups/{group_id}/leave",
@@ -425,6 +613,14 @@ class GroupApi:
         self,
         group_id: int,
     ) -> Response:
+        """サークルのカバー画像を削除する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/remove_cover",
@@ -436,6 +632,15 @@ class GroupApi:
         group_id: int,
         user_id: int,
     ) -> Response:
+        """サークルの副管理人を削除する
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/fire/{user_id}",
@@ -447,6 +652,15 @@ class GroupApi:
         group_id: int,
         related_group_ids: List[int],
     ) -> Response:
+        """関連のあるサークルを削除する
+
+        Args:
+            group_id (int):
+            related_group_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/groups/{group_id}/related",
@@ -457,6 +671,15 @@ class GroupApi:
     async def send_moderator_offers(
         self, group_id: int, user_ids: List[int]
     ) -> Response:
+        """複数人にサークル副管理人のオファーを送信する
+
+        Args:
+            group_id (int):
+            user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v3/groups/{group_id}/deputize/mass",
@@ -473,6 +696,15 @@ class GroupApi:
         )
 
     async def send_ownership_offer(self, group_id: int, user_id: int) -> Response:
+        """サークル管理人権限のオファーを送信する
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v3/groups/{group_id}/transfer",
@@ -489,6 +721,15 @@ class GroupApi:
         )
 
     async def set_group_title(self, group_id: int, title: str) -> Response:
+        """サークルのタイトルを設定する
+
+        Args:
+            group_id (int):
+            title (str):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/set_title",
@@ -497,6 +738,14 @@ class GroupApi:
         )
 
     async def take_over_group_ownership(self, group_id: int) -> Response:
+        """サークル管理人の権限を引き継ぐ
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/take_over",
@@ -504,6 +753,15 @@ class GroupApi:
         )
 
     async def unban_group_member(self, group_id: int, user_id: int) -> Response:
+        """特定のサークルメンバーの追放を解除する
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/groups/{group_id}/unban/{user_id}",
@@ -514,26 +772,54 @@ class GroupApi:
         self,
         group_id: int,
         topic: str,
-        description: Optional[str] = None,
-        secret: Optional[bool] = None,
-        hide_reported_posts: Optional[bool] = None,
-        hide_conference_call: Optional[bool] = None,
-        is_private: Optional[bool] = None,
-        only_verified_age: Optional[bool] = None,
-        only_mobile_verified: Optional[bool] = None,
-        call_timeline_display: Optional[bool] = None,
-        allow_ownership_transfer: Optional[bool] = None,
-        allow_thread_creation_by: Optional[str] = None,
-        gender: Optional[int] = None,
-        generation_groups_limit: Optional[int] = None,
-        group_category_id: Optional[int] = None,
-        cover_image_filename: Optional[str] = None,
-        sub_category_id: Optional[str] = None,
-        hide_from_game_eight: Optional[bool] = None,
-        allow_members_to_post_media: Optional[bool] = None,
-        allow_members_to_post_url: Optional[bool] = None,
-        guidelines: Optional[str] = None,
+        description: str = None,
+        secret: bool = None,
+        hide_reported_posts: bool = None,
+        hide_conference_call: bool = None,
+        is_private: bool = None,
+        only_verified_age: bool = None,
+        only_mobile_verified: bool = None,
+        call_timeline_display: bool = None,
+        allow_ownership_transfer: bool = None,
+        allow_thread_creation_by: str = None,
+        gender: int = None,
+        generation_groups_limit: int = None,
+        group_category_id: int = None,
+        cover_image_filename: str = None,
+        sub_category_id: str = None,
+        hide_from_game_eight: bool = None,
+        allow_members_to_post_media: bool = None,
+        allow_members_to_post_url: bool = None,
+        guidelines: str = None,
     ) -> GroupResponse:
+        """サークルを編集する
+
+        Args:
+            group_id (int):
+            topic (str):
+            description (str, optional):
+            secret (bool, optional):
+            hide_reported_posts (bool, optional):
+            hide_conference_call (bool, optional):
+            is_private (bool, optional):
+            only_verified_age (bool, optional):
+            only_mobile_verified (bool, optional):
+            call_timeline_display (bool, optional):
+            allow_ownership_transfer (bool, optional):
+            allow_thread_creation_by (str, optional):
+            gender (int, optional):
+            generation_groups_limit (int, optional):
+            group_category_id (int, optional):
+            cover_image_filename (str, optional):
+            sub_category_id (str, optional):
+            hide_from_game_eight (bool, optional):
+            allow_members_to_post_media (bool, optional):
+            allow_members_to_post_url (bool, optional):
+            guidelines (str, optional):
+
+        Returns:
+            GroupResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v3/groups/{group_id}/update",
@@ -569,6 +855,15 @@ class GroupApi:
         )
 
     async def withdraw_moderator_offer(self, group_id: int, user_id: int) -> Response:
+        """サークル副管理人のオファーを取り消す
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/groups/{group_id}/deputize/{user_id}/withdraw",
@@ -576,6 +871,15 @@ class GroupApi:
         )
 
     async def withdraw_ownership_offer(self, group_id: int, user_id: int) -> Response:
+        """サークル管理人のオファーを取り消す
+
+        Args:
+            group_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/groups/{group_id}/transfer/withdraw",
