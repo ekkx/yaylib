@@ -35,14 +35,15 @@ class NotificationApi:
         self.__client: Client = client
 
     async def get_activities(self, **params) -> ActivitiesResponse:
-        """
+        """通知を取得する
 
-        Parameters
-        ----------
-            - important: bool - (required)
-            - from_timestamp: int - (optional)
-            - number: int - (optional)
+        Args:
+            important (bool):
+            from_timestamp (int, optional):
+            number (int, optional):
 
+        Returns:
+            ActivitiesResponse:
         """
         return await self.__client.request(
             "GET",
@@ -52,13 +53,14 @@ class NotificationApi:
         )
 
     async def get_merged_activities(self, **params) -> ActivitiesResponse:
-        """
-        Parameters
-        ----------
+        """全種類の通知を取得する
 
-            - from_timestamp: int - (optional)
-            - number: int - (optional)
+        Args:
+            from_timestamp (int, optional):
+            number (int, optional):
 
+        Returns:
+            ActivitiesResponse:
         """
         return await self.__client.request(
             "GET",
