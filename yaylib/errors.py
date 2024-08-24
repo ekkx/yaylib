@@ -584,8 +584,10 @@ async def raise_for_code(response: aiohttp.ClientResponse) -> None:
         ClientError:
     """
     response_json = await response.json(content_type=None)
-    err = ErrorResponse(response_json)
+    if response_json is None:
+        return
 
+    err = ErrorResponse(response_json)
     if err.result is None or err.result != "error":
         return
 
