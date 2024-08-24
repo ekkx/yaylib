@@ -415,7 +415,7 @@ class PostApi:  # pylint: disable=too-many-public-methods
             return_type=Response,
         )
 
-    async def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
+    async def get_bookmark(self, user_id: int, **params) -> PostsResponse:
         """ブックマークを取得する
 
         Args:
@@ -425,9 +425,6 @@ class PostApi:  # pylint: disable=too-many-public-methods
         Returns:
             PostsResponse:
         """
-        params = {}
-        if from_str:
-            params = {"from": from_str}
         return await self.__client.request(
             "GET",
             config.API_HOST + f"/v1/users/{user_id}/bookmarks",

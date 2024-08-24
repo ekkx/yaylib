@@ -305,7 +305,7 @@ class ChatApi:
             return_type=TotalChatRequestResponse,
         )
 
-    async def hide_chat(self, **params) -> Response:
+    async def hide_chat(self, chat_room_id: int) -> Response:
         """チャットルームを非表示にする
 
         Args:
@@ -317,7 +317,7 @@ class ChatApi:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/hidden/chats",
-            json=params,
+            json={"chat_room_id": chat_room_id},
             return_type=Response,
         )
 
