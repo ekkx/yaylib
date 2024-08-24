@@ -1612,23 +1612,56 @@ class Client(
     # ---------- misc api ----------
 
     def accept_policy_agreement(self, agreement_type: str) -> Response:
-        """利用規約、ポリシー同意書に同意します"""
+        """利用規約、ポリシー同意書に同意する
+
+        Args:
+            agreement_type (str):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.misc.accept_policy_agreement(agreement_type))
 
     def send_verification_code(self, email: str, intent: str, locale="ja") -> Response:
-        """認証コードを送信します"""
+        """メールアドレス認証コードを送信する
+
+        Args:
+            email (str):
+            intent (str):
+            locale (str):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(
             self.misc.send_verification_code(email, intent, locale)
         )
 
     def get_email_grant_token(self, **params) -> EmailGrantTokenResponse:
-        """email_grant_tokenを取得します"""
+        """メールアドレス認証トークンを取得する
+
+        Args:
+            code (int):
+            email (str):
+
+        Returns:
+            EmailGrantTokenResponse:
+        """
         return self.__sync_request(self.misc.get_email_grant_token(**params))
 
     def get_email_verification_presigned_url(
         self, email: str, locale: str = "ja", intent: Optional[str] = None
     ) -> EmailVerificationPresignedUrlResponse:
-        """メールアドレス確認用の署名付きURLを取得します"""
+        """メールアドレス確認用の署名付きURLを取得する
+
+        Args:
+            email (str):
+            locale (str):
+            intent (str, optional):
+
+        Returns:
+            EmailVerificationPresignedUrlResponse:
+        """
         return self.__sync_request(
             self.misc.get_email_verification_presigned_url(email, locale, intent)
         )
@@ -1636,12 +1669,28 @@ class Client(
     def get_file_upload_presigned_urls(
         self, file_names: List[str]
     ) -> PresignedUrlsResponse:
-        """ファイルアップロード用の署名付きURLを取得します"""
+        """ファイルアップロード用の署名付きURLを取得する
+
+        Args:
+            file_names (List[str]):
+
+        Returns:
+            PresignedUrlsResponse:
+        """
         return self.__sync_request(self.misc.get_file_upload_presigned_urls(file_names))
 
     def get_id_checker_presigned_url(
         self, model: str, action: str, **params
     ) -> IdCheckerPresignedUrlResponse:
+        """身分証明用の署名付きURLを取得する
+
+        Args:
+            model (str):
+            action (str):
+
+        Returns:
+            IdCheckerPresignedUrlResponse:
+        """
         return self.__sync_request(
             self.misc.get_id_checker_presigned_url(model, action, **params)
         )
@@ -1649,37 +1698,116 @@ class Client(
     def get_old_file_upload_presigned_url(
         self, video_file_name: str
     ) -> PresignedUrlResponse:
-        """動画ファイルアップロード用の署名付きURLを取得します"""
+        """旧版ファイルアップロード用の署名付きURLを取得する
+
+        Args:
+            video_file_name (str):
+
+        Returns:
+            PresignedUrlResponse:
+        """
         return self.__sync_request(
             self.misc.get_old_file_upload_presigned_url(video_file_name)
         )
 
     def get_policy_agreed(self) -> PolicyAgreementsResponse:
-        """利用規約、ポリシー同意書に同意しているかどうかを取得します"""
+        """利用規約、ポリシー同意書に同意しているかどうかを取得する
+
+        Returns:
+            PolicyAgreementsResponse:
+        """
         return self.__sync_request(self.misc.get_policy_agreed())
 
     def get_web_socket_token(self) -> WebSocketTokenResponse:
-        """Web Socket トークンを取得します"""
+        """WebSocket トークンを取得する
+
+        Returns:
+            WebSocketTokenResponse:
+        """
         return self.__sync_request(self.misc.get_web_socket_token())
 
     def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachment]:
-        """画像をアップロードして、サーバー上のファイルのリストを返します。"""
+        """画像をアップロードして、サーバー上のファイルのリストを取得する
+
+        Examples:
+            投稿に画像を付与する場合
+
+            >>> # サーバー上にアップロード
+            >>> attachments = api.upload_image(
+            >>>     image_type=yaylib.ImageType.POST,
+            >>>     image_paths=["./example.jpg"],
+            >>> )
+            >>> # サーバー上のファイル名を指定
+            >>> api.create_post(
+            >>>     "Hello with yaylib!",
+            >>>     attachment_filename=attachments[0].filename
+            >>> )
+
+        Args:
+            image_paths (List[str]): 画像ファイルのパスのリスト
+            image_type (str): 画像の種類
+
+        Raises:
+            ValueError: 画像タイプやフォーマットが不正な場合
+
+        Returns:
+            List[Attachment]: サーバー上のファイル情報
+        """
         return self.__sync_request(self.misc.upload_image(image_paths, image_type))
 
     def upload_video(self, video_path: str) -> str:
-        """動画をアップロードして、サーバー上のファイル名を返します。"""
+        """動画をアップロードして、サーバー上のファイル名を取得する
+
+        Examples:
+            投稿に動画を付与する場合
+
+            >>> # サーバー上にアップロード
+            >>> filename = client.upload_video("./example.mp4")
+            >>> # サーバー上のファイル名を指定
+            >>> api.create_post(
+            >>>     "Hello with yaylib!",
+            >>>     video_file_name=filename
+            >>> )
+
+        Args:
+            video_path (str): 動画ファイルのパス
+
+        Raises:
+            ValueError: 動画フォーマットが不正な場合
+
+        Returns:
+            str: サーバー上のファイル名
+        """
         return self.__sync_request(self.misc.upload_video(video_path))
 
     def get_app_config(self) -> ApplicationConfigResponse:
-        """アプリケーションの設定情報を取得します"""
+        """アプリケーションのメタデータを取得する
+
+        Returns:
+            ApplicationConfigResponse:
+        """
         return self.__sync_request(self.misc.get_app_config())
 
     def get_banned_words(self, country_code: str = "jp") -> BanWordsResponse:
-        """禁止ワードの一覧を取得します"""
+        """禁止ワードの一覧を取得する
+
+        Args:
+            country_code (str, optional):
+
+        Returns:
+            BanWordsResponse:
+        """
         return self.__sync_request(self.misc.get_banned_words(country_code))
 
     def get_popular_words(self, country_code: str = "jp") -> PopularWordsResponse:
-        """人気ワードの一覧を取得します"""
+        """人気ワードの一覧を取得する
+
+        Args:
+            country_code (str, optional):
+
+        Returns:
+            PopularWordsResponse:
+        """
         return self.__sync_request(self.misc.get_popular_words(country_code))
 
     # ---------- post api ----------
