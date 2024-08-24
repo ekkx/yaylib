@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import List
 
 from .. import config
 from ..errors import ClientError
@@ -42,7 +42,7 @@ from ..responses import (
 from ..utils import build_message_tags, get_post_type, md5
 
 
-class PostApi:
+class PostApi:  # pylint: disable=too-many-public-methods
     """投稿 API"""
 
     def __init__(self, client) -> None:
@@ -51,6 +51,15 @@ class PostApi:
         self.__client: Client = client
 
     async def add_bookmark(self, user_id: int, post_id: int) -> BookmarkPostResponse:
+        """ブックマークに追加する
+
+        Args:
+            user_id (int):
+            post_id (int):
+
+        Returns:
+            BookmarkPostResponse:
+        """
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v1/users/{user_id}/bookmarks/{post_id}",
@@ -58,10 +67,14 @@ class PostApi:
         )
 
     async def add_group_highlight_post(self, group_id: int, post_id: int) -> Response:
-        """
+        """投稿をグループのまとめに追加する
 
-        投稿をグループのまとめに追加します
+        Args:
+            group_id (int):
+            post_id (int):
 
+        Returns:
+            Response:
         """
         return await self.__client.request(
             "PUT",
@@ -69,27 +82,32 @@ class PostApi:
             return_type=Response,
         )
 
-    async def create_call_post(
-        self,
-        text: Optional[str] = None,
-        font_size: Optional[int] = None,
-        color: Optional[int] = None,
-        group_id: Optional[int] = None,
-        call_type: Optional[str] = None,
-        category_id: Optional[int] = None,
-        game_title: Optional[str] = None,
-        joinable_by: Optional[str] = None,
-        message_tags: Optional[str] = None,
-        attachment_filename: Optional[str] = None,
-        attachment_2_filename: Optional[str] = None,
-        attachment_3_filename: Optional[str] = None,
-        attachment_4_filename: Optional[str] = None,
-        attachment_5_filename: Optional[str] = None,
-        attachment_6_filename: Optional[str] = None,
-        attachment_7_filename: Optional[str] = None,
-        attachment_8_filename: Optional[str] = None,
-        attachment_9_filename: Optional[str] = None,
-    ) -> CreatePostResponse:
+    async def create_call_post(self, text: str = None, **params) -> CreatePostResponse:
+        """通話の投稿を作成する
+
+        Args:
+            text (str, optional):
+            font_size (int, optional):
+            color (int, optional):
+            group_id (int, optional):
+            call_type (str, optional):
+            category_id (int, optional):
+            game_title (str, optional):
+            joinable_by (str, optional):
+            message_tags (List, optional):
+            attachment_filename (str, optional):
+            attachment_2_filename (str, optional):
+            attachment_3_filename (str, optional):
+            attachment_4_filename (str, optional):
+            attachment_5_filename (str, optional):
+            attachment_6_filename (str, optional):
+            attachment_7_filename (str, optional):
+            attachment_8_filename (str, optional):
+            attachment_9_filename (str, optional):
+
+        Returns:
+            CreatePostResponse:
+        """
         text, message_tags = build_message_tags(text)
 
         return await self.__client.request(
@@ -97,34 +115,26 @@ class PostApi:
             config.API_HOST + "/v1/posts/new_conference_call",
             json={
                 "text": text,
-                "font_size": font_size,
-                "color": color,
-                "group_id": group_id,
-                "call_type": call_type,
                 "uuid": self.__client.device_uuid,
                 "api_key": config.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), False
                 ),
-                "category_id": category_id,
-                "game_title": game_title,
-                "joinable_by": joinable_by,
                 "message_tags": [] if message_tags is None else message_tags,
-                "attachment_filename": attachment_filename,
-                "attachment_2_filename": attachment_2_filename,
-                "attachment_3_filename": attachment_3_filename,
-                "attachment_4_filename": attachment_4_filename,
-                "attachment_5_filename": attachment_5_filename,
-                "attachment_6_filename": attachment_6_filename,
-                "attachment_7_filename": attachment_7_filename,
-                "attachment_8_filename": attachment_8_filename,
-                "attachment_9_filename": attachment_9_filename,
-            },
+            }.update(params),
             return_type=CreatePostResponse,
         )
 
-    async def create_group_pin_post(self, post_id: int, group_id: int) -> Response:
+    async def pin_group_post(self, post_id: int, group_id: int) -> Response:
+        """サークルの投稿をピンする
+        Args:
+            post_id (int):
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "PUT",
             config.API_HOST + "/v2/posts/group_pinned_post",
@@ -132,7 +142,15 @@ class PostApi:
             return_type=Response,
         )
 
-    async def create_pin_post(self, post_id: int) -> Response:
+    async def pin_post(self, post_id: int) -> Response:
+        """投稿をピンする
+
+        Args:
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/pinned/posts",
@@ -140,42 +158,47 @@ class PostApi:
             return_type=Response,
         )
 
-    async def create_post(
-        self,
-        text: Optional[str] = None,
-        font_size: int = 0,
-        color: int = 0,
-        in_reply_to: Optional[int] = None,
-        group_id: Optional[int] = None,
-        mention_ids: Optional[List[int]] = None,
-        choices: Optional[List[str]] = None,
-        shared_url: Optional[str] = None,
-        message_tags: Optional[List] = None,
-        attachment_filename: Optional[str] = None,
-        attachment_2_filename: Optional[str] = None,
-        attachment_3_filename: Optional[str] = None,
-        attachment_4_filename: Optional[str] = None,
-        attachment_5_filename: Optional[str] = None,
-        attachment_6_filename: Optional[str] = None,
-        attachment_7_filename: Optional[str] = None,
-        attachment_8_filename: Optional[str] = None,
-        attachment_9_filename: Optional[str] = None,
-        video_file_name: Optional[str] = None,
-    ) -> Post:
-        result = build_message_tags(text)
-        if result is not None:
-            text, message_tags = result
+    async def create_post(self, text: str = None, **params) -> Post:
+        """投稿を作成する
+
+        Args:
+            text (str, optional):
+            font_size (int, optional): . Defaults to 0.
+            color (int, optional): . Defaults to 0.
+            in_reply_to (int, optional):
+            group_id (int, optional):
+            mention_ids (List[int], optional):
+            choices (List[str], optional):
+            shared_url (str, optional):
+            message_tags (List, optional):
+            attachment_filename (str, optional):
+            attachment_2_filename (str, optional):
+            attachment_3_filename (str, optional):
+            attachment_4_filename (str, optional):
+            attachment_5_filename (str, optional):
+            attachment_6_filename (str, optional):
+            attachment_7_filename (str, optional):
+            attachment_8_filename (str, optional):
+            attachment_9_filename (str, optional):
+            video_file_name (str, optional):
+
+        Returns:
+            Post:
+        """
+        text, message_tags = build_message_tags(text)
 
         post_type = get_post_type(
-            choices=choices,
-            shared_url=shared_url,
-            video_file_name=video_file_name,
-            attachment_filename=attachment_filename,
+            choices=params.get("choices"),
+            shared_url=params.get("shared_url"),
+            video_file_name=params.get("video_file_name"),
+            attachment_filename=params.get("attachment_filename"),
         )
 
-        if shared_url is not None:
+        if params.get("shared_url") is not None:
             try:
-                shared_url = (await self.get_url_metadata(url=shared_url)).data
+                shared_url = (
+                    await self.get_url_metadata(url=params.get("shared_url"))
+                ).data
             except ClientError:
                 self.__client.logger.error("Unable to get the URL metadata.")
                 shared_url = None
@@ -185,67 +208,58 @@ class PostApi:
             config.API_HOST + "/v3/posts/new",
             json={
                 "text": text,
-                "font_size": font_size,
-                "color": color,
-                "in_reply_to": in_reply_to,
-                "group_id": group_id,
                 "post_type": post_type,
-                "mention_ids": mention_ids,
-                "choices": choices,
                 "shared_url": shared_url,
                 "message_tags": [] if message_tags is None else message_tags,
-                "attachment_filename": attachment_filename,
-                "attachment_2_filename": attachment_2_filename,
-                "attachment_3_filename": attachment_3_filename,
-                "attachment_4_filename": attachment_4_filename,
-                "attachment_5_filename": attachment_5_filename,
-                "attachment_6_filename": attachment_6_filename,
-                "attachment_7_filename": attachment_7_filename,
-                "attachment_8_filename": attachment_8_filename,
-                "attachment_9_filename": attachment_9_filename,
-                "video_file_name": video_file_name,
-            },
+            }.update(params),
             return_type=Post,
             jwt_required=True,
         )
 
     async def create_repost(
-        self,
-        post_id: int,
-        text: Optional[str] = None,
-        font_size: Optional[int] = None,
-        color: Optional[int] = None,
-        in_reply_to: Optional[int] = None,
-        group_id: Optional[int] = None,
-        mention_ids: Optional[List[int]] = None,
-        choices: Optional[List[str]] = None,
-        shared_url: Optional[Dict[str, str | int]] = None,
-        message_tags: Optional[List] = None,
-        attachment_filename: Optional[str] = None,
-        attachment_2_filename: Optional[str] = None,
-        attachment_3_filename: Optional[str] = None,
-        attachment_4_filename: Optional[str] = None,
-        attachment_5_filename: Optional[str] = None,
-        attachment_6_filename: Optional[str] = None,
-        attachment_7_filename: Optional[str] = None,
-        attachment_8_filename: Optional[str] = None,
-        attachment_9_filename: Optional[str] = None,
-        video_file_name: Optional[str] = None,
+        self, post_id: int, text: str = None, **params
     ) -> CreatePostResponse:
-        result = build_message_tags(text)
-        if result is not None:
-            text, message_tags = result
+        """投稿を(´∀｀∩)↑age↑する
+
+        Args:
+            post_id (int):
+            text (str, optional):
+            font_size (int, optional):
+            color (int, optional):
+            in_reply_to (int, optional):
+            group_id (int, optional):
+            mention_ids (List[int], optional):
+            choices (List[str], optional):
+            shared_url (Dict[str, str  |  int], optional):
+            message_tags (List, optional):
+            attachment_filename (str, optional):
+            attachment_2_filename (str, optional):
+            attachment_3_filename (str, optional):
+            attachment_4_filename (str, optional):
+            attachment_5_filename (str, optional):
+            attachment_6_filename (str, optional):
+            attachment_7_filename (str, optional):
+            attachment_8_filename (str, optional):
+            attachment_9_filename (str, optional):
+            video_file_name (str, optional):
+
+        Returns:
+            CreatePostResponse:
+        """
+        text, message_tags = build_message_tags(text)
 
         post_type = get_post_type(
-            choices=choices,
-            shared_url=shared_url,
-            video_file_name=video_file_name,
-            attachment_filename=attachment_filename,
+            choices=params.get("choices"),
+            shared_url=params.get("shared_url"),
+            video_file_name=params.get("video_file_name"),
+            attachment_filename=params.get("attachment_filename"),
         )
 
-        if shared_url is not None:
+        if params.get("shared_url") is not None:
             try:
-                shared_url = (await self.get_url_metadata(url=shared_url)).data
+                shared_url = (
+                    await self.get_url_metadata(url=params.get("shared_url"))
+                ).data
             except ClientError:
                 self.__client.logger.error("Unable to get the URL metadata.")
                 shared_url = None
@@ -256,39 +270,30 @@ class PostApi:
             json={
                 "post_id": post_id,
                 "text": text,
-                "font_size": font_size,
-                "color": color,
-                "in_reply_to": in_reply_to,
-                "group_id": group_id,
                 "post_type": post_type,
-                "mention_ids": mention_ids,
-                "choices": choices,
                 "shared_url": shared_url,
                 "message_tags": [] if message_tags is None else message_tags,
-                "attachment_filename": attachment_filename,
-                "attachment_2_filename": attachment_2_filename,
-                "attachment_3_filename": attachment_3_filename,
-                "attachment_4_filename": attachment_4_filename,
-                "attachment_5_filename": attachment_5_filename,
-                "attachment_6_filename": attachment_6_filename,
-                "attachment_7_filename": attachment_7_filename,
-                "attachment_8_filename": attachment_8_filename,
-                "attachment_9_filename": attachment_9_filename,
-                "video_file_name": video_file_name,
-            },
+            }.update(params),
             return_type=CreatePostResponse,
             jwt_required=True,
         )
 
     async def create_share_post(
-        self,
-        shareable_type: str,
-        shareable_id: int,
-        text: Optional[str] = None,
-        font_size: Optional[int] = None,
-        color: Optional[int] = None,
-        group_id: Optional[int] = None,
+        self, shareable_type: str, shareable_id: int, text: str = None, **params
     ) -> Post:
+        """シェア投稿を作成する
+
+        Args:
+            shareable_type (str):
+            shareable_id (int):
+            text (str, optional):
+            font_size (int, optional):
+            color (int, optional):
+            group_id (int, optional):
+
+        Returns:
+            Post:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/posts/new_share_post",
@@ -296,91 +301,83 @@ class PostApi:
                 "shareable_type": shareable_type,
                 "shareable_id": shareable_id,
                 "text": text,
-                "font_size": font_size,
-                "color": color,
-                "group_id": group_id,
                 "uuid": self.__client.device_uuid,
                 "api_key": config.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), False
                 ),
-            },
+            }.update(params),
             return_type=Post,
         )
 
     async def create_thread_post(
-        self,
-        post_id: int,
-        text: Optional[str] = None,
-        font_size: Optional[int] = None,
-        color: Optional[int] = None,
-        in_reply_to: Optional[int] = None,
-        group_id: Optional[int] = None,
-        mention_ids: Optional[List[int]] = None,
-        choices: Optional[list[str]] = None,
-        shared_url: Optional[Dict[str, str | int]] = None,
-        message_tags: Optional[List] = None,
-        attachment_filename: Optional[str] = None,
-        attachment_2_filename: Optional[str] = None,
-        attachment_3_filename: Optional[str] = None,
-        attachment_4_filename: Optional[str] = None,
-        attachment_5_filename: Optional[str] = None,
-        attachment_6_filename: Optional[str] = None,
-        attachment_7_filename: Optional[str] = None,
-        attachment_8_filename: Optional[str] = None,
-        attachment_9_filename: Optional[str] = None,
-        video_file_name: Optional[str] = None,
+        self, thread_id: int, text: str = None, **params
     ) -> Post:
-        result = build_message_tags(text)
-        if result is not None:
-            text, message_tags = result
+        """スレッドの投稿を作成する
+
+        Args:
+            thread_id (int):
+            text (str, optional):
+            font_size (int, optional):
+            color (int, optional):
+            in_reply_to (int, optional):
+            group_id (int, optional):
+            mention_ids (List[int], optional):
+            choices (list[str], optional):
+            shared_url (Dict[str, str  |  int], optional):
+            message_tags (List, optional):
+            attachment_filename (str, optional):
+            attachment_2_filename (str, optional):
+            attachment_3_filename (str, optional):
+            attachment_4_filename (str, optional):
+            attachment_5_filename (str, optional):
+            attachment_6_filename (str, optional):
+            attachment_7_filename (str, optional):
+            attachment_8_filename (str, optional):
+            attachment_9_filename (str, optional):
+            video_file_name (str, optional):
+
+        Returns:
+            Post:
+        """
+        text, message_tags = build_message_tags(text)
 
         post_type = get_post_type(
-            choices=choices,
-            shared_url=shared_url,
-            video_file_name=video_file_name,
-            attachment_filename=attachment_filename,
+            choices=params.get("choices"),
+            shared_url=params.get("shared_url"),
+            video_file_name=params.get("video_file_name"),
+            attachment_filename=params.get("attachment_filename"),
         )
 
-        if shared_url is not None:
+        if params.get("shared_url") is not None:
             try:
-                shared_url = (await self.get_url_metadata(url=shared_url)).data
+                shared_url = (
+                    await self.get_url_metadata(url=params.get("shared_url"))
+                ).data
             except ClientError:
                 self.__client.logger.error("Unable to get the URL metadata.")
                 shared_url = None
 
         return await self.__client.request(
             "POST",
-            config.API_HOST + f"/v1/threads/{post_id}/posts",
+            config.API_HOST + f"/v1/threads/{thread_id}/posts",
             json={
-                "id": post_id,
                 "text": text,
-                "font_size": font_size,
-                "color": color,
-                "in_reply_to": in_reply_to,
-                "group_id": group_id,
                 "post_type": post_type,
-                "mention_ids": mention_ids,
-                "choices": choices,
                 "shared_url": shared_url,
                 "message_tags": [] if message_tags is None else message_tags,
-                "attachment_filename": attachment_filename,
-                "attachment_2_filename": attachment_2_filename,
-                "attachment_3_filename": attachment_3_filename,
-                "attachment_4_filename": attachment_4_filename,
-                "attachment_5_filename": attachment_5_filename,
-                "attachment_6_filename": attachment_6_filename,
-                "attachment_7_filename": attachment_7_filename,
-                "attachment_8_filename": attachment_8_filename,
-                "attachment_9_filename": attachment_9_filename,
-                "video_file_name": video_file_name,
             },
             return_type=Post,
             jwt_required=True,
         )
 
     async def delete_all_posts(self) -> Response:
+        """すべての自分の投稿を削除する
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/posts/delete_all_post",
@@ -388,6 +385,14 @@ class PostApi:
         )
 
     async def unpin_group_post(self, group_id: int) -> Response:
+        """グループのピン投稿を解除する
+
+        Args:
+            group_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + "/v2/posts/group_pinned_post",
@@ -396,15 +401,30 @@ class PostApi:
         )
 
     async def unpin_post(self, post_id: int) -> Response:
+        """投稿のピンを解除する
+
+        Args:
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/pinned/posts/{post_id}",
             return_type=Response,
         )
 
-    async def get_bookmark(
-        self, user_id: int, from_str: Optional[str] = None
-    ) -> PostsResponse:
+    async def get_bookmark(self, user_id: int, from_str: str = None) -> PostsResponse:
+        """ブックマークを取得する
+
+        Args:
+            user_id (int):
+            from_str (str, optional):
+
+        Returns:
+            PostsResponse:
+        """
         params = {}
         if from_str:
             params = {"from": from_str}
@@ -416,21 +436,21 @@ class PostApi:
         )
 
     async def get_timeline_calls(self, **params) -> PostsResponse:
-        """
+        """誰でも通話を取得する
 
-        Parameters:
-        -----------
+        Args:
+            group_id (int, optional):
+            from_timestamp (int, optional):
+            number (int, optional):
+            category_id (int, optional):
+            call_type (str, optional): Defaults to "voice".
+            include_circle_call (bool, optional):
+            cross_generation (bool, optional):
+            exclude_recent_gomimushi (bool, optional):
+            shared_interest_categories (bool, optional):
 
-            - group_id: int = None
-            - from_timestamp: int = None
-            - number: int = None
-            - category_id: int = None
-            - call_type: str = "voice"
-            - include_circle_call: bool = None
-            - cross_generation: bool = None
-            - exclude_recent_gomimushi: bool = None
-            - shared_interest_categories: bool = None
-
+        Returns:
+            PostsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -440,18 +460,18 @@ class PostApi:
         )
 
     async def get_conversation(self, conversation_id: int, **params) -> PostsResponse:
-        """
+        """リプライを含める投稿の会話を取得する
 
-        Parameters:
-        -----------
+        Args:
+            conversation_id (int):
+            group_id (int, optional):
+            thread_id (int, optional):
+            from_post_id (int, optional):
+            number (int, optional):
+            reverse (bool, optional):
 
-            - conversation_id: int
-            - group_id: int = None
-            - thread_id: int = None
-            - from_post_id: int = None
-            - number: int = 50
-            - reverse: bool = True
-
+        Returns:
+            PostsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -461,6 +481,14 @@ class PostApi:
         )
 
     async def get_conversation_root_posts(self, post_ids: List[int]) -> PostsResponse:
+        """会話の原点の投稿を取得する
+
+        Args:
+            post_ids (List[int]):
+
+        Returns:
+            PostsResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v2/conversations/root_posts",
@@ -469,18 +497,17 @@ class PostApi:
         )
 
     async def get_following_call_timeline(self, **params) -> PostsResponse:
-        """
+        """フォロー中の通話を取得する
 
-        Parameters:
-        -----------
+        Args:
+            from_timestamp (int, optional):
+            number (int, optional):
+            category_id (int, optional):
+            include_circle_call (bool, optional):
+            exclude_recent_gomimushi (bool, optional):
 
-            - from_timestamp: int = None
-            - number: int = None
-            - category_id: int = None
-            - call_type: str = None
-            - include_circle_call: bool = None
-            - exclude_recent_gomimushi: bool = None
-
+        Returns:
+            PostsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -490,19 +517,19 @@ class PostApi:
         )
 
     async def get_following_timeline(self, **params) -> PostsResponse:
-        """
+        """フォロー中のタイムラインを取得する
 
-        Parameters:
-        -----------
+        Args:
+            from_str (str, optional):
+            only_root (bool, optional):
+            order_by (str, optional):
+            number (int, optional):
+            mxn (int, optional):
+            reduce_selfie (bool, optional):
+            custom_generation_range (bool, optional):
 
-            - from_str: str = None
-            - only_root: bool = None
-            - order_by: str = None
-            - number: int = None
-            - mxn: int = None
-            - reduce_selfie: bool = None
-            - custom_generation_range: bool = None
-
+        Returns:
+            PostsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -512,17 +539,15 @@ class PostApi:
         )
 
     async def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
-        """
+        """グループのまとめ投稿を取得する
 
-        グループのまとめ投稿を取得します
+        Args:
+            group_id (int):
+            from_post (int, optional):
+            number (int, optional):
 
-        Parameters:
-        -----------
-
-            - group_id: int
-            - from_post: int = None
-            - number: int = None
-
+        Returns:
+            PostsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -534,17 +559,17 @@ class PostApi:
     async def get_group_timeline_by_keyword(
         self, group_id: int, keyword: str, **params
     ) -> PostsResponse:
-        """
+        """グループの投稿をキーワードで検索する
 
-        Parameters:
-        -----------
+        Args:
+            group_id (int):
+            keyword (str):
+            from_post_id (int, optional):
+            number (int, optional):
+            only_thread_posts (bool, optional):
 
-            - group_id: int
-            - keyword: str
-            - from_post_id: int = None
-            - number: int = None
-            - only_thread_posts: bool = False
-
+        Returns:
+            PostsResponse:
         """
         params["keyword"] = keyword
         return await self.__client.request(
@@ -555,18 +580,18 @@ class PostApi:
         )
 
     async def get_group_timeline(self, group_id: int, **params) -> PostsResponse:
-        """
+        """グループのタイムラインを取得する
 
-        Parameters:
-        -----------
+        Args:
+            group_id (int):
+            from_post_id (int, optional):
+            reverse (bool, optional):
+            post_type (str, optional):
+            number (int, optional):
+            only_root (bool, optional):
 
-            - group_id: int
-            - from_post_id: int
-            - reverse: bool
-            - post_type: str
-            - number: int
-            - only_root: bool
-
+        Returns:
+            PostsResponse:
         """
         params["group_id"] = group_id
         return await self.__client.request(
@@ -577,15 +602,15 @@ class PostApi:
         )
 
     async def get_timeline_by_hashtag(self, hashtag: str, **params) -> PostsResponse:
-        """
+        """ハッシュタグでタイムラインを検索する
 
-        Parameters:
-        -----------
+        Args:
+            hashtag (str):
+            from_post_id (int, optional):
+            number (int, optional):
 
-            - hashtag: str - (required)
-            - from_post_id: int - (optional)
-            - number: int - (optional)
-
+        Returns:
+            PostsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -595,15 +620,15 @@ class PostApi:
         )
 
     async def get_my_posts(self, **params) -> PostsResponse:
-        """
+        """自分の投稿を取得する
 
-        Parameters:
-        ---------------
+        Args:
+            from_post_id (int, optional):
+            number (int, optional):
+            include_group_post (bool, optional):
 
-            - from_post_id: int - (optional)
-            - number: int - (optional)
-            - include_group_post: bool - (optional)
-
+        Returns:
+            PostsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -613,19 +638,28 @@ class PostApi:
         )
 
     async def get_post(self, post_id: int) -> PostResponse:
+        """投稿の詳細を取得する
+
+        Args:
+            post_id (int):
+
+        Returns:
+            PostResponse:
+        """
         return await self.__client.request(
             "GET", config.API_HOST + f"/v2/posts/{post_id}", return_type=PostResponse
         )
 
     async def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
-        """
+        """投稿にいいねしたユーザーを取得する
 
-        Parameters:
-        ---------------
+        Args:
+            post_id (int):
+            from_id (int, optional):
+            number (int, optional):
 
-            - from_id: int - (optional)
-            - number: int - (optional)
-
+        Returns:
+            PostLikersResponse:
         """
         return await self.__client.request(
             "GET",
@@ -634,16 +668,16 @@ class PostApi:
             return_type=PostLikersResponse,
         )
 
-    async def get_post_reposts(self, post_id: int, **params: int) -> PostsResponse:
-        """
+    async def get_reposts(self, post_id: int, **params: int) -> PostsResponse:
+        """投稿の(´∀｀∩)↑age↑を取得する
 
-        Parameters:
-        ---------------
+        Args:
+            post_id (int):
+            from_post_id (int, optional):
+            number (int, optional):
 
-            - post_id: int - (required)
-            - from_post_id: int - (optional)
-            - number: int - (optional)
-
+        Returns:
+            PostsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -653,6 +687,14 @@ class PostApi:
         )
 
     async def get_posts(self, post_ids: List[int]) -> PostsResponse:
+        """複数の投稿を取得する
+
+        Args:
+            post_ids (List[int]):
+
+        Returns:
+            PostsResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v2/posts/multiple",
@@ -660,26 +702,34 @@ class PostApi:
             return_type=PostsResponse,
         )
 
-    async def get_recommended_post_tags(
-        self, tag: Optional[str] = None, save_recent_search: bool = False
-    ) -> PostTagsResponse:
+    async def get_recommended_post_tags(self, **params) -> PostTagsResponse:
+        """おすすめのタグ候補を取得する
+
+        Args:
+            tag (str, optional):
+            save_recent_search (bool, optional):
+
+        Returns:
+            PostTagsResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/posts/recommended_tag",
-            json={"tag": tag, "save_recent_search": save_recent_search},
+            json=params,
             return_type=PostTagsResponse,
         )
 
     async def get_recommended_posts(self, **params) -> PostsResponse:
-        """
+        """おすすめの投稿を取得する
 
-        Parameters:
-        ---------------
+        Args:
+            experiment_num (int):
+            variant_num (int, optional):
+            number (int, optional):
 
-            - experiment_num: int - (Required)
-            - variant_num: int - (Required)
-            - number: int - (Optional)
 
+        Returns:
+            PostsResponse:
         """
         return await self.__client.request(
             "GET",
@@ -689,17 +739,17 @@ class PostApi:
         )
 
     async def get_timeline_by_keyword(
-        self, keyword: Optional[str] = None, **params
+        self, keyword: str = None, **params
     ) -> PostsResponse:
-        """
+        """キーワードでタイムラインを検索する
 
-        Parameters:
-        ---------------
+        Args:
+            keyword (str, optional):
+            from_post_id (int, optional):
+            number (int, optional):
 
-            - keyword: str
-            - from_post_id: int
-            - number: int
-
+        Returns:
+            PostsResponse:
         """
         params["keyword"] = keyword
         return await self.__client.request(
@@ -709,25 +759,25 @@ class PostApi:
             return_type=PostsResponse,
         )
 
-    async def get_timeline(self, **params: int | str | bool) -> PostsResponse:
+    async def get_timeline(self, **params) -> PostsResponse:
         # - from: str - (optional)
-        """
+        """タイムラインを取得する
 
-        Parameters:
-        ---------------
+        Args:
+            noreply_mode (bool, optional):
+            from_post_id (int, optional):
+            number (int, optional):
+            order_by (str, optional):
+            experiment_older_age_rules (bool, optional):
+            shared_interest_categories (bool, optional):
+            mxn (int, optional):
+            en (int, optional):
+            vn (int, optional):
+            reduce_selfie (bool, optional):
+            custom_generation_range (bool, optional):
 
-            - noreply_mode: bool - (optional)
-            - from_post_id: int - (optional)
-            - number: int - (optional)
-            - order_by: str - (optional)
-            - experiment_older_age_rules: bool - (optional)
-            - shared_interest_categories: bool - (optional)
-            - mxn: int - (optional)
-            - en: int - (optional)
-            - vn: int - (optional)
-            - reduce_selfie: bool - (optional)
-            - custom_generation_range: bool - (optional)
-
+        Returns:
+            PostsResponse:
         """
         endpoint = "/v2/posts/timeline"
         if "noreply_mode" in params and params["noreply_mode"] is True:
@@ -737,6 +787,14 @@ class PostApi:
         )
 
     async def get_url_metadata(self, url: str) -> SharedUrl:
+        """URLのメタデータを取得する
+
+        Args:
+            url (str):
+
+        Returns:
+            SharedUrl:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v2/posts/url_metadata",
@@ -745,15 +803,16 @@ class PostApi:
         )
 
     async def get_user_timeline(self, user_id: int, **params) -> PostsResponse:
-        """
+        """ユーザーのタイムラインを取得する
 
-        Parameters:
-        ---------------
+        Args:
+            user_id (int):
+            from_post_id (int, optional):
+            number (int, optional):
+            post_type (str, optional):
 
-            - from_post_id: int - (optional)
-            - number: int - (optional)
-            - post_type: str - (optional)
-
+        Returns:
+            PostsResponse:
         """
         params["user_id"] = user_id
         return await self.__client.request(
@@ -764,6 +823,14 @@ class PostApi:
         )
 
     async def like(self, post_ids: List[int]) -> LikePostsResponse:
+        """投稿にいいねする
+
+        Args:
+            post_ids (List[int]):
+
+        Returns:
+            LikePostsResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/posts/like",
@@ -771,23 +838,49 @@ class PostApi:
             return_type=LikePostsResponse,
         )
 
-    async def remove_bookmark(self, user_id: int, post_id: int) -> Response:
+    async def delete_bookmark(self, user_id: int, post_id: int) -> Response:
+        """ブックマークを削除する
+
+        Args:
+            user_id (int):
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/users/{user_id}/bookmarks/{post_id}",
             return_type=Response,
         )
 
-    async def remove_group_highlight_post(
+    async def delete_group_highlight_post(
         self, group_id: int, post_id: int
     ) -> Response:
+        """サークルのまとめから投稿を解除する
+
+        Args:
+            group_id (int):
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "DELETE",
             config.API_HOST + f"/v1/groups/{group_id}/highlights/{post_id}",
             return_type=Response,
         )
 
-    async def remove_posts(self, post_ids: List[int]) -> Response:
+    async def delete_posts(self, post_ids: List[int]) -> Response:
+        """投稿を削除する
+
+        Args:
+            post_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/posts/mass_destroy",
@@ -796,6 +889,14 @@ class PostApi:
         )
 
     async def unlike(self, post_id: int) -> Response:
+        """いいねを解除する
+
+        Args:
+            post_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/posts/{post_id}/unlike",
@@ -805,31 +906,46 @@ class PostApi:
     async def update_post(
         self,
         post_id: int,
-        text: Optional[str] = None,
-        font_size: Optional[int] = None,
-        color: Optional[int] = None,
-        message_tags: Optional[List] = None,
+        text: str = None,
+        **params,
     ) -> Post:
-        result = build_message_tags(text)
-        if result is not None:
-            text, message_tags = result
+        """投稿を編集する
+
+        Args:
+            post_id (int):
+            text (str, optional):
+            font_size (int, optional):
+            color (int, optional):
+            message_tags (List, optional):
+
+        Returns:
+            Post:
+        """
+        text, message_tags = build_message_tags(text)
+
         return await self.__client.request(
             "PUT",
             config.API_HOST + f"/v3/posts/{post_id}",
             json={
                 "text": text,
-                "font_size": font_size,
-                "color": color,
                 "message_tags": [] if message_tags is None else message_tags,
                 "api_key": config.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), False
                 ),
-            },
+            }.update(params),
         )
 
     async def view_video(self, video_id: int) -> Response:
+        """動画を視聴する
+
+        Args:
+            video_id (int):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/posts/videos/{video_id}/view",
@@ -837,6 +953,15 @@ class PostApi:
         )
 
     async def vote_survey(self, survey_id: int, choice_id: int) -> VoteSurveyResponse:
+        """アンケートに投票する
+
+        Args:
+            survey_id (int):
+            choice_id (int):
+
+        Returns:
+            VoteSurveyResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v2/surveys/{survey_id}/vote",
