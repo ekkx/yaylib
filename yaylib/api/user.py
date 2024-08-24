@@ -396,14 +396,14 @@ class UserApi:
             return_type=CreateUserResponse,
         )
 
-    async def remove_user_avatar(self) -> Response:
+    async def delete_user_avatar(self) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/users/remove_profile_photo",
             return_type=Response,
         )
 
-    async def remove_user_cover(self) -> Response:
+    async def delete_user_cover(self) -> Response:
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v2/users/remove_cover_image",

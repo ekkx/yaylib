@@ -554,7 +554,7 @@ class GroupApi:
             return_type=Response,
         )
 
-    async def remove_group_cover(
+    async def delete_group_cover(
         self,
         group_id: int,
     ) -> Response:
@@ -572,7 +572,7 @@ class GroupApi:
             return_type=Response,
         )
 
-    async def remove_moderator(
+    async def delete_moderator(
         self,
         group_id: int,
         user_id: int,
@@ -592,7 +592,7 @@ class GroupApi:
             return_type=Response,
         )
 
-    async def remove_related_groups(
+    async def delete_related_groups(
         self,
         group_id: int,
         related_group_ids: List[int],

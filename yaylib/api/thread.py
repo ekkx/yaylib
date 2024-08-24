@@ -138,7 +138,7 @@ class ThreadApi:
             return_type=Response,
         )
 
-    async def remove_thread(
+    async def delete_thread(
         self,
         thread_id: int,
     ) -> Response:
