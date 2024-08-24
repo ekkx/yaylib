@@ -25,12 +25,13 @@ SOFTWARE.
 import os
 from datetime import datetime
 from io import BytesIO
-from typing import Dict, List, Optional
+from typing import List
 from urllib import parse
 
 from PIL import Image
 
 from .. import config
+from ..constants import ImageType
 from ..models import Attachment
 from ..responses import (
     ApplicationConfigResponse,
@@ -43,28 +44,14 @@ from ..responses import (
     PresignedUrlResponse,
     PresignedUrlsResponse,
     Response,
-    VerifyDeviceResponse,
     WebSocketTokenResponse,
 )
 from ..utils import (
-    ImageType,
     generate_uuid,
     get_hashed_filename,
     is_valid_image_format,
     is_valid_video_format,
 )
-
-upload_item_types = [
-    "post",
-    "chat_message",
-    "chat_background",
-    "report",
-    "user_avatar",
-    "user_cover",
-    "group_cover",
-    "group_thread_icon",
-    "group_icon",
-]
 
 
 class MiscApi:
@@ -76,54 +63,72 @@ class MiscApi:
         self.__client: Client = client
 
     async def accept_policy_agreement(self, agreement_type: str) -> Response:
+        """利用規約、ポリシー同意書に同意する
+
+        Args:
+            agreement_type (str):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + f"/v1/users/policy_agreements/{agreement_type}",
             return_type=Response,
         )
 
-    async def generate_sns_thumbnail(self, **params) -> Response:
-        """
-
-        Parameters:
-        -----------
-
-            - resource_type: str - (Required)
-            - resource_id: int - (Required)
-
-        """
-        return await self.__client.request(
-            "GET",
-            config.API_HOST + "/v1/sns_thumbnail/generate",
-            params=params,
-            return_type=Response,
-        )
-
     async def send_verification_code(
-        self, email: str, intent: str, locale: str
+        self, email: str, intent: str, locale: str = "ja"
     ) -> Response:
+        """メールアドレス認証コードを送信する
+
+        Args:
+            email (str):
+            intent (str):
+            locale (str):
+
+        Returns:
+            Response:
+        """
         return await self.__client.request(
             "POST",
             self.get_email_verification_presigned_url(
                 email=email, locale=locale, intent=intent
             ).url,
-            json={"locale": "ja", "email": email},
+            json={"locale": locale, "email": email},
             return_type=Response,
         )
 
-    async def get_email_grant_token(
-        self, code: int, email: str
-    ) -> EmailGrantTokenResponse:
+    async def get_email_grant_token(self, **params) -> EmailGrantTokenResponse:
+        """メールアドレス認証トークンを取得する
+
+        Args:
+            code (int):
+            email (str):
+
+        Returns:
+            EmailGrantTokenResponse:
+        """
         return await self.__client.request(
             "POST",
             config.ID_CARD_CHECK_BASE_HOST + "/apis/v1/apps/yay/email_grant_tokens",
-            json={"code": code, "email": email},
+            json=params,
             return_type=EmailGrantTokenResponse,
         )
 
     async def get_email_verification_presigned_url(
-        self, email: str, locale: str, intent: Optional[str] = None
+        self, email: str, locale: str = "ja", intent: str = None
     ) -> EmailVerificationPresignedUrlResponse:
+        """メールアドレス確認用の署名付きURLを取得する
+
+        Args:
+            email (str):
+            locale (str):
+            intent (str, optional):
+
+        Returns:
+            EmailVerificationPresignedUrlResponse:
+        """
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v1/email_verification_urls",
@@ -139,6 +144,14 @@ class MiscApi:
     async def get_file_upload_presigned_urls(
         self, file_names: List[str]
     ) -> PresignedUrlsResponse:
+        """ファイルアップロード用の署名付きURLを取得する
+
+        Args:
+            file_names (List[str]):
+
+        Returns:
+            PresignedUrlsResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/buckets/presigned_urls",
@@ -150,8 +163,14 @@ class MiscApi:
         self, model: str, action: str, **params
     ) -> IdCheckerPresignedUrlResponse:
         # @QueryMap @NotNull Map<String, String> map
-        """
-        Meow..
+        """身分証明用の署名付きURLを取得する
+
+        Args:
+            model (str):
+            action (str):
+
+        Returns:
+            IdCheckerPresignedUrlResponse:
         """
         return await self.__client.request(
             "GET",
@@ -163,6 +182,14 @@ class MiscApi:
     async def get_old_file_upload_presigned_url(
         self, video_file_name: str
     ) -> PresignedUrlResponse:
+        """旧版ファイルアップロード用の署名付きURLを取得する
+
+        Args:
+            video_file_name (str):
+
+        Returns:
+            PresignedUrlResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/users/presigned_url",
@@ -170,74 +197,70 @@ class MiscApi:
             return_type=PresignedUrlResponse,
         )
 
-    async def get_policy_agreements(self) -> PolicyAgreementsResponse:
+    async def get_policy_agreed(self) -> PolicyAgreementsResponse:
+        """利用規約、ポリシー同意書に同意しているかどうかを取得する
+
+        Returns:
+            PolicyAgreementsResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/users/policy_agreements",
             return_type=PolicyAgreementsResponse,
         )
 
-    async def get_web_socket_token(
-        self, headers: Optional[Dict] = None
-    ) -> WebSocketTokenResponse:
+    async def get_web_socket_token(self) -> WebSocketTokenResponse:
+        """WebSocket トークンを取得する
+
+        Returns:
+            WebSocketTokenResponse:
+        """
         return await self.__client.request(
             "GET",
             config.API_HOST + "/v1/users/ws_token",
             return_type=WebSocketTokenResponse,
-            headers=headers,
-        )
-
-    async def verify_device(
-        self,
-        app_version: str,
-        device_uuid: str,
-        platform: str,
-        verification_string: str,
-    ) -> VerifyDeviceResponse:
-        # check platform, verification_string
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v1/genuine_devices/verify",
-            json={
-                "app_version": app_version,
-                "device_uuid": device_uuid,
-                "platform": platform,
-                "verification_string": verification_string,
-            },
-            return_type=VerifyDeviceResponse,
         )
 
     async def upload_image(
         self, image_paths: List[str], image_type: str
     ) -> List[Attachment]:
+        """画像をアップロードして、サーバー上のファイルのリストを取得する
+
+        Examples:
+            投稿に画像を付与する場合
+
+            >>> # サーバー上にアップロード
+            >>> attachments = api.upload_image(
+            >>>     image_type=yaylib.ImageType.POST,
+            >>>     image_paths=["./example.jpg"],
+            >>> )
+            >>> # サーバー上のファイル名を指定
+            >>> api.create_post(
+            >>>     "Hello with yaylib!",
+            >>>     attachment_filename=attachments[0].filename
+            >>> )
+
+        Args:
+            image_paths (List[str]): 画像ファイルのパスのリスト
+            image_type (str): 画像の種類
+
+        Raises:
+            ValueError: 画像タイプやフォーマットが不正な場合
+
+        Returns:
+            List[Attachment]: サーバー上のファイル情報
         """
-
-        画像をアップロードして、サーバー上のファイル名のリストを返します。
-
-        Parameteres:
-        ------------
-
-            - image_path: list[str] - (required): 画像パスのリスト
-            - image_type: str - (required): 画像の種類
-
-        Examples
-        --------
-
-        投稿に画像を付与する場合
-
-        >>> # サーバー上にアップロード
-        >>> attachments = api.upload_image(
-        >>>     image_type=yaylib.IMAGE_TYPE_POST,
-        >>>     image_paths=["./example.jpg"],
-        >>> )
-        >>> # サーバー上のファイル名を指定
-        >>> api.create_post(
-        >>>     "Hello with yaylib!",
-        >>>     attachment_filename=attachments[0].filename
-        >>> )
-
-        """
-        if image_type not in upload_item_types:
+        if image_type not in [
+            "post",
+            "chat_message",
+            "chat_background",
+            "report",
+            "user_avatar",
+            "user_cover",
+            "group_cover",
+            "group_thread_icon",
+            "group_icon",
+        ]:
             raise ValueError(f"Invalid image type. [{image_type}]")
 
         _files = []
@@ -320,6 +343,28 @@ class MiscApi:
         return res_upload
 
     async def upload_video(self, video_path: str) -> str:
+        """動画をアップロードして、サーバー上のファイル名を取得する
+
+        Examples:
+            投稿に動画を付与する場合
+
+            >>> # サーバー上にアップロード
+            >>> filename = client.upload_video("./example.mp4")
+            >>> # サーバー上のファイル名を指定
+            >>> api.create_post(
+            >>>     "Hello with yaylib!",
+            >>>     video_file_name=filename
+            >>> )
+
+        Args:
+            video_path (str): 動画ファイルのパス
+
+        Raises:
+            ValueError: 動画フォーマットが不正な場合
+
+        Returns:
+            str: サーバー上のファイル名
+        """
         filename, extension = os.path.splitext(video_path)
 
         if not is_valid_video_format(extension):
@@ -345,6 +390,11 @@ class MiscApi:
     # config
 
     async def get_app_config(self) -> ApplicationConfigResponse:
+        """アプリケーションのメタデータを取得する
+
+        Returns:
+            ApplicationConfigResponse:
+        """
         return await self.__client.request(
             "GET",
             config.CONFIG_HOST + "/api/apps/yay",
@@ -352,6 +402,14 @@ class MiscApi:
         )
 
     async def get_banned_words(self, country_code: str = "jp") -> BanWordsResponse:
+        """禁止ワードの一覧を取得する
+
+        Args:
+            country_code (str, optional):
+
+        Returns:
+            BanWordsResponse:
+        """
         return await self.__client.request(
             "GET",
             config.CONFIG_HOST + f"/{country_code}/api/v2/banned_words",
@@ -359,6 +417,14 @@ class MiscApi:
         )
 
     async def get_popular_words(self, country_code: str = "jp") -> PopularWordsResponse:
+        """人気ワードの一覧を取得する
+
+        Args:
+            country_code (str, optional):
+
+        Returns:
+            PopularWordsResponse:
+        """
         return await self.__client.request(
             "GET",
             config.CONFIG_HOST + f"/{country_code}/api/apps/yay/popular_words",
