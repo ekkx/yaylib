@@ -707,95 +707,264 @@ class Client(
     # ---------- chat api ----------
 
     def accept_chat_requests(self, **params) -> Response:
-        """チャットリクエストを承認します"""
+        """チャットリクエストを承認する
+
+        Args:
+            chat_room_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.accept_chat_requests(**params))
 
     def check_unread_status(self, **params) -> UnreadStatusResponse:
-        """チャットの未読ステータスを確認します"""
+        """チャットの未読ステータスを確認する
+
+        Args:
+            from_time (int):
+
+        Returns:
+            UnreadStatusResponse:
+        """
         return self.__sync_request(self.chat.check_unread_status(**params))
 
     def create_group_chat(self, **params) -> CreateChatRoomResponse:
-        """グループチャットを作成します"""
+        """グループチャットを作成する
+
+        Args:
+            name (str):
+            with_user_ids (List[int]):
+            icon_filename (str, optional):
+            background_filename (str, optional):
+
+        Returns:
+            CreateChatRoomResponse:
+        """
         return self.__sync_request(self.chat.create_group_chat(**params))
 
     def create_private_chat(self, **params) -> CreateChatRoomResponse:
-        """個人チャットを作成します"""
+        """個人チャットを作成する
+
+        Args:
+            with_user_id (int):
+            matching_id (int, optional):
+            hima_chat (bool, optional):
+
+        Returns:
+            CreateChatRoomResponse:
+        """
         return self.__sync_request(self.chat.create_private_chat(**params))
 
     def delete_chat_background(self, room_id: int) -> Response:
-        """チャットの背景画像を削除します"""
+        """チャットの背景を削除する
+
+        Args:
+            room_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.delete_chat_background(room_id))
 
     def delete_message(self, room_id: int, message_id: int) -> Response:
-        """メッセージを削除します"""
+        """チャットメッセージを削除する
+
+        Args:
+            room_id (int):
+            message_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.delete_message(room_id, message_id))
 
     def edit_chat_room(self, **params) -> Response:
-        """チャットルームを編集します"""
+        """チャットルームを編集する
+
+        Args:
+            chat_room_id (int):
+            name (str):
+            icon_filename (str, optional):
+            background_filename (str, optional):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.edit_chat_room(**params))
 
     def get_chatable_users(self, **params) -> FollowUsersResponse:
-        """チャット可能なユーザーを取得します"""
+        """チャット可能なユーザーを取得する
+
+        Args:
+            from_follow_id (int, optional):
+            from_timestamp (int, optional):
+            order_by (str, optional):
+
+        Returns:
+            FollowUsersResponse:
+        """
         return self.__sync_request(self.chat.get_chatable_users(**params))
 
     def get_gifs_data(self) -> GifsDataResponse:
-        """チャットルームのGIFデータを取得します"""
+        """チャット用 GIF データを取得する
+
+        Returns:
+            GifsDataResponse:
+        """
         return self.__sync_request(self.chat.get_gifs_data())
 
     def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
-        """非表示のチャットルームを取得します"""
+        """非表示に設定したチャットルームを取得する
+
+        Args:
+            from_timestamp (int, optional):
+            number (int, optional)
+
+        Returns:
+            ChatRoomsResponse:
+        """
         return self.__sync_request(self.chat.get_hidden_chat_rooms(**params))
 
     def get_main_chat_rooms(self, **params) -> ChatRoomsResponse:
-        """メインのチャットルームを取得します"""
+        """メインのチャットルームを取得する
+
+        Args:
+            from_timestamp (int, optional):
+
+        Returns:
+            ChatRoomsResponse:
+        """
         return self.__sync_request(self.chat.get_main_chat_rooms(**params))
 
     def get_messages(self, chat_room_id: int, **params) -> MessagesResponse:
-        """メッセージを取得します"""
+        """メッセージを取得する
+
+        Args:
+            from_message_id (int, optional):
+            to_message_id (int, optional):
+
+        Returns:
+            MessagesResponse:
+        """
         return self.__sync_request(self.chat.get_messages(chat_room_id, **params))
 
     def get_chat_requests(self, **params) -> ChatRoomsResponse:
-        """チャットリクエストを取得します"""
+        """チャットリクエストを取得する
+
+        Args:
+            number (int, optional):
+            from_timestamp (int, optional):
+
+        Returns:
+            ChatRoomsResponse:
+        """
         return self.__sync_request(self.chat.get_chat_requests(**params))
 
     def get_chat_room(self, chat_room_id: int) -> ChatRoomResponse:
-        """チャットルームの詳細を取得します"""
+        """チャットルームを取得する
+
+        Args:
+            chat_room_id (int):
+
+        Returns:
+            ChatRoomResponse:
+        """
         return self.__sync_request(self.chat.get_chat_room(chat_room_id))
 
     def get_sticker_packs(self) -> StickerPacksResponse:
-        """チャットスタンプを取得します"""
+        """チャット用のスタンプを取得する
+
+        Returns:
+            StickerPacksResponse:
+        """
         return self.__sync_request(self.chat.get_sticker_packs())
 
     def get_total_chat_requests(self) -> TotalChatRequestResponse:
-        """チャットリクエストの数を取得します"""
+        """チャットリクエストの総数を取得する
+
+        Returns:
+            TotalChatRequestResponse:
+        """
         return self.__sync_request(self.chat.get_total_chat_requests())
 
     def hide_chat(self, chat_room_id: int) -> Response:
-        """チャットルームを非表示にします"""
+        """チャットルームを非表示にする
+
+        Args:
+            chat_room_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.hide_chat(chat_room_id))
 
     def invite_to_chat(self, **params) -> Response:
-        """チャットルームにユーザーを招待します"""
+        """チャットルームにユーザーを招待する
+
+        Args:
+            chat_room_id (int):
+            with_user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.invite_to_chat(**params))
 
     def kick_users_from_chat(self, **params) -> Response:
-        """チャットルームからユーザーを追放します"""
+        """チャットルームからユーザーを追放する
+
+        Args:
+            chat_room_id (int):
+            with_user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.kick_users_from_chat(**params))
 
     def pin_chat(self, room_id: int) -> Response:
-        """チャットルームをピン止めします"""
+        """チャットルームをピン留めする
+
+        Args:
+            room_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.pin_chat(room_id))
 
     def read_message(self, chat_room_id: int, message_id: int) -> Response:
-        """メッセージを既読にします"""
+        """メッセージを既読にする
+
+        Args:
+            chat_room_id (int):
+            message_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.read_message(chat_room_id, message_id))
 
     def refresh_chat_rooms(self, **params) -> ChatRoomsResponse:
-        """チャットルームを更新します"""
+        """チャットルームを更新する
+
+        Args:
+            from_time (int, optional):
+
+        Returns:
+            ChatRoomsResponse:
+        """
         return self.__sync_request(self.chat.refresh_chat_rooms(**params))
 
     def delete_chat_rooms(self, **params) -> Response:
-        """チャットルームを削除します"""
+        """チャットルームを削除する
+
+        Args:
+            chat_room_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.delete_chat_rooms(**params))
 
     def send_message(
@@ -803,15 +972,36 @@ class Client(
         chat_room_id: int,
         **params,
     ) -> MessageResponse:
-        """チャットルームにメッセージを送信します"""
+        """チャットを送信する
+
+        Args:
+            chat_room_id (int):
+
+        Returns:
+            MessageResponse:
+        """
         return self.__sync_request(self.chat.send_message(chat_room_id, **params))
 
     def unhide_chat(self, **params) -> Response:
-        """非表示に設定したチャットルームを表示する"""
+        """非表示に設定したチャットルームを表示する
+
+        Args:
+            chat_room_ids (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.unhide_chat(**params))
 
     def unpin_chat(self, chat_room_id: int) -> Response:
-        """チャットルームのピン止めを解除します"""
+        """チャットのピン留めを解除する
+
+        Args:
+            chat_room_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.chat.unpin_chat(chat_room_id))
 
     # ---------- group api ----------
