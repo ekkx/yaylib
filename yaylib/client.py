@@ -227,20 +227,51 @@ class HeaderManager:
 current_path = os.path.abspath(os.getcwd())
 
 
-class BaseClient:
-    """yaylib クライアントの基底クラス"""
+# pylint: disable=too-many-public-methods
+class Client(
+    # ws.WebSocketInteractor
+):
+    """yaylib のエントリーポイント"""
 
     def __init__(
         self,
         *,
+        # intents: Optional[ws.Intents] = None,
         proxy_url: Optional[str] = None,
-        timeout=60,
+        timeout=30,
+        max_retries=3,
+        backoff_factor=1.5,
+        wait_on_ratelimit=True,
+        max_ratelimit_retries=15,
+        min_delay=0.3,
+        max_delay=1.2,
         base_path=current_path + "/.config/",
+        state: Optional[State] = None,
         loglevel=logging.INFO,
     ) -> None:
         self.__proxy_url = proxy_url
         self.__timeout = timeout
         self.__session = None
+        self.__min_delay = min_delay
+        self.__max_delay = max_delay
+        self.__last_request_ts = 0
+        self.__max_retries = max_retries
+        self.__backoff_factor = backoff_factor
+
+        self.auth = AuthApi(self)
+        self.call = CallApi(self)
+        self.chat = ChatApi(self)
+        self.group = GroupApi(self)
+        self.misc = MiscApi(self)
+        self.notification = NotificationApi(self)
+        self.post = PostApi(self)
+        self.review = ReviewApi(self)
+        self.thread = ThreadApi(self)
+        self.user = UserApi(self)
+
+        self.__state = state or State(storage_path=base_path + "secret.db")
+        self.__header_manager = HeaderManager(Device.instance(), self.__state)
+        self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
 
         self.logger = logging.getLogger("yaylib version: " + __version__)
 
@@ -255,6 +286,36 @@ class BaseClient:
         self.logger.setLevel(logging.DEBUG)
 
         self.logger.info("yaylib version: %s started.", __version__)
+
+    @property
+    def state(self) -> State:
+        return self.__state
+
+    @property
+    def user_id(self) -> int:
+        return self.__state.user_id
+
+    @property
+    def access_token(self) -> str:
+        return self.__state.access_token
+
+    @property
+    def refresh_token(self) -> str:
+        return self.__state.refresh_token
+
+    @property
+    def device_uuid(self) -> str:
+        return self.__state.device_uuid
+
+    def __construct_response(
+        self, response: Dict, data_type: Optional[Model] = None
+    ) -> Dict | Model:
+        if data_type is not None:
+            if isinstance(response, list):
+                response = [data_type(result) for result in response]
+            elif response is not None:
+                response = data_type(response)
+        return response
 
     async def base_request(
         self, method: str, url: str, **kwargs
@@ -289,85 +350,6 @@ class BaseClient:
         await raise_for_code(response)
         await raise_for_status(response)
 
-        return response
-
-
-class Client(
-    BaseClient,
-    # ws.WebSocketInteractor
-):
-    """yaylib のエントリーポイント"""
-
-    def __init__(
-        self,
-        *,
-        # intents: Optional[ws.Intents] = None,
-        proxy_url: Optional[str] = None,
-        timeout=30,
-        max_retries=3,
-        backoff_factor=1.5,
-        wait_on_ratelimit=True,
-        max_ratelimit_retries=15,
-        min_delay=0.3,
-        max_delay=1.2,
-        base_path=current_path + "/.config/",
-        state: Optional[State] = None,
-        loglevel=logging.INFO,
-    ) -> None:
-        super().__init__(
-            proxy_url=proxy_url, timeout=timeout, base_path=base_path, loglevel=loglevel
-        )
-
-        self.__min_delay = min_delay
-        self.__max_delay = max_delay
-        self.__last_request_ts = 0
-        self.__max_retries = max_retries
-        self.__backoff_factor = backoff_factor
-
-        self.auth = AuthApi(self)
-        self.call = CallApi(self)
-        self.chat = ChatApi(self)
-        self.group = GroupApi(self)
-        self.misc = MiscApi(self)
-        self.notification = NotificationApi(self)
-        self.post = PostApi(self)
-        self.review = ReviewApi(self)
-        self.thread = ThreadApi(self)
-        self.user = UserApi(self)
-
-        self.__state = state or State(storage_path=base_path + "secret.db")
-        self.__header_manager = HeaderManager(Device.instance(), self.__state)
-
-        self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
-
-    @property
-    def state(self) -> State:
-        return self.__state
-
-    @property
-    def user_id(self) -> int:
-        return self.__state.user_id
-
-    @property
-    def access_token(self) -> str:
-        return self.__state.access_token
-
-    @property
-    def refresh_token(self) -> str:
-        return self.__state.refresh_token
-
-    @property
-    def device_uuid(self) -> str:
-        return self.__state.device_uuid
-
-    def __construct_response(
-        self, response: Dict, data_type: Optional[Model] = None
-    ) -> Dict | Model:
-        if data_type is not None:
-            if isinstance(response, list):
-                response = [data_type(result) for result in response]
-            elif response is not None:
-                response = data_type(response)
         return response
 
     async def __make_request(
