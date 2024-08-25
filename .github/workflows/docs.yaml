@@ -40,7 +40,7 @@ jobs:
         run: poetry install
       - name: Build Sphinx
         run: |
-          poetry run make docs
+          poetry run make doc
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
