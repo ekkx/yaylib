@@ -1,20 +1,59 @@
-.. yaylib documentation master file, created by
-   sphinx-quickstart on Mon Mar 11 12:19:49 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+:layout: landing
+:description: 好きでつながるバーチャルワールド - Yay!（イェイ）API ライブラリ 🛠️
 
-Welcome to yaylib's documentation!
-==================================
+yaylib
+======
+
+.. rst-class:: lead
+
+    好きでつながるバーチャルワールド - Yay!（イェイ）API ライブラリ 🛠️
+
+.. container:: buttons
+
+    `Docs </install/>`_
+    `GitHub <https://github.com/ekkx/yaylib>`_
+
+.. grid:: 1 1 2 3
+    :gutter: 2
+    :padding: 0
+    :class-row: surface
+
+    .. grid-item-card:: :octicon:`browser` オブジェクト指向
+        :link: /tutorial/
+
+        オブジェクト指向設計で初心者にも易しく使いやすい。
+
+    .. grid-item-card:: :octicon:`zap` async / await
+        :link: /async/
+
+        モダンな構文で非同期実行を行うことが可能です。
+
+    .. grid-item-card:: :octicon:`cache` ステートの保存
+        :link: /storage/
+
+        クライアントの状態は記憶され、認証情報の更新や暗号化など、煩わしい作業を全て自動化。
+
+    .. grid-item-card:: :octicon:`rss` リアルタイム通信
+        :link: /ws/
+
+        WebSocket 通信を用いてイベントベースで処理を実行可能です。
+
+    .. grid-item-card:: :octicon:`blocked` レート制限
+        :link: /ratelimit/
+
+        リクエストが多すぎる場合、自動的に調整し、制限に達した場合は解除されるまで待機します。
+
+    .. grid-item-card:: :octicon:`code-of-conduct` オープンソース
+        :link: /contributing/index
+
+        全てのソースコードは公開され、コミュニティの力によって開発されています。
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :caption: Getting started
+    :hidden:
 
-   modules
+    install
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+    :caption: Development
+    :hidden:
