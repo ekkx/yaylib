@@ -1,6 +1,6 @@
 :description: yaylib のインストール方法を解説します。
 
-Installation
+インストール
 ============
 
 .. rst-class:: lead
@@ -40,6 +40,6 @@ Getting Started
     client = yaylib.Client()
     client.login('your_email', 'your_password')
 
-    client.create_post("Hello with yaylib!")
+    client.create_post('Hello with yaylib!')
 
 アプリを開き、「**Hello with yaylib!**」と投稿されていれば準備完了です！
