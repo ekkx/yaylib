@@ -97,7 +97,7 @@ class ThreadApi:
         )
 
     async def get_group_thread_list(self, **params) -> GroupThreadListResponse:
-        """_summary_
+        """サークルのスレッド一覧を取得する
 
         Args:
             group_id (int):

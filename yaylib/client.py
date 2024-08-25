@@ -2516,11 +2516,28 @@ class Client(
     # ---------- thread api ----------
 
     def add_post_to_thread(self, post_id: int, thread_id: int) -> ThreadInfo:
-        """投稿をスレッドに追加します"""
+        """投稿をスレッドに追加する
+
+        Args:
+            post_id (int):
+            thread_id (int):
+
+        Returns:
+            ThreadInfo:
+        """
         return self.__sync_request(self.thread.add_post_to_thread(post_id, thread_id))
 
     def convert_post_to_thread(self, post_id: int, **params) -> ThreadInfo:
-        """投稿をスレッドに変換します"""
+        """投稿をスレッドに変換する
+
+        Args:
+            post_id (int):
+            title (str, optional):
+            thread_icon_filename (str, optional):
+
+        Returns:
+            ThreadInfo:
+        """
         return self.__sync_request(
             self.thread.convert_post_to_thread(post_id, **params)
         )
@@ -2531,37 +2548,103 @@ class Client(
         title: str,
         thread_icon_filename: str,
     ) -> ThreadInfo:
-        """スレッドを作成します"""
+        """スレッドを作成する
+
+        Args:
+            group_id (int):
+            title (str):
+            thread_icon_filename (str):
+
+        Returns:
+            ThreadInfo:
+        """
         return self.__sync_request(
             self.thread.create_thread(group_id, title, thread_icon_filename)
         )
 
     def get_group_thread_list(self, **params) -> GroupThreadListResponse:
-        """グループのスレッド一覧を取得します"""
+        """サークルのスレッド一覧を取得する
+
+        Args:
+            group_id (int):
+            from_str (str, optional):
+            join_status (str, optional):
+
+        Returns:
+            GroupThreadListResponse:
+        """
         return self.__sync_request(self.thread.get_group_thread_list(**params))
 
     def get_thread_joined_statuses(self, ids: List[int]) -> Response:
-        """スレッド参加ステータスを取得します"""
+        """スレッド参加ステータスを取得する
+
+        Args:
+            ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.thread.get_thread_joined_statuses(ids))
 
     def get_thread_posts(self, thread_id: int, **params) -> PostsResponse:
-        """スレッド内のタイムラインを取得します"""
+        """スレッド内のタイムラインを取得する
+
+        Args:
+            thread_id (int):
+            from_str (str, optional):
+            number (str, optional):
+
+        Returns:
+            PostsResponse:
+        """
         return self.__sync_request(self.thread.get_thread_posts(thread_id, **params))
 
     def join_thread(self, thread_id: int, user_id: int) -> Response:
-        """スレッドに参加します"""
+        """スレッドに参加する
+
+        Args:
+            thread_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.thread.join_thread(thread_id, user_id))
 
     def leave_thread(self, thread_id: int, user_id: int) -> Response:
-        """スレッドから脱退します"""
+        """スレッドから脱退する
+
+        Args:
+            thread_id (int):
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.thread.leave_thread(thread_id, user_id))
 
     def delete_thread(self, thread_id: int) -> Response:
-        """スレッドを削除します"""
+        """スレッドを削除する
+
+        Args:
+            thread_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.thread.delete_thread(thread_id))
 
     def update_thread(self, thread_id: int, **params) -> Response:
-        """スレッドを編集します"""
+        """スレッドをアップデートする
+
+        Args:
+            thread_id (int):
+            title (str):
+            thread_icon_filename (str):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.thread.update_thread(thread_id, **params))
 
     # ---------- user api ----------
