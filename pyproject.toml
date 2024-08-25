@@ -29,7 +29,9 @@ cryptography = "41.0.1"
 
 [tool.poetry.group.dev.dependencies]
 sphinx = "*"
-sphinx-rtd-theme = "*"
+shibuya = "*"
+sphinx_copybutton = "*"
+sphinx-design = "*"
 
 [tool.poetry-version-plugin]
 source = "init"
