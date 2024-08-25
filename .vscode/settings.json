@@ -7,7 +7,7 @@
     }
   },
   "autoDocstring.docstringFormat": "google",
-  "pylint.ignorePatterns": ["**/tests/*.py"],
+  "pylint.ignorePatterns": ["**/tests/*.py", "**/docs/*.py"],
   "pylint.args": ["--rcfile=.pylintrc"],
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode"
