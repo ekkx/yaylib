@@ -10,7 +10,7 @@ yaylib
 
 .. container:: buttons
 
-    `Docs </install/>`_
+    `Docs <./install.html>`_
     `GitHub <https://github.com/ekkx/yaylib>`_
 
 .. grid:: 1 1 2 3
@@ -18,13 +18,13 @@ yaylib
     :padding: 0
     :class-row: surface
 
-    .. grid-item-card:: :octicon:`browser` オブジェクト指向
-        :link: /tutorial/
+    .. grid-item-card:: :octicon:`package` オブジェクト指向
+        :link: ./demo.html
 
         オブジェクト指向設計で初心者にも易しく使いやすい。
 
     .. grid-item-card:: :octicon:`zap` async / await
-        :link: /async/
+        :link: ./async.html
 
         モダンな構文で非同期実行を行うことが可能です。
 
@@ -53,7 +53,11 @@ yaylib
     :hidden:
 
     install
+    demo
+    async
 
 .. toctree::
     :caption: Development
     :hidden:
+
+    install
