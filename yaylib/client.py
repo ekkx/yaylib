@@ -2650,164 +2650,484 @@ class Client(
     # ---------- user api ----------
 
     def delete_footprint(self, user_id: int, footprint_id: int) -> Response:
-        """足跡を削除します"""
+        """足跡を削除する
+
+        Args:
+            user_id (int):
+            footprint_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.delete_footprint(user_id, footprint_id))
 
     def follow_user(self, user_id: int) -> Response:
-        """ユーザーをフォローします"""
+        """ユーザーをフォローする
+
+        Args:
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.follow_user(user_id))
 
     def follow_users(self, user_ids: List[int]) -> Response:
-        """複数のユーザーをフォローします"""
+        """複数のユーザーをフォローする
+
+        Args:
+            user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.follow_users(user_ids))
 
     def get_active_followings(self, **params) -> ActiveFollowingsResponse:
-        """アクティブなフォロー中のユーザーを取得します"""
+        """アクティブなフォロー中のユーザーを取得する
+
+        Args:
+            only_online (bool, optional):
+            from_loggedin_at (int, optional):
+
+        Returns:
+            ActiveFollowingsResponse:
+        """
         return self.__sync_request(self.user.get_active_followings(**params))
 
     def get_follow_recommendations(self, **params) -> FollowRecommendationsResponse:
-        """フォローするのにおすすめのユーザーを取得します"""
+        """フォローするのにおすすめのユーザーを取得する
+
+        Args:
+            from_timestamp (int, optional):
+            number (int, optional):
+            sources (List[str], optional):
+
+        Returns:
+            FollowRecommendationsResponse:
+        """
         return self.__sync_request(self.user.get_follow_recommendations(**params))
 
     def get_follow_request(self, **params) -> UsersByTimestampResponse:
-        """フォローリクエストを取得します"""
+        """フォローリクエストを取得する
+
+        Args:
+            from_timestamp (int, optional):
+
+        Returns:
+            UsersByTimestampResponse:
+        """
         return self.__sync_request(self.user.get_follow_request(**params))
 
     def get_follow_request_count(self) -> FollowRequestCountResponse:
-        """フォローリクエストの数を取得します"""
+        """フォローリクエストの数を取得する
+
+        Returns:
+            FollowRequestCountResponse:
+        """
         return self.__sync_request(self.user.get_follow_request_count())
 
     def get_following_users_born(self, **params) -> UsersResponse:
-        """フォロー中のユーザーの誕生日を取得します"""
+        """フォロー中のユーザーの誕生日を取得する
+
+        Args:
+            birthdate (int, optional):
+
+        Returns:
+            UsersResponse:
+        """
         return self.__sync_request(self.user.get_following_users_born(**params))
 
     def get_footprints(self, **params) -> FootprintsResponse:
-        """足跡を取得します"""
+        """足跡を取得する
+
+        Args:
+            from_id (int, optional):
+            number (int, optional):
+            mode (str, optional):
+
+        Returns:
+            FootprintsResponse:
+        """
         return self.__sync_request(self.user.get_footprints(**params))
 
     def get_fresh_user(self, user_id: int) -> UserResponse:
-        """認証情報などを含んだユーザー情報を取得します"""
+        """認証情報などを含んだユーザー情報を取得する
+
+        Args:
+            user_id (int):
+
+        Returns:
+            UserResponse:
+        """
         return self.__sync_request(self.user.get_fresh_user(user_id))
 
     def get_hima_users(self, **params) -> HimaUsersResponse:
-        """暇なユーザーを取得します"""
+        """暇なユーザーを取得する
+
+        Args:
+            from_hima_id (int, optional):
+            number (int, optional):
+
+        Returns:
+            HimaUsersResponse:
+        """
         return self.__sync_request(self.user.get_hima_users(**params))
 
     def get_user_ranking(self, mode: str) -> RankingUsersResponse:
-        """ユーザーのフォロワーランキングを取得します"""
+        """ユーザーのフォロワーランキングを取得する
+
+        Examples:
+            >>> # ルーキーを取得する:
+            >>> api.get_user_ranking(mode="one_month")
+
+            >>> # ミドルを取得する:
+            >>> api.get_user_ranking(mode="six_months")
+
+            >>> # 殿堂入りを取得する:
+            >>> api.get_user_ranking(mode="all_time")
+
+        Args:
+            mode (str):
+
+        Returns:
+            RankingUsersResponse:
+        """
         return self.__sync_request(self.user.get_user_ranking(mode))
 
     def get_profile_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
-        """投稿数やフォロワー数をリフレッシュするための残リクエスト数を取得します"""
+        """投稿数やフォロワー数をリフレッシュするための残リクエスト数を取得する
+
+        Returns:
+            RefreshCounterRequestsResponse:
+        """
         return self.__sync_request(self.user.get_profile_refresh_counter_requests())
 
     def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
-        """SNS共有をしたユーザーを取得します"""
+        """SNS共有をしたユーザーを取得する
+
+        Args:
+            sns_name (str):
+            number (int, optional):
+            from_id (int, optional):
+
+        Returns:
+            SocialShareUsersResponse:
+        """
         return self.__sync_request(self.user.get_social_shared_users(**params))
 
     def get_timestamp(self) -> UserTimestampResponse:
-        """タイムスタンプを取得します"""
+        """タイムスタンプを取得する
+
+        Returns:
+            UserTimestampResponse:
+        """
         return self.__sync_request(self.user.get_timestamp())
 
     def get_user(self, user_id: int) -> UserResponse:
-        """ユーザーの情報を取得します"""
+        """ユーザーの情報を取得する
+
+        Args:
+            user_id (int):
+
+        Returns:
+            UserResponse:
+        """
         return self.__sync_request(self.user.get_user(user_id))
 
     def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
-        """ユーザーのフォロワーを取得します"""
+        """ユーザーのフォロワーを取得する
+
+        Args:
+            user_id (int):
+            from_follow_id (int, optional):
+            followed_by_me: (int, optional):
+            number: (int, optional):
+
+        Returns:
+            FollowUsersResponse:
+        """
         return self.__sync_request(self.user.get_user_followers(user_id, **params))
 
     def get_user_followings(self, user_id: int, **params) -> FollowUsersResponse:
-        """フォロー中のユーザーを取得します"""
+        """フォロー中のユーザーを取得する
+
+        Args:
+            user_id (int):
+            from_follow_id (int, optional):
+            from_timestamp (int, optional):
+            order_by (str, optional):
+            number (int, optional):
+
+        Returns:
+            FollowUsersResponse:
+        """
         return self.__sync_request(self.user.get_user_followings(user_id, **params))
 
     def get_user_from_qr(self, qr: str) -> UserResponse:
-        """QRコードからユーザーを取得します"""
+        """QRコードからユーザーを取得する
+
+        Args:
+            qr (str):
+
+        Returns:
+            UserResponse:
+        """
         return self.__sync_request(self.user.get_user_from_qr(qr))
 
     def get_user_without_leaving_footprint(self, user_id: int) -> UserResponse:
-        """足跡をつけずにユーザーの情報を取得します"""
+        """足跡をつけずにユーザーの情報を取得する
+
+        Args:
+            user_id (int):
+
+        Returns:
+            UserResponse:
+        """
         return self.__sync_request(
             self.user.get_user_without_leaving_footprint(user_id)
         )
 
     def get_users(self, user_ids: List[int]) -> UsersResponse:
-        """複数のユーザーの情報を取得します"""
+        """複数のユーザーの情報を取得する
+
+        Args:
+            user_ids (List[int]):
+
+        Returns:
+            UsersResponse:
+        """
         return self.__sync_request(self.user.get_users(user_ids))
 
     def refresh_profile_counter(self, counter: str) -> Response:
-        """プロフィールのカウンターを更新します"""
+        """プロフィールのカウンターを更新する
+
+        Args:
+            counter (str):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.refresh_profile_counter(counter))
 
     def register(self, **params) -> CreateUserResponse:
+        """
+        Args:
+            email (str):
+            email_grant_token (str):
+            password (str):
+            nickname (str):
+            birth_date (str):
+            gender (int, optional):
+            country_code (str, optional):
+            biography (str, optional):
+            prefecture (str, optional):
+            profile_icon_filename (str, optional):
+            cover_image_filename (str, optional):
+            en (int, optional):
+            vn (int, optional):
+
+        Returns:
+            CreateUserResponse:
+        """
         return self.__sync_request(self.user.register(**params))
 
     def delete_user_avatar(self) -> Response:
-        """ユーザーのアイコンを削除します"""
+        """ユーザーのアイコンを削除する
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.delete_user_avatar())
 
     def delete_user_cover(self) -> Response:
-        """ユーザーのカバー画像を削除します"""
+        """ユーザーのカバー画像を削除する
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.delete_user_cover())
 
     def reset_password(self, **params) -> Response:
-        """パスワードをリセットします"""
+        """パスワードをリセットする
+
+        Args:
+            email (str):
+            email_grant_token (str):
+            password (str):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.reset_password(**params))
 
     def search_lobi_users(self, **params) -> UsersResponse:
-        """Lobiのユーザーを検索します"""
+        """Lobiのユーザーを検索する
+
+        Args:
+            nickname (str, optional):
+            number (int, optional):
+            from_str (str, optional):
+
+        Returns:
+            UsersResponse:
+        """
         return self.__sync_request(self.user.search_lobi_users(**params))
 
     def search_users(self, **params) -> UsersResponse:
-        """ユーザーを検索します"""
+        """ユーザーを検索する
+
+        Args:
+            gender (int, optional):
+            nickname (str, optional):
+            title (str, optional):
+            biography (str, optional):
+            from_timestamp (int, optional):
+            similar_age (bool, optional):
+            not_recent_gomimushi (bool, optional):
+            recently_created (bool, optional):
+            same_prefecture (bool, optional):
+            save_recent_search (bool, optional):
+
+        Returns:
+            UsersResponse:
+        """
         return self.__sync_request(self.user.search_users(**params))
 
     def set_follow_permission_enabled(self, **params) -> Response:
-        """フォローを許可制にするかを設定します"""
+        """フォローを許可制にするかを設定する
+
+        Args:
+            nickname (str):
+            is_private (bool, optional):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.set_follow_permission_enabled(**params))
 
     def take_action_follow_request(self, user_id: int, action: str) -> Response:
-        """フォローリクエストを操作する"""
+        """フォローリクエストを操作する
+
+        Args:
+            user_id (int):
+            action (str):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(
             self.user.take_action_follow_request(user_id, action)
         )
 
     def turn_on_hima(self) -> Response:
-        """ひまなうを有効にする"""
+        """ひまなうを有効にする
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.turn_on_hima())
 
     def unfollow_user(self, user_id: int) -> Response:
-        """ユーザーをアンフォローします"""
+        """ユーザーをアンフォローする
+
+        Args:
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.unfollow_user(user_id))
 
     def update_user(self, nickname: str, **params) -> Response:
-        """プロフィールを更新します"""
+        """プロフィールを更新する
+
+        Args:
+            nickname (str):
+            biography (str, optional):
+            prefecture (str, optional):
+            gender (int, optional):
+            country_code (str, optional):
+            profile_icon_filename (str, optional):
+            cover_image_filename (str, optional):
+            username (str, optional):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.update_user(nickname, **params))
 
     def block_user(self, user_id: int) -> Response:
-        """ユーザーをブロックします"""
+        """ユーザーをブロックする
+
+        Args:
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.block_user(user_id))
 
     def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
-        """あなたをブロックしたユーザーを取得します"""
+        """あなたをブロックしたユーザーを取得する
+
+        Returns:
+            BlockedUserIdsResponse:
+        """
         return self.__sync_request(self.user.get_blocked_user_ids())
 
     def get_blocked_users(self, **params) -> BlockedUsersResponse:
-        """ブロックしたユーザーを取得します"""
+        """ブロックしたユーザーを取得する
+
+        Args:
+            from_id (int, optional):
+
+        Returns:
+            BlockedUsersResponse:
+        """
         return self.__sync_request(self.user.get_blocked_users(**params))
 
     def unblock_user(self, user_id: int) -> Response:
-        """ユーザーをアンブロックします"""
+        """ユーザーをアンブロックする
+
+        Args:
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.unblock_user(user_id))
 
     def get_hidden_users_list(self, **params) -> HiddenResponse:
-        """非表示のユーザー一覧を取得します"""
+        """非表示のユーザー一覧を取得する
+
+        Args:
+            from_str (str, optional):
+            number (int, optional):
+
+        Returns:
+            HiddenResponse:
+        """
         return self.__sync_request(self.user.get_hidden_users_list(**params))
 
     def hide_user(self, user_id: int) -> Response:
-        """ユーザーを非表示にします"""
+        """ユーザーを非表示にする
+
+        Args:
+            user_id (int):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.hide_user(user_id))
 
     def unhide_users(self, user_ids: List[int]) -> Response:
-        """ユーザーの非表示を解除します"""
+        """ユーザーの非表示を解除する
+
+        Args:
+            user_ids (List[int]):
+
+        Returns:
+            Response:
+        """
         return self.__sync_request(self.user.unhide_users(user_ids))
