@@ -25,6 +25,7 @@ from .models import *
 from .responses import *
 from .state import State
 from .utils import mention
+from .ws import *
 
 __all__ = (
     "Client",
@@ -34,4 +35,5 @@ __all__ = (
     "responses",
     "State",
     "mention",
+    "ws",
 )
