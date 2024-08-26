@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import json
+from typing import Dict, Optional
+
 
 class Model:
     pass
@@ -1998,3 +2001,49 @@ class WalletTransaction(Model):
 
     def __repr__(self):
         return f"WalletTransaction(data={self.data})"
+
+
+class WSIdentifier(Model):
+    __slots__ = ("data", "channel")
+
+    def __init__(self, data) -> None:
+        self.data = data
+        self.channel: Optional[str] = data.get("channel")
+
+    def __repr__(self):
+        return f"WSIdentifier(data={self.data})"
+
+
+class WSMessage(Model):
+    __slots__ = ("data", "event", "message", "data")
+
+    def __init__(self, data) -> None:
+        self.data = data
+        self.event: Optional[str] = data.get("event")
+        self.message: Optional[Dict] = data.get("message")
+        self.data: Optional[Dict] = data.get("data")
+
+    def __repr__(self):
+        return f"WSMessage(data={self.data})"
+
+
+class WSChannelMessage(Model):
+    __slots__ = ("data", "type", "message", "identifier", "sid", "reason")
+
+    def __init__(self, data) -> None:
+        self.data = data
+        self.type: Optional[str] = data.get("type")
+
+        self.message: Optional[WSMessage] = data.get("message")
+        if self.message is not None and isinstance(self.message, dict):
+            self.message = WSMessage(self.message)
+
+        self.identifier: Optional[WSIdentifier] = data.get("identifier")
+        if self.identifier is not None:
+            self.identifier = WSIdentifier(json.loads(self.identifier))
+
+        self.sid: Optional[str] = data.get("sid")
+        self.reason: Optional[str] = data.get("reason")
+
+    def __repr__(self):
+        return f"WSChannelMessage(data={self.data})"
