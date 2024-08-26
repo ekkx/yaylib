@@ -73,11 +73,9 @@ Chat Bot
             # チャットリクエストを承認し on_message() に送信する
             chat_requests = await self.chat.get_chat_requests()
             for chat_room in chat_requests.chat_rooms:
-                await self.chat.accept_chat_requests([chat_room.id])
-            message = await self.chat.get_messages(
-                chat_requests.chat_rooms[0].id
-            )
-            await self.on_message_create(message[0])
+                await self.chat.accept_chat_requests(chat_room_ids=[chat_room.id])
+            message = await self.chat.get_messages(chat_requests.chat_rooms[0].id)
+            await self.on_message(message[0])
 
         async def on_message(self, message: yaylib.Message):
             if message.text == 'ping':
@@ -86,8 +84,8 @@ Chat Bot
                     text='pong',
                 )
 
-        async def on_chat_room_delete(self, room_id):
-            print(f"チャットルームが削除されました。{room_id}")
+        async def on_chat_delete(self, room_id):
+            print(f'チャットルームが削除されました。{room_id}')
 
     intents = yaylib.Intents.none()
     intents.chat_message = True
