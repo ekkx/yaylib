@@ -32,7 +32,7 @@ from typing import Any, Awaitable, Callable, Dict, List, Optional
 
 import aiohttp
 
-from . import __version__, config, utils
+from . import __version__, config, utils, ws
 from .api.auth import AuthApi
 from .api.call import CallApi
 from .api.chat import ChatApi
@@ -228,15 +228,13 @@ current_path = os.path.abspath(os.getcwd())
 
 
 # pylint: disable=too-many-public-methods
-class Client(
-    # ws.WebSocketInteractor
-):
+class Client(ws.WebSocketInteractor):
     """yaylib のエントリーポイント"""
 
     def __init__(
         self,
         *,
-        # intents: Optional[ws.Intents] = None,
+        intents: Optional[ws.Intents] = None,
         proxy_url: Optional[str] = None,
         timeout=30,
         max_retries=3,
@@ -249,6 +247,8 @@ class Client(
         state: Optional[State] = None,
         loglevel=logging.INFO,
     ) -> None:
+        super().__init__(self, intents)
+
         self.__proxy_url = proxy_url
         self.__timeout = timeout
         self.__session = None
