@@ -383,6 +383,12 @@ class Client(ws.WebSocketInteractor):
         )
         self.__state.update()
 
+    async def __insert_delay(self) -> Any:
+        """リクエスト間の時間が1秒未満のときに遅延を挿入します"""
+        if int(datetime.now().timestamp()) - self.__last_request_ts < 1:
+            await asyncio.sleep(random.uniform(self.__min_delay, self.__max_delay))
+        self.__last_request_ts = int(datetime.now().timestamp())
+
     async def request(
         self,
         method: str,
@@ -409,6 +415,7 @@ class Client(ws.WebSocketInteractor):
                 await asyncio.sleep(backoff_duration)
                 while True:
                     try:
+                        await self.__insert_delay()
                         headers.update(self.__header_manager.generate(jwt_required))
                         response = await self.__make_request(
                             method,
@@ -448,17 +455,6 @@ class Client(ws.WebSocketInteractor):
 
         return response
 
-    def insert_delay(self, callback: Callable) -> Any:
-        """リクエスト間の時間が1秒未満のときに遅延を挿入します"""
-        if int(datetime.now().timestamp()) - self.__last_request_ts < 1:
-            time.sleep(random.uniform(self.__min_delay, self.__max_delay))
-        self.__last_request_ts = int(datetime.now().timestamp())
-        return callback()
-
-    def __sync_request(self, callback: Awaitable) -> Any:
-        """非同期リクエストを同期リクエストに変換します"""
-        return self.insert_delay(lambda: asyncio.run(callback))
-
     # ---------- call api ----------
 
     def get_user_active_call(self, user_id: int) -> PostResponse:
@@ -470,7 +466,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostResponse:
         """
-        return self.__sync_request(self.call.get_user_active_call(user_id))
+        return asyncio.run(self.call.get_user_active_call(user_id))
 
     def get_bgms(self) -> BgmsResponse:
         """通話のBGMを取得する
@@ -478,7 +474,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             BgmsResponse:
         """
-        return self.__sync_request(self.call.get_bgms())
+        return asyncio.run(self.call.get_bgms())
 
     def get_call(self, call_id: int) -> ConferenceCallResponse:
         """通話を取得する
@@ -489,7 +485,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ConferenceCallResponse:
         """
-        return self.__sync_request(self.call.get_call(call_id))
+        return asyncio.run(self.call.get_call(call_id))
 
     def get_call_invitable_users(self, **params) -> UsersByTimestampResponse:
         """通話に招待可能なユーザーを取得する
@@ -501,7 +497,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UsersByTimestampResponse:
         """
-        return self.__sync_request(self.call.get_call_invitable_users(**params))
+        return asyncio.run(self.call.get_call_invitable_users(**params))
 
     def get_call_status(self, opponent_id: int) -> CallStatusResponse:
         """通話の状態を取得します
@@ -512,7 +508,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             CallStatusResponse:
         """
-        return self.__sync_request(self.call.get_call_status(opponent_id))
+        return asyncio.run(self.call.get_call_status(opponent_id))
 
     def get_games(self, **params) -> GamesResponse:
         """通話に設定可能なゲームを取得する
@@ -525,7 +521,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GamesResponse:
         """
-        return self.__sync_request(self.call.get_games(**params))
+        return asyncio.run(self.call.get_games(**params))
 
     def get_genres(self, **params) -> GenresResponse:
         """通話のジャンルを取得する
@@ -537,7 +533,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GenresResponse:
         """
-        return self.__sync_request(self.call.get_genres(**params))
+        return asyncio.run(self.call.get_genres(**params))
 
     def get_group_calls(self, **params) -> PostsResponse:
         """サークル内の通話を取得する
@@ -551,7 +547,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.call.get_group_calls(**params))
+        return asyncio.run(self.call.get_group_calls(**params))
 
     def invite_online_followings_to_call(self, **params) -> Response:
         """オンラインの友達をまとめて通話に招待します
@@ -563,7 +559,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.call.invite_online_followings_to_call(**params))
+        return asyncio.run(self.call.invite_online_followings_to_call(**params))
 
     def invite_users_to_call(self, call_id: int, user_ids: List[int]) -> Response:
         """通話に複数のユーザーを招待する
@@ -575,7 +571,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.call.invite_users_to_call(call_id, user_ids))
+        return asyncio.run(self.call.invite_users_to_call(call_id, user_ids))
 
     def invite_users_to_chat_call(self, **params) -> Response:
         """ユーザーをチャット通話に招待する
@@ -588,7 +584,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.call.invite_users_to_chat_call(**params))
+        return asyncio.run(self.call.invite_users_to_chat_call(**params))
 
     def kick_user_from_call(self, call_id: int, user_id: int) -> Response:
         """ユーザーを通話からキックしますする
@@ -600,7 +596,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        self.__sync_request(self.call.kick_user_from_call(call_id, user_id))
+        asyncio.run(self.call.kick_user_from_call(call_id, user_id))
 
     def start_call(self, call_id: int, **params) -> Response:
         """通話を開始する
@@ -614,7 +610,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.call.start_call(call_id, **params))
+        return asyncio.run(self.call.start_call(call_id, **params))
 
     def set_user_role(self, call_id: int, user_id: int, role: str) -> Response:
         """通話の参加者に役職を付与する
@@ -627,7 +623,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.call.set_user_role(call_id, user_id, role))
+        return asyncio.run(self.call.set_user_role(call_id, user_id, role))
 
     def join_call(self, **params) -> ConferenceCallResponse:
         """通話に参加する
@@ -639,7 +635,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ConferenceCallResponse:
         """
-        return self.__sync_request(self.call.join_call(**params))
+        return asyncio.run(self.call.join_call(**params))
 
     def leave_call(self, **params) -> Response:
         """通話から退出する
@@ -651,7 +647,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.call.leave_call(**params))
+        return asyncio.run(self.call.leave_call(**params))
 
     def join_call_as_anonymous(self, **params) -> ConferenceCallResponse:
         """匿名で通話に参加する
@@ -663,7 +659,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ConferenceCallResponse:
         """
-        return self.__sync_request(self.call.join_call_as_anonymous(**params))
+        return asyncio.run(self.call.join_call_as_anonymous(**params))
 
     def leave_call_as_anonymous(self, **params) -> Response:
         """匿名で参加した通話を退出する
@@ -675,7 +671,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response: _description_
         """
-        return self.__sync_request(self.call.leave_call_as_anonymous(**params))
+        return asyncio.run(self.call.leave_call_as_anonymous(**params))
 
     # ---------- notification api ----------
 
@@ -690,7 +686,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ActivitiesResponse:
         """
-        return self.__sync_request(self.notification.get_activities(**params))
+        return asyncio.run(self.notification.get_activities(**params))
 
     def get_merged_activities(self, **params) -> ActivitiesResponse:
         """全種類の通知を取得する
@@ -702,7 +698,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ActivitiesResponse:
         """
-        return self.__sync_request(self.notification.get_merged_activities(**params))
+        return asyncio.run(self.notification.get_merged_activities(**params))
 
     # ---------- chat api ----------
 
@@ -715,7 +711,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.accept_chat_requests(**params))
+        return asyncio.run(self.chat.accept_chat_requests(**params))
 
     def check_unread_status(self, **params) -> UnreadStatusResponse:
         """チャットの未読ステータスを確認する
@@ -726,7 +722,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UnreadStatusResponse:
         """
-        return self.__sync_request(self.chat.check_unread_status(**params))
+        return asyncio.run(self.chat.check_unread_status(**params))
 
     def create_group_chat(self, **params) -> CreateChatRoomResponse:
         """グループチャットを作成する
@@ -740,7 +736,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             CreateChatRoomResponse:
         """
-        return self.__sync_request(self.chat.create_group_chat(**params))
+        return asyncio.run(self.chat.create_group_chat(**params))
 
     def create_private_chat(self, **params) -> CreateChatRoomResponse:
         """個人チャットを作成する
@@ -753,7 +749,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             CreateChatRoomResponse:
         """
-        return self.__sync_request(self.chat.create_private_chat(**params))
+        return asyncio.run(self.chat.create_private_chat(**params))
 
     def delete_chat_background(self, room_id: int) -> Response:
         """チャットの背景を削除する
@@ -764,7 +760,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.delete_chat_background(room_id))
+        return asyncio.run(self.chat.delete_chat_background(room_id))
 
     def delete_message(self, room_id: int, message_id: int) -> Response:
         """チャットメッセージを削除する
@@ -776,7 +772,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.delete_message(room_id, message_id))
+        return asyncio.run(self.chat.delete_message(room_id, message_id))
 
     def edit_chat_room(self, **params) -> Response:
         """チャットルームを編集する
@@ -790,7 +786,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.edit_chat_room(**params))
+        return asyncio.run(self.chat.edit_chat_room(**params))
 
     def get_chatable_users(self, **params) -> FollowUsersResponse:
         """チャット可能なユーザーを取得する
@@ -803,7 +799,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             FollowUsersResponse:
         """
-        return self.__sync_request(self.chat.get_chatable_users(**params))
+        return asyncio.run(self.chat.get_chatable_users(**params))
 
     def get_gifs_data(self) -> GifsDataResponse:
         """チャット用 GIF データを取得する
@@ -811,7 +807,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GifsDataResponse:
         """
-        return self.__sync_request(self.chat.get_gifs_data())
+        return asyncio.run(self.chat.get_gifs_data())
 
     def get_hidden_chat_rooms(self, **params) -> ChatRoomsResponse:
         """非表示に設定したチャットルームを取得する
@@ -823,7 +819,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ChatRoomsResponse:
         """
-        return self.__sync_request(self.chat.get_hidden_chat_rooms(**params))
+        return asyncio.run(self.chat.get_hidden_chat_rooms(**params))
 
     def get_main_chat_rooms(self, **params) -> ChatRoomsResponse:
         """メインのチャットルームを取得する
@@ -834,7 +830,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ChatRoomsResponse:
         """
-        return self.__sync_request(self.chat.get_main_chat_rooms(**params))
+        return asyncio.run(self.chat.get_main_chat_rooms(**params))
 
     def get_messages(self, chat_room_id: int, **params) -> MessagesResponse:
         """メッセージを取得する
@@ -846,7 +842,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             MessagesResponse:
         """
-        return self.__sync_request(self.chat.get_messages(chat_room_id, **params))
+        return asyncio.run(self.chat.get_messages(chat_room_id, **params))
 
     def get_chat_requests(self, **params) -> ChatRoomsResponse:
         """チャットリクエストを取得する
@@ -858,7 +854,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ChatRoomsResponse:
         """
-        return self.__sync_request(self.chat.get_chat_requests(**params))
+        return asyncio.run(self.chat.get_chat_requests(**params))
 
     def get_chat_room(self, chat_room_id: int) -> ChatRoomResponse:
         """チャットルームを取得する
@@ -869,7 +865,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ChatRoomResponse:
         """
-        return self.__sync_request(self.chat.get_chat_room(chat_room_id))
+        return asyncio.run(self.chat.get_chat_room(chat_room_id))
 
     def get_sticker_packs(self) -> StickerPacksResponse:
         """チャット用のスタンプを取得する
@@ -877,7 +873,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             StickerPacksResponse:
         """
-        return self.__sync_request(self.chat.get_sticker_packs())
+        return asyncio.run(self.chat.get_sticker_packs())
 
     def get_total_chat_requests(self) -> TotalChatRequestResponse:
         """チャットリクエストの総数を取得する
@@ -885,7 +881,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             TotalChatRequestResponse:
         """
-        return self.__sync_request(self.chat.get_total_chat_requests())
+        return asyncio.run(self.chat.get_total_chat_requests())
 
     def hide_chat(self, chat_room_id: int) -> Response:
         """チャットルームを非表示にする
@@ -896,7 +892,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.hide_chat(chat_room_id))
+        return asyncio.run(self.chat.hide_chat(chat_room_id))
 
     def invite_to_chat(self, **params) -> Response:
         """チャットルームにユーザーを招待する
@@ -908,7 +904,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.invite_to_chat(**params))
+        return asyncio.run(self.chat.invite_to_chat(**params))
 
     def kick_users_from_chat(self, **params) -> Response:
         """チャットルームからユーザーを追放する
@@ -920,7 +916,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.kick_users_from_chat(**params))
+        return asyncio.run(self.chat.kick_users_from_chat(**params))
 
     def pin_chat(self, room_id: int) -> Response:
         """チャットルームをピン留めする
@@ -931,7 +927,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.pin_chat(room_id))
+        return asyncio.run(self.chat.pin_chat(room_id))
 
     def read_message(self, chat_room_id: int, message_id: int) -> Response:
         """メッセージを既読にする
@@ -943,7 +939,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.read_message(chat_room_id, message_id))
+        return asyncio.run(self.chat.read_message(chat_room_id, message_id))
 
     def refresh_chat_rooms(self, **params) -> ChatRoomsResponse:
         """チャットルームを更新する
@@ -954,7 +950,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ChatRoomsResponse:
         """
-        return self.__sync_request(self.chat.refresh_chat_rooms(**params))
+        return asyncio.run(self.chat.refresh_chat_rooms(**params))
 
     def delete_chat_rooms(self, **params) -> Response:
         """チャットルームを削除する
@@ -965,7 +961,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.delete_chat_rooms(**params))
+        return asyncio.run(self.chat.delete_chat_rooms(**params))
 
     def send_message(
         self,
@@ -980,7 +976,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             MessageResponse:
         """
-        return self.__sync_request(self.chat.send_message(chat_room_id, **params))
+        return asyncio.run(self.chat.send_message(chat_room_id, **params))
 
     def unhide_chat(self, **params) -> Response:
         """非表示に設定したチャットルームを表示する
@@ -991,7 +987,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.unhide_chat(**params))
+        return asyncio.run(self.chat.unhide_chat(**params))
 
     def unpin_chat(self, chat_room_id: int) -> Response:
         """チャットのピン留めを解除する
@@ -1002,7 +998,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.chat.unpin_chat(chat_room_id))
+        return asyncio.run(self.chat.unpin_chat(chat_room_id))
 
     # ---------- group api ----------
 
@@ -1015,7 +1011,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.accept_moderator_offer(group_id))
+        return asyncio.run(self.group.accept_moderator_offer(group_id))
 
     def accept_ownership_offer(self, group_id: int) -> Response:
         """サークル管理人の権限オファーを引き受けます
@@ -1026,7 +1022,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.accept_ownership_offer(group_id))
+        return asyncio.run(self.group.accept_ownership_offer(group_id))
 
     def accept_group_join_request(self, group_id: int, user_id: int) -> Response:
         """サークル参加リクエストを承認します
@@ -1038,9 +1034,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(
-            self.group.accept_group_join_request(group_id, user_id)
-        )
+        return asyncio.run(self.group.accept_group_join_request(group_id, user_id))
 
     def add_related_groups(
         self, group_id: int, related_group_id: List[int]
@@ -1054,9 +1048,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(
-            self.group.add_related_groups(group_id, related_group_id)
-        )
+        return asyncio.run(self.group.add_related_groups(group_id, related_group_id))
 
     def ban_group_user(self, group_id: int, user_id: int) -> Response:
         """サークルからユーザーを追放する
@@ -1068,7 +1060,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.ban_group_user(group_id, user_id))
+        return asyncio.run(self.group.ban_group_user(group_id, user_id))
 
     def check_group_unread_status(self, **params) -> UnreadStatusResponse:
         """サークルの未読ステータスを取得する
@@ -1079,7 +1071,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UnreadStatusResponse:
         """
-        return self.__sync_request(self.group.check_group_unread_status(**params))
+        return asyncio.run(self.group.check_group_unread_status(**params))
 
     def create_group(self, **params) -> CreateGroupResponse:
         """サークルを作成する
@@ -1109,7 +1101,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             CreateGroupResponse:
         """
-        return self.__sync_request(self.group.create_group(**params))
+        return asyncio.run(self.group.create_group(**params))
 
     def pin_group(self, group_id: int) -> Response:
         """サークルをピン留めする
@@ -1120,7 +1112,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.pin_group(group_id))
+        return asyncio.run(self.group.pin_group(group_id))
 
     def decline_moderator_offer(self, group_id: int) -> Response:
         """サークル副管理人の権限オファーを断る
@@ -1131,7 +1123,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.decline_moderator_offer(group_id))
+        return asyncio.run(self.group.decline_moderator_offer(group_id))
 
     def decline_ownership_offer(self, group_id: int) -> Response:
         """サークル管理人の権限オファーを断る
@@ -1142,7 +1134,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.decline_ownership_offer(group_id))
+        return asyncio.run(self.group.decline_ownership_offer(group_id))
 
     def decline_group_join_request(self, group_id: int, user_id: int) -> Response:
         """サークル参加リクエストを断る
@@ -1154,9 +1146,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(
-            self.group.decline_group_join_request(group_id, user_id)
-        )
+        return asyncio.run(self.group.decline_group_join_request(group_id, user_id))
 
     def unpin_group(self, group_id: int) -> Response:
         """サークルのピン留めを解除する
@@ -1167,7 +1157,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.unpin_group(group_id))
+        return asyncio.run(self.group.unpin_group(group_id))
 
     def get_banned_group_members(self, **params) -> UsersResponse:
         """追放されたサークルメンバーを取得する
@@ -1179,7 +1169,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UsersResponse:
         """
-        return self.__sync_request(self.group.get_banned_group_members(**params))
+        return asyncio.run(self.group.get_banned_group_members(**params))
 
     def get_group_categories(self, **params) -> GroupCategoriesResponse:
         """サークルのカテゴリーを取得する
@@ -1191,7 +1181,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupCategoriesResponse:
         """
-        return self.__sync_request(self.group.get_group_categories(**params))
+        return asyncio.run(self.group.get_group_categories(**params))
 
     def get_create_group_quota(self) -> CreateGroupQuota:
         """残りのサークル作成可能回数を取得する
@@ -1199,7 +1189,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             CreateGroupQuota:
         """
-        return self.__sync_request(self.group.get_create_group_quota())
+        return asyncio.run(self.group.get_create_group_quota())
 
     def get_group(self, group_id: int) -> GroupResponse:
         """サークルの詳細を取得する
@@ -1210,7 +1200,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupResponse:
         """
-        return self.__sync_request(self.group.get_group(group_id))
+        return asyncio.run(self.group.get_group(group_id))
 
     def get_groups(self, **params) -> GroupsResponse:
         """複数のサークル情報を取得する
@@ -1224,7 +1214,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupsResponse:
         """
-        return self.__sync_request(self.group.get_groups(**params))
+        return asyncio.run(self.group.get_groups(**params))
 
     def get_invitable_users(self, group_id: int, **params) -> UsersByTimestampResponse:
         """サークルに招待可能なユーザーを取得する
@@ -1237,7 +1227,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UsersByTimestampResponse:
         """
-        return self.__sync_request(self.group.get_invitable_users(group_id, **params))
+        return asyncio.run(self.group.get_invitable_users(group_id, **params))
 
     def get_joined_statuses(self, ids: List[int]) -> Response:
         """サークルの参加ステータスを取得する
@@ -1248,7 +1238,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.get_joined_statuses(ids))
+        return asyncio.run(self.group.get_joined_statuses(ids))
 
     def get_group_member(self, group_id: int, user_id: int) -> GroupUserResponse:
         """特定のサークルメンバーの情報を取得する
@@ -1260,7 +1250,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupUserResponse:
         """
-        return self.__sync_request(self.group.get_group_member(group_id, user_id))
+        return asyncio.run(self.group.get_group_member(group_id, user_id))
 
     def get_group_members(self, group_id: int, **params) -> GroupUsersResponse:
         """サークルメンバーを取得する
@@ -1278,7 +1268,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupUsersResponse:
         """
-        return self.__sync_request(self.group.get_group_members(group_id, **params))
+        return asyncio.run(self.group.get_group_members(group_id, **params))
 
     def get_my_groups(self, **params) -> GroupsResponse:
         """自分のサークルを取得する
@@ -1289,7 +1279,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupsResponse:
         """
-        return self.__sync_request(self.group.get_my_groups(**params))
+        return asyncio.run(self.group.get_my_groups(**params))
 
     def get_relatable_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
         """関連がある可能性があるサークルを取得する
@@ -1302,7 +1292,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupsRelatedResponse:
         """
-        return self.__sync_request(self.group.get_relatable_groups(group_id, **params))
+        return asyncio.run(self.group.get_relatable_groups(group_id, **params))
 
     def get_related_groups(self, group_id: int, **params) -> GroupsRelatedResponse:
         """関連があるサークルを取得する
@@ -1315,7 +1305,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupsRelatedResponse:
         """
-        return self.__sync_request(self.group.get_related_groups(group_id, **params))
+        return asyncio.run(self.group.get_related_groups(group_id, **params))
 
     def get_user_groups(self, **params) -> GroupsResponse:
         """特定のユーザーが参加しているサークルを取得する
@@ -1327,7 +1317,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupsResponse:
         """
-        return self.__sync_request(self.group.get_user_groups(**params))
+        return asyncio.run(self.group.get_user_groups(**params))
 
     def invite_users_to_group(self, group_id: int, user_ids: List[int]) -> Response:
         """サークルにユーザーを招待する
@@ -1339,7 +1329,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.invite_users_to_group(group_id, user_ids))
+        return asyncio.run(self.group.invite_users_to_group(group_id, user_ids))
 
     def join_group(self, group_id: int) -> Response:
         """サークルに参加する
@@ -1350,7 +1340,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.join_group(group_id))
+        return asyncio.run(self.group.join_group(group_id))
 
     def leave_group(self, group_id: int) -> Response:
         """サークルから脱退する
@@ -1361,7 +1351,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.leave_group(group_id))
+        return asyncio.run(self.group.leave_group(group_id))
 
     def delete_group_cover(self, group_id: int) -> Response:
         """サークルのカバー画像を削除する
@@ -1372,7 +1362,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.delete_group_cover(group_id))
+        return asyncio.run(self.group.delete_group_cover(group_id))
 
     def delete_moderator(self, group_id: int, user_id: int) -> Response:
         """サークルの副管理人を削除する
@@ -1384,7 +1374,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.delete_moderator(group_id, user_id))
+        return asyncio.run(self.group.delete_moderator(group_id, user_id))
 
     def delete_related_groups(
         self, group_id: int, related_group_ids: List[int]
@@ -1398,7 +1388,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(
+        return asyncio.run(
             self.group.delete_related_groups(group_id, related_group_ids)
         )
 
@@ -1412,7 +1402,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.send_moderator_offers(group_id, user_ids))
+        return asyncio.run(self.group.send_moderator_offers(group_id, user_ids))
 
     def send_ownership_offer(self, group_id: int, user_id: int) -> Response:
         """サークル管理人権限のオファーを送信する
@@ -1424,7 +1414,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.send_ownership_offer(group_id, user_id))
+        return asyncio.run(self.group.send_ownership_offer(group_id, user_id))
 
     def set_group_title(self, group_id: int, title: str) -> Response:
         """サークルのタイトルを設定する
@@ -1436,7 +1426,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.set_group_title(group_id, title))
+        return asyncio.run(self.group.set_group_title(group_id, title))
 
     def take_over_group_ownership(self, group_id: int) -> Response:
         """サークル管理人の権限を引き継ぐ
@@ -1447,7 +1437,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.take_over_group_ownership(group_id))
+        return asyncio.run(self.group.take_over_group_ownership(group_id))
 
     def unban_group_member(self, group_id: int, user_id: int) -> Response:
         """特定のサークルメンバーの追放を解除する
@@ -1459,7 +1449,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.group.unban_group_member(group_id, user_id))
+        return asyncio.run(self.group.unban_group_member(group_id, user_id))
 
     def update_group(self, group_id: int, **params) -> GroupResponse:
         """サークルを編集する
@@ -1490,7 +1480,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupResponse:
         """
-        return self.__sync_request(self.group.update_group(group_id, **params))
+        return asyncio.run(self.group.update_group(group_id, **params))
 
     def withdraw_moderator_offer(self, group_id: int, user_id: int) -> Response:
         """サークル副管理人のオファーを取り消す
@@ -1502,9 +1492,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(
-            self.group.withdraw_moderator_offer(group_id, user_id)
-        )
+        return asyncio.run(self.group.withdraw_moderator_offer(group_id, user_id))
 
     def withdraw_ownership_offer(self, group_id: int, user_id: int) -> Response:
         """サークル管理人のオファーを取り消す
@@ -1516,9 +1504,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(
-            self.group.withdraw_ownership_offer(group_id, user_id)
-        )
+        return asyncio.run(self.group.withdraw_ownership_offer(group_id, user_id))
 
     # ---------- auth api ----------
 
@@ -1533,7 +1519,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             LoginUpdateResponse:
         """
-        return self.__sync_request(self.auth.change_email(**params))
+        return asyncio.run(self.auth.change_email(**params))
 
     def change_password(self, **params) -> LoginUpdateResponse:
         """パスワードを変更する
@@ -1545,7 +1531,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             LoginUpdateResponse:
         """
-        return self.__sync_request(self.auth.change_password(**params))
+        return asyncio.run(self.auth.change_password(**params))
 
     def get_token(self, **params) -> TokenResponse:
         """認証トークンを取得する
@@ -1559,7 +1545,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             TokenResponse:
         """
-        return self.__sync_request(self.auth.get_token(**params))
+        return asyncio.run(self.auth.get_token(**params))
 
     def login(
         self, email: str, password: str, two_fa_code: Optional[str] = None
@@ -1574,7 +1560,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             LoginUserResponse:
         """
-        return self.__sync_request(self.auth.login(email, password, two_fa_code))
+        return asyncio.run(self.auth.login(email, password, two_fa_code))
 
     def resend_confirm_email(self) -> Response:
         """確認メールを再送信する
@@ -1582,7 +1568,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.auth.resend_confirm_email())
+        return asyncio.run(self.auth.resend_confirm_email())
 
     def restore_user(self, **params) -> LoginUserResponse:
         """ユーザーを復元する
@@ -1593,7 +1579,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             LoginUserResponse:
         """
-        return self.__sync_request(self.auth.restore_user(**params))
+        return asyncio.run(self.auth.restore_user(**params))
 
     def save_account_with_email(self, **params) -> LoginUpdateResponse:
         """メールアドレスでアカウントを保存する
@@ -1607,7 +1593,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             LoginUpdateResponse:
         """
-        return self.__sync_request(self.auth.save_account_with_email(**params))
+        return asyncio.run(self.auth.save_account_with_email(**params))
 
     # ---------- misc api ----------
 
@@ -1620,7 +1606,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.misc.accept_policy_agreement(agreement_type))
+        return asyncio.run(self.misc.accept_policy_agreement(agreement_type))
 
     def send_verification_code(self, email: str, intent: str, locale="ja") -> Response:
         """メールアドレス認証コードを送信する
@@ -1633,9 +1619,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(
-            self.misc.send_verification_code(email, intent, locale)
-        )
+        return asyncio.run(self.misc.send_verification_code(email, intent, locale))
 
     def get_email_grant_token(self, **params) -> EmailGrantTokenResponse:
         """メールアドレス認証トークンを取得する
@@ -1647,7 +1631,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             EmailGrantTokenResponse:
         """
-        return self.__sync_request(self.misc.get_email_grant_token(**params))
+        return asyncio.run(self.misc.get_email_grant_token(**params))
 
     def get_email_verification_presigned_url(
         self, email: str, locale: str = "ja", intent: Optional[str] = None
@@ -1662,7 +1646,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             EmailVerificationPresignedUrlResponse:
         """
-        return self.__sync_request(
+        return asyncio.run(
             self.misc.get_email_verification_presigned_url(email, locale, intent)
         )
 
@@ -1677,7 +1661,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PresignedUrlsResponse:
         """
-        return self.__sync_request(self.misc.get_file_upload_presigned_urls(file_names))
+        return asyncio.run(self.misc.get_file_upload_presigned_urls(file_names))
 
     def get_id_checker_presigned_url(
         self, model: str, action: str, **params
@@ -1691,7 +1675,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             IdCheckerPresignedUrlResponse:
         """
-        return self.__sync_request(
+        return asyncio.run(
             self.misc.get_id_checker_presigned_url(model, action, **params)
         )
 
@@ -1706,9 +1690,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PresignedUrlResponse:
         """
-        return self.__sync_request(
-            self.misc.get_old_file_upload_presigned_url(video_file_name)
-        )
+        return asyncio.run(self.misc.get_old_file_upload_presigned_url(video_file_name))
 
     def get_policy_agreed(self) -> PolicyAgreementsResponse:
         """利用規約、ポリシー同意書に同意しているかどうかを取得する
@@ -1716,7 +1698,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PolicyAgreementsResponse:
         """
-        return self.__sync_request(self.misc.get_policy_agreed())
+        return asyncio.run(self.misc.get_policy_agreed())
 
     def get_web_socket_token(self) -> WebSocketTokenResponse:
         """WebSocket トークンを取得する
@@ -1724,7 +1706,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             WebSocketTokenResponse:
         """
-        return self.__sync_request(self.misc.get_web_socket_token())
+        return asyncio.run(self.misc.get_web_socket_token())
 
     def upload_image(self, image_paths: List[str], image_type: str) -> List[Attachment]:
         """画像をアップロードして、サーバー上のファイルのリストを取得する
@@ -1753,7 +1735,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             List[Attachment]: サーバー上のファイル情報
         """
-        return self.__sync_request(self.misc.upload_image(image_paths, image_type))
+        return asyncio.run(self.misc.upload_image(image_paths, image_type))
 
     def upload_video(self, video_path: str) -> str:
         """動画をアップロードして、サーバー上のファイル名を取得する
@@ -1778,7 +1760,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             str: サーバー上のファイル名
         """
-        return self.__sync_request(self.misc.upload_video(video_path))
+        return asyncio.run(self.misc.upload_video(video_path))
 
     def get_app_config(self) -> ApplicationConfigResponse:
         """アプリケーションのメタデータを取得する
@@ -1786,7 +1768,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ApplicationConfigResponse:
         """
-        return self.__sync_request(self.misc.get_app_config())
+        return asyncio.run(self.misc.get_app_config())
 
     def get_banned_words(self, country_code: str = "jp") -> BanWordsResponse:
         """禁止ワードの一覧を取得する
@@ -1797,7 +1779,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             BanWordsResponse:
         """
-        return self.__sync_request(self.misc.get_banned_words(country_code))
+        return asyncio.run(self.misc.get_banned_words(country_code))
 
     def get_popular_words(self, country_code: str = "jp") -> PopularWordsResponse:
         """人気ワードの一覧を取得する
@@ -1808,7 +1790,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PopularWordsResponse:
         """
-        return self.__sync_request(self.misc.get_popular_words(country_code))
+        return asyncio.run(self.misc.get_popular_words(country_code))
 
     # ---------- post api ----------
 
@@ -1822,7 +1804,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             BookmarkPostResponse:
         """
-        return self.__sync_request(self.post.add_bookmark(user_id, post_id))
+        return asyncio.run(self.post.add_bookmark(user_id, post_id))
 
     def add_group_highlight_post(self, group_id: int, post_id: int) -> Response:
         """投稿をグループのまとめに追加する
@@ -1834,9 +1816,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(
-            self.post.add_group_highlight_post(group_id, post_id)
-        )
+        return asyncio.run(self.post.add_group_highlight_post(group_id, post_id))
 
     def create_call_post(
         self, text: Optional[str] = None, **params
@@ -1866,7 +1846,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             CreatePostResponse:
         """
-        return self.__sync_request(self.post.create_call_post(text, **params))
+        return asyncio.run(self.post.create_call_post(text, **params))
 
     def pin_group_post(self, post_id: int, group_id: int) -> Response:
         """サークルの投稿をピン留めする
@@ -1877,7 +1857,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.post.pin_group_post(post_id, group_id))
+        return asyncio.run(self.post.pin_group_post(post_id, group_id))
 
     def pin_post(self, post_id: int) -> Response:
         """プロフィールに投稿をピン留めする
@@ -1888,7 +1868,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.post.pin_post(post_id))
+        return asyncio.run(self.post.pin_post(post_id))
 
     def create_post(self, text: Optional[str] = None, **params) -> Post:
         """投稿を作成する
@@ -1917,7 +1897,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Post:
         """
-        return self.__sync_request(self.post.create_post(text, **params))
+        return asyncio.run(self.post.create_post(text, **params))
 
     def create_repost(
         self, post_id: int, text: Optional[str] = None, **params
@@ -1949,7 +1929,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             CreatePostResponse:
         """
-        return self.__sync_request(self.post.create_repost(post_id, text, **params))
+        return asyncio.run(self.post.create_repost(post_id, text, **params))
 
     def create_share_post(
         self,
@@ -1971,7 +1951,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Post:
         """
-        return self.__sync_request(
+        return asyncio.run(
             self.post.create_share_post(shareable_type, shareable_id, text, **params)
         )
 
@@ -2005,9 +1985,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Post:
         """
-        return self.__sync_request(
-            self.post.create_thread_post(post_id, text, **params)
-        )
+        return asyncio.run(self.post.create_thread_post(post_id, text, **params))
 
     def delete_all_posts(self) -> Response:
         """すべての自分の投稿を削除する
@@ -2015,7 +1993,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.post.delete_all_posts())
+        return asyncio.run(self.post.delete_all_posts())
 
     def unpin_group_post(self, group_id: int) -> Response:
         """グループのピン投稿を解除する
@@ -2026,7 +2004,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.post.unpin_group_post(group_id))
+        return asyncio.run(self.post.unpin_group_post(group_id))
 
     def unpin_post(self, post_id: int) -> Response:
         """プロフィール投稿のピンを解除する
@@ -2037,7 +2015,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.post.unpin_post(post_id))
+        return asyncio.run(self.post.unpin_post(post_id))
 
     def get_bookmark(self, user_id: int, **params) -> PostsResponse:
         """ブックマークを取得する
@@ -2049,7 +2027,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_bookmark(user_id, **params))
+        return asyncio.run(self.post.get_bookmark(user_id, **params))
 
     def get_timeline_calls(self, **params) -> PostsResponse:
         """誰でも通話を取得する
@@ -2068,7 +2046,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_timeline_calls(**params))
+        return asyncio.run(self.post.get_timeline_calls(**params))
 
     def get_conversation(self, conversation_id: int, **params) -> PostsResponse:
         """リプライを含める投稿の会話を取得する
@@ -2084,9 +2062,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(
-            self.post.get_conversation(conversation_id, **params)
-        )
+        return asyncio.run(self.post.get_conversation(conversation_id, **params))
 
     def get_conversation_root_posts(self, post_ids: List[int]) -> PostsResponse:
         """会話の原点の投稿を取得する
@@ -2097,7 +2073,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_conversation_root_posts(post_ids))
+        return asyncio.run(self.post.get_conversation_root_posts(post_ids))
 
     def get_following_call_timeline(self, **params) -> PostsResponse:
         """フォロー中の通話を取得する
@@ -2112,7 +2088,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_following_call_timeline(**params))
+        return asyncio.run(self.post.get_following_call_timeline(**params))
 
     def get_following_timeline(self, **params) -> PostsResponse:
         """フォロー中のタイムラインを取得する
@@ -2129,7 +2105,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_following_timeline(**params))
+        return asyncio.run(self.post.get_following_timeline(**params))
 
     def get_group_highlight_posts(self, group_id: int, **params) -> PostsResponse:
         """グループのまとめ投稿を取得する
@@ -2142,9 +2118,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(
-            self.post.get_group_highlight_posts(group_id, **params)
-        )
+        return asyncio.run(self.post.get_group_highlight_posts(group_id, **params))
 
     def get_group_timeline_by_keyword(
         self, group_id: int, keyword: str, **params
@@ -2161,7 +2135,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(
+        return asyncio.run(
             self.post.get_group_timeline_by_keyword(group_id, keyword, **params)
         )
 
@@ -2179,7 +2153,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_group_timeline(group_id, **params))
+        return asyncio.run(self.post.get_group_timeline(group_id, **params))
 
     def get_timeline_by_hashtag(self, hashtag: str, **params) -> PostsResponse:
         """ハッシュタグでタイムラインを検索する
@@ -2192,7 +2166,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_timeline_by_hashtag(hashtag, **params))
+        return asyncio.run(self.post.get_timeline_by_hashtag(hashtag, **params))
 
     def get_my_posts(self, **params) -> PostsResponse:
         """自分の投稿を取得する
@@ -2205,7 +2179,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_my_posts(**params))
+        return asyncio.run(self.post.get_my_posts(**params))
 
     def get_post(self, post_id: int) -> PostResponse:
         """投稿の詳細を取得する
@@ -2216,7 +2190,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostResponse:
         """
-        return self.__sync_request(self.post.get_post(post_id))
+        return asyncio.run(self.post.get_post(post_id))
 
     def get_post_likers(self, post_id: int, **params) -> PostLikersResponse:
         """投稿にいいねしたユーザーを取得する
@@ -2229,7 +2203,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostLikersResponse:
         """
-        return self.__sync_request(self.post.get_post_likers(post_id, **params))
+        return asyncio.run(self.post.get_post_likers(post_id, **params))
 
     def get_reposts(self, post_id: int, **params: int) -> PostsResponse:
         """投稿の(´∀｀∩)↑age↑を取得する
@@ -2242,7 +2216,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_reposts(post_id, **params))
+        return asyncio.run(self.post.get_reposts(post_id, **params))
 
     def get_posts(self, post_ids: List[int]) -> PostsResponse:
         """複数の投稿を取得する
@@ -2253,7 +2227,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_posts(post_ids))
+        return asyncio.run(self.post.get_posts(post_ids))
 
     def get_recommended_post_tags(self, **params) -> PostTagsResponse:
         """おすすめのタグ候補を取得する
@@ -2265,7 +2239,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostTagsResponse:
         """
-        return self.__sync_request(self.post.get_recommended_post_tags(**params))
+        return asyncio.run(self.post.get_recommended_post_tags(**params))
 
     def get_recommended_posts(self, **params) -> PostsResponse:
         """おすすめの投稿を取得する
@@ -2279,7 +2253,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_recommended_posts(**params))
+        return asyncio.run(self.post.get_recommended_posts(**params))
 
     def get_timeline_by_keyword(
         self,
@@ -2296,7 +2270,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_timeline_by_keyword(keyword, **params))
+        return asyncio.run(self.post.get_timeline_by_keyword(keyword, **params))
 
     def get_timeline(self, **params) -> PostsResponse:
         """タイムラインを取得する
@@ -2317,7 +2291,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_timeline(**params))
+        return asyncio.run(self.post.get_timeline(**params))
 
     def get_url_metadata(self, url: str) -> SharedUrl:
         """URLのメタデータを取得する
@@ -2328,7 +2302,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             SharedUrl:
         """
-        return self.__sync_request(self.post.get_url_metadata(url))
+        return asyncio.run(self.post.get_url_metadata(url))
 
     def get_user_timeline(self, user_id: int, **params) -> PostsResponse:
         """ユーザーのタイムラインを取得する
@@ -2342,7 +2316,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.post.get_user_timeline(user_id, **params))
+        return asyncio.run(self.post.get_user_timeline(user_id, **params))
 
     def like(self, post_ids: List[int]) -> LikePostsResponse:
         """投稿にいいねする
@@ -2353,7 +2327,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             LikePostsResponse:
         """
-        return self.__sync_request(self.post.like(post_ids))
+        return asyncio.run(self.post.like(post_ids))
 
     def delete_bookmark(self, user_id: int, post_id: int) -> Response:
         """ブックマークを削除する
@@ -2365,7 +2339,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.post.delete_bookmark(user_id, post_id))
+        return asyncio.run(self.post.delete_bookmark(user_id, post_id))
 
     def delete_group_highlight_post(self, group_id: int, post_id: int) -> Response:
         """サークルのまとめから投稿を解除する
@@ -2377,9 +2351,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(
-            self.post.delete_group_highlight_post(group_id, post_id)
-        )
+        return asyncio.run(self.post.delete_group_highlight_post(group_id, post_id))
 
     def delete_posts(self, post_ids: List[int]) -> Response:
         """投稿を削除する
@@ -2390,7 +2362,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.post.delete_posts(post_ids))
+        return asyncio.run(self.post.delete_posts(post_ids))
 
     def unlike(self, post_id: int) -> Response:
         """いいねを解除する
@@ -2401,7 +2373,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.post.unlike(post_id))
+        return asyncio.run(self.post.unlike(post_id))
 
     def update_post(self, **params) -> Post:
         """投稿を編集する
@@ -2416,7 +2388,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Post:
         """
-        return self.__sync_request(self.post.update_post(**params))
+        return asyncio.run(self.post.update_post(**params))
 
     def view_video(self, video_id: int) -> Response:
         """動画を視聴する
@@ -2427,7 +2399,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.post.view_video(video_id))
+        return asyncio.run(self.post.view_video(video_id))
 
     def vote_survey(self, survey_id: int, choice_id: int) -> VoteSurveyResponse:
         """アンケートに投票する
@@ -2439,7 +2411,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             VoteSurveyResponse:
         """
-        return self.__sync_request(self.post.vote_survey(survey_id, choice_id))
+        return asyncio.run(self.post.vote_survey(survey_id, choice_id))
 
     # ---------- review api ----------
 
@@ -2453,7 +2425,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.review.create_review(user_id, comment))
+        return asyncio.run(self.review.create_review(user_id, comment))
 
     def delete_reviews(self, review_ids: List[int]) -> Response:
         """レターを削除する
@@ -2464,7 +2436,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.review.delete_reviews(review_ids))
+        return asyncio.run(self.review.delete_reviews(review_ids))
 
     def get_my_reviews(self, **params) -> ReviewsResponse:
         """送信したレターを取得する
@@ -2476,7 +2448,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ReviewsResponse:
         """
-        return self.__sync_request(self.review.get_my_reviews(**params))
+        return asyncio.run(self.review.get_my_reviews(**params))
 
     def get_reviews(self, user_id: int, **params) -> ReviewsResponse:
         """ユーザーが受け取ったレターを取得する
@@ -2489,7 +2461,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ReviewsResponse:
         """
-        return self.__sync_request(self.review.get_reviews(user_id, **params))
+        return asyncio.run(self.review.get_reviews(user_id, **params))
 
     def pin_review(self, review_id: int) -> Response:
         """レターをピン留めする
@@ -2500,7 +2472,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.review.pin_review(review_id))
+        return asyncio.run(self.review.pin_review(review_id))
 
     def unpin_review(self, review_id: int) -> Response:
         """レターのピン留めを解除する
@@ -2511,7 +2483,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.review.unpin_review(review_id))
+        return asyncio.run(self.review.unpin_review(review_id))
 
     # ---------- thread api ----------
 
@@ -2525,7 +2497,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ThreadInfo:
         """
-        return self.__sync_request(self.thread.add_post_to_thread(post_id, thread_id))
+        return asyncio.run(self.thread.add_post_to_thread(post_id, thread_id))
 
     def convert_post_to_thread(self, post_id: int, **params) -> ThreadInfo:
         """投稿をスレッドに変換する
@@ -2538,9 +2510,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ThreadInfo:
         """
-        return self.__sync_request(
-            self.thread.convert_post_to_thread(post_id, **params)
-        )
+        return asyncio.run(self.thread.convert_post_to_thread(post_id, **params))
 
     def create_thread(
         self,
@@ -2558,7 +2528,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ThreadInfo:
         """
-        return self.__sync_request(
+        return asyncio.run(
             self.thread.create_thread(group_id, title, thread_icon_filename)
         )
 
@@ -2573,7 +2543,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             GroupThreadListResponse:
         """
-        return self.__sync_request(self.thread.get_group_thread_list(**params))
+        return asyncio.run(self.thread.get_group_thread_list(**params))
 
     def get_thread_joined_statuses(self, ids: List[int]) -> Response:
         """スレッド参加ステータスを取得する
@@ -2584,7 +2554,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.thread.get_thread_joined_statuses(ids))
+        return asyncio.run(self.thread.get_thread_joined_statuses(ids))
 
     def get_thread_posts(self, thread_id: int, **params) -> PostsResponse:
         """スレッド内のタイムラインを取得する
@@ -2597,7 +2567,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             PostsResponse:
         """
-        return self.__sync_request(self.thread.get_thread_posts(thread_id, **params))
+        return asyncio.run(self.thread.get_thread_posts(thread_id, **params))
 
     def join_thread(self, thread_id: int, user_id: int) -> Response:
         """スレッドに参加する
@@ -2609,7 +2579,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.thread.join_thread(thread_id, user_id))
+        return asyncio.run(self.thread.join_thread(thread_id, user_id))
 
     def leave_thread(self, thread_id: int, user_id: int) -> Response:
         """スレッドから脱退する
@@ -2621,7 +2591,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.thread.leave_thread(thread_id, user_id))
+        return asyncio.run(self.thread.leave_thread(thread_id, user_id))
 
     def delete_thread(self, thread_id: int) -> Response:
         """スレッドを削除する
@@ -2632,7 +2602,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.thread.delete_thread(thread_id))
+        return asyncio.run(self.thread.delete_thread(thread_id))
 
     def update_thread(self, thread_id: int, **params) -> Response:
         """スレッドをアップデートする
@@ -2645,7 +2615,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.thread.update_thread(thread_id, **params))
+        return asyncio.run(self.thread.update_thread(thread_id, **params))
 
     # ---------- user api ----------
 
@@ -2659,7 +2629,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.delete_footprint(user_id, footprint_id))
+        return asyncio.run(self.user.delete_footprint(user_id, footprint_id))
 
     def follow_user(self, user_id: int) -> Response:
         """ユーザーをフォローする
@@ -2670,7 +2640,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.follow_user(user_id))
+        return asyncio.run(self.user.follow_user(user_id))
 
     def follow_users(self, user_ids: List[int]) -> Response:
         """複数のユーザーをフォローする
@@ -2681,7 +2651,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.follow_users(user_ids))
+        return asyncio.run(self.user.follow_users(user_ids))
 
     def get_active_followings(self, **params) -> ActiveFollowingsResponse:
         """アクティブなフォロー中のユーザーを取得する
@@ -2693,7 +2663,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             ActiveFollowingsResponse:
         """
-        return self.__sync_request(self.user.get_active_followings(**params))
+        return asyncio.run(self.user.get_active_followings(**params))
 
     def get_follow_recommendations(self, **params) -> FollowRecommendationsResponse:
         """フォローするのにおすすめのユーザーを取得する
@@ -2706,7 +2676,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             FollowRecommendationsResponse:
         """
-        return self.__sync_request(self.user.get_follow_recommendations(**params))
+        return asyncio.run(self.user.get_follow_recommendations(**params))
 
     def get_follow_request(self, **params) -> UsersByTimestampResponse:
         """フォローリクエストを取得する
@@ -2717,7 +2687,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UsersByTimestampResponse:
         """
-        return self.__sync_request(self.user.get_follow_request(**params))
+        return asyncio.run(self.user.get_follow_request(**params))
 
     def get_follow_request_count(self) -> FollowRequestCountResponse:
         """フォローリクエストの数を取得する
@@ -2725,7 +2695,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             FollowRequestCountResponse:
         """
-        return self.__sync_request(self.user.get_follow_request_count())
+        return asyncio.run(self.user.get_follow_request_count())
 
     def get_following_users_born(self, **params) -> UsersResponse:
         """フォロー中のユーザーの誕生日を取得する
@@ -2736,7 +2706,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UsersResponse:
         """
-        return self.__sync_request(self.user.get_following_users_born(**params))
+        return asyncio.run(self.user.get_following_users_born(**params))
 
     def get_footprints(self, **params) -> FootprintsResponse:
         """足跡を取得する
@@ -2749,7 +2719,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             FootprintsResponse:
         """
-        return self.__sync_request(self.user.get_footprints(**params))
+        return asyncio.run(self.user.get_footprints(**params))
 
     def get_fresh_user(self, user_id: int) -> UserResponse:
         """認証情報などを含んだユーザー情報を取得する
@@ -2760,7 +2730,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UserResponse:
         """
-        return self.__sync_request(self.user.get_fresh_user(user_id))
+        return asyncio.run(self.user.get_fresh_user(user_id))
 
     def get_hima_users(self, **params) -> HimaUsersResponse:
         """暇なユーザーを取得する
@@ -2772,7 +2742,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             HimaUsersResponse:
         """
-        return self.__sync_request(self.user.get_hima_users(**params))
+        return asyncio.run(self.user.get_hima_users(**params))
 
     def get_user_ranking(self, mode: str) -> RankingUsersResponse:
         """ユーザーのフォロワーランキングを取得する
@@ -2793,7 +2763,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             RankingUsersResponse:
         """
-        return self.__sync_request(self.user.get_user_ranking(mode))
+        return asyncio.run(self.user.get_user_ranking(mode))
 
     def get_profile_refresh_counter_requests(self) -> RefreshCounterRequestsResponse:
         """投稿数やフォロワー数をリフレッシュするための残リクエスト数を取得する
@@ -2801,7 +2771,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             RefreshCounterRequestsResponse:
         """
-        return self.__sync_request(self.user.get_profile_refresh_counter_requests())
+        return asyncio.run(self.user.get_profile_refresh_counter_requests())
 
     def get_social_shared_users(self, **params) -> SocialShareUsersResponse:
         """SNS共有をしたユーザーを取得する
@@ -2814,7 +2784,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             SocialShareUsersResponse:
         """
-        return self.__sync_request(self.user.get_social_shared_users(**params))
+        return asyncio.run(self.user.get_social_shared_users(**params))
 
     def get_timestamp(self) -> UserTimestampResponse:
         """タイムスタンプを取得する
@@ -2822,7 +2792,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UserTimestampResponse:
         """
-        return self.__sync_request(self.user.get_timestamp())
+        return asyncio.run(self.user.get_timestamp())
 
     def get_user(self, user_id: int) -> UserResponse:
         """ユーザーの情報を取得する
@@ -2833,7 +2803,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UserResponse:
         """
-        return self.__sync_request(self.user.get_user(user_id))
+        return asyncio.run(self.user.get_user(user_id))
 
     def get_user_followers(self, user_id: int, **params) -> FollowUsersResponse:
         """ユーザーのフォロワーを取得する
@@ -2847,7 +2817,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             FollowUsersResponse:
         """
-        return self.__sync_request(self.user.get_user_followers(user_id, **params))
+        return asyncio.run(self.user.get_user_followers(user_id, **params))
 
     def get_user_followings(self, user_id: int, **params) -> FollowUsersResponse:
         """フォロー中のユーザーを取得する
@@ -2862,7 +2832,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             FollowUsersResponse:
         """
-        return self.__sync_request(self.user.get_user_followings(user_id, **params))
+        return asyncio.run(self.user.get_user_followings(user_id, **params))
 
     def get_user_from_qr(self, qr: str) -> UserResponse:
         """QRコードからユーザーを取得する
@@ -2873,7 +2843,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UserResponse:
         """
-        return self.__sync_request(self.user.get_user_from_qr(qr))
+        return asyncio.run(self.user.get_user_from_qr(qr))
 
     def get_user_without_leaving_footprint(self, user_id: int) -> UserResponse:
         """足跡をつけずにユーザーの情報を取得する
@@ -2884,9 +2854,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UserResponse:
         """
-        return self.__sync_request(
-            self.user.get_user_without_leaving_footprint(user_id)
-        )
+        return asyncio.run(self.user.get_user_without_leaving_footprint(user_id))
 
     def get_users(self, user_ids: List[int]) -> UsersResponse:
         """複数のユーザーの情報を取得する
@@ -2897,7 +2865,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UsersResponse:
         """
-        return self.__sync_request(self.user.get_users(user_ids))
+        return asyncio.run(self.user.get_users(user_ids))
 
     def refresh_profile_counter(self, counter: str) -> Response:
         """プロフィールのカウンターを更新する
@@ -2908,7 +2876,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.refresh_profile_counter(counter))
+        return asyncio.run(self.user.refresh_profile_counter(counter))
 
     def register(self, **params) -> CreateUserResponse:
         """
@@ -2930,7 +2898,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             CreateUserResponse:
         """
-        return self.__sync_request(self.user.register(**params))
+        return asyncio.run(self.user.register(**params))
 
     def delete_user_avatar(self) -> Response:
         """ユーザーのアイコンを削除する
@@ -2938,7 +2906,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.delete_user_avatar())
+        return asyncio.run(self.user.delete_user_avatar())
 
     def delete_user_cover(self) -> Response:
         """ユーザーのカバー画像を削除する
@@ -2946,7 +2914,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.delete_user_cover())
+        return asyncio.run(self.user.delete_user_cover())
 
     def reset_password(self, **params) -> Response:
         """パスワードをリセットする
@@ -2959,7 +2927,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.reset_password(**params))
+        return asyncio.run(self.user.reset_password(**params))
 
     def search_lobi_users(self, **params) -> UsersResponse:
         """Lobiのユーザーを検索する
@@ -2972,7 +2940,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UsersResponse:
         """
-        return self.__sync_request(self.user.search_lobi_users(**params))
+        return asyncio.run(self.user.search_lobi_users(**params))
 
     def search_users(self, **params) -> UsersResponse:
         """ユーザーを検索する
@@ -2992,7 +2960,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             UsersResponse:
         """
-        return self.__sync_request(self.user.search_users(**params))
+        return asyncio.run(self.user.search_users(**params))
 
     def set_follow_permission_enabled(self, **params) -> Response:
         """フォローを許可制にするかを設定する
@@ -3004,7 +2972,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.set_follow_permission_enabled(**params))
+        return asyncio.run(self.user.set_follow_permission_enabled(**params))
 
     def take_action_follow_request(self, user_id: int, action: str) -> Response:
         """フォローリクエストを操作する
@@ -3016,9 +2984,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(
-            self.user.take_action_follow_request(user_id, action)
-        )
+        return asyncio.run(self.user.take_action_follow_request(user_id, action))
 
     def turn_on_hima(self) -> Response:
         """ひまなうを有効にする
@@ -3026,7 +2992,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.turn_on_hima())
+        return asyncio.run(self.user.turn_on_hima())
 
     def unfollow_user(self, user_id: int) -> Response:
         """ユーザーをアンフォローする
@@ -3037,7 +3003,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.unfollow_user(user_id))
+        return asyncio.run(self.user.unfollow_user(user_id))
 
     def update_user(self, nickname: str, **params) -> Response:
         """プロフィールを更新する
@@ -3055,7 +3021,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.update_user(nickname, **params))
+        return asyncio.run(self.user.update_user(nickname, **params))
 
     def block_user(self, user_id: int) -> Response:
         """ユーザーをブロックする
@@ -3066,7 +3032,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.block_user(user_id))
+        return asyncio.run(self.user.block_user(user_id))
 
     def get_blocked_user_ids(self) -> BlockedUserIdsResponse:
         """あなたをブロックしたユーザーを取得する
@@ -3074,7 +3040,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             BlockedUserIdsResponse:
         """
-        return self.__sync_request(self.user.get_blocked_user_ids())
+        return asyncio.run(self.user.get_blocked_user_ids())
 
     def get_blocked_users(self, **params) -> BlockedUsersResponse:
         """ブロックしたユーザーを取得する
@@ -3085,7 +3051,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             BlockedUsersResponse:
         """
-        return self.__sync_request(self.user.get_blocked_users(**params))
+        return asyncio.run(self.user.get_blocked_users(**params))
 
     def unblock_user(self, user_id: int) -> Response:
         """ユーザーをアンブロックする
@@ -3096,7 +3062,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.unblock_user(user_id))
+        return asyncio.run(self.user.unblock_user(user_id))
 
     def get_hidden_users_list(self, **params) -> HiddenResponse:
         """非表示のユーザー一覧を取得する
@@ -3108,7 +3074,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             HiddenResponse:
         """
-        return self.__sync_request(self.user.get_hidden_users_list(**params))
+        return asyncio.run(self.user.get_hidden_users_list(**params))
 
     def hide_user(self, user_id: int) -> Response:
         """ユーザーを非表示にする
@@ -3119,7 +3085,7 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.hide_user(user_id))
+        return asyncio.run(self.user.hide_user(user_id))
 
     def unhide_users(self, user_ids: List[int]) -> Response:
         """ユーザーの非表示を解除する
@@ -3130,4 +3096,4 @@ class Client(ws.WebSocketInteractor):
         Returns:
             Response:
         """
-        return self.__sync_request(self.user.unhide_users(user_ids))
+        return asyncio.run(self.user.unhide_users(user_ids))
