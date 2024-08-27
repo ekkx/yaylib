@@ -31,7 +31,7 @@ from typing import Dict, List, Optional
 
 import aiohttp
 
-from . import __version__, config, utils, ws
+from . import __version__
 from .api.auth import AuthApi
 from .api.call import CallApi
 from .api.chat import ChatApi
@@ -42,6 +42,7 @@ from .api.post import PostApi
 from .api.review import ReviewApi
 from .api.thread import ThreadApi
 from .api.user import UserApi
+from .config import API_HOST, API_VERSION_NAME
 from .device import Device
 from .errors import (
     AccessTokenExpiredError,
@@ -120,6 +121,8 @@ from .responses import (
     WebSocketTokenResponse,
 )
 from .state import LocalUser, State
+from .utils import CustomFormatter, filter_dict, generate_jwt
+from .ws import Intents, WebSocketInteractor
 
 __all__ = ["Client"]
 
@@ -179,10 +182,10 @@ class HeaderManager:
     def __init__(self, device: Device, state: State, locale="ja") -> None:
         self.__state = state
         self.__locale = locale
-        self.__host = config.API_HOST
+        self.__host = API_HOST
         self.__user_agent = device.get_user_agent()
         self.__device_info = device.get_device_info()
-        self.__app_version = config.API_VERSION_NAME
+        self.__app_version = API_VERSION_NAME
         self.__client_ip = ""
         self.__connection_speed = "0 kbps"
         self.__connection_type = "wifi"
@@ -214,7 +217,7 @@ class HeaderManager:
         }
 
         if jwt_required:
-            headers.update({"X-Jwt": utils.generate_jwt()})
+            headers.update({"X-Jwt": generate_jwt()})
 
         if self.__client_ip != "":
             headers.update({"X-Client-IP": self.__client_ip})
@@ -229,13 +232,13 @@ current_path = os.path.abspath(os.getcwd())
 
 
 # pylint: disable=too-many-public-methods
-class Client(ws.WebSocketInteractor):
+class Client(WebSocketInteractor):
     """yaylib のエントリーポイント"""
 
     def __init__(
         self,
         *,
-        intents: Optional[ws.Intents] = None,
+        intents: Optional[Intents] = None,
         proxy_url: Optional[str] = None,
         timeout=30,
         max_retries=3,
@@ -281,7 +284,7 @@ class Client(ws.WebSocketInteractor):
 
         ch = logging.StreamHandler()
         ch.setLevel(loglevel)
-        ch.setFormatter(utils.CustomFormatter())
+        ch.setFormatter(CustomFormatter())
 
         self.logger.addHandler(ch)
         self.logger.setLevel(logging.DEBUG)
@@ -433,8 +436,8 @@ class Client(ws.WebSocketInteractor):
                         response = await self.__make_request(
                             method,
                             url,
-                            params=utils.filter_dict(params),
-                            json=utils.filter_dict(json),
+                            params=filter_dict(params),
+                            json=filter_dict(json),
                             headers=headers,
                             return_type=return_type,
                         )
