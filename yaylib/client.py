@@ -27,7 +27,7 @@ import logging
 import os
 import random
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 import aiohttp
 
@@ -152,6 +152,7 @@ class RateLimit:
         return self.__max_retries
 
     def __max_retries_reached(self) -> bool:
+        """リトライ回数上限に達したか否か"""
         return not self.__wait_on_ratelimit or (
             self.__retries_performed >= self.__max_retries
         )
@@ -164,7 +165,7 @@ class RateLimit:
         """レート制限が解除されるまで待機する
 
         Raises:
-            err: リトライ回数の上限でスロー
+            Exception: リトライ回数の上限でスロー
         """
         if not self.__wait_on_ratelimit or self.__max_retries_reached():
             raise err
@@ -189,6 +190,7 @@ class HeaderManager:
 
     @property
     def client_ip(self) -> str:
+        """クライアント IP アドレス"""
         return self.__client_ip
 
     @client_ip.setter
@@ -288,27 +290,33 @@ class Client(ws.WebSocketInteractor):
 
     @property
     def state(self) -> State:
+        """状態管理オブジェクト"""
         return self.__state
 
     @property
     def user_id(self) -> int:
+        """ログインしているユーザーの識別子"""
         return self.__state.user_id
 
     @property
     def access_token(self) -> str:
+        """アクセストークン"""
         return self.__state.access_token
 
     @property
     def refresh_token(self) -> str:
+        """リフレッシュトークン"""
         return self.__state.refresh_token
 
     @property
     def device_uuid(self) -> str:
+        """デバイスの識別子"""
         return self.__state.device_uuid
 
     def __construct_response(
-        self, response: Dict, data_type: Optional[Model] = None
-    ) -> Dict | Model:
+        self, response: Optional[Dict], data_type: Optional[Model] = None
+    ) -> Optional[Dict | Model]:
+        """辞書型レスポンスからモデルを生成する"""
         if data_type is not None:
             if isinstance(response, list):
                 response = [data_type(result) for result in response]
@@ -319,6 +327,7 @@ class Client(ws.WebSocketInteractor):
     async def base_request(
         self, method: str, url: str, **kwargs
     ) -> aiohttp.ClientResponse:
+        """共通の基底リクエストを行う"""
         self.logger.debug(
             "Making API request: [%s] %s\n\nParameters: %s\n\nHeaders: %s\n\nBody: %s\n",
             method,
@@ -360,14 +369,16 @@ class Client(ws.WebSocketInteractor):
         json: Optional[Dict] = None,
         headers: Optional[Dict] = None,
         return_type: Optional[Dict] = None,
-    ) -> Dict | Model:
+    ) -> Optional[Dict | Model]:
+        """リクエストを行いモデルを生成する"""
         response = await self.base_request(
             method, url, params=params, json=json, headers=headers
         )
-        response_json = await response.json(content_type=None)
+        response_json: Optional[Dict] = await response.json(content_type=None)
         return self.__construct_response(response_json, return_type)
 
     async def __refresh_client_tokens(self) -> None:
+        """認証トークンのリフレッシュを行う"""
         response = await self.auth.get_token(
             grant_type="refresh_token", refresh_token=self.__state.refresh_token
         )
@@ -382,8 +393,8 @@ class Client(ws.WebSocketInteractor):
         )
         self.__state.update()
 
-    async def __insert_delay(self) -> Any:
-        """リクエスト間の時間が1秒未満のときに遅延を挿入します"""
+    async def __insert_delay(self) -> None:
+        """リクエスト間の時間が1秒未満のときに遅延を挿入する"""
         if int(datetime.now().timestamp()) - self.__last_request_ts < 1:
             await asyncio.sleep(random.uniform(self.__min_delay, self.__max_delay))
         self.__last_request_ts = int(datetime.now().timestamp())
@@ -398,7 +409,8 @@ class Client(ws.WebSocketInteractor):
         headers: Optional[Dict] = None,
         return_type: Optional[Model] = None,
         jwt_required=False,
-    ) -> Dict | Model:
+    ) -> Optional[Dict | Model]:
+        """リクエストに必要な処理を行う"""
         if not url.startswith("https://"):
             url = "https://" + url
 
@@ -408,6 +420,8 @@ class Client(ws.WebSocketInteractor):
 
         backoff_duration = 0
         headers = headers or {}
+
+        response = None
 
         for i in range(max(1, self.__max_retries + 1)):
             try:
