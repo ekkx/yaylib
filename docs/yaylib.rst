@@ -24,6 +24,7 @@ Submodules
    yaylib.responses
    yaylib.state
    yaylib.utils
+   yaylib.ws
 
 Module contents
 ---------------

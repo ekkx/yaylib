@@ -1866,6 +1866,7 @@ class Client(WebSocketInteractor):
 
     def pin_group_post(self, post_id: int, group_id: int) -> Response:
         """サークルの投稿をピン留めする
+
         Args:
             post_id (int):
             group_id (int):

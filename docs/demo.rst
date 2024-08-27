@@ -1,7 +1,7 @@
 :description: yaylib におけるデモンストレーションのコードを紹介します。
 
 使い方
-=====
+======
 
 .. rst-class:: lead
 
