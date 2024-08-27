@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 import asyncio
-from typing import Dict, Optional
+from typing import Optional
 
 import aiohttp
 
@@ -156,7 +156,7 @@ class WebSocketInteractor(WSEventListener):
     async def __on_open(self):
         self.__client.logger.debug("ws: __on_open()")
 
-    async def __on_message(self, data: Dict):
+    async def __on_message(self, data: dict):
         channel_msg = WSChannelMessage(data)
         self.__client.logger.debug(f"ws: __on_message({channel_msg})")
 
@@ -187,10 +187,10 @@ class WebSocketInteractor(WSEventListener):
                 f"Unknown channel: {channel_msg.identifier.channel}"
             )
 
-    async def __on_error(self, data: Dict):
+    async def __on_error(self, data: dict):
         self.__client.logger.error(f"ws: __on_error(), data={data}")
 
-    async def __on_close(self, data: Dict):
+    async def __on_close(self, data: dict):
         self.__client.logger.debug("ws: __on_close()")
         print(data)
 

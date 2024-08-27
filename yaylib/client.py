@@ -318,8 +318,8 @@ class Client(WebSocketInteractor):
         return self.__state.device_uuid
 
     def __construct_response(
-        self, response: Optional[Dict], data_type: Optional[Model] = None
-    ) -> Optional[Dict | Model]:
+        self, response: Optional[dict], data_type: Optional[Model] = None
+    ) -> Optional[dict | Model]:
         """辞書型レスポンスからモデルを生成する"""
         if data_type is not None:
             if isinstance(response, list):
@@ -369,16 +369,16 @@ class Client(WebSocketInteractor):
         method: str,
         url: str,
         *,
-        params: Optional[Dict] = None,
-        json: Optional[Dict] = None,
-        headers: Optional[Dict] = None,
-        return_type: Optional[Dict] = None,
-    ) -> Optional[Dict | Model]:
+        params: Optional[dict] = None,
+        json: Optional[dict] = None,
+        headers: Optional[dict] = None,
+        return_type: Optional[dict] = None,
+    ) -> Optional[dict | Model]:
         """リクエストを行いモデルを生成する"""
         response = await self.base_request(
             method, url, params=params, json=json, headers=headers
         )
-        response_json: Optional[Dict] = await response.json(content_type=None)
+        response_json: Optional[dict] = await response.json(content_type=None)
         return self.__construct_response(response_json, return_type)
 
     async def __refresh_client_tokens(self) -> None:
@@ -408,12 +408,12 @@ class Client(WebSocketInteractor):
         method: str,
         url: str,
         *,
-        params: Optional[Dict] = None,
-        json: Optional[Dict] = None,
-        headers: Optional[Dict] = None,
+        params: Optional[dict] = None,
+        json: Optional[dict] = None,
+        headers: Optional[dict] = None,
         return_type: Optional[Model] = None,
         jwt_required=False,
-    ) -> Optional[Dict | Model]:
+    ) -> Optional[dict | Model]:
         """リクエストに必要な処理を行う"""
         if not url.startswith("https://"):
             url = "https://" + url
