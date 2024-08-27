@@ -50,6 +50,7 @@ from .models import (
     Review,
     Setting,
     Settings,
+    SignaturePayload,
     SnsInfo,
     StickerPack,
     Survey,
@@ -1280,3 +1281,17 @@ class PopularWordsResponse(Response):
 
     def __repr__(self):
         return f"PopularWordsResponse(data={self.data})"
+
+
+class CallActionSignatureResponse(Response):
+    __slots__ = "signature_payload"
+
+    def __init__(self, data):
+        super().__init__(data)
+
+        self.signature_payload = data.get("signature_payload")
+        if self.signature_payload is not None:
+            self.signature_payload = SignaturePayload(self.signature_payload)
+
+    def __repr__(self):
+        return f"CallActionSignatureResponse(data={self.data})"

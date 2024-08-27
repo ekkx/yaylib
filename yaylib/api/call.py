@@ -27,6 +27,7 @@ from typing import List
 from .. import config
 from ..responses import (
     BgmsResponse,
+    CallActionSignatureResponse,
     CallStatusResponse,
     ConferenceCallResponse,
     GamesResponse,
@@ -233,21 +234,24 @@ class CallApi:
             return_type=Response,
         )
 
-    async def kick_user_from_call(self, call_id: int, user_id: int) -> Response:
-        """ユーザーを通話からキックしますする
+    async def kick_user_from_call(
+        self, call_id: int, **params
+    ) -> CallActionSignatureResponse:
+        """ユーザーを通話からキックする
 
         Args:
             call_id (int):
-            user_id (int):
+            uuid (int):
+            ban (bool):
 
         Returns:
             Response:
         """
         return await self.__client.request(
             "POST",
-            config.API_HOST + f"/v1/calls/conference_calls/{call_id}/kick",
-            payload={"user_id": user_id},
-            return_type=Response,
+            config.API_HOST + f"/v3/calls/conference_calls/{call_id}/kick",
+            payload=params,
+            return_type=CallActionSignatureResponse,
         )
 
     async def start_call(self, call_id: int, **params) -> Response:

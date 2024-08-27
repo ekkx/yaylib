@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 import json
-from typing import Dict, Optional
+from typing import Optional
 
 
 class Model:
@@ -2020,8 +2020,8 @@ class WSMessage(Model):
     def __init__(self, data) -> None:
         self.data = data
         self.event: Optional[str] = data.get("event")
-        self.message: Optional[Dict] = data.get("message")
-        self.data: Optional[Dict] = data.get("data")
+        self.message: Optional[dict] = data.get("message")
+        self.data: Optional[dict] = data.get("data")
 
     def __repr__(self):
         return f"WSMessage(data={self.data})"
@@ -2047,3 +2047,27 @@ class WSChannelMessage(Model):
 
     def __repr__(self):
         return f"WSChannelMessage(data={self.data})"
+
+
+class SignaturePayload(Model):
+    __slots__ = (
+        "data",
+        "action",
+        "call_id",
+        "receiver_uuid",
+        "sender_uuid",
+        "signature",
+        "timestamp",
+    )
+
+    def __init__(self, data) -> None:
+        self.data = data
+        self.action = data.get("action")
+        self.call_id = data.get("call_id")
+        self.receiver_uuid = data.get("receiver_uuid")
+        self.sender_uuid = data.get("sender_uuid")
+        self.signature = data.get("signature")
+        self.timestamp = data.get("timestamp")
+
+    def __repr__(self):
+        return f"SignaturePayload(data={self.data})"

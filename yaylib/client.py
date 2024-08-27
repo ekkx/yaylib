@@ -64,6 +64,7 @@ from .responses import (
     BlockedUserIdsResponse,
     BlockedUsersResponse,
     BookmarkPostResponse,
+    CallActionSignatureResponse,
     CallStatusResponse,
     ChatRoomResponse,
     ChatRoomsResponse,
@@ -602,17 +603,20 @@ class Client(WebSocketInteractor):
         """
         return asyncio.run(self.call.invite_users_to_chat_call(**params))
 
-    def kick_user_from_call(self, call_id: int, user_id: int) -> Response:
-        """ユーザーを通話からキックしますする
+    def kick_user_from_call(
+        self, call_id: int, **params
+    ) -> CallActionSignatureResponse:
+        """ユーザーを通話からキックする
 
         Args:
             call_id (int):
-            user_id (int):
+            uuid (int):
+            ban (bool):
 
         Returns:
             Response:
         """
-        asyncio.run(self.call.kick_user_from_call(call_id, user_id))
+        asyncio.run(self.call.kick_user_from_call(call_id, **params))
 
     def start_call(self, call_id: int, **params) -> Response:
         """通話を開始する
