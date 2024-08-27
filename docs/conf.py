@@ -42,6 +42,9 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_theme = "shibuya"
 html_static_path = ["_static"]
 
+html_favicon = "_static/favicon.svg"
+html_logo = "_static/logo.svg"
+
 html_theme_options = {
     "accent_color": "blue",
     "github_url": "https://github.com/ekkx/yaylib",
