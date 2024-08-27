@@ -180,8 +180,8 @@ class HeaderManager:
         self.__state = state
         self.__locale = locale
         self.__host = config.API_HOST
-        self.__user_agent = device.generate_user_agent()
-        self.__device_info = device.generate_device_info(config.VERSION_NAME)
+        self.__user_agent = device.get_user_agent()
+        self.__device_info = device.get_device_info()
         self.__app_version = config.API_VERSION_NAME
         self.__client_ip = ""
         self.__connection_speed = "0 kbps"
@@ -271,7 +271,7 @@ class Client(ws.WebSocketInteractor):
         self.user = UserApi(self)
 
         self.__state = state or State(storage_path=base_path + "secret.db")
-        self.__header_manager = HeaderManager(Device.instance(), self.__state)
+        self.__header_manager = HeaderManager(Device.create(), self.__state)
         self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
 
         self.logger = logging.getLogger("yaylib version: " + __version__)
