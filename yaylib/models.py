@@ -49,7 +49,7 @@ class Activity(Model):
         "birthday_users_count",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.created_at = data.get("created_at")
@@ -105,7 +105,7 @@ class Metadata(Model):
         "url",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data.get("data")
         self.body = data.get("body")
         self.bulk_invitation = data.get("bulk_invitation")
@@ -128,7 +128,7 @@ class ApplicationConfig(Model):
         "settings",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.name = data.get("name")
@@ -184,7 +184,7 @@ class ApplicationConfigSettings(Model):
         "localized_news_url",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.minimum_app_version_required = data.get("minimum_app_version_required")
         self.minimum_android_app_version_required = data.get(
@@ -272,7 +272,7 @@ class Attachment(Model):
 class BanWord(Model):
     __slots__ = ("data", "id", "type", "word")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.type = data.get("type")
@@ -285,7 +285,7 @@ class BanWord(Model):
 class Bgm(Model):
     __slots__ = ("data", "id", "title", "music_url", "order")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.title = data.get("title")
@@ -299,7 +299,7 @@ class Bgm(Model):
 class CallGiftHistory(Model):
     __slots__ = ("data", "gifts_count", "sent_at", "sender")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
 
         self.gifts_count = data.get("gifts_count")
@@ -335,7 +335,7 @@ class ChatRoom(Model):
         "is_notification_on",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.unread_count = data.get("unread_count")
@@ -369,7 +369,7 @@ class ChatRoom(Model):
 class ChatRoomDraft(Model):
     __slots__ = ("data", "id", "text")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.text = data.get("text")
@@ -385,7 +385,7 @@ class MessageEvent(Model):
         "event",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
 
         self.message = data.get("data")
@@ -408,7 +408,7 @@ class ChatRoomEvent(Model):
         "unread_count",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.icon_thumbnail = data.get("icon_thumbnail")
         self.id = data.get("id")
@@ -431,7 +431,7 @@ class GroupUpdatesEvent(Model):
         "event",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.response = data
         self.data = data.get("data")
         self.event = data.get("event")
@@ -443,7 +443,7 @@ class GroupUpdatesEvent(Model):
 class Choice(Model):
     __slots__ = ("data", "id", "label", "votes_count")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.label = data.get("label")
@@ -456,7 +456,7 @@ class Choice(Model):
 class CoinAmount(Model):
     __slots__ = ("data", "paid", "free", "total")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.paid = data.get("paid")
         self.free = data.get("free")
@@ -469,7 +469,7 @@ class CoinAmount(Model):
 class CoinExpiration(Model):
     __slots__ = ("data", "expired_at", "amount")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.expired_at = data.get("expired_at")
         self.amount = data.get("amount")
@@ -481,7 +481,7 @@ class CoinExpiration(Model):
 class CoinProduct(Model):
     __slots__ = ("data", "id", "purchasable", "amount")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.purchasable = data.get("purchasable")
@@ -494,7 +494,7 @@ class CoinProduct(Model):
 class CoinProductQuota(Model):
     __slots__ = ("data", "bought", "limit")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.bought = data.get("bought")
         self.limit = data.get("limit")
@@ -524,7 +524,7 @@ class ConferenceCall(Model):
         "conference_call_user_roles",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.post_id = data.get("post_id")
@@ -572,7 +572,7 @@ class ConferenceCall(Model):
 class ConferenceCallUserRole(Model):
     __slots__ = ("data", "id", "user_id", "role")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.user_id = data.get("user_id")
@@ -585,7 +585,7 @@ class ConferenceCallUserRole(Model):
 class ContactStatus(Model):
     __slots__ = ("data", "status", "user_id")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.status = data.get("status")
         self.user_id = data.get("user_id")
@@ -597,7 +597,7 @@ class ContactStatus(Model):
 class CreateGroupQuota(Model):
     __slots__ = ("data", "used_quota", "remaining_quota")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.used_quota = data.get("used_quota")
         self.remaining_quota = data.get("remaining_quota")
@@ -615,7 +615,7 @@ class TimelineSettings(Model):
         "faves_filter",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.hide_hot_post = data.get("hide_hot_post")
         self.hide_reply_public_timeline = data.get("hide_reply_public_timeline")
@@ -629,7 +629,7 @@ class TimelineSettings(Model):
 class Error(Model):
     __slots__ = ("data", "throwable", "type", "action")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.throwable = data.get("throwable")
         self.type = data.get("type")
@@ -642,7 +642,7 @@ class Error(Model):
 class Footprint(Model):
     __slots__ = ("data", "user", "visited_at", "id")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
 
         self.user = data.get("user")
@@ -659,7 +659,7 @@ class Footprint(Model):
 class Game(Model):
     __slots__ = ("data", "id", "type", "title", "icon_url", "platform_details")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.type = data.get("type")
@@ -677,7 +677,7 @@ class Game(Model):
 class Genre(Model):
     __slots__ = ("data", "id", "type", "title", "icon_url")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.type = data.get("type")
@@ -691,7 +691,7 @@ class Genre(Model):
 class GifImage(Model):
     __slots__ = ("data", "id", "url", "width", "height")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.url = data.get("url")
@@ -705,7 +705,7 @@ class GifImage(Model):
 class GifImageCategory(Model):
     __slots__ = ("data", "id", "name", "language", "gifs")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.name = data.get("name")
@@ -722,7 +722,7 @@ class GifImageCategory(Model):
 class Gift(Model):
     __slots__ = ("data", "id", "title", "icon", "iconThumbnail", "price")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.type = data.get("title")
@@ -737,7 +737,7 @@ class Gift(Model):
 class GiftCount(Model):
     __slots__ = ("data", "id", "quantity")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.quantity = data.get("quantity")
@@ -749,7 +749,7 @@ class GiftCount(Model):
 class GiftHistory(Model):
     __slots__ = ("data", "transaction_at_seconds", "user", "gifts")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.transaction_at_seconds = data.get("transaction_at_seconds")
 
@@ -768,7 +768,7 @@ class GiftHistory(Model):
 class GiftingAbility(Model):
     __slots__ = ("data", "user_id", "enabled", "can_send", "can_receive")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.user_id = data.get("user_id")
         self.enabled = data.get("enabled")
@@ -834,7 +834,7 @@ class Group(Model):
         "invited_to_join",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.topic = data.get("topic")
@@ -900,7 +900,7 @@ class Group(Model):
 class GroupCategory(Model):
     __slots__ = ("data", "id", "name", "icon", "rank")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.name = data.get("name")
@@ -914,7 +914,7 @@ class GroupCategory(Model):
 class GroupGiftHistory(Model):
     __slots__ = ("data", "gifts_count", "received_date", "user")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
 
         self.gifts_count = data.get("gifts_count")
@@ -943,7 +943,7 @@ class GroupUser(Model):
         "title",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
 
         self.user = data.get("user")
@@ -962,7 +962,7 @@ class GroupUser(Model):
 class HiddenRecommendedPost(Model):
     __slots__ = ("data", "post")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.post = data.get("post")
         if self.post is not None:
@@ -975,7 +975,7 @@ class HiddenRecommendedPost(Model):
 class Interest(Model):
     __slots__ = ("data", "id", "name", "icon", "selected")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.name = data.get("name")
@@ -1015,7 +1015,7 @@ class Message(Model):
         "video_url",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.attachment = data.get("attachment")
         self.attachment_android = data.get("attachment_android")
@@ -1085,7 +1085,7 @@ class ParentMessage(Model):
         "reacted",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.attachment = data.get("attachment")
         self.attachment_android = data.get("attachment_android")
@@ -1122,7 +1122,7 @@ class ParentMessage(Model):
 class MessageTag(Model):
     __slots__ = ("data", "user_id", "offset", "length", "type")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.user_id = data.get("user_id")
         self.offset = data.get("offset")
@@ -1136,7 +1136,7 @@ class MessageTag(Model):
 class MuteKeyword(Model):
     __slots__ = ("data", "id", "word", "context")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.word = data.get("word")
@@ -1149,7 +1149,7 @@ class MuteKeyword(Model):
 class PlatformDetails(Model):
     __slots__ = ("data", "package_id", "affiliate_url")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.package_id = data.get("package_id")
         self.affiliate_url = data.get("affiliate_url")
@@ -1161,7 +1161,7 @@ class PlatformDetails(Model):
 class PopularWord(Model):
     __slots__ = ("data", "id", "word", "type")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.word = data.get("word")
@@ -1229,7 +1229,7 @@ class Post(Model):
         "is_fail_to_send",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.text = data.get("text")
@@ -1335,7 +1335,7 @@ class Post(Model):
 class PostGift(Model):
     __slots__ = ("data", "count", "gift")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.count = data.get("count")
 
@@ -1350,7 +1350,7 @@ class PostGift(Model):
 class PostTag(Model):
     __slots__ = ("data", "id", "tag", "post_hashtags_count")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.tag = data.get("tag")
@@ -1363,7 +1363,7 @@ class PostTag(Model):
 class PresignedUrl(Model):
     __slots__ = ("data", "filename", "url")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.filename = data.get("filename")
         self.url = data.get("url")
@@ -1375,7 +1375,7 @@ class PresignedUrl(Model):
 class Promotion(Model):
     __slots__ = ("data", "id", "title", "image_url", "promotion_url", "order")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.title = data.get("title")
@@ -1390,7 +1390,7 @@ class Promotion(Model):
 class ReceivedGift(Model):
     __slots__ = ("data", "gift", "received_count", "senders", "total_senders_count")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
 
         self.gift = data.get("gift")
@@ -1412,7 +1412,7 @@ class ReceivedGift(Model):
 class RecentSearch(Model):
     __slots__ = ("data", "id", "type", "user", "hashtag", "keyword")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.type = data.get("type")
@@ -1434,7 +1434,7 @@ class RecentSearch(Model):
 class RefreshCounterRequest(Model):
     __slots__ = ("data", "counter", "status", "last_requested_at")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.counter = data.get("counter")
         self.status = data.get("status")
@@ -1456,7 +1456,7 @@ class Review(Model):
         "mutual_review",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.comment = data.get("comment")
@@ -1477,7 +1477,7 @@ class Review(Model):
 class SearchCriteria(Model):
     __slots__ = ("data", "nickname", "username", "biography", "prefecture", "gender")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.nickname = data.get("nickname")
         self.username = data.get("username")
@@ -1498,7 +1498,7 @@ class Setting(Model):
         "notification_group_message_tag_all",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.notification_group_request = data.get("notification_group_request")
         self.notification_group_join = data.get("notification_group_join")
@@ -1571,7 +1571,7 @@ class Settings(Model):
         "no_reply_group_timeline",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.notification_like = data.get("notification_like")
         self.notification_reply = data.get("notification_reply")
@@ -1656,7 +1656,7 @@ class Settings(Model):
 class Shareable(Model):
     __slots__ = ("data", "post", "group", "thread")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
 
         self.post = data.get("post")
@@ -1678,7 +1678,7 @@ class Shareable(Model):
 class SharedUrl(Model):
     __slots__ = ("data", "url", "title", "description", "image_url")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.url = data.get("url")
         self.title = data.get("title")
@@ -1700,7 +1700,7 @@ class SnsInfo(Model):
         "gender",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.type = data.get("type")
         self.uid = data.get("uid")
@@ -1716,7 +1716,7 @@ class SnsInfo(Model):
 class Sticker(Model):
     __slots__ = ("data", "id", "sticker_pack_id", "width", "height", "url", "extension")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.sticker_pack_id = data.get("sticker_pack_id")
@@ -1732,7 +1732,7 @@ class Sticker(Model):
 class StickerPack(Model):
     __slots__ = ("data", "id", "name", "description", "cover", "stickers", "order")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.name = data.get("name")
@@ -1752,7 +1752,7 @@ class StickerPack(Model):
 class Survey(Model):
     __slots__ = ("data", "id", "votes_count", "choices", "voted")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.votes_count = data.get("votes_count")
@@ -1783,7 +1783,7 @@ class ThreadInfo(Model):
         "new_updates",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.title = data.get("title")
@@ -1856,7 +1856,7 @@ class User(Model):
         "updated_time_millis",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.nickname = data.get("nickname")
@@ -1913,7 +1913,7 @@ class User(Model):
 class UserAuth(Model):
     __slots__ = ("data", "user_id", "access_token", "refresh_token", "expires_in")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.user_id = data.get("user_id")
         self.access_token = data.get("access_token")
@@ -1931,7 +1931,7 @@ class UserAuth(Model):
 class UserWrapper(Model):
     __slots__ = ("data", "id", "user")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
 
@@ -1957,7 +1957,7 @@ class Video(Model):
         "thumbnail_big_url",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.completed = data.get("completed")
@@ -1976,7 +1976,7 @@ class Video(Model):
 class Walkthrough(Model):
     __slots__ = ("data", "title", "url")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.title = data.get("title")
         self.url = data.get("url")
@@ -1988,7 +1988,7 @@ class Walkthrough(Model):
 class WalletTransaction(Model):
     __slots__ = ("data", "id", "created_at", "description", "amount", "coins")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data = data
         self.id = data.get("id")
         self.created_at = data.get("created_at")
@@ -2006,7 +2006,7 @@ class WalletTransaction(Model):
 class WSIdentifier(Model):
     __slots__ = ("data", "channel")
 
-    def __init__(self, data) -> None:
+    def __init__(self, data: dict) -> None:
         self.data = data
         self.channel: Optional[str] = data.get("channel")
 
@@ -2017,7 +2017,7 @@ class WSIdentifier(Model):
 class WSMessage(Model):
     __slots__ = ("data", "event", "message", "data")
 
-    def __init__(self, data) -> None:
+    def __init__(self, data: dict) -> None:
         self.data = data
         self.event: Optional[str] = data.get("event")
         self.message: Optional[dict] = data.get("message")
@@ -2030,7 +2030,7 @@ class WSMessage(Model):
 class WSChannelMessage(Model):
     __slots__ = ("data", "type", "message", "identifier", "sid", "reason")
 
-    def __init__(self, data) -> None:
+    def __init__(self, data: dict) -> None:
         self.data = data
         self.type: Optional[str] = data.get("type")
 
@@ -2060,7 +2060,7 @@ class SignaturePayload(Model):
         "timestamp",
     )
 
-    def __init__(self, data) -> None:
+    def __init__(self, data: dict) -> None:
         self.data = data
         self.action = data.get("action")
         self.call_id = data.get("call_id")
