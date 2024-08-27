@@ -69,7 +69,7 @@ class Response(Model):
         self.result: str = data.get("result")
 
     def __repr__(self):
-        return f"Response(result={self.result})"
+        return f"Response(data={self.data})"
 
 
 class ErrorResponse(Response):
@@ -84,7 +84,7 @@ class ErrorResponse(Response):
         self.retry_in = data.get("retry_in")
 
     def __repr__(self):
-        return f"ErrorResponse(result={self.result}, message={self.message}, error_code={self.error_code}, ban_until={self.ban_until})"
+        return f"ErrorResponse(data={self.data})"
 
 
 class ActiveFollowingsResponse(Response):
