@@ -64,7 +64,7 @@ from .models import (
 class Response(Model):
     __slots__ = ("data", "result")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self.data: dict = data
         self.result: str = data.get("result")
 
@@ -75,7 +75,7 @@ class Response(Model):
 class ErrorResponse(Response):
     __slots__ = ("message", "error_code", "ban_until", "retry_in")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.message = data.get("message")
@@ -90,7 +90,7 @@ class ErrorResponse(Response):
 class ActiveFollowingsResponse(Response):
     __slots__ = ("last_loggedin_at", "users")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.last_loggedin_at = data.get("last_loggedin_at")
@@ -106,7 +106,7 @@ class ActiveFollowingsResponse(Response):
 class ActivitiesResponse(Response):
     __slots__ = ("activities", "last_timestamp")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.activities = data.get("activities")
@@ -122,7 +122,7 @@ class ActivitiesResponse(Response):
 class AdditionalSettingsResponse(Response):
     __slots__ = "settings"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.settings = data.get("settings")
@@ -136,7 +136,7 @@ class AdditionalSettingsResponse(Response):
 class AppReviewStatusResponse(Response):
     __slots__ = "is_app_reviewed"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.is_app_reviewed = data.get("is_app_reviewed")
@@ -148,7 +148,7 @@ class AppReviewStatusResponse(Response):
 class BgmsResponse(Response):
     __slots__ = "bgm"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.bgm = data.get("bgm")
@@ -162,7 +162,7 @@ class BgmsResponse(Response):
 class BlockedUserIdsResponse(Response):
     __slots__ = "block_ids"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.block_ids = data.get("block_ids")
@@ -174,7 +174,7 @@ class BlockedUserIdsResponse(Response):
 class BlockedUsersResponse(Response):
     __slots__ = ("blocked_count", "last_id", "users")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.blocked_count = data.get("blocked_count")
@@ -191,7 +191,7 @@ class BlockedUsersResponse(Response):
 class BookmarkPostResponse(Response):
     __slots__ = "is_bookmarked"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.is_bookmarked = data.get("is_bookmarked")
@@ -203,7 +203,7 @@ class BookmarkPostResponse(Response):
 class CallStatusResponse(Response):
     __slots__ = ("phone_status", "video_status", "room_url")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.phone_status = data.get("phone_status")
@@ -217,7 +217,7 @@ class CallStatusResponse(Response):
 class ChatRoomResponse(Response):
     __slots__ = "chat"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.chat = data.get("chat")
@@ -231,7 +231,7 @@ class ChatRoomResponse(Response):
 class ChatRoomsResponse(Response):
     __slots__ = ("pinned_chat_rooms", "chat_rooms", "next_page_value")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.pinned_chat_rooms = data.get("pinned_chat_rooms")
@@ -254,7 +254,7 @@ class ChatRoomsResponse(Response):
 class TotalChatRequestResponse(Response):
     __slots__ = "total"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.total = data.get("total")
@@ -266,7 +266,7 @@ class TotalChatRequestResponse(Response):
 class ConferenceCallResponse(Response):
     __slots__ = "conference_call"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.conference_call = data.get("conference_call")
@@ -280,7 +280,7 @@ class ConferenceCallResponse(Response):
 class ContactStatusResponse(Response):
     __slots__ = "contacts"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.contacts = data.get("contacts")
@@ -292,7 +292,7 @@ class ContactStatusResponse(Response):
 class CreateGroupResponse(Response):
     __slots__ = "group_id"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.group_id = data.get("group_id")
@@ -304,7 +304,7 @@ class CreateGroupResponse(Response):
 class CreateQuotaResponse(Response):
     __slots__ = "create"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.create = data.get("create")
@@ -318,7 +318,7 @@ class CreateQuotaResponse(Response):
 class CreateChatRoomResponse(Response):
     __slots__ = "room_id"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.room_id = data.get("room_id")
@@ -330,7 +330,7 @@ class CreateChatRoomResponse(Response):
 class CreatePostResponse(Response):
     __slots__ = ("conference_call", "post")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.conference_call = data.get("conference_call")
@@ -348,7 +348,7 @@ class CreatePostResponse(Response):
 class CreateUserResponse(Response):
     __slots__ = ("id", "access_token", "refresh_token", "expires_in")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.id = data.get("id")
@@ -363,7 +363,7 @@ class CreateUserResponse(Response):
 class EmailGrantTokenResponse(Response):
     __slots__ = "email_grant_token"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.email_grant_token = data.get("email_grant_token")
@@ -375,7 +375,7 @@ class EmailGrantTokenResponse(Response):
 class EmailVerificationPresignedUrlResponse(Response):
     __slots__ = ("url", "presigned_url", "expires_at", "method_type")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.url = data.get("url")
@@ -390,7 +390,7 @@ class EmailVerificationPresignedUrlResponse(Response):
 class PresignedUrlResponse(Response):
     __slots__ = "presigned_url"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.presigned_url = data.get("presigned_url")
@@ -402,7 +402,7 @@ class PresignedUrlResponse(Response):
 class PresignedUrlsResponse(Response):
     __slots__ = "presigned_urls"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.presigned_urls = data.get("presigned_urls")
@@ -418,7 +418,7 @@ class PresignedUrlsResponse(Response):
 class IdCheckerPresignedUrlResponse(Response):
     __slots__ = "presigned_url"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.presigned_url = data.get("presigned_url")
@@ -430,7 +430,7 @@ class IdCheckerPresignedUrlResponse(Response):
 class DefaultSettingsResponse(Response):
     __slots__ = "timeline_settings"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.timeline_settings = data.get("timeline_settings")
@@ -444,7 +444,7 @@ class DefaultSettingsResponse(Response):
 class FollowRecommendationsResponse(Response):
     __slots__ = ("total", "users", "next")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.total = data.get("total")
@@ -462,7 +462,7 @@ class FollowRecommendationsResponse(Response):
 class FollowRequestCountResponse(Response):
     __slots__ = "users_count"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.users_count = data.get("users_count")
@@ -474,7 +474,7 @@ class FollowRequestCountResponse(Response):
 class FollowUsersResponse(Response):
     __slots__ = ("last_follow_id", "users")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.last_follow_id = data.get("last_follow_id")
@@ -490,7 +490,7 @@ class FollowUsersResponse(Response):
 class FootprintsResponse(Response):
     __slots__ = "footprints"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.footprints = data.get("footprints")
@@ -504,7 +504,7 @@ class FootprintsResponse(Response):
 class GamesResponse(Response):
     __slots__ = ("games", "from_id")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.games = data.get("games")
@@ -520,7 +520,7 @@ class GamesResponse(Response):
 class GenresResponse(Response):
     __slots__ = ("genres", "next_page_value")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.genres = data.get("genres")
@@ -536,7 +536,7 @@ class GenresResponse(Response):
 class GroupCategoriesResponse(Response):
     __slots__ = "group_categories"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.group_categories = data.get("group_categories")
@@ -553,7 +553,7 @@ class GroupCategoriesResponse(Response):
 class GroupGiftHistoryResponse(Response):
     __slots__ = ("gift_history", "next_page_value")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.gift_history = data.get("gift_history")
@@ -571,7 +571,7 @@ class GroupGiftHistoryResponse(Response):
 class GroupNotificationSettingsResponse(Response):
     __slots__ = "setting"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.setting = data.get("setting")
@@ -585,7 +585,7 @@ class GroupNotificationSettingsResponse(Response):
 class GroupResponse(Response):
     __slots__ = "group"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.group = data.get("group")
@@ -599,7 +599,7 @@ class GroupResponse(Response):
 class GroupsRelatedResponse(Response):
     __slots__ = ("groups", "next_page_value")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.groups = data.get("groups")
@@ -615,7 +615,7 @@ class GroupsRelatedResponse(Response):
 class GroupsResponse(Response):
     __slots__ = ("pinned_groups", "groups")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.pinned_groups = data.get("pinned_groups")
@@ -635,7 +635,7 @@ class GroupsResponse(Response):
 class GroupThreadListResponse(Response):
     __slots__ = ("threads", "next_page_value")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.threads = data.get("threads")
@@ -651,7 +651,7 @@ class GroupThreadListResponse(Response):
 class GroupUserResponse(Response):
     __slots__ = "group_user"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.group_user = data.get("group_user")
@@ -665,7 +665,7 @@ class GroupUserResponse(Response):
 class GroupUsersResponse(Response):
     __slots__ = "group_users"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.group_users = data.get("group_users")
@@ -681,7 +681,7 @@ class GroupUsersResponse(Response):
 class GifsDataResponse(Response):
     __slots__ = "gif_categories"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.gif_categories = data.get("gif_categories")
@@ -697,7 +697,7 @@ class GifsDataResponse(Response):
 class HiddenResponse(Response):
     __slots__ = ("hidden_users", "next_page_value", "total_count", "limit")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.hidden_users = data.get("hidden_users")
@@ -724,7 +724,7 @@ class LoginUserResponse(Response):
         "expires_in",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.user_id = data.get("user_id")
@@ -753,7 +753,7 @@ class LoginUpdateResponse(Response):
         "expires_in",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.user_id = data.get("user_id")
@@ -769,7 +769,7 @@ class LoginUpdateResponse(Response):
 class MessageResponse(Response):
     __slots__ = ("id", "conference_call")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.id = data.get("id")
@@ -785,7 +785,7 @@ class MessageResponse(Response):
 class MessagesResponse(Response):
     __slots__ = "messages"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.messages = data.get("messages")
@@ -799,7 +799,7 @@ class MessagesResponse(Response):
 class PolicyAgreementsResponse(Response):
     __slots__ = ("latest_privacy_policy_agreed", "latest_terms_of_use_agreed")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.latest_privacy_policy_agreed = data.get("latest_privacy_policy_agreed")
@@ -812,7 +812,7 @@ class PolicyAgreementsResponse(Response):
 class PostResponse(Response):
     __slots__ = "post"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.post = data.get("post")
@@ -826,7 +826,7 @@ class PostResponse(Response):
 class PostsResponse(Response):
     __slots__ = ("next_page_value", "posts", "pinned_posts")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.next_page_value = data.get("next_page_value")
@@ -846,7 +846,7 @@ class PostsResponse(Response):
 class PostLikersResponse(Response):
     __slots__ = ("last_id", "users")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.last_id = data.get("last_id")
@@ -862,7 +862,7 @@ class PostLikersResponse(Response):
 class PostTagsResponse(Response):
     __slots__ = "tags"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.tags = data.get("tags")
@@ -876,7 +876,7 @@ class PostTagsResponse(Response):
 class PromotionsResponse(Response):
     __slots__ = "promotions"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.promotions = data.get("promotions")
@@ -890,7 +890,7 @@ class PromotionsResponse(Response):
 class LikePostsResponse(Response):
     __slots__ = "like_ids"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.like_ids = data.get("like_ids")
@@ -902,7 +902,7 @@ class LikePostsResponse(Response):
 class ValidationPostResponse(Response):
     __slots__ = "is_allow_to_post"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.is_allow_to_post = data.get("is_allow_to_post")
@@ -914,7 +914,7 @@ class ValidationPostResponse(Response):
 class RefreshCounterRequestsResponse(Response):
     __slots__ = "reset_counter_requests"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.reset_counter_requests = data.get("reset_counter_requests")
@@ -931,7 +931,7 @@ class RefreshCounterRequestsResponse(Response):
 class ReviewsResponse(Response):
     __slots__ = ("reviews", "pinned_reviews")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.reviews = data.get("reviews")
@@ -951,7 +951,7 @@ class ReviewsResponse(Response):
 class SocialShareUsersResponse(Response):
     __slots__ = "social_shared_users"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.social_shared_users = data.get("social_shared_users")
@@ -968,7 +968,7 @@ class SocialShareUsersResponse(Response):
 class StickerPacksResponse(Response):
     __slots__ = "sticker_packs"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.sticker_packs = data.get("sticker_packs")
@@ -991,7 +991,7 @@ class TokenResponse(Response):
         "expires_in",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.user_id = data.get("id")
@@ -1007,7 +1007,7 @@ class TokenResponse(Response):
 class VipGameRewardUrlResponse(Response):
     __slots__ = "url"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.url = data.get("url")
@@ -1019,7 +1019,7 @@ class VipGameRewardUrlResponse(Response):
 class VoteSurveyResponse(Response):
     __slots__ = "survey"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.survey = data.get("survey")
@@ -1033,7 +1033,7 @@ class VoteSurveyResponse(Response):
 class UnreadStatusResponse(Response):
     __slots__ = "is_unread"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.is_unread = data.get("is_unread")
@@ -1063,7 +1063,7 @@ class UserResponse(Response):
         "gifting_ability",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.user = data.get("user")
@@ -1097,7 +1097,7 @@ class UserResponse(Response):
 class UsersResponse(Response):
     __slots__ = ("users", "next_page_value")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.users = data.get("users")
@@ -1113,7 +1113,7 @@ class UsersResponse(Response):
 class RankingUsersResponse(Response):
     __slots__ = "users"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.users = data.get("users")
@@ -1135,7 +1135,7 @@ class UserCustomDefinitionsResponse(Response):
         "reported_count",
     )
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.age = data.get("age")
@@ -1153,7 +1153,7 @@ class UserCustomDefinitionsResponse(Response):
 class HimaUsersResponse(Response):
     __slots__ = "hima_users"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.hima_users = data.get("hima_users")
@@ -1167,7 +1167,7 @@ class HimaUsersResponse(Response):
 class UsersByTimestampResponse(Response):
     __slots__ = ("last_timestamp", "users")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.last_timestamp = data.get("last_timestamp")
@@ -1183,7 +1183,7 @@ class UsersByTimestampResponse(Response):
 class UserTimestampResponse(Response):
     __slots__ = ("time", "ip_address", "country")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.time = data.get("time")
@@ -1197,7 +1197,7 @@ class UserTimestampResponse(Response):
 class ChannelResponse(Response):
     __slots__ = ("identifier", "message", "type", "sid")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.identifier = data.get("identifier")
@@ -1216,7 +1216,7 @@ class ChannelResponse(Response):
 class WebSocketMessageResponse(Response):
     __slots__ = ("response", "data", "event")
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.response = data
@@ -1230,7 +1230,7 @@ class WebSocketMessageResponse(Response):
 class WebSocketTokenResponse(Response):
     __slots__ = "token"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.token = data.get("token")
@@ -1242,7 +1242,7 @@ class WebSocketTokenResponse(Response):
 class ApplicationConfigResponse(Response):
     __slots__ = "app"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.app = data.get("app")
@@ -1256,7 +1256,7 @@ class ApplicationConfigResponse(Response):
 class BanWordsResponse(Response):
     __slots__ = "ban_words"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.ban_words = data.get("ban_words")
@@ -1270,7 +1270,7 @@ class BanWordsResponse(Response):
 class PopularWordsResponse(Response):
     __slots__ = "popular_words"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.popular_words = data.get("popular_words")
@@ -1286,7 +1286,7 @@ class PopularWordsResponse(Response):
 class CallActionSignatureResponse(Response):
     __slots__ = "signature_payload"
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         super().__init__(data)
 
         self.signature_payload = data.get("signature_payload")
