@@ -16,6 +16,13 @@ __title__ = "yaylib"
 __author__ = "ekkx"
 __license__ = "MIT"
 __copyright__ = "Copyright (c) 2023 ekkx"
+
+# 1.0.0.dev1  Development release
+# 1.0.0a1     Alpha Release
+# 1.0.0b1     Beta Release
+# 1.0.0rc1    Release Candidate
+# 1.0.0       Final Release
+# 1.0.0.post1 Post Release
 __version__ = "1.5.0.dev4"
 
 from .client import Client
