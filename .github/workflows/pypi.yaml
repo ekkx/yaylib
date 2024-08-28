@@ -3,7 +3,7 @@ name: Publish yaylib to PyPI
 on:
   push:
     branches:
-      - develop
+      - master
 
 jobs:
   publish:
