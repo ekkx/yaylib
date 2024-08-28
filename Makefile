@@ -8,27 +8,16 @@ up: # 実行環境の構築&起動
 down: # コンテナ停止
 	docker compose down
 
-shell:
+shell: # コンテナのシェルを起動
 	docker compose exec yaylib bash
 
-# Distribution
-.PHONY: build clean publish
+# テスト
+.PHONY: test
 
-build: # パッケージのビルド
-	python setup.py sdist
-	python setup.py bdist_wheel
+test:
+	poetry run python -m unittest discover -s tests -p "test_*.py"
 
-clean: # ビルドファイル削除
-	rm -rf build/
-	rm -rf dist/
-	rm -rf yaylib.egg-info/
-
-publish: # PYPIにパッケージのアップロード
-	make build
-	twine upload --repository pypi dist/*
-	make clean
-
-# Documentation
+# ドキュメント
 .PHONY: doc clean-doc
 
 doc: # ドキュメントの生成
