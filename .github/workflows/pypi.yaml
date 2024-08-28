@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install
-          poetry self install
+          poetry self add poetry-version-plugin
 
       - name: Configure poetry
         run: poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
