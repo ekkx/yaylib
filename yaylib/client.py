@@ -274,14 +274,14 @@ class Client(WebSocketInteractor):
         self.thread = ThreadApi(self)
         self.user = UserApi(self)
 
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+
         self.__state = state or State(storage_path=base_path + "secret.db")
         self.__header_manager = HeaderManager(Device.create(), self.__state)
         self.__ratelimit = RateLimit(wait_on_ratelimit, max_ratelimit_retries)
 
         self.logger = logging.getLogger("yaylib version: " + __version__)
-
-        if not os.path.exists(base_path):
-            os.makedirs(base_path)
 
         ch = logging.StreamHandler()
         ch.setLevel(loglevel)
