@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from json.decoder import JSONDecodeError
+
 import aiohttp
 
 from .responses import ErrorResponse
@@ -583,9 +585,12 @@ async def raise_for_code(response: aiohttp.ClientResponse) -> None:
     Raises:
         ClientError:
     """
-    response_json = await response.json(content_type=None)
-    if response_json is None:
-        return
+    try:
+        response_json = await response.json(content_type=None)
+        if response_json is None:
+            return None
+    except JSONDecodeError:
+        return None
 
     err = ErrorResponse(response_json)
     if err.result is None or err.result != "error":
