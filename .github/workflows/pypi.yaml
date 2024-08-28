@@ -1,0 +1,38 @@
+name: Publish yaylib to PyPI
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "poetry"
+
+      - name: Check poetry
+        run: |
+          poetry --version
+          poetry config --list
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Configure poetry
+        run: poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
+
+      - name: Publish to PyPI
+        run: |
+          poetry build
+          poetry publish
