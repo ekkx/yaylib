@@ -1,10 +1,10 @@
 import os
 import unittest
 
-from yaylib.state import Storage, LocalUser
+from yaylib.state import LocalUser, Storage
 
-
-db_path = os.path.dirname(os.path.dirname(__file__)) + "/.config/test.db"
+base_path = os.path.dirname(os.path.dirname(__file__)) + "/.config/tests/"
+db_filename = base_path + "test.db"
 
 
 test_user = LocalUser(
@@ -19,15 +19,17 @@ test_user = LocalUser(
 class TestStorage(unittest.TestCase):
     def setUp(self):
         self.clean()
-        self.storage = Storage(db_path)
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+        self.storage = Storage(db_filename)
 
     def tearDown(self):
         self.clean()
 
     @staticmethod
     def clean():
-        if os.path.isfile(db_path):
-            os.remove(db_path)
+        if os.path.isfile(db_filename):
+            os.remove(db_filename)
 
     def test_get_user(self):
         result = self.storage.create_user(test_user)
