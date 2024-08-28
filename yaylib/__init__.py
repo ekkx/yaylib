@@ -16,7 +16,7 @@ __title__ = "yaylib"
 __author__ = "ekkx"
 __license__ = "MIT"
 __copyright__ = "Copyright (c) 2023 ekkx"
-__version__ = "1.5.0.dev1"
+__version__ = "1.5.0.dev4"
 
 from .client import Client
 from .constants import *
