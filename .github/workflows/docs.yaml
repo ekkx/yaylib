@@ -41,7 +41,9 @@ jobs:
           poetry config --list
 
       - name: Install dependencies
-        run: poetry install
+        run: |
+          poetry install
+          ./poetry_plugins.sh
 
       - name: Build Sphinx
         run: |
