@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 import random
-from typing import Dict, Optional, Self
+from typing import Optional
 
 from . import config
 
@@ -56,7 +56,7 @@ class Device:
         self.model = model
 
     @classmethod
-    def create(cls, device: Optional[Dict] = None) -> Self:
+    def create(cls, device: Optional[dict] = None):
         """端末を生成する"""
         if device is None:
             device = random.choice(DEVICES)
