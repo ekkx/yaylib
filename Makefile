@@ -22,7 +22,6 @@ test:
 
 doc: # ドキュメントの生成
 	make clean-doc
-	poetry run sphinx-apidoc -f -e -o ./docs . tests/* *_test.py setup.py
 	poetry run sphinx-build -M html ./docs ./docs/_build
 
 clean-doc: # temp
