@@ -56,10 +56,17 @@ class Device:
         self.model = model
 
     @classmethod
-    def create(cls, device: Optional[dict] = None):
+    def create(cls, device: Optional[dict] = None, model: Optional[str] = None):
         """端末を生成する"""
         if device is None:
-            device = random.choice(DEVICES)
+            if model is not None:
+                device = next(
+                    (device for device in DEVICES if device["model"] == model), None
+                )
+                if device is None:
+                    raise ValueError("No device found with model: " + model)
+            else:
+                device = random.choice(DEVICES)
         return cls(**device)
 
     def get_user_agent(self) -> str:
