@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 import json
-from typing import Optional
+from typing import List, Optional
 
 
 class Model:
@@ -55,23 +55,23 @@ class Activity(Model):
         self.created_at = data.get("created_at")
         self.type = data.get("type")
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
-        self.from_post = data.get("from_post")
+        self.from_post: Post = data.get("from_post")
         if self.from_post is not None:
             self.from_post = Post(self.from_post)
 
-        self.to_post = data.get("to_post")
+        self.to_post: Post = data.get("to_post")
         if self.to_post is not None:
             self.to_post = Post(self.to_post)
 
-        self.group = data.get("group")
+        self.group: Group = data.get("group")
         if self.group is not None:
             self.group = Group(self.group)
 
-        self.followers = data.get("followers")
+        self.followers: List[User] = data.get("followers")
         if self.followers is not None:
             self.followers = [User(follower) for follower in self.followers]
 
@@ -79,11 +79,11 @@ class Activity(Model):
         self.from_post_ids = data.get("from_post_ids")
         self.vip_reward = data.get("vip_reward")
 
-        self.metadata = data.get("metadata")
+        self.metadata: Metadata = data.get("metadata")
         if self.metadata is not None:
             self.metadata = Metadata(self.metadata)
 
-        self.birthday_users = data.get("birthday_users")
+        self.birthday_users: List[User] = data.get("birthday_users")
         if self.birthday_users is not None:
             self.birthday_users = [
                 User(birthday_user) for birthday_user in self.birthday_users
@@ -136,7 +136,7 @@ class ApplicationConfig(Model):
         self.description = data.get("description")
         self.itunes_app_id = data.get("itunes_app_id")
 
-        self.settings = data.get("settings")
+        self.settings: ApplicationConfigSettings = data.get("settings")
         if self.settings is not None:
             self.settings = ApplicationConfigSettings(self.settings)
 
@@ -302,7 +302,7 @@ class CallGiftHistory(Model):
     def __init__(self, data: dict):
         self.data = data
 
-        self.gifts_count = data.get("gifts_count")
+        self.gifts_count: List[GiftCount] = data.get("gifts_count")
         if self.gifts_count is not None:
             self.gifts_count = [
                 GiftCount(gifts_count) for gifts_count in self.gifts_count
@@ -310,7 +310,7 @@ class CallGiftHistory(Model):
 
         self.sent_at = data.get("sent_at")
 
-        self.sender = data.get("sender")
+        self.sender: User = data.get("sender")
         if self.sender is not None:
             self.sender = User(self.sender)
 
@@ -341,20 +341,20 @@ class ChatRoom(Model):
         self.unread_count = data.get("unread_count")
         self.updated_at = data.get("updated_at")
 
-        self.members = data.get("members")
+        self.members: List[User] = data.get("members")
         if self.members is not None:
             self.members = [User(member) for member in self.members]
 
         self.background = data.get("background")
 
-        self.last_message = data.get("last_message")
+        self.last_message: Message = data.get("last_message")
         if self.last_message is not None:
             self.last_message = Message(self.last_message)
 
         self.name = data.get("name")
         self.is_group = data.get("is_group")
 
-        self.owner = data.get("owner")
+        self.owner: User = data.get("owner")
         if self.owner is not None:
             self.owner = User(self.owner)
 
@@ -388,7 +388,7 @@ class MessageEvent(Model):
     def __init__(self, data: dict):
         self.data = data
 
-        self.message = data.get("data")
+        self.message: Message = data.get("data")
         if self.message is not None:
             self.message = Message(self.message)
 
@@ -413,7 +413,7 @@ class ChatRoomEvent(Model):
         self.icon_thumbnail = data.get("icon_thumbnail")
         self.id = data.get("id")
 
-        self.last_message = data.get("last_message")
+        self.last_message: Message = data.get("last_message")
         if self.last_message is not None:
             self.last_message = Message(self.last_message)
 
@@ -536,18 +536,18 @@ class ConferenceCall(Model):
         self.call_type = data.get("call_type")
         self.joinable_by = data.get("joinable_by")
 
-        self.game = data.get("game")
+        self.game: Game = data.get("game")
         if self.game is not None:
             self.game = Game(self.game)
 
-        self.genre = data.get("genre")
+        self.genre: Genre = data.get("genre")
         if self.genre is not None:
             self.genre = Genre(self.genre)
 
         self.duration_seconds = data.get("duration_seconds")
         self.max_participants = data.get("max_participants")
 
-        self.conference_call_users = data.get("conference_call_users")
+        self.conference_call_users: List[User] = data.get("conference_call_users")
         if self.conference_call_users is not None:
             self.conference_call_users = [
                 User(conference_call_user)
@@ -558,7 +558,9 @@ class ConferenceCall(Model):
         # if self.bump_params is not None:
         #     self.bump_params = BumpParams(self.bump_params)
 
-        self.conference_call_user_roles = data.get("conference_call_user_roles")
+        self.conference_call_user_roles: List[ConferenceCallUserRole] = data.get(
+            "conference_call_user_roles"
+        )
         if self.conference_call_user_roles is not None:
             self.conference_call_user_roles = [
                 ConferenceCallUserRole(conference_call_user_role)
@@ -645,7 +647,7 @@ class Footprint(Model):
     def __init__(self, data: dict):
         self.data = data
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
@@ -666,7 +668,7 @@ class Game(Model):
         self.title = data.get("title")
         self.icon_url = data.get("icon_url")
 
-        self.platform_details = data.get("platform_details")
+        self.platform_details: PlatformDetails = data.get("platform_details")
         if self.platform_details is not None:
             self.platform_details = PlatformDetails(self.platform_details)
 
@@ -711,7 +713,7 @@ class GifImageCategory(Model):
         self.name = data.get("name")
         self.language = data.get("language")
 
-        self.gifs = data.get("gifs")
+        self.gifs: List[GifImage] = data.get("gifs")
         if self.gifs is not None:
             self.gifs = [GifImage(gif) for gif in self.gifs]
 
@@ -753,11 +755,11 @@ class GiftHistory(Model):
         self.data = data
         self.transaction_at_seconds = data.get("transaction_at_seconds")
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
-        self.gifts = data.get("gifts")
+        self.gifts: List[ReceivedGift] = data.get("gifts")
         if self.gifts is not None:
             self.gifts = [ReceivedGift(gift) for gift in self.gifts]
 
@@ -862,7 +864,7 @@ class Group(Model):
         self.cover_image_thumbnail = data.get("cover_image_thumbnail")
         self.generation_groups_limit = data.get("generation_groups_limit")
 
-        self.owner = data.get("owner")
+        self.owner: User = data.get("owner")
         if self.owner is not None:
             self.owner = User(self.owner)
 
@@ -917,7 +919,7 @@ class GroupGiftHistory(Model):
     def __init__(self, data: dict):
         self.data = data
 
-        self.gifts_count = data.get("gifts_count")
+        self.gifts_count: List[GiftCount] = data.get("gifts_count")
         if self.gifts_count is not None:
             self.gifts_count = [
                 GiftCount(gifts_count) for gifts_count in self.gifts_count
@@ -925,7 +927,7 @@ class GroupGiftHistory(Model):
 
         self.received_date = data.get("received_date")
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
@@ -946,7 +948,7 @@ class GroupUser(Model):
     def __init__(self, data: dict):
         self.data = data
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
@@ -964,7 +966,7 @@ class HiddenRecommendedPost(Model):
 
     def __init__(self, data: dict):
         self.data = data
-        self.post = data.get("post")
+        self.post: Post = data.get("post")
         if self.post is not None:
             self.post = Post(self.post)
 
@@ -1022,18 +1024,18 @@ class Message(Model):
         self.attachment_read_count = data.get("attachment_read_count")
         self.attachment_thumbnail = data.get("attachment_thumbnail")
 
-        self.conference_call = data.get("conference_call")
+        self.conference_call: ConferenceCall = data.get("conference_call")
         if self.conference_call is not None:
             self.conference_call = ConferenceCall(self.conference_call)
 
-        self.parent = data.get("parent")
+        self.parent: ParentMessage = data.get("parent")
         if self.parent is not None:
             self.parent = ParentMessage(self.parent)
 
         self.created_at = data.get("created_at")
         self.font_size = data.get("font_size")
 
-        self.gif = data.get("gif")
+        self.gif: GifImage = data.get("gif")
         if self.gif is not None:
             self.gif = GifImage(self.gif)
 
@@ -1043,7 +1045,7 @@ class Message(Model):
         self.reacted = data.get("reacted")
         self.room_id = data.get("room_id")
 
-        self.sticker = data.get("sticker")
+        self.sticker: Sticker = data.get("sticker")
         if self.sticker is not None:
             self.sticker = Sticker(self.sticker)
 
@@ -1093,7 +1095,7 @@ class ParentMessage(Model):
         self.created_at = data.get("created_at")
         self.font_size = data.get("font_size")
 
-        self.gif = data.get("gif")
+        self.gif: GifImage = data.get("gif")
         if self.gif is not None:
             self.gif = GifImage(self.gif)
 
@@ -1102,7 +1104,7 @@ class ParentMessage(Model):
         self.reactions_count = data.get("reactions_count")
         self.room_id = data.get("room_id")
 
-        self.sticker = data.get("sticker")
+        self.sticker: Sticker = data.get("sticker")
         if self.sticker is not None:
             self.sticker = Sticker(self.sticker)
 
@@ -1252,19 +1254,19 @@ class Post(Model):
         self.in_reply_to_post = data.get("in_reply_to_post")
         self.in_reply_to_post_count = data.get("in_reply_to_post_count")
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
-        self.mentions = data.get("mentions")
+        self.mentions: List[User] = data.get("mentions")
         if self.mentions is not None:
             self.mentions = [User(mention) for mention in self.mentions]
 
-        self.group = data.get("group")
+        self.group: Group = data.get("group")
         if self.group is not None:
             self.group = Group(self.group)
 
-        self.conference_call = data.get("conference_call")
+        self.conference_call: ConferenceCall = data.get("conference_call")
         if self.conference_call is not None:
             self.conference_call = ConferenceCall(self.conference_call)
 
@@ -1288,25 +1290,25 @@ class Post(Model):
         self.attachment_9_thumbnail = data.get("attachment_9_thumbnail")
         self.shareable = data.get("shareable")
 
-        self.shared_url = data.get("shared_url")
+        self.shared_url: SharedUrl = data.get("shared_url")
         if self.shared_url is not None:
             self.shared_url = SharedUrl(self.shared_url)
 
-        self.survey = data.get("survey")
+        self.survey: Survey = data.get("survey")
         if self.survey is not None:
             self.survey = Survey(self.survey)
 
-        self.videos = data.get("videos")
+        self.videos: List[Video] = data.get("videos")
         if self.videos is not None:
             self.videos = [Video(video) for video in self.videos]
 
-        self.gifts_count = data.get("gifts_count")
+        self.gifts_count: List[GiftCount] = data.get("gifts_count")
         if self.gifts_count is not None:
             self.gifts_count = [
                 GiftCount(gifts_count) for gifts_count in self.gifts_count
             ]
 
-        self.shared_thread = data.get("shared_thread")
+        self.shared_thread: List[ThreadInfo] = data.get("shared_thread")
         if self.shared_thread is not None:
             self.shared_thread = [
                 ThreadInfo(shared_thread) for shared_thread in self.shared_thread
@@ -1314,13 +1316,13 @@ class Post(Model):
 
         self.thread_id = data.get("thread_id")
 
-        self.thread = data.get("thread")
+        self.thread: List[ThreadInfo] = data.get("thread")
         if self.thread is not None:
             self.thread = [ThreadInfo(thread) for thread in self.thread]
 
         self.highlighted = data.get("highlighted")
 
-        self.message_tags = data.get("message_tags")
+        self.message_tags: List[MessageTag] = data.get("message_tags")
         if self.message_tags is not None:
             self.message_tags = [
                 MessageTag(message_tag) for message_tag in self.message_tags
@@ -1339,7 +1341,7 @@ class PostGift(Model):
         self.data = data
         self.count = data.get("count")
 
-        self.gift = data.get("gift")
+        self.gift: Gift = data.get("gift")
         if self.gift is not None:
             self.gift = Gift(self.gift)
 
@@ -1393,13 +1395,13 @@ class ReceivedGift(Model):
     def __init__(self, data: dict):
         self.data = data
 
-        self.gift = data.get("gift")
+        self.gift: Gift = data.get("gift")
         if self.gift is not None:
             self.gift = Gift(self.gift)
 
         self.received_count = data.get("received_count")
 
-        self.senders = data.get("senders")
+        self.senders: List[User] = data.get("senders")
         if self.senders is not None:
             self.senders = [User(sender) for sender in self.senders]
 
@@ -1417,11 +1419,11 @@ class RecentSearch(Model):
         self.id = data.get("id")
         self.type = data.get("type")
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
-        self.hashtag = data.get("hashtag")
+        self.hashtag: PostTag = data.get("hashtag")
         if self.hashtag is not None:
             self.hashtag = PostTag(self.hashtag)
 
@@ -1462,7 +1464,7 @@ class Review(Model):
         self.comment = data.get("comment")
         self.reported_count = data.get("reported_count")
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
@@ -1659,15 +1661,15 @@ class Shareable(Model):
     def __init__(self, data: dict):
         self.data = data
 
-        self.post = data.get("post")
+        self.post: Post = data.get("post")
         if self.post is not None:
             self.post = Post(self.post)
 
-        self.group = data.get("group")
+        self.group: Group = data.get("group")
         if self.group is not None:
             self.group = Group(self.group)
 
-        self.thread = data.get("thread")
+        self.thread: ThreadInfo = data.get("thread")
         if self.thread is not None:
             self.thread = ThreadInfo(self.thread)
 
@@ -1739,7 +1741,7 @@ class StickerPack(Model):
         self.description = data.get("description")
         self.cover = data.get("cover")
 
-        self.stickers = data.get("stickers")
+        self.stickers: List[Sticker] = data.get("stickers")
         if self.stickers is not None:
             self.stickers = [Sticker(sticker) for sticker in self.stickers]
 
@@ -1757,7 +1759,7 @@ class Survey(Model):
         self.id = data.get("id")
         self.votes_count = data.get("votes_count")
 
-        self.choices = data.get("choices")
+        self.choices: List[Choice] = data.get("choices")
         if self.choices is not None:
             self.choices = [Choice(choice) for choice in self.choices]
 
@@ -1788,11 +1790,11 @@ class ThreadInfo(Model):
         self.id = data.get("id")
         self.title = data.get("title")
 
-        self.owner = data.get("owner")
+        self.owner: User = data.get("owner")
         if self.owner is not None:
             self.owner = User(self.owner)
 
-        self.last_post = data.get("last_post")
+        self.last_post: Post = data.get("last_post")
         if self.last_post is not None:
             self.last_post = Post(self.last_post)
 
@@ -1893,7 +1895,7 @@ class User(Model):
         )
         self.is_selected_interests = data.get("interests_selected")
 
-        self.group_user = data.get("group_user")
+        self.group_user: GroupUser = data.get("group_user")
         if self.group_user is not None:
             self.group_user = GroupUser(self.group_user)
 
@@ -1920,7 +1922,7 @@ class UserAuth(Model):
         self.refresh_token = data.get("refresh_token")
         self.expires_in = data.get("expires_in")
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
@@ -1935,7 +1937,7 @@ class UserWrapper(Model):
         self.data = data
         self.id = data.get("id")
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
@@ -1995,7 +1997,7 @@ class WalletTransaction(Model):
         self.description = data.get("description")
         self.amount = data.get("amount")
 
-        self.coins = data.get("coins")
+        self.coins: CoinAmount = data.get("coins")
         if self.coins is not None:
             self.coins = CoinAmount(self.coins)
 
