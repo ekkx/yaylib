@@ -37,7 +37,7 @@ yaylib では、直接 ``yaylib.Client()`` のメソッドにアクセスする�
     client.post.create_post('Hello with yaylib!')
     client.user.get_user(93)
 
-.. warning::
+.. caution::
 
     上記の非同期コードは動作しません。
 

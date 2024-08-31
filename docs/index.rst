@@ -55,9 +55,11 @@ yaylib
     install
     demo
     async
+    api/index
+    models/index
 
 .. toctree::
     :caption: Development
     :hidden:
 
-    install
+    development/index
