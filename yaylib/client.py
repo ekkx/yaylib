@@ -1735,12 +1735,12 @@ class Client(WebSocketInteractor):
             投稿に画像を付与する場合
 
             >>> # サーバー上にアップロード
-            >>> attachments = api.upload_image(
+            >>> attachments = client.upload_image(
             >>>     image_type=yaylib.ImageType.POST,
             >>>     image_paths=["./example.jpg"],
             >>> )
             >>> # サーバー上のファイル名を指定
-            >>> api.create_post(
+            >>> client.create_post(
             >>>     "Hello with yaylib!",
             >>>     attachment_filename=attachments[0].filename
             >>> )
@@ -1766,7 +1766,7 @@ class Client(WebSocketInteractor):
             >>> # サーバー上にアップロード
             >>> filename = client.upload_video("./example.mp4")
             >>> # サーバー上のファイル名を指定
-            >>> api.create_post(
+            >>> client.create_post(
             >>>     "Hello with yaylib!",
             >>>     video_file_name=filename
             >>> )
@@ -2770,13 +2770,13 @@ class Client(WebSocketInteractor):
 
         Examples:
             >>> # ルーキーを取得する:
-            >>> api.get_user_ranking(mode="one_month")
+            >>> client.get_user_ranking(mode="one_month")
 
             >>> # ミドルを取得する:
-            >>> api.get_user_ranking(mode="six_months")
+            >>> client.get_user_ranking(mode="six_months")
 
             >>> # 殿堂入りを取得する:
-            >>> api.get_user_ranking(mode="all_time")
+            >>> client.get_user_ranking(mode="all_time")
 
         Args:
             mode (str):

@@ -242,13 +242,13 @@ class UserApi:
 
         Examples:
             >>> # ルーキーを取得する:
-            >>> api.get_user_ranking(mode="one_month")
+            >>> client.get_user_ranking(mode="one_month")
 
             >>> # ミドルを取得する:
-            >>> api.get_user_ranking(mode="six_months")
+            >>> client.get_user_ranking(mode="six_months")
 
             >>> # 殿堂入りを取得する:
-            >>> api.get_user_ranking(mode="all_time")
+            >>> client.get_user_ranking(mode="all_time")
 
         Args:
             mode (str):
