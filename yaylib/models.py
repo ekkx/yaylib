@@ -1691,7 +1691,7 @@ class SharedUrl(Model):
         return f"SharedUrl(data={self.data})"
 
 
-class SnsInfo(Model):
+class SNSInfo(Model):
     __slots__ = (
         "data",
         "type",
@@ -1712,7 +1712,7 @@ class SnsInfo(Model):
         self.gender = data.get("gender")
 
     def __repr__(self):
-        return f"SnsInfo(data={self.data})"
+        return f"SNSInfo(data={self.data})"
 
 
 class Sticker(Model):

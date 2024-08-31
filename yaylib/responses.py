@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from typing import List
+
 from .models import (
     Activity,
     ApplicationConfig,
@@ -51,7 +53,7 @@ from .models import (
     Setting,
     Settings,
     SignaturePayload,
-    SnsInfo,
+    SNSInfo,
     StickerPack,
     Survey,
     ThreadInfo,
@@ -95,7 +97,7 @@ class ActiveFollowingsResponse(Response):
 
         self.last_loggedin_at = data.get("last_loggedin_at")
 
-        self.users = data.get("users")
+        self.users: List[User] = data.get("users")
         if self.users is not None:
             self.users = [User(user) for user in self.users]
 
@@ -109,7 +111,7 @@ class ActivitiesResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.activities = data.get("activities")
+        self.activities: List[Activity] = data.get("activities")
         if self.activities is not None:
             self.activities = [Activity(activity) for activity in self.activities]
 
@@ -125,7 +127,7 @@ class AdditionalSettingsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.settings = data.get("settings")
+        self.settings: Setting = data.get("settings")
         if self.settings is not None:
             self.settings = Settings(self.settings)
 
@@ -151,7 +153,7 @@ class BgmsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.bgm = data.get("bgm")
+        self.bgm: List[Bgm] = data.get("bgm")
         if self.bgm is not None:
             self.bgm = [Bgm(bgm) for bgm in self.bgm]
 
@@ -180,7 +182,7 @@ class BlockedUsersResponse(Response):
         self.blocked_count = data.get("blocked_count")
         self.last_id = data.get("last_id")
 
-        self.users = data.get("users")
+        self.users: List[User] = data.get("users")
         if self.users is not None:
             self.users = [User(user) for user in self.users]
 
@@ -220,7 +222,7 @@ class ChatRoomResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.chat = data.get("chat")
+        self.chat: ChatRoom = data.get("chat")
         if self.chat is not None:
             self.chat = ChatRoom(self.chat)
 
@@ -234,14 +236,14 @@ class ChatRoomsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.pinned_chat_rooms = data.get("pinned_chat_rooms")
+        self.pinned_chat_rooms: List[ChatRoom] = data.get("pinned_chat_rooms")
         if self.pinned_chat_rooms is not None:
             self.pinned_chat_rooms = [
                 ChatRoom(pinned_chat_room)
                 for pinned_chat_room in self.pinned_chat_rooms
             ]
 
-        self.chat_rooms = data.get("chat_rooms")
+        self.chat_rooms: List[ChatRoom] = data.get("chat_rooms")
         if self.chat_rooms is not None:
             self.chat_rooms = [ChatRoom(chat_room) for chat_room in self.chat_rooms]
 
@@ -269,7 +271,7 @@ class ConferenceCallResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.conference_call = data.get("conference_call")
+        self.conference_call: ConferenceCall = data.get("conference_call")
         if self.conference_call is not None:
             self.conference_call = ConferenceCall(self.conference_call)
 
@@ -307,7 +309,7 @@ class CreateQuotaResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.create = data.get("create")
+        self.create: CreateGroupQuota = data.get("create")
         if self.create is not None:
             self.create = CreateGroupQuota(self.create)
 
@@ -333,7 +335,7 @@ class CreatePostResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.conference_call = data.get("conference_call")
+        self.conference_call: ConferenceCall = data.get("conference_call")
         if self.conference_call is not None:
             self.conference_call = ConferenceCall(self.conference_call)
 
@@ -405,7 +407,7 @@ class PresignedUrlsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.presigned_urls = data.get("presigned_urls")
+        self.presigned_urls: List[PresignedUrl] = data.get("presigned_urls")
         if self.presigned_urls is not None:
             self.presigned_urls = [
                 PresignedUrl(presigned_url) for presigned_url in self.presigned_urls
@@ -433,7 +435,7 @@ class DefaultSettingsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.timeline_settings = data.get("timeline_settings")
+        self.timeline_settings: TimelineSettings = data.get("timeline_settings")
         if self.timeline_settings is not None:
             self.timeline_settings = TimelineSettings(self.timeline_settings)
 
@@ -449,7 +451,7 @@ class FollowRecommendationsResponse(Response):
 
         self.total = data.get("total")
 
-        self.users = data.get("users")
+        self.users: List[User] = data.get("users")
         if self.users is not None:
             self.users = [User(user) for user in self.users]
 
@@ -479,7 +481,7 @@ class FollowUsersResponse(Response):
 
         self.last_follow_id = data.get("last_follow_id")
 
-        self.users = data.get("users")
+        self.users: List[User] = data.get("users")
         if self.users is not None:
             self.users = [User(user) for user in self.users]
 
@@ -493,7 +495,7 @@ class FootprintsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.footprints = data.get("footprints")
+        self.footprints: List[Footprint] = data.get("footprints")
         if self.footprints is not None:
             self.footprints = [Footprint(footprint) for footprint in self.footprints]
 
@@ -507,7 +509,7 @@ class GamesResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.games = data.get("games")
+        self.games: List[Game] = data.get("games")
         if self.games is not None:
             self.games = [Game(game) for game in self.games]
 
@@ -523,7 +525,7 @@ class GenresResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.genres = data.get("genres")
+        self.genres: List[Genre] = data.get("genres")
         if self.genres is not None:
             self.genres = [Genre(genre) for genre in self.genres]
 
@@ -539,7 +541,7 @@ class GroupCategoriesResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.group_categories = data.get("group_categories")
+        self.group_categories: List[GroupCategory] = data.get("group_categories")
         if self.group_categories is not None:
             self.group_categories = [
                 GroupCategory(group_categorie)
@@ -556,7 +558,7 @@ class GroupGiftHistoryResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.gift_history = data.get("gift_history")
+        self.gift_history: List[GroupGiftHistory] = data.get("gift_history")
         if self.gift_history is not None:
             self.gift_history = [
                 GroupGiftHistory(gift_history) for gift_history in self.gift_history
@@ -574,7 +576,7 @@ class GroupNotificationSettingsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.setting = data.get("setting")
+        self.setting: Setting = data.get("setting")
         if self.setting is not None:
             self.setting = Setting(self.setting)
 
@@ -588,7 +590,7 @@ class GroupResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.group = data.get("group")
+        self.group: Group = data.get("group")
         if self.group is not None:
             self.group = Group(self.group)
 
@@ -602,7 +604,7 @@ class GroupsRelatedResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.groups = data.get("groups")
+        self.groups: List[Group] = data.get("groups")
         if self.groups is not None:
             self.groups = [Group(group) for group in self.groups]
 
@@ -618,13 +620,13 @@ class GroupsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.pinned_groups = data.get("pinned_groups")
+        self.pinned_groups: List[Group] = data.get("pinned_groups")
         if self.pinned_groups is not None:
             self.pinned_groups = [
                 Group(pinned_group) for pinned_group in self.pinned_groups
             ]
 
-        self.groups = data.get("groups")
+        self.groups: List[Group] = data.get("groups")
         if self.groups is not None:
             self.groups = [Group(group) for group in self.groups]
 
@@ -638,7 +640,7 @@ class GroupThreadListResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.threads = data.get("threads")
+        self.threads: List[ThreadInfo] = data.get("threads")
         if self.threads is not None:
             self.threads = [ThreadInfo(thread) for thread in self.threads]
 
@@ -654,7 +656,7 @@ class GroupUserResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.group_user = data.get("group_user")
+        self.group_user: GroupUser = data.get("group_user")
         if self.group_user is not None:
             self.group_user = GroupUser(self.group_user)
 
@@ -668,7 +670,7 @@ class GroupUsersResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.group_users = data.get("group_users")
+        self.group_users: List[GroupUser] = data.get("group_users")
         if self.group_users is not None:
             self.group_users = [
                 GroupUser(group_user) for group_user in self.group_users
@@ -684,7 +686,7 @@ class GifsDataResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.gif_categories = data.get("gif_categories")
+        self.gif_categories: List[GifImageCategory] = data.get("gif_categories")
         if self.gif_categories is not None:
             self.gif_categories = [
                 GifImageCategory(gif_category) for gif_category in self.gif_categories
@@ -700,7 +702,7 @@ class HiddenResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.hidden_users = data.get("hidden_users")
+        self.hidden_users: List[User] = data.get("hidden_users")
         if self.hidden_users is not None:
             self.hidden_users = [User(hidden_user) for hidden_user in self.hidden_users]
 
@@ -731,9 +733,9 @@ class LoginUserResponse(Response):
         self.username = data.get("username")
         self.is_new = data.get("is_new")
 
-        self.sns_info = data.get("sns_info")
+        self.sns_info: SNSInfo = data.get("sns_info")
         if self.sns_info is not None:
-            self.sns_info = SnsInfo(self.sns_info)
+            self.sns_info = SNSInfo(self.sns_info)
 
         self.access_token = data.get("access_token")
         self.refresh_token = data.get("refresh_token")
@@ -774,7 +776,7 @@ class MessageResponse(Response):
 
         self.id = data.get("id")
 
-        self.conference_call = data.get("conference_call")
+        self.conference_call: ConferenceCall = data.get("conference_call")
         if self.conference_call is not None:
             self.conference_call = ConferenceCall(self.conference_call)
 
@@ -788,7 +790,7 @@ class MessagesResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.messages = data.get("messages")
+        self.messages: List[Message] = data.get("messages")
         if self.messages is not None:
             self.messages = [Message(message) for message in self.messages]
 
@@ -815,7 +817,7 @@ class PostResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.post = data.get("post")
+        self.post: Post = data.get("post")
         if self.post is not None:
             self.post = Post(self.post)
 
@@ -831,11 +833,11 @@ class PostsResponse(Response):
 
         self.next_page_value = data.get("next_page_value")
 
-        self.posts = data.get("posts")
+        self.posts: List[Post] = data.get("posts")
         if self.posts is not None:
             self.posts = [Post(post) for post in self.posts]
 
-        self.pinned_posts = data.get("pinned_posts")
+        self.pinned_posts: List[Post] = data.get("pinned_posts")
         if self.pinned_posts is not None:
             self.pinned_posts = [Post(pinned_post) for pinned_post in self.pinned_posts]
 
@@ -851,7 +853,7 @@ class PostLikersResponse(Response):
 
         self.last_id = data.get("last_id")
 
-        self.users = data.get("users")
+        self.users: List[User] = data.get("users")
         if self.users is not None:
             self.users = [User(user) for user in self.users]
 
@@ -865,7 +867,7 @@ class PostTagsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.tags = data.get("tags")
+        self.tags: List[PostTag] = data.get("tags")
         if self.tags is not None:
             self.tags = [PostTag(tag) for tag in self.tags]
 
@@ -879,7 +881,7 @@ class PromotionsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.promotions = data.get("promotions")
+        self.promotions: List[Promotion] = data.get("promotions")
         if self.promotions is not None:
             self.promotions = [Promotion(promotion) for promotion in self.promotions]
 
@@ -917,7 +919,9 @@ class RefreshCounterRequestsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.reset_counter_requests = data.get("reset_counter_requests")
+        self.reset_counter_requests: List[RefreshCounterRequest] = data.get(
+            "reset_counter_requests"
+        )
         if self.reset_counter_requests is not None:
             self.reset_counter_requests = [
                 RefreshCounterRequest(reset_counter_request)
@@ -934,11 +938,11 @@ class ReviewsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.reviews = data.get("reviews")
+        self.reviews: List[Review] = data.get("reviews")
         if self.reviews is not None:
             self.reviews = [Review(review) for review in self.reviews]
 
-        self.pinned_reviews = data.get("pinned_reviews")
+        self.pinned_reviews: List[Review] = data.get("pinned_reviews")
         if self.pinned_reviews is not None:
             self.pinned_reviews = [
                 Review(pinned_review) for pinned_review in self.pinned_reviews
@@ -954,7 +958,7 @@ class SocialShareUsersResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.social_shared_users = data.get("social_shared_users")
+        self.social_shared_users: List[UserWrapper] = data.get("social_shared_users")
         if self.social_shared_users is not None:
             self.social_shared_users = [
                 UserWrapper(social_shared_user)
@@ -971,7 +975,7 @@ class StickerPacksResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.sticker_packs = data.get("sticker_packs")
+        self.sticker_packs: List[StickerPack] = data.get("sticker_packs")
         if self.sticker_packs is not None:
             self.sticker_packs = [
                 StickerPack(sticker_pack) for sticker_pack in self.sticker_packs
@@ -1022,7 +1026,7 @@ class VoteSurveyResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.survey = data.get("survey")
+        self.survey: Survey = data.get("survey")
         if self.survey is not None:
             self.survey = Survey(self.survey)
 
@@ -1066,7 +1070,7 @@ class UserResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.user = data.get("user")
+        self.user: User = data.get("user")
         if self.user is not None:
             self.user = User(self.user)
 
@@ -1086,7 +1090,7 @@ class UserResponse(Response):
         self.uuid = data.get("uuid")
         self.birthdate = data.get("birth_date")
 
-        self.gifting_ability = data.get("gifting_ability")
+        self.gifting_ability: GiftingAbility = data.get("gifting_ability")
         if self.gifting_ability is not None:
             self.gifting_ability = GiftingAbility(self.gifting_ability)
 
@@ -1100,7 +1104,7 @@ class UsersResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.users = data.get("users")
+        self.users: List[User] = data.get("users")
         if self.users is not None:
             self.users = [User(user) for user in self.users]
 
@@ -1116,7 +1120,7 @@ class RankingUsersResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.users = data.get("users")
+        self.users: List[User] = data.get("users")
         if self.users is not None:
             self.users = [User(user) for user in self.users]
 
@@ -1156,7 +1160,7 @@ class HimaUsersResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.hima_users = data.get("hima_users")
+        self.hima_users: List[UserWrapper] = data.get("hima_users")
         if self.hima_users is not None:
             self.hima_users = [UserWrapper(hima_user) for hima_user in self.hima_users]
 
@@ -1172,7 +1176,7 @@ class UsersByTimestampResponse(Response):
 
         self.last_timestamp = data.get("last_timestamp")
 
-        self.users = data.get("users")
+        self.users: List[User] = data.get("users")
         if self.users is not None:
             self.users = [User(user) for user in self.users]
 
@@ -1212,7 +1216,7 @@ class ApplicationConfigResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.app = data.get("app")
+        self.app: ApplicationConfig = data.get("app")
         if self.app is not None:
             self.app = ApplicationConfig(self.app)
 
@@ -1226,7 +1230,7 @@ class BanWordsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.ban_words = data.get("ban_words")
+        self.ban_words: List[BanWord] = data.get("ban_words")
         if self.ban_words is not None:
             self.ban_words = [BanWord(ban_word) for ban_word in self.ban_words]
 
@@ -1240,7 +1244,7 @@ class PopularWordsResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.popular_words = data.get("popular_words")
+        self.popular_words: List[PopularWord] = data.get("popular_words")
         if self.popular_words is not None:
             self.popular_words = [
                 PopularWord(popular_word) for popular_word in self.popular_words
@@ -1256,7 +1260,7 @@ class CallActionSignatureResponse(Response):
     def __init__(self, data: dict):
         super().__init__(data)
 
-        self.signature_payload = data.get("signature_payload")
+        self.signature_payload: SignaturePayload = data.get("signature_payload")
         if self.signature_payload is not None:
             self.signature_payload = SignaturePayload(self.signature_payload)
 
