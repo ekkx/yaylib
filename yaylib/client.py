@@ -131,11 +131,13 @@ __all__ = ["Client"]
 class RateLimit:
     """レート制限を管理するクラス"""
 
-    def __init__(self, wait_on_ratelimit: bool, max_retries: int) -> None:
+    def __init__(
+        self, wait_on_ratelimit: bool, max_retries: int, retry_after=60 * 5
+    ) -> None:
         self.__wait_on_ratelimit = wait_on_ratelimit
         self.__max_retries = max_retries
         self.__retries_performed = 0
-        self.__retry_after = 60 * 5
+        self.__retry_after = retry_after
 
     @property
     def retries_performed(self) -> int:
@@ -146,6 +148,10 @@ class RateLimit:
         """
         return self.__retries_performed
 
+    @retries_performed.setter
+    def retries_performed(self, value: int) -> None:
+        self.__retries_performed = min(value, self.__max_retries)
+
     @property
     def max_retries(self) -> int:
         """レート制限によるリトライ回数の上限
@@ -155,7 +161,8 @@ class RateLimit:
         """
         return self.__max_retries
 
-    def __max_retries_reached(self) -> bool:
+    @property
+    def max_retries_reached(self) -> bool:
         """リトライ回数上限に達したか否か"""
         return not self.__wait_on_ratelimit or (
             self.__retries_performed >= self.__max_retries
@@ -171,7 +178,7 @@ class RateLimit:
         Raises:
             Exception: リトライ回数の上限でスロー
         """
-        if not self.__wait_on_ratelimit or self.__max_retries_reached():
+        if not self.__wait_on_ratelimit or self.max_retries_reached:
             raise err
         await asyncio.sleep(self.__retry_after)
         self.__retries_performed += 1
