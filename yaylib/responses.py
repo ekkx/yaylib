@@ -1194,39 +1194,6 @@ class UserTimestampResponse(Response):
         return f"UserTimestampResponse(data={self.data})"
 
 
-class ChannelResponse(Response):
-    __slots__ = ("identifier", "message", "type", "sid")
-
-    def __init__(self, data: dict):
-        super().__init__(data)
-
-        self.identifier = data.get("identifier")
-
-        self.message = data.get("message")
-        if self.message is not None and isinstance(self.message, dict):
-            self.message = WebSocketMessageResponse(self.message)
-
-        self.type = data.get("type")
-        self.sid = data.get("sid")
-
-    def __repr__(self):
-        return f"ChannelResponse(data={self.data})"
-
-
-class WebSocketMessageResponse(Response):
-    __slots__ = ("response", "data", "event")
-
-    def __init__(self, data: dict):
-        super().__init__(data)
-
-        self.response = data
-        self.data = data.get("data")
-        self.event = data.get("event")
-
-    def __repr__(self):
-        return f"WebSocketMessageResponse(response={self.response})"
-
-
 class WebSocketTokenResponse(Response):
     __slots__ = "token"
 
