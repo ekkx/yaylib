@@ -23,7 +23,7 @@ __copyright__ = "Copyright (c) 2023 ekkx"
 # 1.0.0rc1    Release Candidate
 # 1.0.0       Final Release
 # 1.0.0.post1 Post Release
-__version__ = "1.5.0.dev4"
+__version__ = "1.5.0.b1"
 
 from .client import Client
 from .constants import *
