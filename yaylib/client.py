@@ -200,6 +200,26 @@ class HeaderManager:
         self.__content_type = "application/json;charset=UTF-8"
 
     @property
+    def locale(self):
+        """ロケール"""
+        return self.__locale
+
+    @property
+    def user_agent(self):
+        """ユーザーエージェント"""
+        return self.__user_agent
+
+    @property
+    def device_info(self) -> str:
+        """デバイス情報"""
+        return self.__device_info
+
+    @property
+    def app_version(self) -> str:
+        """アプリバージョン"""
+        return self.__app_version
+
+    @property
     def client_ip(self) -> str:
         """クライアント IP アドレス"""
         return self.__client_ip
@@ -207,6 +227,21 @@ class HeaderManager:
     @client_ip.setter
     def client_ip(self, value: str) -> None:
         self.__client_ip = value
+
+    @property
+    def connection_speed(self) -> str:
+        """コネクション速度"""
+        return self.__connection_speed
+
+    @property
+    def connection_type(self) -> str:
+        """コネクション種別"""
+        return self.__connection_type
+
+    @property
+    def content_type(self) -> str:
+        """コンテントタイプ"""
+        return self.__content_type
 
     def generate(self, jwt_required=False) -> Dict[str, str]:
         """HTTPヘッダーを生成する"""
