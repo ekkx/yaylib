@@ -194,10 +194,8 @@ class AuthApi:
         Returns:
             LoginUserResponse:
         """
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v2/users/restore",
-            json={
+        params.update(
+            {
                 "api_key": config.API_KEY,
                 "uuid": self.__client.device_uuid,
                 "timestamp": int(datetime.now().timestamp()),
@@ -206,7 +204,12 @@ class AuthApi:
                     int(datetime.now().timestamp()),
                     False,
                 ),
-            }.update(params),
+            }
+        )
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v2/users/restore",
+            json=params,
         )
 
     async def save_account_with_email(self, **params) -> LoginUpdateResponse:
@@ -221,11 +224,10 @@ class AuthApi:
         Returns:
             LoginUpdateResponse:
         """
+        params.update({"api_key": config.API_KEY})
         return await self.__client.request(
             "POST",
             config.API_HOST + "/v3/users/login_update",
-            json={
-                "api_key": config.API_KEY,
-            }.update(params),
+            json=params,
             return_type=LoginUpdateResponse,
         )

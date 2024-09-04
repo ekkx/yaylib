@@ -185,17 +185,20 @@ class GroupApi:
         Returns:
             CreateGroupResponse:
         """
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v3/groups/new",
-            json={
+        params.update(
+            {
                 "uuid": self.__client.device_uuid,
                 "api_key": config.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), True
                 ),
-            }.update(params),
+            }
+        )
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v3/groups/new",
+            json=params,
             return_type=CreateGroupResponse,
         )
 
@@ -744,17 +747,20 @@ class GroupApi:
         Returns:
             GroupResponse:
         """
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + f"/v3/groups/{group_id}/update",
-            json={
+        params.update(
+            {
                 "uuid": self.__client.device_uuid,
                 "api_key": config.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), True
                 ),
-            }.update(params),
+            }
+        )
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + f"/v3/groups/{group_id}/update",
+            json=params,
             return_type=GroupResponse,
         )
 

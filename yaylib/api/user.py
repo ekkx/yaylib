@@ -444,10 +444,8 @@ class UserApi:
         Returns:
             CreateUserResponse:
         """
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v3/users/register",
-            json={
+        params.update(
+            {
                 "app_version": config.API_VERSION_NAME,
                 "api_key": config.API_KEY,
                 "signed_version": sha256(),
@@ -456,7 +454,12 @@ class UserApi:
                     self.__client.device_uuid, int(datetime.now().timestamp()), False
                 ),
                 "uuid": self.__client.device_uuid,
-            }.update(params),
+            }
+        )
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v3/users/register",
+            json=params,
             return_type=CreateUserResponse,
         )
 
@@ -555,10 +558,8 @@ class UserApi:
         Returns:
             Response:
         """
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v2/users/edit",
-            json={
+        params.update(
+            {
                 "uuid": self.__client.device_uuid,
                 "api_key": config.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
@@ -566,7 +567,12 @@ class UserApi:
                     self.__client.device_uuid, int(datetime.now().timestamp()), True
                 ),
                 "signed_version": sha256(),
-            }.update(params),
+            }
+        )
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v2/users/edit",
+            json=params,
             return_type=Response,
         )
 
@@ -630,10 +636,8 @@ class UserApi:
         Returns:
             Response:
         """
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v3/users/edit",
-            json={
+        params.update(
+            {
                 "nickname": nickname,
                 "uuid": self.__client.device_uuid,
                 "api_key": config.API_KEY,
@@ -641,7 +645,12 @@ class UserApi:
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), True
                 ),
-            }.update(params),
+            }
+        )
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v3/users/edit",
+            json=params,
             return_type=Response,
         )
 

@@ -110,12 +110,12 @@ class PostApi:
         Returns:
             CreatePostResponse:
         """
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v1/posts/new_conference_call",
-            json={
+        params.update(
+            {
                 "text": text,
                 "uuid": self.__client.device_uuid,
                 "api_key": config.API_KEY,
@@ -123,8 +123,14 @@ class PostApi:
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), False
                 ),
-                "message_tags": [] if message_tags is None else message_tags,
-            }.update(params),
+                "message_tags": [] if result is None else message_tags,
+            }
+        )
+
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v1/posts/new_conference_call",
+            json=params,
             return_type=CreatePostResponse,
         )
 
@@ -188,7 +194,9 @@ class PostApi:
         Returns:
             Post:
         """
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
         post_type = get_post_type(
             choices=params.get("choices"),
@@ -197,7 +205,8 @@ class PostApi:
             attachment_filename=params.get("attachment_filename"),
         )
 
-        if params.get("shared_url") is not None:
+        shared_url = params.get("shared_url")
+        if shared_url is not None:
             try:
                 shared_url = (
                     await self.get_url_metadata(url=params.get("shared_url"))
@@ -206,15 +215,19 @@ class PostApi:
                 self.__client.logger.error("Unable to get the URL metadata.")
                 shared_url = None
 
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v3/posts/new",
-            json={
+        params.update(
+            {
                 "text": text,
                 "post_type": post_type,
                 "shared_url": shared_url,
-                "message_tags": [] if message_tags is None else message_tags,
-            }.update(params),
+                "message_tags": [] if result is None else message_tags,
+            }
+        )
+
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v3/posts/new",
+            json=params,
             return_type=Post,
             jwt_required=True,
         )
@@ -249,7 +262,9 @@ class PostApi:
         Returns:
             CreatePostResponse:
         """
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
         post_type = get_post_type(
             choices=params.get("choices"),
@@ -267,16 +282,20 @@ class PostApi:
                 self.__client.logger.error("Unable to get the URL metadata.")
                 shared_url = None
 
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v3/posts/repost",
-            json={
+        params.update(
+            {
                 "post_id": post_id,
                 "text": text,
                 "post_type": post_type,
                 "shared_url": shared_url,
-                "message_tags": [] if message_tags is None else message_tags,
-            }.update(params),
+                "message_tags": [] if result is None else message_tags,
+            }
+        )
+
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v3/posts/repost",
+            json=params,
             return_type=CreatePostResponse,
             jwt_required=True,
         )
@@ -297,10 +316,8 @@ class PostApi:
         Returns:
             Post:
         """
-        return await self.__client.request(
-            "POST",
-            config.API_HOST + "/v2/posts/new_share_post",
-            json={
+        params.update(
+            {
                 "shareable_type": shareable_type,
                 "shareable_id": shareable_id,
                 "text": text,
@@ -310,7 +327,12 @@ class PostApi:
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), False
                 ),
-            }.update(params),
+            }
+        )
+        return await self.__client.request(
+            "POST",
+            config.API_HOST + "/v2/posts/new_share_post",
+            json=params,
             return_type=Post,
         )
 
@@ -344,7 +366,9 @@ class PostApi:
         Returns:
             Post:
         """
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
         post_type = get_post_type(
             choices=params.get("choices"),
@@ -369,7 +393,7 @@ class PostApi:
                 "text": text,
                 "post_type": post_type,
                 "shared_url": shared_url,
-                "message_tags": [] if message_tags is None else message_tags,
+                "message_tags": [] if result is None else message_tags,
             },
             return_type=Post,
             jwt_required=True,
@@ -921,20 +945,26 @@ class PostApi:
         Returns:
             Post:
         """
-        text, message_tags = build_message_tags(text)
+        result = build_message_tags(text)
+        if result is not None:
+            text, message_tags = result
 
-        return await self.__client.request(
-            "PUT",
-            config.API_HOST + f"/v3/posts/{post_id}",
-            json={
+        params.update(
+            {
                 "text": text,
-                "message_tags": [] if message_tags is None else message_tags,
+                "message_tags": [] if result is None else message_tags,
                 "api_key": config.API_KEY,
                 "timestamp": int(datetime.now().timestamp()),
                 "signed_info": md5(
                     self.__client.device_uuid, int(datetime.now().timestamp()), False
                 ),
-            }.update(params),
+            }
+        )
+
+        return await self.__client.request(
+            "PUT",
+            config.API_HOST + f"/v3/posts/{post_id}",
+            json=params,
         )
 
     async def view_video(self, video_id: int) -> Response:
