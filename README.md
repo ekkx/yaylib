@@ -188,7 +188,7 @@ bot.run('your_email', 'your_password')
     <thead>
         <tr>
             <th><a href="https://yay.space/user/5855987">MindReader AI</a></th>
-            <th><a href="https://yay.space/user/7874560">☀️気象くん☁️</a></th>
+            <th><a href="https://yay.space/user/8271084">めいく</a></th>
             <th><a href="https://yay.space/user/7406336">GIGAZINE</a></th>
         </tr>
     </thead>
@@ -200,9 +200,9 @@ bot.run('your_email', 'your_password')
                 <p>開発者: <a href="https://yay.space/user/35152">毛の可能性</a></p>
             </td>
             <td align="center">
-                <img src="https://github.com/ekkx/yaylib/assets/77382767/4fd728a0-9b3a-427f-ac1f-70e6d6538564" width="200px">
+                <img src="https://github.com/user-attachments/assets/201cb490-29b7-4dd9-a10f-1b27d999787a" width="200px">
                 <br />
-                <p>開発者: <a href="https://yay.space/user/7520368">tori</a></p>
+                <p>開発者: <a href="https://yay.space/user/1173972">まぐ</a></p>
             </td>
             <td align="center">
                 <img src="https://github.com/ekkx/yaylib/assets/77382767/65fcb885-4fbe-4170-9378-6f8d9af61ff8" width="200px">
