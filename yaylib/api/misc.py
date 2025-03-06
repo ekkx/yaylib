@@ -330,7 +330,7 @@ class MiscApi:
 
             image_data = BytesIO()
             if x.file.format == "GIF" and x.file.is_animated:
-                x.file.save(image_data, format=x.file.format, save_all=True)
+                x.file.save(image_data, format=x.file.format, save_all=True, disposal=2)
             else:
                 x.file.save(image_data, format=x.file.format)
             image_data.seek(0)
