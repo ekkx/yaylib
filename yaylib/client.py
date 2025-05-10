@@ -2019,7 +2019,7 @@ class Client(WebSocketInteractor):
         )
 
     def create_thread_post(
-        self, post_id: int, text: Optional[str] = None, **params
+        self, thread_id: int, text: Optional[str] = None, **params
     ) -> Post:
         """スレッドの投稿を作成する
 
@@ -2048,7 +2048,7 @@ class Client(WebSocketInteractor):
         Returns:
             Post:
         """
-        return asyncio.run(self.post.create_thread_post(post_id, text, **params))
+        return asyncio.run(self.post.create_thread_post(thread_id, text, **params))
 
     def delete_all_posts(self) -> Response:
         """すべての自分の投稿を削除する
