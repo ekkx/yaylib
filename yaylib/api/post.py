@@ -377,7 +377,8 @@ class PostApi:
             attachment_filename=params.get("attachment_filename"),
         )
 
-        if params.get("shared_url") is not None:
+        shared_url = params.get("shared_url")
+        if shared_url is not None:
             try:
                 shared_url = (
                     await self.get_url_metadata(url=params.get("shared_url"))
