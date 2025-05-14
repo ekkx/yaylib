@@ -22,7 +22,7 @@ keywords = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<=3.12"
+python = ">=3.10,<3.13"
 aiohttp = "3.9.5"
 pillow = "9.3.0"
 cryptography = "41.0.1"
