@@ -18,5 +18,11 @@
 ### Testing
 
 ```shell
-python -m unittest tests.{ファイル名} -v
+python -m unittest tests.[ファイル名] -v
+```
+
+### Updating yaylib
+
+```shell
+make update VERSION=[バージョン名]
 ```
