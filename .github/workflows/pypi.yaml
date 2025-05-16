@@ -29,10 +29,6 @@ jobs:
         run: |
           poetry install
 
-      - name: Apply version
-        run: |
-          cd scripts && ./write_version.sh
-
       - name: Configure poetry
         run: poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
 
