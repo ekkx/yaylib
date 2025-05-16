@@ -58,4 +58,4 @@ yaylib では、直接 ``yaylib.Client()`` のメソッドにアクセスする�
 
         asyncio.run(do_something())
 
-    `参照 <https://docs.python.org/ja/3.12/library/asyncio-task.html>`_
+    `参照 <https://docs.python.org/ja/3.11/library/asyncio-task.html>`_

@@ -1,24 +1,20 @@
-# Docker
-.PHONY: up down shell
-
 up: # 実行環境の構築&起動
 	docker compose up -d
 	make shell
+.PHONY: up
 
 down: # コンテナ停止
 	docker compose down
+.PHONY: down
 
-shell: # コンテナのシェルを起動
+shell: # コンテナ内シェル起動
 	docker compose exec yaylib bash
+.PHONY: shell
 
-# テスト
-.PHONY: test
-
-test:
+test: # テスト実行
 	poetry run python -m unittest discover -s tests -p "test_*.py"
-
-# ドキュメント
-.PHONY: doc clean-doc
+.PHONY: test
 
 doc: # ドキュメントの生成
 	poetry run sphinx-build -M html ./docs ./docs/_build
+.PHONY: doc

@@ -863,6 +863,8 @@ async def raise_for_status(response: aiohttp.ClientResponse):
             raise HTTPForbiddenError(response)
         case 404:
             raise HTTPNotFoundError(response)
+        case 429:
+            raise HTTPRateLimitError(response)
         case status if status >= 500:
             raise HTTPInternalServerError(response)
         case status if status and not 200 <= status < 300:
