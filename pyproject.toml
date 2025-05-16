@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "yaylib"
-version = "0.0.0"
+version = "1.5.2"
 description = "同世代と趣味の通話コミュニティ - Yay! (イェイ) で投稿やタイムラインの取得、リツイートやいいねの実行、フォローや投稿の検索など様々な機能をPythonプログラムから利用可能なAPIクライアントツールです。"
 authors = ["ekkx <nikola.desuga@gmail.com>"]
 license = "MIT"
@@ -22,17 +22,16 @@ keywords = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
-aiohttp = "3.9.5"
-pillow = "9.3.0"
-cryptography = "41.0.1"
-poetry-version-plugin = "^0.2.0"
+python = ">=3.10,<3.14"
+aiohttp = "^3.11.0"
+pillow = "^11.2.0"
+cryptography = "^44.0.0"
 
 [tool.poetry.group.dev.dependencies]
-sphinx = "*"
-shibuya = "*"
-sphinx_copybutton = "*"
-sphinx-design = "*"
+sphinx = "8.0.2"
+shibuya = "2024.8.21"
+sphinx_copybutton = "0.5.2"
+sphinx-design = "0.6.1"
 
 [tool.poetry-version-plugin]
 source = "init"
