@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "yaylib"
-version = "1.5.3"
+version = "1.5.4"
 description = "同世代と趣味の通話コミュニティ - Yay! (イェイ) で投稿やタイムラインの取得、リツイートやいいねの実行、フォローや投稿の検索など様々な機能をPythonプログラムから利用可能なAPIクライアントツールです。"
 authors = ["ekkx <nikola.desuga@gmail.com>"]
 license = "MIT"

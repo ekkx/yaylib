@@ -37,7 +37,7 @@ update: update-pyproject-version update-init-version
 # pyproject.tomlのバージョンを更新
 update-pyproject-version:
 	@if [ -z "$(VERSION)" ]; then \
-		echo "❌ Version not specified. Usage: make update-version version=1.6.0"; \
+		echo "❌ Version not specified. Usage: make update VERSION=1.6.0"; \
 		exit 1; \
 	fi
 	@awk -v v="$(VERSION)" '\
