@@ -91,11 +91,12 @@ class MiscApi:
         Returns:
             Response:
         """
+        presigned_url_response = await self.get_email_verification_presigned_url(
+            email=email, locale=locale, intent=intent
+        )
         return await self.__client.request(
             "POST",
-            self.get_email_verification_presigned_url(
-                email=email, locale=locale, intent=intent
-            ).url,
+            presigned_url_response.url,
             json={"locale": locale, "email": email},
             return_type=Response,
         )
