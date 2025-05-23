@@ -373,6 +373,10 @@ class CreateSpecificGenderGroupRequiredGenderError(ClientError):
     """このサークルを作成するには性別の設定が必要です"""
 
 
+class InvalidJWTError(ClientError):
+    """JWTが不正です"""
+
+
 class GroupRelatedExceededNumberOfRelatedGroupsError(ClientError):
     """サークルの追加上限に到達しました"""
 
@@ -759,6 +763,8 @@ async def raise_for_code(response: aiohttp.ClientResponse) -> None:
             raise OnlySpecificGenderCanJoinGroupError(err)
         case -378:
             raise CreateSpecificGenderGroupRequiredGenderError(err)
+        case -379:
+            raise InvalidJWTError(err)
         case -382:
             raise GroupRelatedExceededNumberOfRelatedGroupsError(err)
         case -383:
