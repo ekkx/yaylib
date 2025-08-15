@@ -1,8 +1,8 @@
 # リアルタイムで個人チャットを取得するサンプルコード
 
 
-email = "your_email"
-password = "your_password"
+email = "dqnkids530@gmail.com"
+password = "Yuuki530"
 
 
 import yaylib
