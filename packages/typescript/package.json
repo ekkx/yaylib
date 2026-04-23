@@ -1,0 +1,32 @@
+{
+  "name": "yaylib",
+  "version": "0.0.0",
+  "description": "Unofficial TypeScript client for the Yay! API (early preview).",
+  "keywords": [
+    "yay",
+    "yaylib",
+    "client"
+  ],
+  "author": "ekkx",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ekkx/yaylib.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
