@@ -33,9 +33,9 @@
 package yaylib
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/ekkx/yaylib/gen"
@@ -56,10 +56,11 @@ const (
 	DefaultDeviceScreen  = "1440x2960"
 	DefaultDeviceModel   = "Galaxy S9"
 
-	DefaultConnectionType = "wifi"
-	DefaultAcceptLanguage = "ja"
+	DefaultConnectionType  = "wifi"
+	DefaultConnectionSpeed = "0 kbps"
+	DefaultAcceptLanguage  = "ja"
 
-	DefaultHTTPTimeout = 30 * time.Second
+	DefaultHTTPTimeout = 90 * time.Second
 )
 
 // Client is a high-level Yay! API client. Construct with NewClient(...).
@@ -83,15 +84,30 @@ type Client struct {
 	ConnectionSpeed string
 	AcceptLanguage  string
 
+	// ClientIP is sent as `X-Client-IP` on every request. It is populated
+	// lazily after the first API call by querying GetUserTimestamp and
+	// caching the returned ip_address; callers may also set it explicitly
+	// via WithClientIP.
+	ClientIP         string
+	clientIPMu       sync.Mutex
+	clientIPFetching bool
+
 	// Active credentials. The transport reads Access to set `Authorization:
 	// Bearer`. Populate via SetTokens or by restoring a cached Session.
 	Tokens *TokenStore
 
+	// refreshMu serializes 401 auto-refresh: only one refresh runs at a time.
+	refreshMu sync.Mutex
+
+	// currentEmail is the email of the account the client is logged in as,
+	// set by LoginWithEmail on success. It is used to key session-store
+	// writes when an access token is refreshed.
+	currentEmail string
+
 	transport  *Transport
 	httpClient *http.Client
 
-	sessionDBPath string
-	sessionDB     *sql.DB
+	sessionStore SessionStore
 
 	api *gen.APIClient
 
@@ -157,16 +173,24 @@ func WithConnectionType(t string) Option { return func(c *Client) { c.Connection
 // WithAcceptLanguage overrides Accept-Language (default: "ja").
 func WithAcceptLanguage(l string) Option { return func(c *Client) { c.AcceptLanguage = l } }
 
+// WithClientIP pre-sets X-Client-IP so the client does not need to perform
+// the lazy GetUserTimestamp lookup on first use.
+func WithClientIP(ip string) Option { return func(c *Client) { c.ClientIP = ip } }
+
+// WithConnectionSpeed overrides X-Connection-Speed (default: "0 kbps").
+func WithConnectionSpeed(s string) Option { return func(c *Client) { c.ConnectionSpeed = s } }
+
 // WithHTTPClient sets a custom *http.Client. The client's Transport is wrapped
 // to add Yay!-required headers.
 func WithHTTPClient(h *http.Client) Option {
 	return func(c *Client) { c.httpClient = h }
 }
 
-// WithSessionStore enables the SQLite session cache at the given path.
-// Tokens can then be restored across runs via LoadSession / SaveSession.
-func WithSessionStore(path string) Option {
-	return func(c *Client) { c.sessionDBPath = path }
+// WithSessionStore attaches a SessionStore so tokens can be restored across
+// runs. Use NewSessionStore for a JSON-file backed store, NewMemoryStore
+// for an in-process one, or provide any type satisfying SessionStore.
+func WithSessionStore(s SessionStore) Option {
+	return func(c *Client) { c.sessionStore = s }
 }
 
 // NewClient constructs a Client with all Yay! defaults filled in. Override
@@ -187,7 +211,7 @@ func NewClient(opts ...Option) (*Client, error) {
 		DeviceUUID:      NewUUIDv4(),
 		BaseURL:         DefaultBaseURL,
 		ConnectionType:  DefaultConnectionType,
-		ConnectionSpeed: "",
+		ConnectionSpeed: DefaultConnectionSpeed,
 		AcceptLanguage:  DefaultAcceptLanguage,
 		Tokens:          &TokenStore{},
 	}
@@ -207,15 +231,6 @@ func NewClient(opts ...Option) (*Client, error) {
 	}
 	c.transport = &Transport{Base: inner, client: c}
 	c.httpClient.Transport = c.transport
-
-	// Open the session cache if requested.
-	if c.sessionDBPath != "" {
-		db, err := openSessionStore(c.sessionDBPath)
-		if err != nil {
-			return nil, fmt.Errorf("open session store: %w", err)
-		}
-		c.sessionDB = db
-	}
 
 	// Build and wire the generated client.
 	cfg := gen.NewConfiguration()
@@ -267,11 +282,8 @@ func (c *Client) SetTokens(access, refresh string) {
 	c.Tokens.Refresh = refresh
 }
 
-// Close releases resources held by the client (currently the session-cache
-// DB handle). Safe to call even when no session store was configured.
+// Close releases any resources held by the client. It is safe to call
+// whether or not a session store was configured.
 func (c *Client) Close() error {
-	if c.sessionDB != nil {
-		return c.sessionDB.Close()
-	}
 	return nil
 }
