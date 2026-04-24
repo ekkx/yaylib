@@ -1,6 +1,6 @@
 package yaylib
 
-import "github.com/ekkx/yaylib/gen"
+import "github.com/ekkx/yaylib/v2/gen"
 
 // APIError is the error returned by every Client method when the Yay! server
 // responds with a non-2xx status. It exposes the raw response body via Body()

@@ -1,3 +1,3 @@
-module github.com/ekkx/yaylib
+module github.com/ekkx/yaylib/v2
 
 go 1.22

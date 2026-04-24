@@ -38,7 +38,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ekkx/yaylib/gen"
+	"github.com/ekkx/yaylib/v2/gen"
 )
 
 // Default values baked in for the public Yay! production environment.

@@ -2,7 +2,7 @@
 
 package yaylib
 
-import gen "github.com/ekkx/yaylib/gen"
+import gen "github.com/ekkx/yaylib/v2/gen"
 
 // Re-exported model and helper types from the generated client.
 // These are type aliases, so passing a *LoginEmailUserRequest to a

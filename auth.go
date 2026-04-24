@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/ekkx/yaylib/gen"
+	"github.com/ekkx/yaylib/v2/gen"
 )
 
 // LoginWithEmailRequest is the fluent builder returned by
