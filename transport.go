@@ -19,9 +19,10 @@ type TokenStore struct {
 }
 
 // Transport is an http.RoundTripper that injects every header the Yay!
-// servers expect from the official Android app, picks the right
-// Authorization scheme (Basic for /api/v1/oauth/token*, Bearer otherwise),
-// and transparently refreshes the access token on a 401 response.
+// servers require, picks the right Authorization scheme (Basic for
+// /api/v1/oauth/token*, Bearer otherwise), transparently refreshes the
+// access token on a 401, and retries transient failures (5xx, 429,
+// network errors) per the client's RetryPolicy.
 //
 // It is not intended for direct use by callers; NewClient wires one in
 // front of the client's http.Client.
@@ -33,9 +34,9 @@ type Transport struct {
 func (t *Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 	r = r.Clone(r.Context())
 
-	// Buffer the request body so a 401 retry can re-send the same payload.
-	// This reads the body into memory once; Yay! requests are small so the
-	// cost is negligible.
+	// Buffer the request body once so retries (401 refresh + 5xx/429) can
+	// re-send the same payload. Yay! request bodies are small so the
+	// memory cost is negligible.
 	var bodyBytes []byte
 	if r.Body != nil {
 		b, err := io.ReadAll(r.Body)
@@ -44,6 +45,34 @@ func (t *Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 		}
 		r.Body.Close()
 		bodyBytes = b
+	}
+
+	policy := t.client.RetryPolicy
+	maxAttempts := max(policy.MaxAttempts, 1)
+
+	var resp *http.Response
+	var err error
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		if attempt > 1 {
+			wait := nextDelay(resp, attempt, policy)
+			drainAndClose(resp)
+			if !sleepWithCtx(r.Context(), wait) {
+				return nil, r.Context().Err()
+			}
+		}
+		resp, err = t.attemptOnce(r, bodyBytes)
+		if !shouldRetry(resp, err, r.Method, policy) {
+			return resp, err
+		}
+	}
+	return resp, err
+}
+
+// attemptOnce sends one request through the base transport, with header
+// injection and 401 → token-refresh retry inline. It does NOT implement
+// the 5xx/429 retry loop — that's the caller's responsibility.
+func (t *Transport) attemptOnce(r *http.Request, bodyBytes []byte) (*http.Response, error) {
+	if bodyBytes != nil {
 		r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 	}
 
@@ -58,7 +87,7 @@ func (t *Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 
 	resp, err := t.Base.RoundTrip(r)
 	if err != nil {
-		return resp, err
+		return nil, err
 	}
 
 	// Trigger async client-IP fetch on the first request where we don't
@@ -72,8 +101,7 @@ func (t *Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 	if resp.StatusCode == http.StatusUnauthorized && !isOAuthTokenPath(r.URL.Path) {
 		return t.handle401(resp, r, bodyBytes, sentAccess), nil
 	}
-
-	return resp, err
+	return resp, nil
 }
 
 // setHeaders applies the Yay! required headers and the correct Authorization

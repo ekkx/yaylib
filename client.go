@@ -100,6 +100,11 @@ type Client struct {
 	// Bearer`. Populate via SetTokens or by restoring a cached Session.
 	Tokens *TokenStore
 
+	// RetryPolicy controls 5xx / 429 / network-error retries. Defaults to
+	// DefaultRetryPolicy(); override with WithRetryPolicy. Setting to a
+	// zero value (RetryPolicy{}) disables retries entirely.
+	RetryPolicy RetryPolicy
+
 	// refreshMu serializes 401 auto-refresh: only one refresh runs at a time.
 	refreshMu sync.Mutex
 
@@ -204,6 +209,14 @@ func WithSessionStore(s SessionStore) Option {
 	return func(c *Client) { c.sessionStore = s }
 }
 
+// WithRetryPolicy overrides the default retry behavior for transient
+// failures (5xx, 429, network errors). Pass RetryPolicy{} (zero value)
+// to disable retries entirely. See DefaultRetryPolicy for the built-in
+// defaults.
+func WithRetryPolicy(p RetryPolicy) Option {
+	return func(c *Client) { c.RetryPolicy = p }
+}
+
 // NewClient constructs a Client with all Yay! defaults filled in. Override
 // specific fields with With... options.
 func NewClient(opts ...Option) *Client {
@@ -225,6 +238,7 @@ func NewClient(opts ...Option) *Client {
 		ConnectionSpeed: DefaultConnectionSpeed,
 		AcceptLanguage:  DefaultAcceptLanguage,
 		Tokens:          &TokenStore{},
+		RetryPolicy:     DefaultRetryPolicy(),
 	}
 
 	for _, opt := range opts {
