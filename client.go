@@ -2,15 +2,12 @@
 //
 // Usage:
 //
-//	client, _ := yaylib.NewClient()
-//	req := yaylib.NewLoginEmailUserRequest()
-//	req.SetApiKey(client.APIKey)
-//	req.SetEmail(email)
-//	req.SetPassword(password)
-//	req.SetUuid(client.DeviceUUID)
-//	resp, _, err := client.
-//	    LoginWithEmail(ctx).
-//	    LoginEmailUserRequest(*req).
+//	store, _ := yaylib.NewSessionStore("sessions.json")
+//	client := yaylib.NewClient(yaylib.WithSessionStore(store))
+//
+//	resp, _, err := client.LoginWithEmail(ctx).
+//	    Email(email).
+//	    Password(password).
 //	    Execute()
 //
 // Every Yay! operation is reachable directly on *Client — for example
@@ -18,18 +15,25 @@
 //
 // The client also takes care of:
 //
-//   - the HTTP headers the Yay! servers expect from the official mobile app
-//     (User-Agent, X-App-Version, X-Device-Info, X-Device-UUID, X-Timestamp,
-//     X-Connection-*, Accept-Language) and a Bearer token once credentials
-//     have been set,
-//   - an optional SQLite session cache so you don't re-login on every run
-//     (Yay! rate-limits the login endpoint),
+//   - the HTTP headers Yay! servers require (User-Agent, X-App-Version,
+//     X-Device-Info, X-Device-UUID, X-Timestamp, X-Connection-*,
+//     Accept-Language) and the Authorization header once credentials have
+//     been set,
+//   - an optional session cache so you don't re-login on every run — Yay!
+//     rate-limits the login endpoint. Use NewSessionStore for a JSON-file
+//     backend or NewMemoryStore for an in-process one,
+//   - automatic 401 → refresh-token retry, with the refreshed access token
+//     persisted back to the session cache,
 //   - a helper that mints the short-lived HS256 `X-Jwt` token some write
-//     endpoints require (see Client.NewXJwt).
+//     endpoints require (see Client.NewXJwt),
+//   - typed error inspection: yaylib.CodeOf(err) returns an ErrorCode and
+//     yaylib.ErrorResponseOf(err) returns the parsed *ErrorResponse.
 //
-// `APIKey`, `DeviceUUID`, and the related metadata are exposed as fields so
-// callers can populate request bodies that need them (body builders replace
-// the entire body, so these fields can't be injected transparently).
+// `APIKey`, `DeviceUUID`, and related metadata are exposed as fields so
+// callers can populate request bodies that need them. (Body builders
+// replace the entire body, so these fields can't be injected transparently.
+// LoginWithEmail is the exception: its wrapper auto-fills APIKey / Uuid
+// when the caller leaves them blank.)
 package yaylib
 
 import (
@@ -104,7 +108,6 @@ type Client struct {
 	// writes when an access token is refreshed.
 	currentEmail string
 
-	transport  *Transport
 	httpClient *http.Client
 
 	sessionStore SessionStore
@@ -113,6 +116,14 @@ type Client struct {
 
 	// Every Yay! operation is promoted onto *Client through these embeds so
 	// callers use e.g. client.LoginWithEmail(ctx) without a service prefix.
+	//
+	// When a Client method shadows an embedded one (LoginWithEmail is wrapped
+	// for transparent session caching, for instance), the original gen-level
+	// method is still reachable via the embed's type-name field — e.g.
+	// client.AuthAPIService.LoginWithEmail(ctx).LoginEmailUserRequest(req).
+	// Execute(). Use this when the wrapper's chain setters lag behind a new
+	// server-side field, or when you specifically don't want the wrapper's
+	// caching / auto-injection behavior.
 	*gen.ActivitiesAPIService
 	*gen.AppsAPIService
 	*gen.AuthAPIService
@@ -195,7 +206,7 @@ func WithSessionStore(s SessionStore) Option {
 
 // NewClient constructs a Client with all Yay! defaults filled in. Override
 // specific fields with With... options.
-func NewClient(opts ...Option) (*Client, error) {
+func NewClient(opts ...Option) *Client {
 	userAgent := fmt.Sprintf("%s %s (%sx %s %s)",
 		DefaultDeviceType, DefaultDeviceOS, DefaultDeviceDensity,
 		DefaultDeviceScreen, DefaultDeviceModel)
@@ -229,8 +240,7 @@ func NewClient(opts ...Option) (*Client, error) {
 	if inner == nil {
 		inner = http.DefaultTransport
 	}
-	c.transport = &Transport{Base: inner, client: c}
-	c.httpClient.Transport = c.transport
+	c.httpClient.Transport = &Transport{Base: inner, client: c}
 
 	// Build and wire the generated client.
 	cfg := gen.NewConfiguration()
@@ -240,7 +250,7 @@ func NewClient(opts ...Option) (*Client, error) {
 	c.api = gen.NewAPIClient(cfg)
 
 	c.wireServices()
-	return c, nil
+	return c
 }
 
 func (c *Client) wireServices() {
@@ -270,20 +280,9 @@ func (c *Client) wireServices() {
 	c.UsersAPIService = a.UsersAPI
 }
 
-// API returns the underlying generated client. Use this only when you need
-// something not reachable through the promoted methods on Client (e.g. raw
-// *gen.Configuration access or adding a request interceptor).
-func (c *Client) API() *gen.APIClient { return c.api }
-
 // SetTokens activates the given access / refresh tokens for subsequent calls.
 // No persistence happens here; use SaveSession to write to the session cache.
 func (c *Client) SetTokens(access, refresh string) {
 	c.Tokens.Access = access
 	c.Tokens.Refresh = refresh
-}
-
-// Close releases any resources held by the client. It is safe to call
-// whether or not a session store was configured.
-func (c *Client) Close() error {
-	return nil
 }

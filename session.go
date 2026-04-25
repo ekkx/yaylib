@@ -233,10 +233,3 @@ func (c *Client) SaveSession(s *Session) error {
 	return nil
 }
 
-// DeleteSession removes the cached session for email.
-func (c *Client) DeleteSession(email string) error {
-	if c.sessionStore == nil {
-		return fmt.Errorf("yaylib: session store not configured (use WithSessionStore)")
-	}
-	return c.sessionStore.Delete(email)
-}

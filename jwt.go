@@ -24,12 +24,6 @@ func (c *Client) NewXJwt() string {
 	return newXJwt(c.APIVersionKey, time.Now().Unix(), 5)
 }
 
-// NewXJwtWithTTL is NewXJwt but lets the caller pick the validity window
-// (in seconds). Useful mainly for tests / debugging.
-func (c *Client) NewXJwtWithTTL(ttl time.Duration) string {
-	return newXJwt(c.APIVersionKey, time.Now().Unix(), int64(ttl.Seconds()))
-}
-
 func newXJwt(key string, iat, ttl int64) string {
 	header := base64.RawURLEncoding.EncodeToString([]byte(`{"alg":"HS256"}`))
 	payload := base64.RawURLEncoding.EncodeToString(
