@@ -107,6 +107,16 @@ type Client struct {
 	// Bearer`. Populate via SetTokens or by restoring a cached Session.
 	Tokens *TokenStore
 
+	// UserID is the numeric account ID of the currently logged-in user.
+	// It is populated automatically after a successful LoginWithEmail
+	// call (fresh login or session restore), and is used by the upload
+	// helpers (UploadAvatarImage / UploadCoverImage / UploadPostImages)
+	// to fill in the path component the Yay! servers expect. Callers
+	// who skip the login wrappers and call SetTokens directly should
+	// also set this field via WithUserID, otherwise user-bound upload
+	// methods return an error.
+	UserID int64
+
 	// RetryPolicy controls 5xx / 429 / network-error retries. Defaults to
 	// DefaultRetryPolicy(); override with WithRetryPolicy. Setting to a
 	// zero value (RetryPolicy{}) disables retries entirely.
@@ -178,6 +188,11 @@ func WithAppVersion(v string) Option { return func(c *Client) { c.AppVersion = v
 
 // WithBaseURL overrides the API base URL (default: https://api.yay.space).
 func WithBaseURL(u string) Option { return func(c *Client) { c.BaseURL = u } }
+
+// WithUserID pre-populates Client.UserID. Use this only when
+// authenticating via SetTokens (no LoginWithEmail call); the login
+// wrappers fill UserID automatically.
+func WithUserID(uid int64) Option { return func(c *Client) { c.UserID = uid } }
 
 // WithEventStreamURL overrides the event-stream endpoint used by
 // OpenEventStream (default: wss://cable.yay.space).

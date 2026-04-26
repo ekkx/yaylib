@@ -119,6 +119,7 @@ func (c *Client) maybeRestore(email string, skip bool) (*gen.LoginUserResponse, 
 		return nil, false
 	}
 	c.currentEmail = email
+	c.UserID = sess.UserID
 	resp := gen.NewLoginUserResponse()
 	resp.SetUserId(sess.UserID)
 	resp.SetAccessToken(sess.AccessToken)
@@ -132,6 +133,7 @@ func (c *Client) maybeRestore(email string, skip bool) (*gen.LoginUserResponse, 
 // a store is configured.
 func (c *Client) acceptLogin(email string, resp *gen.LoginUserResponse) {
 	c.currentEmail = email
+	c.UserID = resp.GetUserId()
 	if c.sessionStore != nil && email != "" {
 		_ = c.SaveSession(&Session{
 			Email:        email,
