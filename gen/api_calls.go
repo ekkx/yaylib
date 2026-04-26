@@ -217,13 +217,13 @@ func (a *CallsAPIService) BumpCallExecute(r ApiBumpCallRequest) (*http.Response,
 type ApiGenerateCallActionSignatureRequest struct {
 	ctx context.Context
 	ApiService *CallsAPIService
-	comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION *string
+	action *string
 	conferenceId *int64
 	targetUserUuid *string
 }
 
-func (r ApiGenerateCallActionSignatureRequest) ComUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION(comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION string) ApiGenerateCallActionSignatureRequest {
-	r.comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION = &comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION
+func (r ApiGenerateCallActionSignatureRequest) Action(action string) ApiGenerateCallActionSignatureRequest {
+	r.action = &action
 	return r
 }
 
@@ -274,8 +274,8 @@ func (a *CallsAPIService) GenerateCallActionSignatureExecute(r ApiGenerateCallAc
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION == nil {
-		return localVarReturnValue, nil, reportError("comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION is required and must be specified")
+	if r.action == nil {
+		return localVarReturnValue, nil, reportError("action is required and must be specified")
 	}
 	if r.conferenceId == nil {
 		return localVarReturnValue, nil, reportError("conferenceId is required and must be specified")
@@ -301,7 +301,7 @@ func (a *CallsAPIService) GenerateCallActionSignatureExecute(r ApiGenerateCallAc
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.unity3d.ads.core.domain.HandleInvocationsFromAdViewer.KEY_ACTION", r.comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "action", r.action, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "conference_id", r.conferenceId, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "target_user_uuid", r.targetUserUuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -543,12 +543,12 @@ type ApiGetCallGiftHistoryRequest struct {
 	ctx context.Context
 	ApiService *CallsAPIService
 	callId int64
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 	number *int32
 }
 
-func (r ApiGetCallGiftHistoryRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetCallGiftHistoryRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetCallGiftHistoryRequest) From(from string) ApiGetCallGiftHistoryRequest {
+	r.from = &from
 	return r
 }
 
@@ -600,8 +600,8 @@ func (a *CallsAPIService) GetCallGiftHistoryExecute(r ApiGetCallGiftHistoryReque
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
@@ -1893,9 +1893,9 @@ type ApiValidateCallActionSignatureRequest struct {
 	callId *int64
 	senderUuid *string
 	receiverUuid *string
-	comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
-	comUnity3dAdsMetadataInAppPurchaseMetaDataKEYSIGNATURE *string
+	action *string
+	timestamp *int64
+	signature *string
 }
 
 func (r ApiValidateCallActionSignatureRequest) CallId(callId int64) ApiValidateCallActionSignatureRequest {
@@ -1913,18 +1913,18 @@ func (r ApiValidateCallActionSignatureRequest) ReceiverUuid(receiverUuid string)
 	return r
 }
 
-func (r ApiValidateCallActionSignatureRequest) ComUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION(comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION string) ApiValidateCallActionSignatureRequest {
-	r.comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION = &comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION
+func (r ApiValidateCallActionSignatureRequest) Action(action string) ApiValidateCallActionSignatureRequest {
+	r.action = &action
 	return r
 }
 
-func (r ApiValidateCallActionSignatureRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiValidateCallActionSignatureRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
+func (r ApiValidateCallActionSignatureRequest) Timestamp(timestamp int64) ApiValidateCallActionSignatureRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
-func (r ApiValidateCallActionSignatureRequest) ComUnity3dAdsMetadataInAppPurchaseMetaDataKEYSIGNATURE(comUnity3dAdsMetadataInAppPurchaseMetaDataKEYSIGNATURE string) ApiValidateCallActionSignatureRequest {
-	r.comUnity3dAdsMetadataInAppPurchaseMetaDataKEYSIGNATURE = &comUnity3dAdsMetadataInAppPurchaseMetaDataKEYSIGNATURE
+func (r ApiValidateCallActionSignatureRequest) Signature(signature string) ApiValidateCallActionSignatureRequest {
+	r.signature = &signature
 	return r
 }
 
@@ -1972,22 +1972,22 @@ func (a *CallsAPIService) ValidateCallActionSignatureExecute(r ApiValidateCallAc
 	if r.receiverUuid == nil {
 		return nil, reportError("receiverUuid is required and must be specified")
 	}
-	if r.comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION == nil {
-		return nil, reportError("comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION is required and must be specified")
+	if r.action == nil {
+		return nil, reportError("action is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
+	if r.timestamp == nil {
+		return nil, reportError("timestamp is required and must be specified")
 	}
-	if r.comUnity3dAdsMetadataInAppPurchaseMetaDataKEYSIGNATURE == nil {
-		return nil, reportError("comUnity3dAdsMetadataInAppPurchaseMetaDataKEYSIGNATURE is required and must be specified")
+	if r.signature == nil {
+		return nil, reportError("signature is required and must be specified")
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "call_id", r.callId, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "sender_uuid", r.senderUuid, "form", "")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "receiver_uuid", r.receiverUuid, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "com.unity3d.ads.core.domain.HandleInvocationsFromAdViewer.KEY_ACTION", r.comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "com.unity3d.ads.metadata.InAppPurchaseMetaData.KEY_SIGNATURE", r.comUnity3dAdsMetadataInAppPurchaseMetaDataKEYSIGNATURE, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "action", r.action, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "timestamp", r.timestamp, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "signature", r.signature, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

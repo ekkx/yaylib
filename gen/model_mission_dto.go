@@ -14,7 +14,7 @@ var _ MappedNullable = &MissionDTO{}
 type MissionDTO struct {
 	Action NullableString `json:"action,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
-	MissionType NullableString `json:"mission_type,omitempty"`
+	MissionType NullableMissionType `json:"mission_type,omitempty"`
 	Progress NullableProgressDTO `json:"progress,omitempty"`
 	RequiredActionsCount NullableInt32 `json:"required_actions_count,omitempty"`
 	RewardPoints NullableInt32 `json:"reward_points,omitempty"`
@@ -125,9 +125,9 @@ func (o *MissionDTO) UnsetId() {
 }
 
 // GetMissionType returns the MissionType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *MissionDTO) GetMissionType() string {
+func (o *MissionDTO) GetMissionType() MissionType {
 	if o == nil || IsNil(o.MissionType.Get()) {
-		var ret string
+		var ret MissionType
 		return ret
 	}
 	return *o.MissionType.Get()
@@ -136,7 +136,7 @@ func (o *MissionDTO) GetMissionType() string {
 // GetMissionTypeOk returns a tuple with the MissionType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *MissionDTO) GetMissionTypeOk() (*string, bool) {
+func (o *MissionDTO) GetMissionTypeOk() (*MissionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -152,8 +152,8 @@ func (o *MissionDTO) HasMissionType() bool {
 	return false
 }
 
-// SetMissionType gets a reference to the given NullableString and assigns it to the MissionType field.
-func (o *MissionDTO) SetMissionType(v string) {
+// SetMissionType gets a reference to the given NullableMissionType and assigns it to the MissionType field.
+func (o *MissionDTO) SetMissionType(v MissionType) {
 	o.MissionType.Set(&v)
 }
 // SetMissionTypeNil sets the value for MissionType to be an explicit nil

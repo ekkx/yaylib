@@ -52,7 +52,7 @@ type Post struct {
 	LikesCount NullableInt32 `json:"likes_count,omitempty"`
 	Mentions []RealmUser `json:"mentions,omitempty"`
 	MessageTags []MessageTag `json:"message_tags,omitempty"`
-	PostType NullableString `json:"post_type,omitempty"`
+	PostType NullablePostType `json:"post_type,omitempty"`
 	ReportedCount NullableInt32 `json:"reported_count,omitempty"`
 	Repostable NullableBool `json:"repostable,omitempty"`
 	Reposted NullableBool `json:"reposted,omitempty"`
@@ -1736,9 +1736,9 @@ func (o *Post) SetMessageTags(v []MessageTag) {
 }
 
 // GetPostType returns the PostType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *Post) GetPostType() string {
+func (o *Post) GetPostType() PostType {
 	if o == nil || IsNil(o.PostType.Get()) {
-		var ret string
+		var ret PostType
 		return ret
 	}
 	return *o.PostType.Get()
@@ -1747,7 +1747,7 @@ func (o *Post) GetPostType() string {
 // GetPostTypeOk returns a tuple with the PostType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Post) GetPostTypeOk() (*string, bool) {
+func (o *Post) GetPostTypeOk() (*PostType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1763,8 +1763,8 @@ func (o *Post) HasPostType() bool {
 	return false
 }
 
-// SetPostType gets a reference to the given NullableString and assigns it to the PostType field.
-func (o *Post) SetPostType(v string) {
+// SetPostType gets a reference to the given NullablePostType and assigns it to the PostType field.
+func (o *Post) SetPostType(v PostType) {
 	o.PostType.Set(&v)
 }
 // SetPostTypeNil sets the value for PostType to be an explicit nil

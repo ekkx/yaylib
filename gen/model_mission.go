@@ -15,7 +15,7 @@ type Mission struct {
 	Action NullableString `json:"action,omitempty"`
 	Detail NullableString `json:"detail,omitempty"`
 	IsMultiplier NullableBool `json:"is_multiplier,omitempty"`
-	MissionType NullableString `json:"mission_type,omitempty"`
+	MissionType NullableMissionType `json:"mission_type,omitempty"`
 	RequiredActionsCount NullableInt32 `json:"required_actions_count,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -166,9 +166,9 @@ func (o *Mission) UnsetIsMultiplier() {
 }
 
 // GetMissionType returns the MissionType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *Mission) GetMissionType() string {
+func (o *Mission) GetMissionType() MissionType {
 	if o == nil || IsNil(o.MissionType.Get()) {
-		var ret string
+		var ret MissionType
 		return ret
 	}
 	return *o.MissionType.Get()
@@ -177,7 +177,7 @@ func (o *Mission) GetMissionType() string {
 // GetMissionTypeOk returns a tuple with the MissionType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Mission) GetMissionTypeOk() (*string, bool) {
+func (o *Mission) GetMissionTypeOk() (*MissionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -193,8 +193,8 @@ func (o *Mission) HasMissionType() bool {
 	return false
 }
 
-// SetMissionType gets a reference to the given NullableString and assigns it to the MissionType field.
-func (o *Mission) SetMissionType(v string) {
+// SetMissionType gets a reference to the given NullableMissionType and assigns it to the MissionType field.
+func (o *Mission) SetMissionType(v MissionType) {
 	o.MissionType.Set(&v)
 }
 // SetMissionTypeNil sets the value for MissionType to be an explicit nil

@@ -223,6 +223,7 @@ type (
 	MessageResponse                                       = gen.MessageResponse
 	MessageTag                                            = gen.MessageTag
 	MessageTagType                                        = gen.MessageTagType
+	MessageType                                           = gen.MessageType
 	MessagesResponse                                      = gen.MessagesResponse
 	Metadata                                              = gen.Metadata
 	Mission                                               = gen.Mission
@@ -232,6 +233,7 @@ type (
 	MissionItem                                           = gen.MissionItem
 	MissionSection                                        = gen.MissionSection
 	MissionSectionHeader                                  = gen.MissionSectionHeader
+	MissionType                                           = gen.MissionType
 	MissionTypeX                                          = gen.MissionTypeX
 	ModelActivity                                         = gen.ModelActivity
 	ModelCoinAmount                                       = gen.ModelCoinAmount
@@ -492,6 +494,7 @@ type (
 	NullableMessageResponse                               = gen.NullableMessageResponse
 	NullableMessageTag                                    = gen.NullableMessageTag
 	NullableMessageTagType                                = gen.NullableMessageTagType
+	NullableMessageType                                   = gen.NullableMessageType
 	NullableMessagesResponse                              = gen.NullableMessagesResponse
 	NullableMetadata                                      = gen.NullableMetadata
 	NullableMission                                       = gen.NullableMission
@@ -501,6 +504,7 @@ type (
 	NullableMissionItem                                   = gen.NullableMissionItem
 	NullableMissionSection                                = gen.NullableMissionSection
 	NullableMissionSectionHeader                          = gen.NullableMissionSectionHeader
+	NullableMissionType                                   = gen.NullableMissionType
 	NullableMissionTypeX                                  = gen.NullableMissionTypeX
 	NullableModelActivity                                 = gen.NullableModelActivity
 	NullableModelCoinAmount                               = gen.NullableModelCoinAmount
@@ -544,6 +548,7 @@ type (
 	NullableOnChainTransactionDTO                         = gen.NullableOnChainTransactionDTO
 	NullableOnChainTransactionsResponse                   = gen.NullableOnChainTransactionsResponse
 	NullableOnlineStatus                                  = gen.NullableOnlineStatus
+	NullableOnlineStatusEnum                              = gen.NullableOnlineStatusEnum
 	NullablePage                                          = gen.NullablePage
 	NullablePal                                           = gen.NullablePal
 	NullablePalActivityLog                                = gen.NullablePalActivityLog
@@ -559,6 +564,7 @@ type (
 	NullablePalGachaHistoryResponse                       = gen.NullablePalGachaHistoryResponse
 	NullablePalGachaHistoryResponseItem                   = gen.NullablePalGachaHistoryResponseItem
 	NullablePalGachaListResponse                          = gen.NullablePalGachaListResponse
+	NullablePalGrade                                      = gen.NullablePalGrade
 	NullablePalLevelUpResponse                            = gen.NullablePalLevelUpResponse
 	NullablePalListResponse                               = gen.NullablePalListResponse
 	NullablePalRaceAvailablePalListResponse               = gen.NullablePalRaceAvailablePalListResponse
@@ -590,6 +596,7 @@ type (
 	NullablePostTag                                       = gen.NullablePostTag
 	NullablePostTagsResponse                              = gen.NullablePostTagsResponse
 	NullablePostTransaction                               = gen.NullablePostTransaction
+	NullablePostType                                      = gen.NullablePostType
 	NullablePostsResponse                                 = gen.NullablePostsResponse
 	NullablePreSign                                       = gen.NullablePreSign
 	NullablePreSignApprove                                = gen.NullablePreSignApprove
@@ -758,6 +765,7 @@ type (
 	OnChainTransactionDTO                                 = gen.OnChainTransactionDTO
 	OnChainTransactionsResponse                           = gen.OnChainTransactionsResponse
 	OnlineStatus                                          = gen.OnlineStatus
+	OnlineStatusEnum                                      = gen.OnlineStatusEnum
 	Page                                                  = gen.Page
 	Pal                                                   = gen.Pal
 	PalActivityLog                                        = gen.PalActivityLog
@@ -773,6 +781,7 @@ type (
 	PalGachaHistoryResponse                               = gen.PalGachaHistoryResponse
 	PalGachaHistoryResponseItem                           = gen.PalGachaHistoryResponseItem
 	PalGachaListResponse                                  = gen.PalGachaListResponse
+	PalGrade                                              = gen.PalGrade
 	PalLevelUpResponse                                    = gen.PalLevelUpResponse
 	PalListResponse                                       = gen.PalListResponse
 	PalRaceAvailablePalListResponse                       = gen.PalRaceAvailablePalListResponse
@@ -804,6 +813,7 @@ type (
 	PostTag                                               = gen.PostTag
 	PostTagsResponse                                      = gen.PostTagsResponse
 	PostTransaction                                       = gen.PostTransaction
+	PostType                                              = gen.PostType
 	PostsResponse                                         = gen.PostsResponse
 	PreSign                                               = gen.PreSign
 	PreSignApprove                                        = gen.PreSignApprove
@@ -1399,6 +1409,7 @@ var (
 	NewMessageTagType                                            = gen.NewMessageTagType
 	NewMessageTagTypeWithDefaults                                = gen.NewMessageTagTypeWithDefaults
 	NewMessageTagWithDefaults                                    = gen.NewMessageTagWithDefaults
+	NewMessageTypeFromValue                                      = gen.NewMessageTypeFromValue
 	NewMessageWithDefaults                                       = gen.NewMessageWithDefaults
 	NewMessagesResponse                                          = gen.NewMessagesResponse
 	NewMessagesResponseWithDefaults                              = gen.NewMessagesResponseWithDefaults
@@ -1417,6 +1428,7 @@ var (
 	NewMissionSectionHeader                                      = gen.NewMissionSectionHeader
 	NewMissionSectionHeaderWithDefaults                          = gen.NewMissionSectionHeaderWithDefaults
 	NewMissionSectionWithDefaults                                = gen.NewMissionSectionWithDefaults
+	NewMissionTypeFromValue                                      = gen.NewMissionTypeFromValue
 	NewMissionTypeX                                              = gen.NewMissionTypeX
 	NewMissionTypeXWithDefaults                                  = gen.NewMissionTypeXWithDefaults
 	NewMissionWithDefaults                                       = gen.NewMissionWithDefaults
@@ -1718,6 +1730,7 @@ var (
 	NewNullableMessageResponse                                   = gen.NewNullableMessageResponse
 	NewNullableMessageTag                                        = gen.NewNullableMessageTag
 	NewNullableMessageTagType                                    = gen.NewNullableMessageTagType
+	NewNullableMessageType                                       = gen.NewNullableMessageType
 	NewNullableMessagesResponse                                  = gen.NewNullableMessagesResponse
 	NewNullableMetadata                                          = gen.NewNullableMetadata
 	NewNullableMission                                           = gen.NewNullableMission
@@ -1727,6 +1740,7 @@ var (
 	NewNullableMissionItem                                       = gen.NewNullableMissionItem
 	NewNullableMissionSection                                    = gen.NewNullableMissionSection
 	NewNullableMissionSectionHeader                              = gen.NewNullableMissionSectionHeader
+	NewNullableMissionType                                       = gen.NewNullableMissionType
 	NewNullableMissionTypeX                                      = gen.NewNullableMissionTypeX
 	NewNullableModelActivity                                     = gen.NewNullableModelActivity
 	NewNullableModelCoinAmount                                   = gen.NewNullableModelCoinAmount
@@ -1770,6 +1784,7 @@ var (
 	NewNullableOnChainTransactionDTO                             = gen.NewNullableOnChainTransactionDTO
 	NewNullableOnChainTransactionsResponse                       = gen.NewNullableOnChainTransactionsResponse
 	NewNullableOnlineStatus                                      = gen.NewNullableOnlineStatus
+	NewNullableOnlineStatusEnum                                  = gen.NewNullableOnlineStatusEnum
 	NewNullablePage                                              = gen.NewNullablePage
 	NewNullablePal                                               = gen.NewNullablePal
 	NewNullablePalActivityLog                                    = gen.NewNullablePalActivityLog
@@ -1785,6 +1800,7 @@ var (
 	NewNullablePalGachaHistoryResponse                           = gen.NewNullablePalGachaHistoryResponse
 	NewNullablePalGachaHistoryResponseItem                       = gen.NewNullablePalGachaHistoryResponseItem
 	NewNullablePalGachaListResponse                              = gen.NewNullablePalGachaListResponse
+	NewNullablePalGrade                                          = gen.NewNullablePalGrade
 	NewNullablePalLevelUpResponse                                = gen.NewNullablePalLevelUpResponse
 	NewNullablePalListResponse                                   = gen.NewNullablePalListResponse
 	NewNullablePalRaceAvailablePalListResponse                   = gen.NewNullablePalRaceAvailablePalListResponse
@@ -1816,6 +1832,7 @@ var (
 	NewNullablePostTag                                           = gen.NewNullablePostTag
 	NewNullablePostTagsResponse                                  = gen.NewNullablePostTagsResponse
 	NewNullablePostTransaction                                   = gen.NewNullablePostTransaction
+	NewNullablePostType                                          = gen.NewNullablePostType
 	NewNullablePostsResponse                                     = gen.NewNullablePostsResponse
 	NewNullablePreSign                                           = gen.NewNullablePreSign
 	NewNullablePreSignApprove                                    = gen.NewNullablePreSignApprove
@@ -1986,6 +2003,7 @@ var (
 	NewOnChainTransactionsResponse                               = gen.NewOnChainTransactionsResponse
 	NewOnChainTransactionsResponseWithDefaults                   = gen.NewOnChainTransactionsResponseWithDefaults
 	NewOnlineStatus                                              = gen.NewOnlineStatus
+	NewOnlineStatusEnumFromValue                                 = gen.NewOnlineStatusEnumFromValue
 	NewOnlineStatusWithDefaults                                  = gen.NewOnlineStatusWithDefaults
 	NewPage                                                      = gen.NewPage
 	NewPageWithDefaults                                          = gen.NewPageWithDefaults
@@ -2016,6 +2034,7 @@ var (
 	NewPalGachaListResponse                                      = gen.NewPalGachaListResponse
 	NewPalGachaListResponseWithDefaults                          = gen.NewPalGachaListResponseWithDefaults
 	NewPalGachaWithDefaults                                      = gen.NewPalGachaWithDefaults
+	NewPalGradeFromValue                                         = gen.NewPalGradeFromValue
 	NewPalLevelUpResponse                                        = gen.NewPalLevelUpResponse
 	NewPalLevelUpResponseWithDefaults                            = gen.NewPalLevelUpResponseWithDefaults
 	NewPalListResponse                                           = gen.NewPalListResponse
@@ -2078,6 +2097,7 @@ var (
 	NewPostTagsResponseWithDefaults                              = gen.NewPostTagsResponseWithDefaults
 	NewPostTransaction                                           = gen.NewPostTransaction
 	NewPostTransactionWithDefaults                               = gen.NewPostTransactionWithDefaults
+	NewPostTypeFromValue                                         = gen.NewPostTypeFromValue
 	NewPostWithDefaults                                          = gen.NewPostWithDefaults
 	NewPostsResponse                                             = gen.NewPostsResponse
 	NewPostsResponseWithDefaults                                 = gen.NewPostsResponseWithDefaults
@@ -2413,4 +2433,48 @@ var (
 	PtrInt64                                                     = gen.PtrInt64
 	PtrString                                                    = gen.PtrString
 	PtrTime                                                      = gen.PtrTime
+)
+
+// Re-exported string-enum constants in PascalCase form, so callers
+// can write yaylib.MessageTypeVideo instead of the SHOUTY_SNAKE form
+// the generator emits. Each is the same value as its gen counterpart.
+const (
+	J0AFollowingTimeline         = gen.J0A_FOLLOWING_TIMELINE
+	J0AGroupTimeline             = gen.J0A_GROUP_TIMELINE
+	J0APublicTimeline            = gen.J0A_PUBLIC_TIMELINE
+	MessageTypeDeleted           = gen.MESSAGETYPE_DELETED
+	MessageTypeEternalImage      = gen.MESSAGETYPE_ETERNAL_IMAGE
+	MessageTypeEternalVideo      = gen.MESSAGETYPE_ETERNAL_VIDEO
+	MessageTypeGif               = gen.MESSAGETYPE_GIF
+	MessageTypeImage             = gen.MESSAGETYPE_IMAGE
+	MessageTypeIndividualCall    = gen.MESSAGETYPE_INDIVIDUAL_CALL
+	MessageTypeOwnerKick         = gen.MESSAGETYPE_OWNER_KICK
+	MessageTypeScreenshotWarning = gen.MESSAGETYPE_SCREENSHOT_WARNING
+	MessageTypeSticker           = gen.MESSAGETYPE_STICKER
+	MessageTypeText              = gen.MESSAGETYPE_TEXT
+	MessageTypeUserJoined        = gen.MESSAGETYPE_USER_JOINED
+	MessageTypeUserLeave         = gen.MESSAGETYPE_USER_LEAVE
+	MessageTypeVideo             = gen.MESSAGETYPE_VIDEO
+	MissionTypeDaily             = gen.MISSIONTYPE_DAILY
+	MissionTypeOnce              = gen.MISSIONTYPE_ONCE
+	MissionTypeSpecial           = gen.MISSIONTYPE_SPECIAL
+	MissionTypeUnlimited         = gen.MISSIONTYPE_UNLIMITED
+	OnlineStatusEnumHidden       = gen.ONLINESTATUSENUM_HIDDEN
+	OnlineStatusEnumOffline      = gen.ONLINESTATUSENUM_OFFLINE
+	PalGradeEgg                  = gen.PALGRADE_EGG
+	PalGradePal                  = gen.PALGRADE_PAL
+	PalGradeSuperPal             = gen.PALGRADE_SUPER_PAL
+	PalGradeUltimatePal          = gen.PALGRADE_ULTIMATE_PAL
+	PostTypeCall                 = gen.POSTTYPE_CALL
+	PostTypeImage                = gen.POSTTYPE_IMAGE
+	PostTypeRepost               = gen.POSTTYPE_REPOST
+	PostTypeShareableGroup       = gen.POSTTYPE_SHAREABLE_GROUP
+	PostTypeShareableThread      = gen.POSTTYPE_SHAREABLE_THREAD
+	PostTypeShareableUrl         = gen.POSTTYPE_SHAREABLE_URL
+	PostTypeSharepal             = gen.POSTTYPE_SHAREPAL
+	PostTypeSurvey               = gen.POSTTYPE_SURVEY
+	PostTypeThread               = gen.POSTTYPE_THREAD
+	PostTypeUndefined            = gen.POSTTYPE_UNDEFINED
+	PostTypeVideo                = gen.POSTTYPE_VIDEO
+	PostTypeYoutube              = gen.POSTTYPE_YOUTUBE
 )

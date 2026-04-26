@@ -156,7 +156,7 @@ func (a *GamesAPIService) ListGameAppsExecute(r ApiListGameAppsRequest) (*GamesR
 type ApiListGameWalkthroughsRequest struct {
 	ctx context.Context
 	ApiService *GamesAPIService
-	comMbridgeMsdkMBridgeConstansAPPID int64
+	appId int64
 }
 
 func (r ApiListGameWalkthroughsRequest) Execute() ([]Walkthrough, *http.Response, error) {
@@ -167,14 +167,14 @@ func (r ApiListGameWalkthroughsRequest) Execute() ([]Walkthrough, *http.Response
 ListGameWalkthroughs Method for ListGameWalkthroughs
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param comMbridgeMsdkMBridgeConstansAPPID
+ @param appId
  @return ApiListGameWalkthroughsRequest
 */
-func (a *GamesAPIService) ListGameWalkthroughs(ctx context.Context, comMbridgeMsdkMBridgeConstansAPPID int64) ApiListGameWalkthroughsRequest {
+func (a *GamesAPIService) ListGameWalkthroughs(ctx context.Context, appId int64) ApiListGameWalkthroughsRequest {
 	return ApiListGameWalkthroughsRequest{
 		ApiService: a,
 		ctx: ctx,
-		comMbridgeMsdkMBridgeConstansAPPID: comMbridgeMsdkMBridgeConstansAPPID,
+		appId: appId,
 	}
 }
 
@@ -194,7 +194,7 @@ func (a *GamesAPIService) ListGameWalkthroughsExecute(r ApiListGameWalkthroughsR
 	}
 
 	localVarPath := localBasePath + "/v1/games/apps/{app_id}/walkthroughs"
-	localVarPath = strings.Replace(localVarPath, "{"+"com.mbridge.msdk.MBridgeConstans.APP_ID"+"}", url.PathEscape(parameterValueToString(r.comMbridgeMsdkMBridgeConstansAPPID, "comMbridgeMsdkMBridgeConstansAPPID")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"app_id"+"}", url.PathEscape(parameterValueToString(r.appId, "appId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

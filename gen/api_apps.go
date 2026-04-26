@@ -19,7 +19,7 @@ type AppsAPIService service
 type ApiGetAppConfigRequest struct {
 	ctx context.Context
 	ApiService *AppsAPIService
-	comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP string
+	app string
 }
 
 func (r ApiGetAppConfigRequest) Execute() (*ApplicationConfigResponse, *http.Response, error) {
@@ -30,14 +30,14 @@ func (r ApiGetAppConfigRequest) Execute() (*ApplicationConfigResponse, *http.Res
 GetAppConfig Method for GetAppConfig
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP
+ @param app
  @return ApiGetAppConfigRequest
 */
-func (a *AppsAPIService) GetAppConfig(ctx context.Context, comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP string) ApiGetAppConfigRequest {
+func (a *AppsAPIService) GetAppConfig(ctx context.Context, app string) ApiGetAppConfigRequest {
 	return ApiGetAppConfigRequest{
 		ApiService: a,
 		ctx: ctx,
-		comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP: comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP,
+		app: app,
 	}
 }
 
@@ -57,7 +57,7 @@ func (a *AppsAPIService) GetAppConfigExecute(r ApiGetAppConfigRequest) (*Applica
 	}
 
 	localVarPath := localBasePath + "/api/apps/{app}"
-	localVarPath = strings.Replace(localVarPath, "{"+"com.mbridge.msdk.MBridgeConstans.DYNAMIC_VIEW_WX_APP"+"}", url.PathEscape(parameterValueToString(r.comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP, "comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"app"+"}", url.PathEscape(parameterValueToString(r.app, "app")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

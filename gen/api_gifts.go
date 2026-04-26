@@ -20,7 +20,7 @@ type ApiListGiftsRequest struct {
 	ApiService *GiftsAPIService
 	currency *string
 	number *int32
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 }
 
 func (r ApiListGiftsRequest) Currency(currency string) ApiListGiftsRequest {
@@ -33,8 +33,8 @@ func (r ApiListGiftsRequest) Number(number int32) ApiListGiftsRequest {
 	return r
 }
 
-func (r ApiListGiftsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiListGiftsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiListGiftsRequest) From(from string) ApiListGiftsRequest {
+	r.from = &from
 	return r
 }
 
@@ -82,8 +82,8 @@ func (a *GiftsAPIService) ListGiftsExecute(r ApiListGiftsRequest) (*GiftsRespons
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

@@ -19,7 +19,7 @@ type ApiListGenresRequest struct {
 	ctx context.Context
 	ApiService *GenresAPIService
 	number *int32
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 }
 
 func (r ApiListGenresRequest) Number(number int32) ApiListGenresRequest {
@@ -27,8 +27,8 @@ func (r ApiListGenresRequest) Number(number int32) ApiListGenresRequest {
 	return r
 }
 
-func (r ApiListGenresRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiListGenresRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiListGenresRequest) From(from string) ApiListGenresRequest {
+	r.from = &from
 	return r
 }
 
@@ -74,8 +74,8 @@ func (a *GenresAPIService) ListGenresExecute(r ApiListGenresRequest) (*GenresRes
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

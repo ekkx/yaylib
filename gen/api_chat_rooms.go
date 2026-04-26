@@ -2147,7 +2147,7 @@ type ApiSendChatMessageRequest struct {
 	ctx context.Context
 	ApiService *ChatRoomsAPIService
 	id int64
-	messageType *string
+	messageType *MessageType
 	attachmentFileName *string
 	callType *string
 	fontSize *int32
@@ -2159,7 +2159,7 @@ type ApiSendChatMessageRequest struct {
 	videoFileName *string
 }
 
-func (r ApiSendChatMessageRequest) MessageType(messageType string) ApiSendChatMessageRequest {
+func (r ApiSendChatMessageRequest) MessageType(messageType MessageType) ApiSendChatMessageRequest {
 	r.messageType = &messageType
 	return r
 }

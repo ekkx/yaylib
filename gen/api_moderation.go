@@ -121,7 +121,7 @@ type ApiGetPopularWordsRequest struct {
 	ctx context.Context
 	ApiService *ModerationAPIService
 	countryApiValue string
-	comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP string
+	app string
 }
 
 func (r ApiGetPopularWordsRequest) Execute() (*PopularWordsResponse, *http.Response, error) {
@@ -133,15 +133,15 @@ GetPopularWords Method for GetPopularWords
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param countryApiValue
- @param comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP
+ @param app
  @return ApiGetPopularWordsRequest
 */
-func (a *ModerationAPIService) GetPopularWords(ctx context.Context, countryApiValue string, comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP string) ApiGetPopularWordsRequest {
+func (a *ModerationAPIService) GetPopularWords(ctx context.Context, countryApiValue string, app string) ApiGetPopularWordsRequest {
 	return ApiGetPopularWordsRequest{
 		ApiService: a,
 		ctx: ctx,
 		countryApiValue: countryApiValue,
-		comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP: comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP,
+		app: app,
 	}
 }
 
@@ -162,7 +162,7 @@ func (a *ModerationAPIService) GetPopularWordsExecute(r ApiGetPopularWordsReques
 
 	localVarPath := localBasePath + "/{countryApiValue}/api/apps/{app}/popular_words"
 	localVarPath = strings.Replace(localVarPath, "{"+"countryApiValue"+"}", url.PathEscape(parameterValueToString(r.countryApiValue, "countryApiValue")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"com.mbridge.msdk.MBridgeConstans.DYNAMIC_VIEW_WX_APP"+"}", url.PathEscape(parameterValueToString(r.comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP, "comMbridgeMsdkMBridgeConstansDYNAMICVIEWWXAPP")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"app"+"}", url.PathEscape(parameterValueToString(r.app, "app")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

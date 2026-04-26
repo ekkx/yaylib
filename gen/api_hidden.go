@@ -541,12 +541,12 @@ func (a *HiddenAPIService) ListHiddenChatsExecute(r ApiListHiddenChatsRequest) (
 type ApiListHiddenUsersRequest struct {
 	ctx context.Context
 	ApiService *HiddenAPIService
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 	number *int32
 }
 
-func (r ApiListHiddenUsersRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiListHiddenUsersRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiListHiddenUsersRequest) From(from string) ApiListHiddenUsersRequest {
+	r.from = &from
 	return r
 }
 
@@ -593,8 +593,8 @@ func (a *HiddenAPIService) ListHiddenUsersExecute(r ApiListHiddenUsersRequest) (
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")

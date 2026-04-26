@@ -21,7 +21,7 @@ type ApiListMutedGroupUsersRequest struct {
 	ApiService *GroupMuteAPIService
 	id int64
 	cursor *string
-	comArthenicaFfmpegkitMediaInformationKEYSIZE *int32
+	size *int32
 	keyword *string
 }
 
@@ -30,8 +30,8 @@ func (r ApiListMutedGroupUsersRequest) Cursor(cursor string) ApiListMutedGroupUs
 	return r
 }
 
-func (r ApiListMutedGroupUsersRequest) ComArthenicaFfmpegkitMediaInformationKEYSIZE(comArthenicaFfmpegkitMediaInformationKEYSIZE int32) ApiListMutedGroupUsersRequest {
-	r.comArthenicaFfmpegkitMediaInformationKEYSIZE = &comArthenicaFfmpegkitMediaInformationKEYSIZE
+func (r ApiListMutedGroupUsersRequest) Size(size int32) ApiListMutedGroupUsersRequest {
+	r.size = &size
 	return r
 }
 
@@ -85,15 +85,15 @@ func (a *GroupMuteAPIService) ListMutedGroupUsersExecute(r ApiListMutedGroupUser
 	if r.cursor == nil {
 		return localVarReturnValue, nil, reportError("cursor is required and must be specified")
 	}
-	if r.comArthenicaFfmpegkitMediaInformationKEYSIZE == nil {
-		return localVarReturnValue, nil, reportError("comArthenicaFfmpegkitMediaInformationKEYSIZE is required and must be specified")
+	if r.size == nil {
+		return localVarReturnValue, nil, reportError("size is required and must be specified")
 	}
 
 	if r.keyword != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "keyword", r.keyword, "form", "")
 	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "com.arthenica.ffmpegkit.MediaInformation.KEY_SIZE", r.comArthenicaFfmpegkitMediaInformationKEYSIZE, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "size", r.size, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

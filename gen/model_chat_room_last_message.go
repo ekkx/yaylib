@@ -15,7 +15,7 @@ type ChatRoomLastMessage struct {
 	ConferenceCall NullableRealmConferenceCall `json:"conference_call,omitempty"`
 	CreatedAt NullableInt64 `json:"created_at,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
-	MessageType NullableString `json:"message_type,omitempty"`
+	MessageType NullableMessageType `json:"message_type,omitempty"`
 	RoomId NullableInt64 `json:"room_id,omitempty"`
 	Text NullableString `json:"text,omitempty"`
 	UserId NullableInt64 `json:"user_id,omitempty"`
@@ -168,9 +168,9 @@ func (o *ChatRoomLastMessage) UnsetId() {
 }
 
 // GetMessageType returns the MessageType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ChatRoomLastMessage) GetMessageType() string {
+func (o *ChatRoomLastMessage) GetMessageType() MessageType {
 	if o == nil || IsNil(o.MessageType.Get()) {
-		var ret string
+		var ret MessageType
 		return ret
 	}
 	return *o.MessageType.Get()
@@ -179,7 +179,7 @@ func (o *ChatRoomLastMessage) GetMessageType() string {
 // GetMessageTypeOk returns a tuple with the MessageType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ChatRoomLastMessage) GetMessageTypeOk() (*string, bool) {
+func (o *ChatRoomLastMessage) GetMessageTypeOk() (*MessageType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -195,8 +195,8 @@ func (o *ChatRoomLastMessage) HasMessageType() bool {
 	return false
 }
 
-// SetMessageType gets a reference to the given NullableString and assigns it to the MessageType field.
-func (o *ChatRoomLastMessage) SetMessageType(v string) {
+// SetMessageType gets a reference to the given NullableMessageType and assigns it to the MessageType field.
+func (o *ChatRoomLastMessage) SetMessageType(v MessageType) {
 	o.MessageType.Set(&v)
 }
 // SetMessageTypeNil sets the value for MessageType to be an explicit nil

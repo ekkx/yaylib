@@ -24,7 +24,7 @@ type RealmMessage struct {
 	Invitation NullableChatInvitation `json:"invitation,omitempty"`
 	IsError NullableBool `json:"is_error,omitempty"`
 	IsSent NullableBool `json:"is_sent,omitempty"`
-	MessageType NullableString `json:"message_type,omitempty"`
+	MessageType NullableMessageType `json:"message_type,omitempty"`
 	Parent NullableParentMessage `json:"parent,omitempty"`
 	RefreshRetryCount NullableInt32 `json:"refresh_retry_count,omitempty"`
 	RoomId NullableInt64 `json:"room_id,omitempty"`
@@ -561,9 +561,9 @@ func (o *RealmMessage) UnsetIsSent() {
 }
 
 // GetMessageType returns the MessageType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RealmMessage) GetMessageType() string {
+func (o *RealmMessage) GetMessageType() MessageType {
 	if o == nil || IsNil(o.MessageType.Get()) {
-		var ret string
+		var ret MessageType
 		return ret
 	}
 	return *o.MessageType.Get()
@@ -572,7 +572,7 @@ func (o *RealmMessage) GetMessageType() string {
 // GetMessageTypeOk returns a tuple with the MessageType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RealmMessage) GetMessageTypeOk() (*string, bool) {
+func (o *RealmMessage) GetMessageTypeOk() (*MessageType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -588,8 +588,8 @@ func (o *RealmMessage) HasMessageType() bool {
 	return false
 }
 
-// SetMessageType gets a reference to the given NullableString and assigns it to the MessageType field.
-func (o *RealmMessage) SetMessageType(v string) {
+// SetMessageType gets a reference to the given NullableMessageType and assigns it to the MessageType field.
+func (o *RealmMessage) SetMessageType(v MessageType) {
 	o.MessageType.Set(&v)
 }
 // SetMessageTypeNil sets the value for MessageType to be an explicit nil

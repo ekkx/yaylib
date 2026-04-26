@@ -200,15 +200,10 @@ func (a *UsersAPIService) BlockUserExecute(r ApiBlockUserRequest) (*http.Respons
 type ApiChangeEmailRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
-	androidxAutofillHintConstantsAUTOFILLHINTPASSWORD *string
 	apiKey *string
 	email *string
+	password *string
 	emailGrantToken *string
-}
-
-func (r ApiChangeEmailRequest) AndroidxAutofillHintConstantsAUTOFILLHINTPASSWORD(androidxAutofillHintConstantsAUTOFILLHINTPASSWORD string) ApiChangeEmailRequest {
-	r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD = &androidxAutofillHintConstantsAUTOFILLHINTPASSWORD
-	return r
 }
 
 func (r ApiChangeEmailRequest) ApiKey(apiKey string) ApiChangeEmailRequest {
@@ -218,6 +213,11 @@ func (r ApiChangeEmailRequest) ApiKey(apiKey string) ApiChangeEmailRequest {
 
 func (r ApiChangeEmailRequest) Email(email string) ApiChangeEmailRequest {
 	r.email = &email
+	return r
+}
+
+func (r ApiChangeEmailRequest) Password(password string) ApiChangeEmailRequest {
+	r.password = &password
 	return r
 }
 
@@ -263,14 +263,14 @@ func (a *UsersAPIService) ChangeEmailExecute(r ApiChangeEmailRequest) (*LoginUpd
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD == nil {
-		return localVarReturnValue, nil, reportError("androidxAutofillHintConstantsAUTOFILLHINTPASSWORD is required and must be specified")
-	}
 	if r.apiKey == nil {
 		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
 	}
 	if r.email == nil {
 		return localVarReturnValue, nil, reportError("email is required and must be specified")
+	}
+	if r.password == nil {
+		return localVarReturnValue, nil, reportError("password is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -290,12 +290,12 @@ func (a *UsersAPIService) ChangeEmailExecute(r ApiChangeEmailRequest) (*LoginUpd
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "androidx.autofill.HintConstants.AUTOFILL_HINT_PASSWORD", r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
 	if r.emailGrantToken != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "email_grant_token", r.emailGrantToken, "", "")
 	}
+	parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -336,14 +336,9 @@ func (a *UsersAPIService) ChangeEmailExecute(r ApiChangeEmailRequest) (*LoginUpd
 type ApiChangePasswordRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
-	androidxAutofillHintConstantsAUTOFILLHINTPASSWORD *string
 	apiKey *string
 	currentPassword *string
-}
-
-func (r ApiChangePasswordRequest) AndroidxAutofillHintConstantsAUTOFILLHINTPASSWORD(androidxAutofillHintConstantsAUTOFILLHINTPASSWORD string) ApiChangePasswordRequest {
-	r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD = &androidxAutofillHintConstantsAUTOFILLHINTPASSWORD
-	return r
+	password *string
 }
 
 func (r ApiChangePasswordRequest) ApiKey(apiKey string) ApiChangePasswordRequest {
@@ -353,6 +348,11 @@ func (r ApiChangePasswordRequest) ApiKey(apiKey string) ApiChangePasswordRequest
 
 func (r ApiChangePasswordRequest) CurrentPassword(currentPassword string) ApiChangePasswordRequest {
 	r.currentPassword = &currentPassword
+	return r
+}
+
+func (r ApiChangePasswordRequest) Password(password string) ApiChangePasswordRequest {
+	r.password = &password
 	return r
 }
 
@@ -393,14 +393,14 @@ func (a *UsersAPIService) ChangePasswordExecute(r ApiChangePasswordRequest) (*Lo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD == nil {
-		return localVarReturnValue, nil, reportError("androidxAutofillHintConstantsAUTOFILLHINTPASSWORD is required and must be specified")
-	}
 	if r.apiKey == nil {
 		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
 	}
 	if r.currentPassword == nil {
 		return localVarReturnValue, nil, reportError("currentPassword is required and must be specified")
+	}
+	if r.password == nil {
+		return localVarReturnValue, nil, reportError("password is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -420,9 +420,9 @@ func (a *UsersAPIService) ChangePasswordExecute(r ApiChangePasswordRequest) (*Lo
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "androidx.autofill.HintConstants.AUTOFILL_HINT_PASSWORD", r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "current_password", r.currentPassword, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -569,20 +569,15 @@ type ApiCreateReviewRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	comment *string
 	signedInfo *string
+	timestamp *int64
 	userIds *[]int64
 	uuid *string
 }
 
 func (r ApiCreateReviewRequest) ApiKey(apiKey string) ApiCreateReviewRequest {
 	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiCreateReviewRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiCreateReviewRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
 	return r
 }
 
@@ -593,6 +588,11 @@ func (r ApiCreateReviewRequest) Comment(comment string) ApiCreateReviewRequest {
 
 func (r ApiCreateReviewRequest) SignedInfo(signedInfo string) ApiCreateReviewRequest {
 	r.signedInfo = &signedInfo
+	return r
+}
+
+func (r ApiCreateReviewRequest) Timestamp(timestamp int64) ApiCreateReviewRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -644,14 +644,14 @@ func (a *UsersAPIService) CreateReviewExecute(r ApiCreateReviewRequest) (*http.R
 	if r.apiKey == nil {
 		return nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.comment == nil {
 		return nil, reportError("comment is required and must be specified")
 	}
 	if r.signedInfo == nil {
 		return nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return nil, reportError("timestamp is required and must be specified")
 	}
 	if r.userIds == nil {
 		return nil, reportError("userIds is required and must be specified")
@@ -678,9 +678,9 @@ func (a *UsersAPIService) CreateReviewExecute(r ApiCreateReviewRequest) (*http.R
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "comment", r.comment, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "user_ids[]", r.userIds, "", "csv")
 	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -1109,9 +1109,9 @@ type ApiEditUserRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	nickname *string
 	signedInfo *string
+	timestamp *int64
 	uuid *string
 	biography *string
 	countryCode *string
@@ -1127,11 +1127,6 @@ func (r ApiEditUserRequest) ApiKey(apiKey string) ApiEditUserRequest {
 	return r
 }
 
-func (r ApiEditUserRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiEditUserRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
-	return r
-}
-
 func (r ApiEditUserRequest) Nickname(nickname string) ApiEditUserRequest {
 	r.nickname = &nickname
 	return r
@@ -1139,6 +1134,11 @@ func (r ApiEditUserRequest) Nickname(nickname string) ApiEditUserRequest {
 
 func (r ApiEditUserRequest) SignedInfo(signedInfo string) ApiEditUserRequest {
 	r.signedInfo = &signedInfo
+	return r
+}
+
+func (r ApiEditUserRequest) Timestamp(timestamp int64) ApiEditUserRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -1220,14 +1220,14 @@ func (a *UsersAPIService) EditUserExecute(r ApiEditUserRequest) (*http.Response,
 	if r.apiKey == nil {
 		return nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.nickname == nil {
 		return nil, reportError("nickname is required and must be specified")
 	}
 	if r.signedInfo == nil {
 		return nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return nil, reportError("timestamp is required and must be specified")
 	}
 	if r.uuid == nil {
 		return nil, reportError("uuid is required and must be specified")
@@ -1254,7 +1254,6 @@ func (a *UsersAPIService) EditUserExecute(r ApiEditUserRequest) (*http.Response,
 	if r.biography != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "biography", r.biography, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	if r.countryCode != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "country_code", r.countryCode, "", "")
 	}
@@ -1272,6 +1271,7 @@ func (a *UsersAPIService) EditUserExecute(r ApiEditUserRequest) (*http.Response,
 		parameterAddToHeaderOrQuery(localVarFormParams, "profile_icon_filename", r.profileIconFilename, "", "")
 	}
 	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	if r.username != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "username", r.username, "", "")
 	}
@@ -1308,20 +1308,15 @@ type ApiEditUserV2Request struct {
 	ctx context.Context
 	ApiService *UsersAPIService
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	isPrivate *bool
 	nickname *string
 	signedInfo *string
+	timestamp *int64
 	uuid *string
 }
 
 func (r ApiEditUserV2Request) ApiKey(apiKey string) ApiEditUserV2Request {
 	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiEditUserV2Request) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiEditUserV2Request {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
 	return r
 }
 
@@ -1337,6 +1332,11 @@ func (r ApiEditUserV2Request) Nickname(nickname string) ApiEditUserV2Request {
 
 func (r ApiEditUserV2Request) SignedInfo(signedInfo string) ApiEditUserV2Request {
 	r.signedInfo = &signedInfo
+	return r
+}
+
+func (r ApiEditUserV2Request) Timestamp(timestamp int64) ApiEditUserV2Request {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -1383,9 +1383,6 @@ func (a *UsersAPIService) EditUserV2Execute(r ApiEditUserV2Request) (*http.Respo
 	if r.apiKey == nil {
 		return nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.isPrivate == nil {
 		return nil, reportError("isPrivate is required and must be specified")
 	}
@@ -1394,6 +1391,9 @@ func (a *UsersAPIService) EditUserV2Execute(r ApiEditUserV2Request) (*http.Respo
 	}
 	if r.signedInfo == nil {
 		return nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return nil, reportError("timestamp is required and must be specified")
 	}
 	if r.uuid == nil {
 		return nil, reportError("uuid is required and must be specified")
@@ -1417,10 +1417,10 @@ func (a *UsersAPIService) EditUserV2Execute(r ApiEditUserV2Request) (*http.Respo
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "is_private", r.isPrivate, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "nickname", r.nickname, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
@@ -2196,11 +2196,11 @@ type ApiGetBookmarkedPostsRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
 	userId int64
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 }
 
-func (r ApiGetBookmarkedPostsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetBookmarkedPostsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetBookmarkedPostsRequest) From(from string) ApiGetBookmarkedPostsRequest {
+	r.from = &from
 	return r
 }
 
@@ -2245,8 +2245,8 @@ func (a *UsersAPIService) GetBookmarkedPostsExecute(r ApiGetBookmarkedPostsReque
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2848,7 +2848,7 @@ type ApiGetFootprintsRequest struct {
 	ApiService *UsersAPIService
 	number *int32
 	mode *string
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 }
 
 func (r ApiGetFootprintsRequest) Number(number int32) ApiGetFootprintsRequest {
@@ -2861,8 +2861,8 @@ func (r ApiGetFootprintsRequest) Mode(mode string) ApiGetFootprintsRequest {
 	return r
 }
 
-func (r ApiGetFootprintsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetFootprintsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetFootprintsRequest) From(from string) ApiGetFootprintsRequest {
+	r.from = &from
 	return r
 }
 
@@ -2913,8 +2913,8 @@ func (a *UsersAPIService) GetFootprintsExecute(r ApiGetFootprintsRequest) (*Foot
 		parameterAddToHeaderOrQuery(localVarQueryParams, "mode", r.mode, "form", "")
 	}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4106,13 +4106,13 @@ type ApiGetUserFollowersRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
 	id int64
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *int64
+	from *int64
 	followedByMe *bool
 	userNickname *string
 }
 
-func (r ApiGetUserFollowersRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM int64) ApiGetUserFollowersRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetUserFollowersRequest) From(from int64) ApiGetUserFollowersRequest {
+	r.from = &from
 	return r
 }
 
@@ -4167,8 +4167,8 @@ func (a *UsersAPIService) GetUserFollowersExecute(r ApiGetUserFollowersRequest) 
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	if r.followedByMe != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "followed_by_me", r.followedByMe, "form", "")
@@ -4234,14 +4234,14 @@ type ApiGetUserFollowingsRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
 	id int64
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *int64
+	from *int64
 	fromTimestamp *int64
 	orderBy *string
 	userNickname *string
 }
 
-func (r ApiGetUserFollowingsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM int64) ApiGetUserFollowingsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetUserFollowingsRequest) From(from int64) ApiGetUserFollowingsRequest {
+	r.from = &from
 	return r
 }
 
@@ -4301,8 +4301,8 @@ func (a *UsersAPIService) GetUserFollowingsExecute(r ApiGetUserFollowingsRequest
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	if r.fromTimestamp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_timestamp", r.fromTimestamp, "form", "")
@@ -4372,7 +4372,7 @@ type ApiGetUserGiftTransactionsRequest struct {
 	ApiService *UsersAPIService
 	userId int64
 	number *int32
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 }
 
 func (r ApiGetUserGiftTransactionsRequest) Number(number int32) ApiGetUserGiftTransactionsRequest {
@@ -4380,8 +4380,8 @@ func (r ApiGetUserGiftTransactionsRequest) Number(number int32) ApiGetUserGiftTr
 	return r
 }
 
-func (r ApiGetUserGiftTransactionsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetUserGiftTransactionsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetUserGiftTransactionsRequest) From(from string) ApiGetUserGiftTransactionsRequest {
+	r.from = &from
 	return r
 }
 
@@ -4431,8 +4431,8 @@ func (a *UsersAPIService) GetUserGiftTransactionsExecute(r ApiGetUserGiftTransac
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -5695,20 +5695,15 @@ type ApiReplyToReviewRequest struct {
 	ApiService *UsersAPIService
 	id int64
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	comment *string
 	signedInfo *string
+	timestamp *int64
 	uuid *string
 	context *string
 }
 
 func (r ApiReplyToReviewRequest) ApiKey(apiKey string) ApiReplyToReviewRequest {
 	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiReplyToReviewRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiReplyToReviewRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
 	return r
 }
 
@@ -5719,6 +5714,11 @@ func (r ApiReplyToReviewRequest) Comment(comment string) ApiReplyToReviewRequest
 
 func (r ApiReplyToReviewRequest) SignedInfo(signedInfo string) ApiReplyToReviewRequest {
 	r.signedInfo = &signedInfo
+	return r
+}
+
+func (r ApiReplyToReviewRequest) Timestamp(timestamp int64) ApiReplyToReviewRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -5773,14 +5773,14 @@ func (a *UsersAPIService) ReplyToReviewExecute(r ApiReplyToReviewRequest) (*http
 	if r.apiKey == nil {
 		return nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.comment == nil {
 		return nil, reportError("comment is required and must be specified")
 	}
 	if r.signedInfo == nil {
 		return nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return nil, reportError("timestamp is required and must be specified")
 	}
 	if r.uuid == nil {
 		return nil, reportError("uuid is required and must be specified")
@@ -5804,12 +5804,12 @@ func (a *UsersAPIService) ReplyToReviewExecute(r ApiReplyToReviewRequest) (*http
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "comment", r.comment, "", "")
 	if r.context != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "context", r.context, "", "")
 	}
 	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
@@ -5988,11 +5988,11 @@ type ApiRequestFollowRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
 	targetId int64
-	comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION *string
+	action *string
 }
 
-func (r ApiRequestFollowRequest) ComUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION(comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION string) ApiRequestFollowRequest {
-	r.comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION = &comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION
+func (r ApiRequestFollowRequest) Action(action string) ApiRequestFollowRequest {
+	r.action = &action
 	return r
 }
 
@@ -6034,8 +6034,8 @@ func (a *UsersAPIService) RequestFollowExecute(r ApiRequestFollowRequest) (*http
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION == nil {
-		return nil, reportError("comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION is required and must be specified")
+	if r.action == nil {
+		return nil, reportError("action is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -6055,7 +6055,7 @@ func (a *UsersAPIService) RequestFollowExecute(r ApiRequestFollowRequest) (*http
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.unity3d.ads.core.domain.HandleInvocationsFromAdViewer.KEY_ACTION", r.comUnity3dAdsCoreDomainHandleInvocationsFromAdViewerKEYACTION, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "action", r.action, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -6269,14 +6269,9 @@ func (a *UsersAPIService) ResetCountersExecute(r ApiResetCountersRequest) (*http
 type ApiResetPasswordRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
-	androidxAutofillHintConstantsAUTOFILLHINTPASSWORD *string
 	email *string
 	emailGrantToken *string
-}
-
-func (r ApiResetPasswordRequest) AndroidxAutofillHintConstantsAUTOFILLHINTPASSWORD(androidxAutofillHintConstantsAUTOFILLHINTPASSWORD string) ApiResetPasswordRequest {
-	r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD = &androidxAutofillHintConstantsAUTOFILLHINTPASSWORD
-	return r
+	password *string
 }
 
 func (r ApiResetPasswordRequest) Email(email string) ApiResetPasswordRequest {
@@ -6286,6 +6281,11 @@ func (r ApiResetPasswordRequest) Email(email string) ApiResetPasswordRequest {
 
 func (r ApiResetPasswordRequest) EmailGrantToken(emailGrantToken string) ApiResetPasswordRequest {
 	r.emailGrantToken = &emailGrantToken
+	return r
+}
+
+func (r ApiResetPasswordRequest) Password(password string) ApiResetPasswordRequest {
+	r.password = &password
 	return r
 }
 
@@ -6324,14 +6324,14 @@ func (a *UsersAPIService) ResetPasswordExecute(r ApiResetPasswordRequest) (*http
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD == nil {
-		return nil, reportError("androidxAutofillHintConstantsAUTOFILLHINTPASSWORD is required and must be specified")
-	}
 	if r.email == nil {
 		return nil, reportError("email is required and must be specified")
 	}
 	if r.emailGrantToken == nil {
 		return nil, reportError("emailGrantToken is required and must be specified")
+	}
+	if r.password == nil {
+		return nil, reportError("password is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -6351,9 +6351,9 @@ func (a *UsersAPIService) ResetPasswordExecute(r ApiResetPasswordRequest) (*http
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "androidx.autofill.HintConstants.AUTOFILL_HINT_PASSWORD", r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "email_grant_token", r.emailGrantToken, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -6945,19 +6945,14 @@ type ApiUpdateLanguageRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	language *string
 	signedInfo *string
+	timestamp *int64
 	uuid *string
 }
 
 func (r ApiUpdateLanguageRequest) ApiKey(apiKey string) ApiUpdateLanguageRequest {
 	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiUpdateLanguageRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiUpdateLanguageRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
 	return r
 }
 
@@ -6968,6 +6963,11 @@ func (r ApiUpdateLanguageRequest) Language(language string) ApiUpdateLanguageReq
 
 func (r ApiUpdateLanguageRequest) SignedInfo(signedInfo string) ApiUpdateLanguageRequest {
 	r.signedInfo = &signedInfo
+	return r
+}
+
+func (r ApiUpdateLanguageRequest) Timestamp(timestamp int64) ApiUpdateLanguageRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -7014,14 +7014,14 @@ func (a *UsersAPIService) UpdateLanguageExecute(r ApiUpdateLanguageRequest) (*ht
 	if r.apiKey == nil {
 		return nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.language == nil {
 		return nil, reportError("language is required and must be specified")
 	}
 	if r.signedInfo == nil {
 		return nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return nil, reportError("timestamp is required and must be specified")
 	}
 	if r.uuid == nil {
 		return nil, reportError("uuid is required and must be specified")
@@ -7045,9 +7045,9 @@ func (a *UsersAPIService) UpdateLanguageExecute(r ApiUpdateLanguageRequest) (*ht
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "language", r.language, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
@@ -7082,9 +7082,9 @@ type ApiUpdateLoginRequest struct {
 	ApiService *UsersAPIService
 	apiKey *string
 	email *string
-	androidxAutofillHintConstantsAUTOFILLHINTPASSWORD *string
 	currentPassword *string
 	emailGrantToken *string
+	password *string
 }
 
 func (r ApiUpdateLoginRequest) ApiKey(apiKey string) ApiUpdateLoginRequest {
@@ -7097,11 +7097,6 @@ func (r ApiUpdateLoginRequest) Email(email string) ApiUpdateLoginRequest {
 	return r
 }
 
-func (r ApiUpdateLoginRequest) AndroidxAutofillHintConstantsAUTOFILLHINTPASSWORD(androidxAutofillHintConstantsAUTOFILLHINTPASSWORD string) ApiUpdateLoginRequest {
-	r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD = &androidxAutofillHintConstantsAUTOFILLHINTPASSWORD
-	return r
-}
-
 func (r ApiUpdateLoginRequest) CurrentPassword(currentPassword string) ApiUpdateLoginRequest {
 	r.currentPassword = &currentPassword
 	return r
@@ -7109,6 +7104,11 @@ func (r ApiUpdateLoginRequest) CurrentPassword(currentPassword string) ApiUpdate
 
 func (r ApiUpdateLoginRequest) EmailGrantToken(emailGrantToken string) ApiUpdateLoginRequest {
 	r.emailGrantToken = &emailGrantToken
+	return r
+}
+
+func (r ApiUpdateLoginRequest) Password(password string) ApiUpdateLoginRequest {
+	r.password = &password
 	return r
 }
 
@@ -7173,9 +7173,6 @@ func (a *UsersAPIService) UpdateLoginExecute(r ApiUpdateLoginRequest) (*LoginUpd
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	if r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "androidx.autofill.HintConstants.AUTOFILL_HINT_PASSWORD", r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD, "", "")
-	}
 	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
 	if r.currentPassword != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "current_password", r.currentPassword, "", "")
@@ -7183,6 +7180,9 @@ func (a *UsersAPIService) UpdateLoginExecute(r ApiUpdateLoginRequest) (*LoginUpd
 	parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
 	if r.emailGrantToken != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "email_grant_token", r.emailGrantToken, "", "")
+	}
+	if r.password != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {

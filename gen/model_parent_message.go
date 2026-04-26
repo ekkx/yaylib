@@ -18,7 +18,7 @@ type ParentMessage struct {
 	FontSize NullableInt32 `json:"font_size,omitempty"`
 	Gif NullableGifImage `json:"gif,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
-	MessageType NullableString `json:"message_type,omitempty"`
+	MessageType NullableMessageType `json:"message_type,omitempty"`
 	RoomId NullableInt64 `json:"room_id,omitempty"`
 	Sticker NullableSticker `json:"sticker,omitempty"`
 	Text NullableString `json:"text,omitempty"`
@@ -300,9 +300,9 @@ func (o *ParentMessage) UnsetId() {
 }
 
 // GetMessageType returns the MessageType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ParentMessage) GetMessageType() string {
+func (o *ParentMessage) GetMessageType() MessageType {
 	if o == nil || IsNil(o.MessageType.Get()) {
-		var ret string
+		var ret MessageType
 		return ret
 	}
 	return *o.MessageType.Get()
@@ -311,7 +311,7 @@ func (o *ParentMessage) GetMessageType() string {
 // GetMessageTypeOk returns a tuple with the MessageType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ParentMessage) GetMessageTypeOk() (*string, bool) {
+func (o *ParentMessage) GetMessageTypeOk() (*MessageType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -327,8 +327,8 @@ func (o *ParentMessage) HasMessageType() bool {
 	return false
 }
 
-// SetMessageType gets a reference to the given NullableString and assigns it to the MessageType field.
-func (o *ParentMessage) SetMessageType(v string) {
+// SetMessageType gets a reference to the given NullableMessageType and assigns it to the MessageType field.
+func (o *ParentMessage) SetMessageType(v MessageType) {
 	o.MessageType.Set(&v)
 }
 // SetMessageTypeNil sets the value for MessageType to be an explicit nil

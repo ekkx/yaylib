@@ -389,9 +389,9 @@ type ApiCreateGroupRequest struct {
 	ctx context.Context
 	ApiService *GroupsAPIService
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	hideFromGameEight *bool
 	signedInfo *string
+	timestamp *int64
 	topic *string
 	uuid *string
 	allowMembersToPostImageAndVideo *bool
@@ -399,13 +399,13 @@ type ApiCreateGroupRequest struct {
 	allowOwnershipTransfer *bool
 	allowThreadCreationBy *string
 	callTimelineDisplay *bool
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES *string
 	coverImageFilename *string
 	description *string
 	gender *int32
 	generationGroupsLimit *int32
 	groupCategoryId *int64
 	groupIconFilename *string
+	guidelines *string
 	hideConferenceCall *bool
 	hideReportedPosts *bool
 	isPrivate *bool
@@ -420,11 +420,6 @@ func (r ApiCreateGroupRequest) ApiKey(apiKey string) ApiCreateGroupRequest {
 	return r
 }
 
-func (r ApiCreateGroupRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiCreateGroupRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
-	return r
-}
-
 func (r ApiCreateGroupRequest) HideFromGameEight(hideFromGameEight bool) ApiCreateGroupRequest {
 	r.hideFromGameEight = &hideFromGameEight
 	return r
@@ -432,6 +427,11 @@ func (r ApiCreateGroupRequest) HideFromGameEight(hideFromGameEight bool) ApiCrea
 
 func (r ApiCreateGroupRequest) SignedInfo(signedInfo string) ApiCreateGroupRequest {
 	r.signedInfo = &signedInfo
+	return r
+}
+
+func (r ApiCreateGroupRequest) Timestamp(timestamp int64) ApiCreateGroupRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -470,11 +470,6 @@ func (r ApiCreateGroupRequest) CallTimelineDisplay(callTimelineDisplay bool) Api
 	return r
 }
 
-func (r ApiCreateGroupRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES(comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES string) ApiCreateGroupRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES
-	return r
-}
-
 func (r ApiCreateGroupRequest) CoverImageFilename(coverImageFilename string) ApiCreateGroupRequest {
 	r.coverImageFilename = &coverImageFilename
 	return r
@@ -502,6 +497,11 @@ func (r ApiCreateGroupRequest) GroupCategoryId(groupCategoryId int64) ApiCreateG
 
 func (r ApiCreateGroupRequest) GroupIconFilename(groupIconFilename string) ApiCreateGroupRequest {
 	r.groupIconFilename = &groupIconFilename
+	return r
+}
+
+func (r ApiCreateGroupRequest) Guidelines(guidelines string) ApiCreateGroupRequest {
+	r.guidelines = &guidelines
 	return r
 }
 
@@ -580,14 +580,14 @@ func (a *GroupsAPIService) CreateGroupExecute(r ApiCreateGroupRequest) (*CreateG
 	if r.apiKey == nil {
 		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return localVarReturnValue, nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.hideFromGameEight == nil {
 		return localVarReturnValue, nil, reportError("hideFromGameEight is required and must be specified")
 	}
 	if r.signedInfo == nil {
 		return localVarReturnValue, nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
 	}
 	if r.topic == nil {
 		return localVarReturnValue, nil, reportError("topic is required and must be specified")
@@ -629,10 +629,6 @@ func (a *GroupsAPIService) CreateGroupExecute(r ApiCreateGroupRequest) (*CreateG
 	if r.callTimelineDisplay != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "call_timeline_display", r.callTimelineDisplay, "", "")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_GUIDELINES", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES, "", "")
-	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	if r.coverImageFilename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "cover_image_filename", r.coverImageFilename, "", "")
 	}
@@ -650,6 +646,9 @@ func (a *GroupsAPIService) CreateGroupExecute(r ApiCreateGroupRequest) (*CreateG
 	}
 	if r.groupIconFilename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "group_icon_filename", r.groupIconFilename, "", "")
+	}
+	if r.guidelines != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "guidelines", r.guidelines, "", "")
 	}
 	if r.hideConferenceCall != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "hide_conference_call", r.hideConferenceCall, "", "")
@@ -674,6 +673,7 @@ func (a *GroupsAPIService) CreateGroupExecute(r ApiCreateGroupRequest) (*CreateG
 	if r.subCategoryId != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "sub_category_id", r.subCategoryId, "", "")
 	}
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "topic", r.topic, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -902,8 +902,8 @@ type ApiDeputizeGroupUsersMassRequest struct {
 	ApiService *GroupsAPIService
 	groupId int64
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	signedInfo *string
+	timestamp *int64
 	userIds *[]int64
 	uuid *string
 }
@@ -913,13 +913,13 @@ func (r ApiDeputizeGroupUsersMassRequest) ApiKey(apiKey string) ApiDeputizeGroup
 	return r
 }
 
-func (r ApiDeputizeGroupUsersMassRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiDeputizeGroupUsersMassRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
+func (r ApiDeputizeGroupUsersMassRequest) SignedInfo(signedInfo string) ApiDeputizeGroupUsersMassRequest {
+	r.signedInfo = &signedInfo
 	return r
 }
 
-func (r ApiDeputizeGroupUsersMassRequest) SignedInfo(signedInfo string) ApiDeputizeGroupUsersMassRequest {
-	r.signedInfo = &signedInfo
+func (r ApiDeputizeGroupUsersMassRequest) Timestamp(timestamp int64) ApiDeputizeGroupUsersMassRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -974,11 +974,11 @@ func (a *GroupsAPIService) DeputizeGroupUsersMassExecute(r ApiDeputizeGroupUsers
 	if r.apiKey == nil {
 		return nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.signedInfo == nil {
 		return nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return nil, reportError("timestamp is required and must be specified")
 	}
 	if r.userIds == nil {
 		return nil, reportError("userIds is required and must be specified")
@@ -1005,8 +1005,8 @@ func (a *GroupsAPIService) DeputizeGroupUsersMassExecute(r ApiDeputizeGroupUsers
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "user_ids[]", r.userIds, "", "csv")
 	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -1445,7 +1445,7 @@ type ApiGetGroupGiftHistoryRequest struct {
 	ApiService *GroupsAPIService
 	groupId int64
 	number *int32
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 }
 
 func (r ApiGetGroupGiftHistoryRequest) Number(number int32) ApiGetGroupGiftHistoryRequest {
@@ -1453,8 +1453,8 @@ func (r ApiGetGroupGiftHistoryRequest) Number(number int32) ApiGetGroupGiftHisto
 	return r
 }
 
-func (r ApiGetGroupGiftHistoryRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetGroupGiftHistoryRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetGroupGiftHistoryRequest) From(from string) ApiGetGroupGiftHistoryRequest {
+	r.from = &from
 	return r
 }
 
@@ -1504,8 +1504,8 @@ func (a *GroupsAPIService) GetGroupGiftHistoryExecute(r ApiGetGroupGiftHistoryRe
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1566,7 +1566,7 @@ type ApiGetGroupGiftTransactionsRequest struct {
 	ApiService *GroupsAPIService
 	groupId int64
 	number *int32
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 }
 
 func (r ApiGetGroupGiftTransactionsRequest) Number(number int32) ApiGetGroupGiftTransactionsRequest {
@@ -1574,8 +1574,8 @@ func (r ApiGetGroupGiftTransactionsRequest) Number(number int32) ApiGetGroupGift
 	return r
 }
 
-func (r ApiGetGroupGiftTransactionsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetGroupGiftTransactionsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetGroupGiftTransactionsRequest) From(from string) ApiGetGroupGiftTransactionsRequest {
+	r.from = &from
 	return r
 }
 
@@ -1625,8 +1625,8 @@ func (a *GroupsAPIService) GetGroupGiftTransactionsExecute(r ApiGetGroupGiftTran
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1686,12 +1686,12 @@ type ApiGetGroupHighlightsRequest struct {
 	ctx context.Context
 	ApiService *GroupsAPIService
 	groupId int64
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *int64
+	from *int64
 	number *int32
 }
 
-func (r ApiGetGroupHighlightsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM int64) ApiGetGroupHighlightsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetGroupHighlightsRequest) From(from int64) ApiGetGroupHighlightsRequest {
+	r.from = &from
 	return r
 }
 
@@ -1741,8 +1741,8 @@ func (a *GroupsAPIService) GetGroupHighlightsExecute(r ApiGetGroupHighlightsRequ
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
@@ -2033,7 +2033,7 @@ type ApiGetGroupReceivedGiftSendersRequest struct {
 	groupId int64
 	giftId int64
 	userId *int64
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
+	timestamp *int64
 	number *int32
 }
 
@@ -2042,8 +2042,8 @@ func (r ApiGetGroupReceivedGiftSendersRequest) UserId(userId int64) ApiGetGroupR
 	return r
 }
 
-func (r ApiGetGroupReceivedGiftSendersRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiGetGroupReceivedGiftSendersRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
+func (r ApiGetGroupReceivedGiftSendersRequest) Timestamp(timestamp int64) ApiGetGroupReceivedGiftSendersRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -2098,12 +2098,12 @@ func (a *GroupsAPIService) GetGroupReceivedGiftSendersExecute(r ApiGetGroupRecei
 	if r.userId == nil {
 		return localVarReturnValue, nil, reportError("userId is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return localVarReturnValue, nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
+	if r.timestamp == nil {
+		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "user_id", r.userId, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "form", "")
+	parameterAddToHeaderOrQuery(localVarQueryParams, "timestamp", r.timestamp, "form", "")
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
@@ -2508,7 +2508,7 @@ type ApiGetRelatableGroupsRequest struct {
 	ApiService *GroupsAPIService
 	id int64
 	keyword *string
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 }
 
 func (r ApiGetRelatableGroupsRequest) Keyword(keyword string) ApiGetRelatableGroupsRequest {
@@ -2516,8 +2516,8 @@ func (r ApiGetRelatableGroupsRequest) Keyword(keyword string) ApiGetRelatableGro
 	return r
 }
 
-func (r ApiGetRelatableGroupsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetRelatableGroupsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetRelatableGroupsRequest) From(from string) ApiGetRelatableGroupsRequest {
+	r.from = &from
 	return r
 }
 
@@ -2565,8 +2565,8 @@ func (a *GroupsAPIService) GetRelatableGroupsExecute(r ApiGetRelatableGroupsRequ
 	if r.keyword != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "keyword", r.keyword, "form", "")
 	}
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2627,7 +2627,7 @@ type ApiGetRelatedGroupsRequest struct {
 	ApiService *GroupsAPIService
 	id int64
 	keyword *string
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 }
 
 func (r ApiGetRelatedGroupsRequest) Keyword(keyword string) ApiGetRelatedGroupsRequest {
@@ -2635,8 +2635,8 @@ func (r ApiGetRelatedGroupsRequest) Keyword(keyword string) ApiGetRelatedGroupsR
 	return r
 }
 
-func (r ApiGetRelatedGroupsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetRelatedGroupsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetRelatedGroupsRequest) From(from string) ApiGetRelatedGroupsRequest {
+	r.from = &from
 	return r
 }
 
@@ -2684,8 +2684,8 @@ func (a *GroupsAPIService) GetRelatedGroupsExecute(r ApiGetRelatedGroupsRequest)
 	if r.keyword != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "keyword", r.keyword, "form", "")
 	}
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4546,8 +4546,8 @@ type ApiTransferGroupRequest struct {
 	ApiService *GroupsAPIService
 	id int64
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	signedInfo *string
+	timestamp *int64
 	userId *int64
 	uuid *string
 }
@@ -4557,13 +4557,13 @@ func (r ApiTransferGroupRequest) ApiKey(apiKey string) ApiTransferGroupRequest {
 	return r
 }
 
-func (r ApiTransferGroupRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiTransferGroupRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
+func (r ApiTransferGroupRequest) SignedInfo(signedInfo string) ApiTransferGroupRequest {
+	r.signedInfo = &signedInfo
 	return r
 }
 
-func (r ApiTransferGroupRequest) SignedInfo(signedInfo string) ApiTransferGroupRequest {
-	r.signedInfo = &signedInfo
+func (r ApiTransferGroupRequest) Timestamp(timestamp int64) ApiTransferGroupRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -4618,11 +4618,11 @@ func (a *GroupsAPIService) TransferGroupExecute(r ApiTransferGroupRequest) (*htt
 	if r.apiKey == nil {
 		return nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.signedInfo == nil {
 		return nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return nil, reportError("timestamp is required and must be specified")
 	}
 	if r.userId == nil {
 		return nil, reportError("userId is required and must be specified")
@@ -4649,8 +4649,8 @@ func (a *GroupsAPIService) TransferGroupExecute(r ApiTransferGroupRequest) (*htt
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "user_id", r.userId, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -4874,21 +4874,21 @@ type ApiUpdateGroupRequest struct {
 	ApiService *GroupsAPIService
 	id int64
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	signedInfo *string
+	timestamp *int64
 	uuid *string
 	allowMembersToPostImageAndVideo *bool
 	allowMembersToPostUrl *bool
 	allowOwnershipTransfer *bool
 	allowThreadCreationBy *string
 	callTimelineDisplay *bool
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES *string
 	coverImageFilename *string
 	description *string
 	gender *int32
 	generationGroupsLimit *int32
 	groupCategoryId *int64
 	groupIconFilename *string
+	guidelines *string
 	hideConferenceCall *bool
 	hideFromGameEight *bool
 	hideReportedPosts *bool
@@ -4905,13 +4905,13 @@ func (r ApiUpdateGroupRequest) ApiKey(apiKey string) ApiUpdateGroupRequest {
 	return r
 }
 
-func (r ApiUpdateGroupRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiUpdateGroupRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
+func (r ApiUpdateGroupRequest) SignedInfo(signedInfo string) ApiUpdateGroupRequest {
+	r.signedInfo = &signedInfo
 	return r
 }
 
-func (r ApiUpdateGroupRequest) SignedInfo(signedInfo string) ApiUpdateGroupRequest {
-	r.signedInfo = &signedInfo
+func (r ApiUpdateGroupRequest) Timestamp(timestamp int64) ApiUpdateGroupRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -4945,11 +4945,6 @@ func (r ApiUpdateGroupRequest) CallTimelineDisplay(callTimelineDisplay bool) Api
 	return r
 }
 
-func (r ApiUpdateGroupRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES(comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES string) ApiUpdateGroupRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES
-	return r
-}
-
 func (r ApiUpdateGroupRequest) CoverImageFilename(coverImageFilename string) ApiUpdateGroupRequest {
 	r.coverImageFilename = &coverImageFilename
 	return r
@@ -4977,6 +4972,11 @@ func (r ApiUpdateGroupRequest) GroupCategoryId(groupCategoryId int64) ApiUpdateG
 
 func (r ApiUpdateGroupRequest) GroupIconFilename(groupIconFilename string) ApiUpdateGroupRequest {
 	r.groupIconFilename = &groupIconFilename
+	return r
+}
+
+func (r ApiUpdateGroupRequest) Guidelines(guidelines string) ApiUpdateGroupRequest {
+	r.guidelines = &guidelines
 	return r
 }
 
@@ -5068,11 +5068,11 @@ func (a *GroupsAPIService) UpdateGroupExecute(r ApiUpdateGroupRequest) (*GroupRe
 	if r.apiKey == nil {
 		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return localVarReturnValue, nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.signedInfo == nil {
 		return localVarReturnValue, nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
 	}
 	if r.uuid == nil {
 		return localVarReturnValue, nil, reportError("uuid is required and must be specified")
@@ -5111,10 +5111,6 @@ func (a *GroupsAPIService) UpdateGroupExecute(r ApiUpdateGroupRequest) (*GroupRe
 	if r.callTimelineDisplay != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "call_timeline_display", r.callTimelineDisplay, "", "")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_GUIDELINES", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYGUIDELINES, "", "")
-	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	if r.coverImageFilename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "cover_image_filename", r.coverImageFilename, "", "")
 	}
@@ -5132,6 +5128,9 @@ func (a *GroupsAPIService) UpdateGroupExecute(r ApiUpdateGroupRequest) (*GroupRe
 	}
 	if r.groupIconFilename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "group_icon_filename", r.groupIconFilename, "", "")
+	}
+	if r.guidelines != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "guidelines", r.guidelines, "", "")
 	}
 	if r.hideConferenceCall != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "hide_conference_call", r.hideConferenceCall, "", "")
@@ -5158,6 +5157,7 @@ func (a *GroupsAPIService) UpdateGroupExecute(r ApiUpdateGroupRequest) (*GroupRe
 	if r.subCategoryId != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "sub_category_id", r.subCategoryId, "", "")
 	}
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	if r.topic != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "topic", r.topic, "", "")
 	}

@@ -58,7 +58,7 @@ type RealmUser struct {
 	MobileNumber NullableString `json:"mobile_number,omitempty"`
 	NewUser NullableBool `json:"new_user,omitempty"`
 	Nickname NullableString `json:"nickname,omitempty"`
-	OnlineStatus NullableString `json:"online_status,omitempty"`
+	OnlineStatus NullableOnlineStatusEnum `json:"online_status,omitempty"`
 	PhoneOn NullableBool `json:"phone_on,omitempty"`
 	PostsCount NullableInt32 `json:"posts_count,omitempty"`
 	Prefecture NullableString `json:"prefecture,omitempty"`
@@ -2016,9 +2016,9 @@ func (o *RealmUser) UnsetNickname() {
 }
 
 // GetOnlineStatus returns the OnlineStatus field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RealmUser) GetOnlineStatus() string {
+func (o *RealmUser) GetOnlineStatus() OnlineStatusEnum {
 	if o == nil || IsNil(o.OnlineStatus.Get()) {
-		var ret string
+		var ret OnlineStatusEnum
 		return ret
 	}
 	return *o.OnlineStatus.Get()
@@ -2027,7 +2027,7 @@ func (o *RealmUser) GetOnlineStatus() string {
 // GetOnlineStatusOk returns a tuple with the OnlineStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RealmUser) GetOnlineStatusOk() (*string, bool) {
+func (o *RealmUser) GetOnlineStatusOk() (*OnlineStatusEnum, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -2043,8 +2043,8 @@ func (o *RealmUser) HasOnlineStatus() bool {
 	return false
 }
 
-// SetOnlineStatus gets a reference to the given NullableString and assigns it to the OnlineStatus field.
-func (o *RealmUser) SetOnlineStatus(v string) {
+// SetOnlineStatus gets a reference to the given NullableOnlineStatusEnum and assigns it to the OnlineStatus field.
+func (o *RealmUser) SetOnlineStatus(v OnlineStatusEnum) {
 	o.OnlineStatus.Set(&v)
 }
 // SetOnlineStatusNil sets the value for OnlineStatus to be an explicit nil

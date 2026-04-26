@@ -241,7 +241,7 @@ type ApiCreateThreadPostRequest struct {
 	language *string
 	mentionIds *[]int64
 	messageTags *map[string]interface{}
-	postType *string
+	postType *PostType
 	sharedUrl *map[string]interface{}
 	text *string
 	videoFileName *string
@@ -338,7 +338,7 @@ func (r ApiCreateThreadPostRequest) MessageTags(messageTags map[string]interface
 	return r
 }
 
-func (r ApiCreateThreadPostRequest) PostType(postType string) ApiCreateThreadPostRequest {
+func (r ApiCreateThreadPostRequest) PostType(postType PostType) ApiCreateThreadPostRequest {
 	r.postType = &postType
 	return r
 }
@@ -835,12 +835,12 @@ type ApiGetThreadPostsRequest struct {
 	ctx context.Context
 	ApiService *ThreadsAPIService
 	id int64
-	postType *string
+	postType *PostType
 	number *int32
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *int64
+	from *int64
 }
 
-func (r ApiGetThreadPostsRequest) PostType(postType string) ApiGetThreadPostsRequest {
+func (r ApiGetThreadPostsRequest) PostType(postType PostType) ApiGetThreadPostsRequest {
 	r.postType = &postType
 	return r
 }
@@ -850,8 +850,8 @@ func (r ApiGetThreadPostsRequest) Number(number int32) ApiGetThreadPostsRequest 
 	return r
 }
 
-func (r ApiGetThreadPostsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM int64) ApiGetThreadPostsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetThreadPostsRequest) From(from int64) ApiGetThreadPostsRequest {
+	r.from = &from
 	return r
 }
 
@@ -902,8 +902,8 @@ func (a *ThreadsAPIService) GetThreadPostsExecute(r ApiGetThreadPostsRequest) (*
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -963,7 +963,7 @@ type ApiListThreadsRequest struct {
 	ctx context.Context
 	ApiService *ThreadsAPIService
 	groupId *int64
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 	joinStatus *string
 }
 
@@ -972,8 +972,8 @@ func (r ApiListThreadsRequest) GroupId(groupId int64) ApiListThreadsRequest {
 	return r
 }
 
-func (r ApiListThreadsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiListThreadsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiListThreadsRequest) From(from string) ApiListThreadsRequest {
+	r.from = &from
 	return r
 }
 
@@ -1024,8 +1024,8 @@ func (a *ThreadsAPIService) ListThreadsExecute(r ApiListThreadsRequest) (*GroupT
 	}
 
 	parameterAddToHeaderOrQuery(localVarQueryParams, "group_id", r.groupId, "form", "")
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	if r.joinStatus != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "join_status", r.joinStatus, "form", "")

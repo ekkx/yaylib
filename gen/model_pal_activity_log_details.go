@@ -21,7 +21,7 @@ type PalActivityLogDetails struct {
 	Level NullableInt32 `json:"level,omitempty"`
 	NftType NullableString `json:"nft_type,omitempty"`
 	Outcome NullableInt64 `json:"outcome,omitempty"`
-	PalGrade NullableString `json:"pal_grade,omitempty"`
+	PalGrade NullablePalGrade `json:"pal_grade,omitempty"`
 	PalImage NullableString `json:"pal_image,omitempty"`
 	PalName NullableString `json:"pal_name,omitempty"`
 	Places []int32 `json:"places,omitempty"`
@@ -431,9 +431,9 @@ func (o *PalActivityLogDetails) UnsetOutcome() {
 }
 
 // GetPalGrade returns the PalGrade field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PalActivityLogDetails) GetPalGrade() string {
+func (o *PalActivityLogDetails) GetPalGrade() PalGrade {
 	if o == nil || IsNil(o.PalGrade.Get()) {
-		var ret string
+		var ret PalGrade
 		return ret
 	}
 	return *o.PalGrade.Get()
@@ -442,7 +442,7 @@ func (o *PalActivityLogDetails) GetPalGrade() string {
 // GetPalGradeOk returns a tuple with the PalGrade field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PalActivityLogDetails) GetPalGradeOk() (*string, bool) {
+func (o *PalActivityLogDetails) GetPalGradeOk() (*PalGrade, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -458,8 +458,8 @@ func (o *PalActivityLogDetails) HasPalGrade() bool {
 	return false
 }
 
-// SetPalGrade gets a reference to the given NullableString and assigns it to the PalGrade field.
-func (o *PalActivityLogDetails) SetPalGrade(v string) {
+// SetPalGrade gets a reference to the given NullablePalGrade and assigns it to the PalGrade field.
+func (o *PalActivityLogDetails) SetPalGrade(v PalGrade) {
 	o.PalGrade.Set(&v)
 }
 // SetPalGradeNil sets the value for PalGrade to be an explicit nil

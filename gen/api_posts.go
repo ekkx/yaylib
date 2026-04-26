@@ -21,8 +21,8 @@ type ApiCreateConferenceCallPostRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	signedInfo *string
+	timestamp *int64
 	uuid *string
 	attachment2Filename *string
 	attachment3Filename *string
@@ -50,13 +50,13 @@ func (r ApiCreateConferenceCallPostRequest) ApiKey(apiKey string) ApiCreateConfe
 	return r
 }
 
-func (r ApiCreateConferenceCallPostRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiCreateConferenceCallPostRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
+func (r ApiCreateConferenceCallPostRequest) SignedInfo(signedInfo string) ApiCreateConferenceCallPostRequest {
+	r.signedInfo = &signedInfo
 	return r
 }
 
-func (r ApiCreateConferenceCallPostRequest) SignedInfo(signedInfo string) ApiCreateConferenceCallPostRequest {
-	r.signedInfo = &signedInfo
+func (r ApiCreateConferenceCallPostRequest) Timestamp(timestamp int64) ApiCreateConferenceCallPostRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -203,11 +203,11 @@ func (a *PostsAPIService) CreateConferenceCallPostExecute(r ApiCreateConferenceC
 	if r.apiKey == nil {
 		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return localVarReturnValue, nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.signedInfo == nil {
 		return localVarReturnValue, nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
 	}
 	if r.uuid == nil {
 		return localVarReturnValue, nil, reportError("uuid is required and must be specified")
@@ -267,7 +267,6 @@ func (a *PostsAPIService) CreateConferenceCallPostExecute(r ApiCreateConferenceC
 	if r.color != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "color", r.color, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	if r.fontSize != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "font_size", r.fontSize, "", "")
 	}
@@ -290,6 +289,7 @@ func (a *PostsAPIService) CreateConferenceCallPostExecute(r ApiCreateConferenceC
 	if r.text != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "text", r.text, "", "")
 	}
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
@@ -349,7 +349,7 @@ type ApiCreatePostRequest struct {
 	language *string
 	mentionIds *[]int64
 	messageTags *map[string]interface{}
-	postType *string
+	postType *PostType
 	sharedUrl *map[string]interface{}
 	text *string
 	videoFileName *string
@@ -446,7 +446,7 @@ func (r ApiCreatePostRequest) MessageTags(messageTags map[string]interface{}) Ap
 	return r
 }
 
-func (r ApiCreatePostRequest) PostType(postType string) ApiCreatePostRequest {
+func (r ApiCreatePostRequest) PostType(postType PostType) ApiCreatePostRequest {
 	r.postType = &postType
 	return r
 }
@@ -632,10 +632,10 @@ type ApiCreateSharePostRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	shareableId *int64
 	shareableType *string
 	signedInfo *string
+	timestamp *int64
 	uuid *string
 	color *int32
 	fontSize *int32
@@ -647,11 +647,6 @@ type ApiCreateSharePostRequest struct {
 
 func (r ApiCreateSharePostRequest) ApiKey(apiKey string) ApiCreateSharePostRequest {
 	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiCreateSharePostRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiCreateSharePostRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
 	return r
 }
 
@@ -667,6 +662,11 @@ func (r ApiCreateSharePostRequest) ShareableType(shareableType string) ApiCreate
 
 func (r ApiCreateSharePostRequest) SignedInfo(signedInfo string) ApiCreateSharePostRequest {
 	r.signedInfo = &signedInfo
+	return r
+}
+
+func (r ApiCreateSharePostRequest) Timestamp(timestamp int64) ApiCreateSharePostRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -748,9 +748,6 @@ func (a *PostsAPIService) CreateSharePostExecute(r ApiCreateSharePostRequest) (*
 	if r.apiKey == nil {
 		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return localVarReturnValue, nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.shareableId == nil {
 		return localVarReturnValue, nil, reportError("shareableId is required and must be specified")
 	}
@@ -759,6 +756,9 @@ func (a *PostsAPIService) CreateSharePostExecute(r ApiCreateSharePostRequest) (*
 	}
 	if r.signedInfo == nil {
 		return localVarReturnValue, nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
 	}
 	if r.uuid == nil {
 		return localVarReturnValue, nil, reportError("uuid is required and must be specified")
@@ -785,7 +785,6 @@ func (a *PostsAPIService) CreateSharePostExecute(r ApiCreateSharePostRequest) (*
 	if r.color != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "color", r.color, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	if r.fontSize != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "font_size", r.fontSize, "", "")
 	}
@@ -804,6 +803,7 @@ func (a *PostsAPIService) CreateSharePostExecute(r ApiCreateSharePostRequest) (*
 	if r.text != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "text", r.text, "", "")
 	}
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
@@ -1455,7 +1455,7 @@ type ApiGetFollowingTimelineRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
 	orderBy *string
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 	fromPostId *int64
 	onlyRoot *bool
 	number *int32
@@ -1469,8 +1469,8 @@ func (r ApiGetFollowingTimelineRequest) OrderBy(orderBy string) ApiGetFollowingT
 	return r
 }
 
-func (r ApiGetFollowingTimelineRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetFollowingTimelineRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetFollowingTimelineRequest) From(from string) ApiGetFollowingTimelineRequest {
+	r.from = &from
 	return r
 }
 
@@ -1545,8 +1545,8 @@ func (a *PostsAPIService) GetFollowingTimelineExecute(r ApiGetFollowingTimelineR
 		return localVarReturnValue, nil, reportError("orderBy is required and must be specified")
 	}
 
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	if r.fromPostId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_post_id", r.fromPostId, "form", "")
@@ -1627,7 +1627,7 @@ type ApiGetGroupTimelineRequest struct {
 	groupId *int64
 	fromPostId *int64
 	reverse *bool
-	postType *string
+	postType *PostType
 	number *int32
 	onlyRoot *bool
 }
@@ -1647,7 +1647,7 @@ func (r ApiGetGroupTimelineRequest) Reverse(reverse bool) ApiGetGroupTimelineReq
 	return r
 }
 
-func (r ApiGetGroupTimelineRequest) PostType(postType string) ApiGetGroupTimelineRequest {
+func (r ApiGetGroupTimelineRequest) PostType(postType PostType) ApiGetGroupTimelineRequest {
 	r.postType = &postType
 	return r
 }
@@ -2013,7 +2013,7 @@ type ApiGetPostGiftTransactionsRequest struct {
 	ApiService *PostsAPIService
 	postId int64
 	number *int32
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 }
 
 func (r ApiGetPostGiftTransactionsRequest) Number(number int32) ApiGetPostGiftTransactionsRequest {
@@ -2021,8 +2021,8 @@ func (r ApiGetPostGiftTransactionsRequest) Number(number int32) ApiGetPostGiftTr
 	return r
 }
 
-func (r ApiGetPostGiftTransactionsRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetPostGiftTransactionsRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetPostGiftTransactionsRequest) From(from string) ApiGetPostGiftTransactionsRequest {
+	r.from = &from
 	return r
 }
 
@@ -2072,8 +2072,8 @@ func (a *PostsAPIService) GetPostGiftTransactionsExecute(r ApiGetPostGiftTransac
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3049,7 +3049,7 @@ type ApiGetTimelineByModeRequest struct {
 	noreplyMode string
 	orderBy *string
 	experimentOlderAgeRules *bool
-	androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM *string
+	from *string
 	fromPostId *int64
 	number *int32
 	mxn *int32
@@ -3069,8 +3069,8 @@ func (r ApiGetTimelineByModeRequest) ExperimentOlderAgeRules(experimentOlderAgeR
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) AndroidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM(androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM string) ApiGetTimelineByModeRequest {
-	r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM = &androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM
+func (r ApiGetTimelineByModeRequest) From(from string) ApiGetTimelineByModeRequest {
+	r.from = &from
 	return r
 }
 
@@ -3157,8 +3157,8 @@ func (a *PostsAPIService) GetTimelineByModeExecute(r ApiGetTimelineByModeRequest
 	if r.experimentOlderAgeRules != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "experiment_older_age_rules", r.experimentOlderAgeRules, "form", "")
 	}
-	if r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "androidx.constraintlayout.core.motion.utils.TypedValues.TransitionType.S_FROM", r.androidxConstraintlayoutCoreMotionUtilsTypedValuesTransitionTypeSFROM, "form", "")
+	if r.from != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
 	if r.fromPostId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_post_id", r.fromPostId, "form", "")
@@ -3240,7 +3240,7 @@ type ApiGetUserTimelineRequest struct {
 	ApiService *PostsAPIService
 	userId *int64
 	fromPostId *int64
-	postType *string
+	postType *PostType
 	number *int32
 }
 
@@ -3254,7 +3254,7 @@ func (r ApiGetUserTimelineRequest) FromPostId(fromPostId int64) ApiGetUserTimeli
 	return r
 }
 
-func (r ApiGetUserTimelineRequest) PostType(postType string) ApiGetUserTimelineRequest {
+func (r ApiGetUserTimelineRequest) PostType(postType PostType) ApiGetUserTimelineRequest {
 	r.postType = &postType
 	return r
 }
@@ -3983,7 +3983,7 @@ type ApiRepostRequest struct {
 	language *string
 	mentionIds *[]int64
 	messageTags *map[string]interface{}
-	postType *string
+	postType *PostType
 	sharedUrl *map[string]interface{}
 	text *string
 	videoFileName *string
@@ -4085,7 +4085,7 @@ func (r ApiRepostRequest) MessageTags(messageTags map[string]interface{}) ApiRep
 	return r
 }
 
-func (r ApiRepostRequest) PostType(postType string) ApiRepostRequest {
+func (r ApiRepostRequest) PostType(postType PostType) ApiRepostRequest {
 	r.postType = &postType
 	return r
 }
@@ -4607,8 +4607,8 @@ type ApiUpdatePostRequest struct {
 	ApiService *PostsAPIService
 	id int64
 	apiKey *string
-	comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP *int64
 	signedInfo *string
+	timestamp *int64
 	uuid *string
 	color *int32
 	fontSize *int32
@@ -4622,13 +4622,13 @@ func (r ApiUpdatePostRequest) ApiKey(apiKey string) ApiUpdatePostRequest {
 	return r
 }
 
-func (r ApiUpdatePostRequest) ComMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP(comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP int64) ApiUpdatePostRequest {
-	r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP = &comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP
+func (r ApiUpdatePostRequest) SignedInfo(signedInfo string) ApiUpdatePostRequest {
+	r.signedInfo = &signedInfo
 	return r
 }
 
-func (r ApiUpdatePostRequest) SignedInfo(signedInfo string) ApiUpdatePostRequest {
-	r.signedInfo = &signedInfo
+func (r ApiUpdatePostRequest) Timestamp(timestamp int64) ApiUpdatePostRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -4708,11 +4708,11 @@ func (a *PostsAPIService) UpdatePostExecute(r ApiUpdatePostRequest) (*Post, *htt
 	if r.apiKey == nil {
 		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
 	}
-	if r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP == nil {
-		return localVarReturnValue, nil, reportError("comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP is required and must be specified")
-	}
 	if r.signedInfo == nil {
 		return localVarReturnValue, nil, reportError("signedInfo is required and must be specified")
+	}
+	if r.timestamp == nil {
+		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
 	}
 	if r.uuid == nil {
 		return localVarReturnValue, nil, reportError("uuid is required and must be specified")
@@ -4739,7 +4739,6 @@ func (a *PostsAPIService) UpdatePostExecute(r ApiUpdatePostRequest) (*Post, *htt
 	if r.color != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "color", r.color, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "com.mbridge.msdk.foundation.entity.CampaignEx.JSON_KEY_TIMESTAMP", r.comMbridgeMsdkFoundationEntityCampaignExJSONKEYTIMESTAMP, "", "")
 	if r.fontSize != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "font_size", r.fontSize, "", "")
 	}
@@ -4753,6 +4752,7 @@ func (a *PostsAPIService) UpdatePostExecute(r ApiUpdatePostRequest) (*Post, *htt
 	if r.text != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "text", r.text, "", "")
 	}
+	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {

@@ -19,8 +19,8 @@ type ApiOauthTokenRequest struct {
 	ctx context.Context
 	ApiService *AuthAPIService
 	grantType *string
-	androidxAutofillHintConstantsAUTOFILLHINTPASSWORD *string
 	email *string
+	password *string
 	refreshToken *string
 }
 
@@ -29,13 +29,13 @@ func (r ApiOauthTokenRequest) GrantType(grantType string) ApiOauthTokenRequest {
 	return r
 }
 
-func (r ApiOauthTokenRequest) AndroidxAutofillHintConstantsAUTOFILLHINTPASSWORD(androidxAutofillHintConstantsAUTOFILLHINTPASSWORD string) ApiOauthTokenRequest {
-	r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD = &androidxAutofillHintConstantsAUTOFILLHINTPASSWORD
+func (r ApiOauthTokenRequest) Email(email string) ApiOauthTokenRequest {
+	r.email = &email
 	return r
 }
 
-func (r ApiOauthTokenRequest) Email(email string) ApiOauthTokenRequest {
-	r.email = &email
+func (r ApiOauthTokenRequest) Password(password string) ApiOauthTokenRequest {
+	r.password = &password
 	return r
 }
 
@@ -102,13 +102,13 @@ func (a *AuthAPIService) OauthTokenExecute(r ApiOauthTokenRequest) (*TokenRespon
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	if r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "androidx.autofill.HintConstants.AUTOFILL_HINT_PASSWORD", r.androidxAutofillHintConstantsAUTOFILLHINTPASSWORD, "", "")
-	}
 	if r.email != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
 	}
 	parameterAddToHeaderOrQuery(localVarFormParams, "grant_type", r.grantType, "", "")
+	if r.password != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
+	}
 	if r.refreshToken != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "refresh_token", r.refreshToken, "", "")
 	}
