@@ -27,7 +27,10 @@
 //   - a helper that mints the short-lived HS256 `X-Jwt` token some write
 //     endpoints require (see Client.NewXJwt),
 //   - typed error inspection: yaylib.CodeOf(err) returns an ErrorCode and
-//     yaylib.ErrorResponseOf(err) returns the parsed *ErrorResponse.
+//     yaylib.ErrorResponseOf(err) returns the parsed *ErrorResponse,
+//   - real-time server-pushed events via Client.OpenEventStream — chat
+//     messages, group updates, video-processed signals, etc., delivered
+//     through Subscriptions over a multiplexed connection.
 //
 // `APIKey`, `DeviceUUID`, and related metadata are exposed as fields so
 // callers can populate request bodies that need them. (Body builders
@@ -82,6 +85,10 @@ type Client struct {
 	DeviceInfo     string
 	DeviceUUID     string
 	BaseURL        string
+
+	// EventStreamURL is the wss:// endpoint used by OpenEventStream.
+	// Defaults to wss://cable.yay.space.
+	EventStreamURL string
 
 	// Per-request metadata.
 	ConnectionType  string
@@ -172,6 +179,12 @@ func WithAppVersion(v string) Option { return func(c *Client) { c.AppVersion = v
 // WithBaseURL overrides the API base URL (default: https://api.yay.space).
 func WithBaseURL(u string) Option { return func(c *Client) { c.BaseURL = u } }
 
+// WithEventStreamURL overrides the event-stream endpoint used by
+// OpenEventStream (default: wss://cable.yay.space).
+func WithEventStreamURL(u string) Option {
+	return func(c *Client) { c.EventStreamURL = u }
+}
+
 // WithDeviceUUID sets a specific device UUID instead of generating a fresh
 // one. Use this to keep device identity stable across runs.
 func WithDeviceUUID(u string) Option { return func(c *Client) { c.DeviceUUID = u } }
@@ -234,6 +247,7 @@ func NewClient(opts ...Option) *Client {
 		DeviceInfo:      deviceInfo,
 		DeviceUUID:      NewUUIDv4(),
 		BaseURL:         DefaultBaseURL,
+		EventStreamURL:  DefaultEventStreamURL,
 		ConnectionType:  DefaultConnectionType,
 		ConnectionSpeed: DefaultConnectionSpeed,
 		AcceptLanguage:  DefaultAcceptLanguage,
