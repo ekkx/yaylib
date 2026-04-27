@@ -410,7 +410,22 @@ func (c *Client) uploadImages(ctx context.Context, category uploadCategory, file
 	}
 
 	hc := c.presignedHTTPClient()
-	results := make([]error, len(allJobs))
+	// Cancel propagates the first failure so still-running PUTs exit
+	// promptly instead of finishing their (now pointless) bodies.
+	putCtx, cancelPuts := context.WithCancel(ctx)
+	defer cancelPuts()
+	var (
+		errMu    sync.Mutex
+		firstErr error
+	)
+	recordErr := func(err error) {
+		errMu.Lock()
+		if firstErr == nil {
+			firstErr = err
+			cancelPuts()
+		}
+		errMu.Unlock()
+	}
 	var wg sync.WaitGroup
 	for i := range allJobs {
 		wg.Add(1)
@@ -418,17 +433,17 @@ func (c *Client) uploadImages(ctx context.Context, category uploadCategory, file
 			defer wg.Done()
 			rawURL := urls[i].GetUrl()
 			if rawURL == "" {
-				results[i] = fmt.Errorf("empty presigned url")
+				recordErr(fmt.Errorf("yaylib: upload %s: empty presigned url", allJobs[i].filename))
 				return
 			}
-			results[i] = putToPresignedURL(ctx, hc, rawURL, allJobs[i].body, allJobs[i].contentType)
+			if err := putToPresignedURL(putCtx, hc, rawURL, allJobs[i].body, allJobs[i].contentType); err != nil {
+				recordErr(fmt.Errorf("yaylib: upload %s: %w", allJobs[i].filename, err))
+			}
 		}()
 	}
 	wg.Wait()
-	for i, err := range results {
-		if err != nil {
-			return nil, fmt.Errorf("yaylib: upload %s: %w", allJobs[i].filename, err)
-		}
+	if firstErr != nil {
+		return nil, firstErr
 	}
 
 	// The Yay! servers normalize each filename (typically by adding an

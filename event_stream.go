@@ -26,14 +26,19 @@ const (
 	defaultSubscribeTimeout = 10 * time.Second
 	defaultEventBuffer      = 64
 
-	// reconnectStableThreshold is how long a freshly-dialed connection
-	// must stay alive before runLoop treats it as "actually healthy"
-	// and resets the failure budget. Anything shorter — including the
-	// flap pattern where the server sends a single welcome frame and
-	// drops — counts toward MaxAttempts so a misconfigured peer can
-	// no longer reconnect forever.
-	reconnectStableThreshold = 30 * time.Second
+	defaultReconnectStableThreshold = 30 * time.Second
 )
+
+// reconnectStableThreshold is how long a freshly-dialed connection
+// must stay alive before runLoop treats it as "actually healthy" and
+// resets the failure budget. Anything shorter — including the flap
+// pattern where the server sends a single welcome frame and drops —
+// counts toward MaxAttempts so a misconfigured peer can no longer
+// reconnect forever.
+//
+// Declared as a var so test code can shrink it; production code never
+// rewrites it.
+var reconnectStableThreshold = defaultReconnectStableThreshold
 
 // ReconnectPolicy controls how a *EventStream behaves after the
 // underlying connection drops. The zero value (DefaultReconnectPolicy())
@@ -265,9 +270,14 @@ func (s *Subscription) deliver(ev Event) {
 // OpenEventStream opens a real-time event channel against the
 // configured Yay! event-stream endpoint and returns a stream ready for
 // Subscribe. The provided ctx governs the initial connect only; the
-// resulting EventStream lives until Close (or a permanent reconnect
-// failure). It requires an authenticated Client — make sure the access
-// token is set (e.g., via LoginWithEmail) before calling.
+// resulting EventStream lives until Close, the parent Client is closed,
+// or reconnect is exhausted.
+//
+// Authentication: the stream's per-connection token is fetched by
+// calling GetWebSocketToken with the Client's current Authorization,
+// so make sure the access token is set (LoginWithEmail / SetTokens /
+// LoadSession) before calling. An unauthenticated client surfaces the
+// 401 from that fetch as the OpenEventStream error.
 //
 // Internally the stream is a WebSocket; that's an implementation
 // detail, but it does mean http(s) proxy / firewall configuration that
@@ -290,7 +300,7 @@ func (c *Client) OpenEventStream(ctx context.Context, opts ...EventStreamOptions
 		o.SubscribeTimeout = defaultSubscribeTimeout
 	}
 
-	connCtx, cancel := context.WithCancel(context.Background())
+	connCtx, cancel := context.WithCancel(c.lifecycleCtx)
 	conn := &EventStream{
 		client: c,
 		base:   c.EventStreamURL,
@@ -622,6 +632,10 @@ func (conn *EventStream) writeCommand(ctx context.Context, cmd, identifier strin
 // Subscribe registers ch on the conn and blocks until the server
 // confirms (or rejects) the subscription. Returns the *Subscription
 // once confirmed.
+//
+// Concurrent calls for the same channel share the underlying
+// Subscription: every caller waits on the same confirm signal and then
+// receives events from the same buffer.
 func (conn *EventStream) Subscribe(ctx context.Context, ch Channel) (*Subscription, error) {
 	if conn.closed.Load() {
 		return nil, errors.New("event stream closed")
@@ -631,7 +645,10 @@ func (conn *EventStream) Subscribe(ctx context.Context, ch Channel) (*Subscripti
 	conn.subsMu.Lock()
 	if existing, ok := conn.subs[ident]; ok {
 		conn.subsMu.Unlock()
-		return existing, nil
+		// Wait on the existing sub's confirm — returning it
+		// immediately would lie to the caller when the first
+		// Subscribe is still in flight.
+		return conn.awaitConfirm(ctx, existing, false)
 	}
 	sub := &Subscription{
 		conn:      conn,
@@ -650,29 +667,44 @@ func (conn *EventStream) Subscribe(ctx context.Context, ch Channel) (*Subscripti
 		return nil, fmt.Errorf("subscribe %q: %w", ident, err)
 	}
 
+	return conn.awaitConfirm(ctx, sub, true)
+}
+
+// awaitConfirm blocks on sub.confirmCh / ctx / stream-done /
+// SubscribeTimeout. When owned is true the caller created the sub and
+// is responsible for removing it on every error path. When false a
+// concurrent Subscribe owns it — leave the registration alone so the
+// original waiter still works.
+func (conn *EventStream) awaitConfirm(ctx context.Context, sub *Subscription, owned bool) (*Subscription, error) {
 	timeout := conn.opts.SubscribeTimeout
 	t := time.NewTimer(timeout)
 	defer t.Stop()
 
+	cleanup := func() {
+		if owned {
+			conn.removeSub(sub.ident)
+		}
+	}
+
 	select {
 	case <-sub.confirmCh:
 		if sub.confirmErr != nil {
-			conn.removeSub(ident)
+			cleanup()
 			return nil, sub.confirmErr
 		}
 		return sub, nil
 	case <-ctx.Done():
-		conn.removeSub(ident)
+		cleanup()
 		return nil, ctx.Err()
 	case <-conn.doneCh:
-		conn.removeSub(ident)
+		cleanup()
 		if err := conn.getFinalErr(); err != nil {
 			return nil, err
 		}
 		return nil, errors.New("event stream closed")
 	case <-t.C:
-		conn.removeSub(ident)
-		return nil, fmt.Errorf("subscribe %q: timed out after %v", ident, timeout)
+		cleanup()
+		return nil, fmt.Errorf("subscribe %q: timed out after %v", sub.ident, timeout)
 	}
 }
 
