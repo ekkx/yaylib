@@ -161,8 +161,7 @@ func (c *Client) maybeRestore(email string, skip bool) (*gen.LoginUserResponse, 
 // ErrSessionSaveFailed so the caller can detect them, but the tokens are
 // already active on the client either way.
 func (c *Client) acceptLogin(email string, resp *gen.LoginUserResponse) error {
-	c.currentEmail = email
-	c.UserID = resp.GetUserId()
+	c.setLoginIdentity(email, resp.GetUserId())
 	// Activate tokens unconditionally so an immediate follow-up request
 	// works even when a later session-store write fails.
 	c.SetTokens(resp.GetAccessToken(), resp.GetRefreshToken())
@@ -211,9 +210,9 @@ func (c *Client) refreshTokens(ctx context.Context, staleToken string) error {
 
 	c.SetTokens(resp.GetAccessToken(), resp.GetRefreshToken())
 
-	if c.sessionStore != nil && c.currentEmail != "" {
+	if email := c.currentEmailSnapshot(); c.sessionStore != nil && email != "" {
 		_ = c.SaveSession(&Session{
-			Email:        c.currentEmail,
+			Email:        email,
 			UserID:       resp.GetId(),
 			AccessToken:  resp.GetAccessToken(),
 			RefreshToken: resp.GetRefreshToken(),

@@ -72,11 +72,25 @@ const (
 
 // Client is a high-level Yay! API client. Construct with NewClient(...).
 //
-// Exported configuration fields are safe to read at any time. Most are
-// also safe to mutate before any network call has been issued; the
-// header-injection path reads them on every request, so a fresh value
-// will be picked up by the next call. The exception is BaseURL — see
-// its field comment.
+// Concurrency:
+//
+//   - Once NewClient returns, treat the exported "wire configuration"
+//     fields (APIKey, APIVersionKey, APIVersionName, AppVersion,
+//     UserAgent, DeviceInfo, ConnectionType, ConnectionSpeed,
+//     AcceptLanguage, RetryPolicy, EventStreamURL) as read-only.
+//     The transport reads them on every request without a lock, so
+//     mutating them on a Client that already has in-flight requests
+//     is a data race. Set them through the With* options on NewClient.
+//   - BaseURL is captured into the underlying gen.Configuration during
+//     NewClient and is NOT re-read on subsequent requests; mutating
+//     it has no effect (use a fresh Client with WithBaseURL instead).
+//   - DeviceUUID, Tokens, UserID, ClientIP — and the unexported
+//     currentEmail — change at runtime (login, refresh, session
+//     restore). Internal reads go through snapshot helpers that take
+//     the relevant RWMutex. External callers MUST NOT touch these
+//     fields directly while requests are in flight; use SetTokens,
+//     LoadSession / SaveSession, and WithDeviceUUID / WithUserID /
+//     WithClientIP for safe access.
 type Client struct {
 	// Wire configuration.
 	APIKey         string
@@ -122,9 +136,8 @@ type Client struct {
 	// Bearer`. Populate via SetTokens or by restoring a cached Session.
 	// Direct field reads/writes are not safe when other goroutines may be
 	// issuing requests; prefer SetTokens (write) and the internal
-	// accessSnapshot / refreshSnapshot helpers (read), which take tokensMu.
-	Tokens   *TokenStore
-	tokensMu sync.RWMutex
+	// accessSnapshot / refreshSnapshot helpers (read), which take authMu.
+	Tokens *TokenStore
 
 	// UserID is the numeric account ID of the currently logged-in user.
 	// It is populated automatically after a successful LoginWithEmail
@@ -134,11 +147,27 @@ type Client struct {
 	// who skip the login wrappers and call SetTokens directly should
 	// also set this field via WithUserID, otherwise user-bound upload
 	// methods return an error.
+	//
+	// Reads from inside the SDK go through userIDSnapshot so a session
+	// restore can't race with an in-flight upload; external callers
+	// reading Client.UserID directly while requests are in flight is a
+	// data race.
 	UserID int64
+
+	// authMu guards Tokens.Access / Tokens.Refresh, UserID, and
+	// currentEmail. These fields move together (login → activate
+	// tokens + record identity, refresh → rotate tokens, session
+	// restore → install all three), so a single RWMutex avoids a
+	// nested-lock ordering hazard.
+	authMu sync.RWMutex
 
 	// RetryPolicy controls 5xx / 429 / network-error retries. Defaults to
 	// DefaultRetryPolicy(); override with WithRetryPolicy. Setting to a
 	// zero value (RetryPolicy{}) disables retries entirely.
+	//
+	// Construction-time only: mutating RetryPolicy on an active Client
+	// is a data race because the transport copies it on every request
+	// without holding a lock.
 	RetryPolicy RetryPolicy
 
 	// refreshMu serializes 401 auto-refresh: only one refresh runs at a time.
@@ -146,7 +175,7 @@ type Client struct {
 
 	// currentEmail is the email of the account the client is logged in as,
 	// set by LoginWithEmail on success. It is used to key session-store
-	// writes when an access token is refreshed.
+	// writes when an access token is refreshed. Guarded by authMu.
 	currentEmail string
 
 	httpClient *http.Client
@@ -351,11 +380,11 @@ func (c *Client) wireServices() {
 
 // SetTokens activates the given access / refresh tokens for subsequent calls.
 // No persistence happens here; use SaveSession to write to the session cache.
-// Safe to call concurrently with in-flight requests — tokensMu serializes the
+// Safe to call concurrently with in-flight requests — authMu serializes the
 // rotation.
 func (c *Client) SetTokens(access, refresh string) {
-	c.tokensMu.Lock()
-	defer c.tokensMu.Unlock()
+	c.authMu.Lock()
+	defer c.authMu.Unlock()
 	if c.Tokens == nil {
 		c.Tokens = &TokenStore{}
 	}
@@ -363,25 +392,55 @@ func (c *Client) SetTokens(access, refresh string) {
 	c.Tokens.Refresh = refresh
 }
 
-// accessSnapshot returns the current access token under tokensMu. Use this
+// accessSnapshot returns the current access token under authMu. Use this
 // from request paths instead of touching c.Tokens.Access directly.
 func (c *Client) accessSnapshot() string {
-	c.tokensMu.RLock()
-	defer c.tokensMu.RUnlock()
+	c.authMu.RLock()
+	defer c.authMu.RUnlock()
 	if c.Tokens == nil {
 		return ""
 	}
 	return c.Tokens.Access
 }
 
-// refreshSnapshot returns the current refresh token under tokensMu.
+// refreshSnapshot returns the current refresh token under authMu.
 func (c *Client) refreshSnapshot() string {
-	c.tokensMu.RLock()
-	defer c.tokensMu.RUnlock()
+	c.authMu.RLock()
+	defer c.authMu.RUnlock()
 	if c.Tokens == nil {
 		return ""
 	}
 	return c.Tokens.Refresh
+}
+
+// userIDSnapshot returns the current account UserID under authMu.
+func (c *Client) userIDSnapshot() int64 {
+	c.authMu.RLock()
+	defer c.authMu.RUnlock()
+	return c.UserID
+}
+
+// currentEmailSnapshot returns the email recorded for the active session
+// under authMu. Used by the 401 auto-refresh path to key session-store
+// writes.
+func (c *Client) currentEmailSnapshot() string {
+	c.authMu.RLock()
+	defer c.authMu.RUnlock()
+	return c.currentEmail
+}
+
+// setLoginIdentity atomically records the email + UserID for the active
+// session. Tokens are rotated via SetTokens; this helper covers the
+// non-token half of the login state.
+func (c *Client) setLoginIdentity(email string, userID int64) {
+	c.authMu.Lock()
+	if email != "" {
+		c.currentEmail = email
+	}
+	if userID != 0 {
+		c.UserID = userID
+	}
+	c.authMu.Unlock()
 }
 
 // deviceUUIDSnapshot returns the current device UUID under uuidMu so

@@ -217,8 +217,7 @@ func (c *Client) LoadSession(email string) (*Session, error) {
 	if s.DeviceUUID != "" {
 		c.setDeviceUUID(s.DeviceUUID)
 	}
-	c.currentEmail = email
-	c.UserID = s.UserID
+	c.setLoginIdentity(email, s.UserID)
 	return s, nil
 }
 
@@ -243,12 +242,7 @@ func (c *Client) SaveSession(s *Session) error {
 	if s.DeviceUUID != "" {
 		c.setDeviceUUID(s.DeviceUUID)
 	}
-	if s.Email != "" {
-		c.currentEmail = s.Email
-	}
-	if s.UserID != 0 {
-		c.UserID = s.UserID
-	}
+	c.setLoginIdentity(s.Email, s.UserID)
 	return nil
 }
 

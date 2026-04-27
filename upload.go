@@ -19,10 +19,14 @@ import (
 	"golang.org/x/image/draw"
 )
 
-// MaxImagesPerUpload is the maximum number of images accepted in a
-// single multi-image upload call (UploadPostImages, UploadChatMessageImages,
-// UploadReportImages).
+// MaxImagesPerUpload is the default per-call cap on multi-image uploads
+// (UploadPostImages, UploadChatMessageImages). Specific categories may
+// be tighter — UploadReportImages is capped at 4 by the server.
 const MaxImagesPerUpload = 9
+
+// MaxReportImagesPerUpload is the per-call cap on UploadReportImages.
+// The server rejects the 5th and beyond.
+const MaxReportImagesPerUpload = 4
 
 // MediaCDNBase is the public CDN prefix that serves files uploaded
 // via the Upload* image / video methods. The Yay! API sometimes
@@ -73,7 +77,16 @@ type uploadCategory interface {
 	// source aspect ratio. GIF sources stay animated; only their
 	// thumbnail is resized.
 	thumbnailSize() (w, h int, ok bool)
+
+	// maxFiles caps the number of images this category accepts in one
+	// call. Categories that use the default per-call ceiling return
+	// MaxImagesPerUpload; tighter ones (e.g. report = 4) override.
+	maxFiles() int
 }
+
+// defaultMaxFiles returns the standard per-call ceiling. Most
+// categories embed this via composition rather than reimplementing.
+func defaultMaxFiles() int { return MaxImagesPerUpload }
 
 type userAvatarUpload struct{ userID int64 }
 
@@ -81,6 +94,7 @@ func (c userAvatarUpload) uploadCategoryPath(_ time.Time) string {
 	return fmt.Sprintf("user/%d/avatar", c.userID)
 }
 func (userAvatarUpload) thumbnailSize() (int, int, bool) { return 200, 200, true }
+func (userAvatarUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type userCoverUpload struct{ userID int64 }
 
@@ -88,6 +102,7 @@ func (c userCoverUpload) uploadCategoryPath(_ time.Time) string {
 	return fmt.Sprintf("user/%d/cover", c.userID)
 }
 func (userCoverUpload) thumbnailSize() (int, int, bool) { return 300, 150, true }
+func (userCoverUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type userPostUpload struct{ userID int64 }
 
@@ -95,6 +110,7 @@ func (c userPostUpload) uploadCategoryPath(now time.Time) string {
 	return fmt.Sprintf("user/%d/posts/%s", c.userID, formatYMD(now))
 }
 func (userPostUpload) thumbnailSize() (int, int, bool) { return 450, 450, true }
+func (userPostUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type chatMessageUpload struct {
 	roomID int64
@@ -105,6 +121,7 @@ func (c chatMessageUpload) uploadCategoryPath(now time.Time) string {
 	return fmt.Sprintf("chatroom/%d/user/%d/messages/%s", c.roomID, c.userID, formatYMD(now))
 }
 func (chatMessageUpload) thumbnailSize() (int, int, bool) { return 450, 450, true }
+func (chatMessageUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type chatBackgroundUpload struct{ roomID int64 }
 
@@ -112,6 +129,7 @@ func (c chatBackgroundUpload) uploadCategoryPath(_ time.Time) string {
 	return fmt.Sprintf("chatroom/%d/background", c.roomID)
 }
 func (chatBackgroundUpload) thumbnailSize() (int, int, bool) { return 200, 200, true }
+func (chatBackgroundUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type groupIconUpload struct{ groupID int64 }
 
@@ -119,6 +137,7 @@ func (c groupIconUpload) uploadCategoryPath(_ time.Time) string {
 	return fmt.Sprintf("group/%d/icon", c.groupID)
 }
 func (groupIconUpload) thumbnailSize() (int, int, bool) { return 300, 300, true }
+func (groupIconUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type groupCoverUpload struct{ groupID int64 }
 
@@ -126,6 +145,7 @@ func (c groupCoverUpload) uploadCategoryPath(_ time.Time) string {
 	return fmt.Sprintf("group/%d/cover", c.groupID)
 }
 func (groupCoverUpload) thumbnailSize() (int, int, bool) { return 300, 300, true }
+func (groupCoverUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type groupCreationIconUpload struct{}
 
@@ -133,6 +153,7 @@ func (groupCreationIconUpload) uploadCategoryPath(now time.Time) string {
 	return "group/create/icon/" + formatYMD(now)
 }
 func (groupCreationIconUpload) thumbnailSize() (int, int, bool) { return 300, 300, true }
+func (groupCreationIconUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type groupCreationCoverUpload struct{}
 
@@ -140,6 +161,7 @@ func (groupCreationCoverUpload) uploadCategoryPath(now time.Time) string {
 	return "group/create/cover/" + formatYMD(now)
 }
 func (groupCreationCoverUpload) thumbnailSize() (int, int, bool) { return 300, 300, true }
+func (groupCreationCoverUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type signupAvatarUpload struct{}
 
@@ -147,6 +169,7 @@ func (signupAvatarUpload) uploadCategoryPath(now time.Time) string {
 	return "user/create/" + formatYMD(now)
 }
 func (signupAvatarUpload) thumbnailSize() (int, int, bool) { return 200, 200, true }
+func (signupAvatarUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type threadIconUpload struct{ groupID int64 }
 
@@ -154,6 +177,7 @@ func (c threadIconUpload) uploadCategoryPath(now time.Time) string {
 	return fmt.Sprintf("group/%d/threads/%s", c.groupID, formatYMD(now))
 }
 func (threadIconUpload) thumbnailSize() (int, int, bool) { return 300, 300, true }
+func (threadIconUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 type reportUpload struct{}
 
@@ -161,6 +185,7 @@ func (reportUpload) uploadCategoryPath(now time.Time) string {
 	return "report/" + formatYMD(now)
 }
 func (reportUpload) thumbnailSize() (int, int, bool) { return 450, 450, true }
+func (reportUpload) maxFiles() int                   { return MaxReportImagesPerUpload }
 
 type videoCallSnapshotUpload struct{}
 
@@ -168,15 +193,17 @@ func (videoCallSnapshotUpload) uploadCategoryPath(now time.Time) string {
 	return "video_call_snapshot/" + formatYMD(now)
 }
 func (videoCallSnapshotUpload) thumbnailSize() (int, int, bool) { return 0, 0, false }
+func (videoCallSnapshotUpload) maxFiles() int                   { return defaultMaxFiles() }
 
 // requireUserID returns Client.UserID if it has been populated by a
 // successful login (or WithUserID), otherwise an error suitable to
 // surface from a user-bound upload method.
 func (c *Client) requireUserID() (int64, error) {
-	if c.UserID == 0 {
+	uid := c.userIDSnapshot()
+	if uid == 0 {
 		return 0, fmt.Errorf("yaylib: not logged in (call LoginWithEmail before user-bound uploads)")
 	}
-	return c.UserID, nil
+	return uid, nil
 }
 
 // UploadAvatarImage uploads the authenticated user's avatar image and
@@ -311,8 +338,8 @@ func (c *Client) uploadImages(ctx context.Context, category uploadCategory, file
 	if len(files) == 0 {
 		return nil, fmt.Errorf("yaylib: upload requires at least one file")
 	}
-	if len(files) > MaxImagesPerUpload {
-		return nil, fmt.Errorf("yaylib: UploadImages accepts at most %d files (got %d)", MaxImagesPerUpload, len(files))
+	if cap := category.maxFiles(); len(files) > cap {
+		return nil, fmt.Errorf("yaylib: this upload accepts at most %d files (got %d)", cap, len(files))
 	}
 
 	now := time.Now()
@@ -418,15 +445,21 @@ func (c *Client) uploadImages(ctx context.Context, category uploadCategory, file
 	return out, nil
 }
 
-// UploadVideo uploads a single MP4 file and returns the server-side
+// UploadVideo uploads a single MP4 stream and returns the server-side
 // filename to pass back as video_file_name when creating a post or
 // chat message.
 //
 // Unlike images, the video presigned-URL endpoint does not return a
-// canonical filename, so the raw filename passed to the server is
-// what callers should hand back to CreatePost.
-func (c *Client) UploadVideo(ctx context.Context, file Upload) (string, error) {
-	body, err := readFully(file.Body)
+// canonical filename, so the random filename SDK generates is what
+// callers hand back to CreatePost. The Upload.Filename field used by
+// the image uploaders has no role here — pass the body directly.
+//
+// The body is read once and fully buffered in memory before the PUT
+// is issued; a 100MB clip means a 100MB allocation. Callers that
+// need to cap upload time should use ctx — the http.Client used for
+// the PUT carries no timeout of its own.
+func (c *Client) UploadVideo(ctx context.Context, body io.Reader) (string, error) {
+	buf, err := readFully(body)
 	if err != nil {
 		return "", fmt.Errorf("yaylib: read video: %w", err)
 	}
@@ -442,7 +475,7 @@ func (c *Client) UploadVideo(ctx context.Context, file Upload) (string, error) {
 	if rawURL == "" {
 		return "", fmt.Errorf("yaylib: empty presigned url")
 	}
-	if err := putToPresignedURL(ctx, c.presignedHTTPClient(), rawURL, body, "video/mp4"); err != nil {
+	if err := putToPresignedURL(ctx, c.presignedHTTPClient(), rawURL, buf, "video/mp4"); err != nil {
 		return "", fmt.Errorf("yaylib: upload video: %w", err)
 	}
 	return name, nil
@@ -453,12 +486,14 @@ func (c *Client) UploadVideo(ctx context.Context, file Upload) (string, error) {
 // Yay! headers and `Authorization: Bearer …` that conflict with the
 // presigned URL's AWS signature scheme), but inherits the underlying
 // base transport — so proxy / TLS / dialer customizations from
-// WithHTTPClient still apply — along with the configured timeout.
+// WithHTTPClient still apply.
+//
+// No timeout is set: large videos can take many minutes to upload and
+// the http.Client.Timeout the caller picked for API calls (90s by
+// default) is far too tight. Bound the upload via the ctx passed to
+// the upload method instead.
 func (c *Client) presignedHTTPClient() *http.Client {
-	return &http.Client{
-		Transport: c.bareTransport(),
-		Timeout:   c.httpClient.Timeout,
-	}
+	return &http.Client{Transport: c.bareTransport()}
 }
 
 // wsHTTPClient returns an *http.Client suitable for the WebSocket
@@ -476,11 +511,18 @@ func (c *Client) wsHTTPClient() *http.Client {
 // what lets WithHTTPClient's proxy / TLS / dialer customizations reach
 // callers that need to bypass the request-modifying middleware (S3
 // presigned PUT, WebSocket handshake).
+//
+// NewClient always installs a *Transport on the http.Client; if a
+// caller has replaced it after construction the assertion fails and
+// silently falling back to http.DefaultTransport would drop their
+// proxy / TLS / dialer settings. Panic instead so the misuse is
+// caught immediately.
 func (c *Client) bareTransport() http.RoundTripper {
-	if t, ok := c.httpClient.Transport.(*Transport); ok && t.Base != nil {
-		return t.Base
+	t, ok := c.httpClient.Transport.(*Transport)
+	if !ok || t.Base == nil {
+		panic("yaylib: http.Client.Transport replaced after NewClient — keep the SDK's *Transport in place")
 	}
-	return http.DefaultTransport
+	return t.Base
 }
 
 func putToPresignedURL(ctx context.Context, hc *http.Client, rawURL string, body []byte, contentType string) error {
@@ -711,8 +753,10 @@ func randomFilenamePrefix(n int) string {
 	const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	b := make([]byte, n)
 	if _, err := rand.Read(b); err != nil {
-		// crypto/rand on a healthy host does not fail; keep going with the
-		// zero-initialized buffer rather than aborting at filename time.
+		// A zero-filled buffer would map to a fixed all-'0' prefix and
+		// guarantee filename collisions on the bucket; an unhealthy
+		// crypto/rand should fail loudly rather than silently corrupt.
+		panic(fmt.Sprintf("yaylib: crypto/rand: %v", err))
 	}
 	for i := range b {
 		b[i] = chars[int(b[i])%len(chars)]
@@ -731,9 +775,14 @@ func decodeImageSize(body []byte) (int, int, error) {
 	return cfg.Width, cfg.Height, nil
 }
 
-// formatYMD matches the Calendar-derived "YYYY/M/D" path the server
-// expects in date-bucketed categories — note the un-padded month and
-// day.
+// formatYMD matches the "YYYY/M/D" path the server expects in
+// date-bucketed categories — note the un-padded month and day.
+//
+// The fields come from t in its current Location: the server treats
+// the bucket path as an organizational hint rather than a strict UTC
+// key, so the local-timezone reading the SDK passes in is what the
+// server has been seeing in practice. Callers that want a stable
+// bucket path (e.g. for tests) should pass t in UTC.
 func formatYMD(t time.Time) string {
 	return fmt.Sprintf("%d/%d/%d", t.Year(), int(t.Month()), t.Day())
 }
