@@ -164,6 +164,11 @@ type Subscription struct {
 	confirmCh   chan struct{}
 	confirmErr  error
 
+	// sendMu pairs every send on `events` with the close in
+	// Unsubscribe / terminate. Without it, a dispatch goroutine that
+	// has already obtained the *Subscription from findSub races with
+	// Unsubscribe and panics with "send on closed channel".
+	sendMu sync.Mutex
 	closed atomic.Bool
 	done   chan struct{}
 }
@@ -187,8 +192,7 @@ func (s *Subscription) Unsubscribe(ctx context.Context) error {
 	s.conn.removeSub(s.ident)
 	// Best effort: server may already be gone.
 	_ = s.conn.writeCommand(ctx, "unsubscribe", s.ident)
-	close(s.events)
-	close(s.done)
+	s.closeChannels()
 	return nil
 }
 
@@ -200,8 +204,34 @@ func (s *Subscription) terminate(err error) {
 		s.confirmErr = err
 		close(s.confirmCh)
 	})
+	s.closeChannels()
+}
+
+// closeChannels closes events and done under sendMu so an in-flight
+// deliver() can observe `closed == true` and bail before it would
+// otherwise send on a closed channel.
+func (s *Subscription) closeChannels() {
+	s.sendMu.Lock()
 	close(s.events)
 	close(s.done)
+	s.sendMu.Unlock()
+}
+
+// deliver is the only safe path that writes to s.events. The lock
+// pairs with closeChannels; the closed check inside the lock makes the
+// "still open at lock time" guarantee that the subsequent send relies on.
+func (s *Subscription) deliver(ev Event) {
+	s.sendMu.Lock()
+	defer s.sendMu.Unlock()
+	if s.closed.Load() {
+		return
+	}
+	select {
+	case s.events <- ev:
+	default:
+		// Buffer full — drop. Caller is responsible for sizing
+		// EventBuffer big enough for their traffic.
+	}
 }
 
 // OpenEventStream opens a real-time event channel against the
@@ -480,12 +510,7 @@ func (conn *EventStream) dispatch(data []byte) {
 		return
 	}
 	if sub := conn.findSub(f.Identifier); sub != nil {
-		select {
-		case sub.events <- ev:
-		default:
-			// Buffer full — drop. Caller is responsible for sizing
-			// EventBuffer big enough for their traffic.
-		}
+		sub.deliver(ev)
 	}
 }
 

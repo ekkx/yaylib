@@ -2,6 +2,8 @@ package yaylib
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/ekkx/yaylib/v2/gen"
@@ -76,10 +78,23 @@ func (r LoginWithEmailRequest) NoCache() LoginWithEmailRequest {
 // is configured. On a cache hit, the returned *http.Response is nil and the
 // LoginUserResponse is synthesized from the cached tokens (UserId,
 // AccessToken, RefreshToken populated; other fields zero-valued).
+//
+// Errors fall into three buckets:
+//   - Session-store read failure (corrupt JSON, permission, I/O): returned
+//     without attempting a fresh login, so a transient store fault doesn't
+//     burn through the server's login rate limit.
+//   - Login HTTP failure: returned as-is.
+//   - Login succeeded but persisting the session failed: the response is
+//     still returned so the tokens are usable; the persistence error is
+//     wrapped with ErrSessionSaveFailed for callers that want to detect it.
 func (r LoginWithEmailRequest) Execute() (*gen.LoginUserResponse, *http.Response, error) {
 	body := r.client.fillEmailLogin(r.body)
 	email := body.GetEmail()
-	if resp, ok := r.client.maybeRestore(email, r.skipCache); ok {
+	resp, ok, err := r.client.maybeRestore(email, r.skipCache)
+	if err != nil {
+		return nil, nil, err
+	}
+	if ok {
 		return resp, nil, nil
 	}
 	resp, httpResp, err := r.client.UsersAPIService.
@@ -89,8 +104,10 @@ func (r LoginWithEmailRequest) Execute() (*gen.LoginUserResponse, *http.Response
 	if err != nil {
 		return resp, httpResp, err
 	}
-	r.client.acceptLogin(email, resp)
-	return resp, httpResp, err
+	if perr := r.client.acceptLogin(email, resp); perr != nil {
+		return resp, httpResp, perr
+	}
+	return resp, httpResp, nil
 }
 
 // ---- internal helpers ----
@@ -107,43 +124,58 @@ func (c *Client) fillEmailLogin(body gen.LoginEmailUserRequest) gen.LoginEmailUs
 	return body
 }
 
+// ErrSessionSaveFailed wraps a session-store write failure that occurred
+// after an otherwise successful login. The login response is still
+// returned alongside this error, so callers can choose to log-and-ignore
+// (errors.Is(err, ErrSessionSaveFailed)) or treat it as fatal.
+var ErrSessionSaveFailed = errors.New("yaylib: session save failed")
+
 // maybeRestore checks the session store for a cached session and, on hit,
-// applies it to the client and returns a synthesized response. Returns
-// ok=false when skipped, missing, or on store error.
-func (c *Client) maybeRestore(email string, skip bool) (*gen.LoginUserResponse, bool) {
+// applies it to the client and returns a synthesized response. ok=false /
+// err=nil means "no cached session, proceed with fresh login"; a non-nil
+// err signals the store itself is unhealthy (corrupt JSON, permission,
+// I/O), in which case the caller MUST NOT fall through to a fresh login —
+// otherwise a transient store fault burns through the login rate limit.
+func (c *Client) maybeRestore(email string, skip bool) (*gen.LoginUserResponse, bool, error) {
 	if skip || c.sessionStore == nil || email == "" {
-		return nil, false
+		return nil, false, nil
 	}
 	sess, err := c.LoadSession(email)
-	if err != nil {
-		return nil, false
+	if errors.Is(err, ErrNoSession) {
+		return nil, false, nil
 	}
-	c.currentEmail = email
-	c.UserID = sess.UserID
+	if err != nil {
+		return nil, false, fmt.Errorf("yaylib: load session: %w", err)
+	}
 	resp := gen.NewLoginUserResponse()
 	resp.SetUserId(sess.UserID)
 	resp.SetAccessToken(sess.AccessToken)
 	resp.SetRefreshToken(sess.RefreshToken)
-	return resp, true
+	return resp, true, nil
 }
 
 // acceptLogin is called after a successful fresh login. It activates the
 // tokens on the client, records the account email (used by the 401 auto-
 // refresh flow to key session-store writes), and persists the session when
-// a store is configured.
-func (c *Client) acceptLogin(email string, resp *gen.LoginUserResponse) {
+// a store is configured. Persistence errors are wrapped with
+// ErrSessionSaveFailed so the caller can detect them, but the tokens are
+// already active on the client either way.
+func (c *Client) acceptLogin(email string, resp *gen.LoginUserResponse) error {
 	c.currentEmail = email
 	c.UserID = resp.GetUserId()
 	if c.sessionStore != nil && email != "" {
-		_ = c.SaveSession(&Session{
+		if err := c.SaveSession(&Session{
 			Email:        email,
 			UserID:       resp.GetUserId(),
 			AccessToken:  resp.GetAccessToken(),
 			RefreshToken: resp.GetRefreshToken(),
-		})
-		return
+		}); err != nil {
+			return fmt.Errorf("%w: %v", ErrSessionSaveFailed, err)
+		}
+		return nil
 	}
 	c.SetTokens(resp.GetAccessToken(), resp.GetRefreshToken())
+	return nil
 }
 
 // refreshTokens exchanges the current refresh token for a fresh access /

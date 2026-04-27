@@ -279,9 +279,16 @@ func NewClient(opts ...Option) *Client {
 	}
 
 	// Build HTTP client if caller didn't supply one, and wrap the transport
-	// either way so our headers always run.
+	// either way so our headers always run. When the caller supplied one,
+	// shallow-copy it first so we never mutate their *http.Client (sharing
+	// it with another consumer would otherwise leak Yay! headers / Bearer
+	// tokens, and passing the same instance to two yaylib.NewClient calls
+	// would stack Transport wrappers).
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{Timeout: DefaultHTTPTimeout}
+	} else {
+		copied := *c.httpClient
+		c.httpClient = &copied
 	}
 	inner := c.httpClient.Transport
 	if inner == nil {
