@@ -133,12 +133,24 @@ func nextDelay(prev *http.Response, attempt int, policy RetryPolicy) time.Durati
 // Returns 0 when the body doesn't carry one. The Yay! server uses this
 // field rather than the standard Retry-After header to communicate
 // retry timing.
+//
+// The original resp.Body is fully drained and closed here so the
+// underlying connection can be reused; resp.Body is then replaced with
+// an in-memory reader holding the same bytes so a downstream reader
+// (e.g. drainAndClose) sees an equivalent payload.
 func retryInFromBody(resp *http.Response) time.Duration {
 	if resp == nil || resp.StatusCode < 400 || resp.Body == nil {
 		return 0
 	}
-	body, err := io.ReadAll(io.LimitReader(resp.Body, 16*1024))
+	orig := resp.Body
+	body, err := io.ReadAll(io.LimitReader(orig, 16*1024))
+	// Drain anything past the 16KB cap so http keep-alive can recycle
+	// the connection, then close the original body — the NopCloser we
+	// install below is a no-op on Close().
+	_, _ = io.Copy(io.Discard, orig)
+	orig.Close()
 	if err != nil {
+		resp.Body = io.NopCloser(bytes.NewReader(nil))
 		return 0
 	}
 	resp.Body = io.NopCloser(bytes.NewReader(body))
