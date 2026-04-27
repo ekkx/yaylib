@@ -369,6 +369,7 @@ func (c *Client) uploadImages(ctx context.Context, category uploadCategory, file
 		return nil, fmt.Errorf("yaylib: presigned urls count mismatch (want %d got %d)", len(allJobs), len(urls))
 	}
 
+	hc := c.presignedHTTPClient()
 	results := make([]error, len(allJobs))
 	var wg sync.WaitGroup
 	for i := range allJobs {
@@ -380,7 +381,7 @@ func (c *Client) uploadImages(ctx context.Context, category uploadCategory, file
 				results[i] = fmt.Errorf("empty presigned url")
 				return
 			}
-			results[i] = putToPresignedURL(ctx, rawURL, allJobs[i].body, allJobs[i].contentType)
+			results[i] = putToPresignedURL(ctx, hc, rawURL, allJobs[i].body, allJobs[i].contentType)
 		}()
 	}
 	wg.Wait()
@@ -428,13 +429,30 @@ func (c *Client) UploadVideo(ctx context.Context, file Upload) (string, error) {
 	if rawURL == "" {
 		return "", fmt.Errorf("yaylib: empty presigned url")
 	}
-	if err := putToPresignedURL(ctx, rawURL, body, "video/mp4"); err != nil {
+	if err := putToPresignedURL(ctx, c.presignedHTTPClient(), rawURL, body, "video/mp4"); err != nil {
 		return "", fmt.Errorf("yaylib: upload video: %w", err)
 	}
 	return name, nil
 }
 
-func putToPresignedURL(ctx context.Context, rawURL string, body []byte, contentType string) error {
+// presignedHTTPClient returns an *http.Client suitable for S3 presigned
+// PUTs. It strips the yaylib *Transport (which would otherwise inject
+// Yay! headers and `Authorization: Bearer …` that conflict with the
+// presigned URL's AWS signature scheme), but inherits the underlying
+// base transport — so proxy / TLS / dialer customizations from
+// WithHTTPClient still apply — along with the configured timeout.
+func (c *Client) presignedHTTPClient() *http.Client {
+	var base http.RoundTripper = http.DefaultTransport
+	if t, ok := c.httpClient.Transport.(*Transport); ok && t.Base != nil {
+		base = t.Base
+	}
+	return &http.Client{
+		Transport: base,
+		Timeout:   c.httpClient.Timeout,
+	}
+}
+
+func putToPresignedURL(ctx context.Context, hc *http.Client, rawURL string, body []byte, contentType string) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPut, rawURL, bytes.NewReader(body))
 	if err != nil {
 		return err
@@ -442,7 +460,7 @@ func putToPresignedURL(ctx context.Context, rawURL string, body []byte, contentT
 	req.Header.Set("Content-Type", contentType)
 	req.ContentLength = int64(len(body))
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := hc.Do(req)
 	if err != nil {
 		return err
 	}
