@@ -335,20 +335,33 @@ func (c *Client) uploadImages(ctx context.Context, category uploadCategory, file
 			return nil, fmt.Errorf("yaylib: read file %d: %w", i, err)
 		}
 		ext := normalizeImageExt(f.Filename)
-		w, h := decodeImageSize(body)
+		// A failed decode means we can't size the filename correctly,
+		// and uploading body bytes whose extension doesn't match the
+		// payload would just trigger server-side moderation deletion.
+		// Surface the error instead of silently uploading a `_size_0x0`
+		// file or, worse, a main image without its required thumbnail.
+		w, h, err := decodeImageSize(body)
+		if err != nil {
+			return nil, fmt.Errorf("yaylib: decode image %d: %w", i, err)
+		}
 		mainName := imageFilename(categoryPath, prefix, ts, i, ext, w, h)
 		mainJobs[i] = job{body: body, filename: mainName, contentType: contentTypeFor(mainName)}
 
 		if hasThumb {
 			thumbBytes, thumbExt, thumbCT, err := makeThumbnailFor(body, ext, thumbW, thumbH)
-			if err == nil {
-				thumbName := thumbnailFilename(categoryPath, prefix, ts, i, thumbExt, w, h)
-				thumbJobs = append(thumbJobs, job{
-					body:        thumbBytes,
-					filename:    thumbName,
-					contentType: thumbCT,
-				})
+			if err != nil {
+				// The server deletes the main asset if its thumbnail
+				// is missing or has a mismatched extension, so a
+				// silently-skipped thumbnail effectively breaks the
+				// whole upload — fail loudly instead.
+				return nil, fmt.Errorf("yaylib: make thumbnail for image %d: %w", i, err)
 			}
+			thumbName := thumbnailFilename(categoryPath, prefix, ts, i, thumbExt, w, h)
+			thumbJobs = append(thumbJobs, job{
+				body:        thumbBytes,
+				filename:    thumbName,
+				contentType: thumbCT,
+			})
 		}
 	}
 
@@ -692,12 +705,12 @@ func randomFilenamePrefix(n int) string {
 // decodeImageSize peeks at the first few bytes of body to read the
 // width/height of a JPEG, PNG, or GIF without fully decoding the image.
 // On any error it returns 0,0 and the caller drops the size suffix.
-func decodeImageSize(body []byte) (int, int) {
+func decodeImageSize(body []byte) (int, int, error) {
 	cfg, _, err := image.DecodeConfig(bytes.NewReader(body))
 	if err != nil {
-		return 0, 0
+		return 0, 0, err
 	}
-	return cfg.Width, cfg.Height
+	return cfg.Width, cfg.Height, nil
 }
 
 // formatYMD matches the Calendar-derived "YYYY/M/D" path the server

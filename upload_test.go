@@ -398,24 +398,19 @@ func TestUploadAvatarImage_PresignedFailure(t *testing.T) {
 	}
 }
 
-func TestUploadAvatarImage_NonImageBodyOmitsSize(t *testing.T) {
-	f, srv := newFakeUploadServer(t)
+func TestUploadAvatarImage_NonImageBodyReturnsError(t *testing.T) {
+	_, srv := newFakeUploadServer(t)
 	defer srv.Close()
 
 	c := loggedInClient(srv.URL, 1)
-	rawBytes := []byte("not an image at all")
-
-	name, err := c.UploadAvatarImage(context.Background(), Upload{
-		Filename: "broken.jpg", Body: bytes.NewReader(rawBytes),
+	_, err := c.UploadAvatarImage(context.Background(), Upload{
+		Filename: "broken.jpg", Body: bytes.NewReader([]byte("not an image at all")),
 	})
-	if err != nil {
-		t.Fatalf("UploadAvatarImage: %v", err)
+	if err == nil {
+		t.Fatal("UploadAvatarImage on undecodable body: want error, got nil")
 	}
-	if strings.Contains(name, "_size_") {
-		t.Errorf("name = %q, expected no _size_ suffix when body isn't decodable", name)
-	}
-	if !bytes.Equal(f.objects["/uploads/"+name], rawBytes) {
-		t.Errorf("body mismatch")
+	if !strings.Contains(err.Error(), "decode image") {
+		t.Errorf("error = %q, want one mentioning decode failure", err)
 	}
 }
 
@@ -713,23 +708,6 @@ func TestUploadAvatarImage_ThumbIs200x200(t *testing.T) {
 	}
 	if cfg.Width != 200 || cfg.Height != 150 {
 		t.Errorf("avatar thumb size = %dx%d, want 200x150 (fitted into 200x200)", cfg.Width, cfg.Height)
-	}
-}
-
-func TestUploadAvatarImage_NonImageBodySkipsThumb(t *testing.T) {
-	f, srv := newFakeUploadServer(t)
-	defer srv.Close()
-
-	c := loggedInClient(srv.URL, 1)
-	if _, err := c.UploadAvatarImage(context.Background(), Upload{
-		Filename: "broken.jpg", Body: bytes.NewReader([]byte("not an image")),
-	}); err != nil {
-		t.Fatalf("UploadAvatarImage: %v", err)
-	}
-	for path := range f.contentTypes {
-		if strings.Contains(path, "/thumb_") {
-			t.Errorf("unexpected thumbnail upload for undecodable input: %s", path)
-		}
 	}
 }
 
