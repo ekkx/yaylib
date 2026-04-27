@@ -28,7 +28,6 @@ type Web3WalletTransactionHistory struct {
 	TokenContract NullableString `json:"token_contract,omitempty"`
 	TokenId NullableString `json:"token_id,omitempty"`
 	TransactionCode NullableString `json:"transaction_code,omitempty"`
-	// Unresolved Java type: ao.i
 	Type map[string]interface{} `json:"type,omitempty"`
 	UpdatedAt NullableInt64 `json:"updated_at,omitempty"`
 	AdditionalProperties map[string]interface{}

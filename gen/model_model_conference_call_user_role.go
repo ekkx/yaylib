@@ -13,7 +13,6 @@ var _ MappedNullable = &ModelConferenceCallUserRole{}
 // ModelConferenceCallUserRole struct for ModelConferenceCallUserRole
 type ModelConferenceCallUserRole struct {
 	Id NullableInt64 `json:"id,omitempty"`
-	// Unresolved Java type: jp.nanameue.agora.f.a
 	Role map[string]interface{} `json:"role,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

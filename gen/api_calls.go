@@ -564,8 +564,6 @@ func (r ApiGetCallGiftHistoryRequest) Execute() (*CallGiftHistoryResponse, *http
 /*
 GetCallGiftHistory Method for GetCallGiftHistory
 
-Implemented as a Kotlin suspend function on Android.
-
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param callId
  @return ApiGetCallGiftHistoryRequest

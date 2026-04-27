@@ -16,7 +16,6 @@ type GiftCardActivityDetails struct {
 	Email NullableString `json:"email,omitempty"`
 	EmplAmount NullableInt32 `json:"empl_amount,omitempty"`
 	GiftCardAmount NullableInt32 `json:"gift_card_amount,omitempty"`
-	// Unresolved Java type: ao.h
 	Status map[string]interface{} `json:"status,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

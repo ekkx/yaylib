@@ -12,7 +12,6 @@ var _ MappedNullable = &PendingEmplActivity{}
 
 // PendingEmplActivity struct for PendingEmplActivity
 type PendingEmplActivity struct {
-	// Unresolved Java type: jp.nanameue.yay.shared.data.model.empl.EmplActivity
 	Activity map[string]interface{} `json:"activity,omitempty"`
 	Details NullablePendingEmplActivityDetails `json:"details,omitempty"`
 	AdditionalProperties map[string]interface{}

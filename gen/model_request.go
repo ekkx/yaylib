@@ -13,7 +13,6 @@ var _ MappedNullable = &Request{}
 // Request struct for Request
 type Request struct {
 	Method NullableRequestMethod `json:"method,omitempty"`
-	// Unresolved Java type: org.json.JSONArray
 	Params map[string]interface{} `json:"params,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

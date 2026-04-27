@@ -12,7 +12,6 @@ var _ MappedNullable = &MuteKeyword{}
 
 // MuteKeyword struct for MuteKeyword
 type MuteKeyword struct {
-	// Unresolved Java type: io.realm.u0
 	Context map[string]interface{} `json:"context,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
 	Word NullableString `json:"word,omitempty"`

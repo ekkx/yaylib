@@ -16,13 +16,11 @@ type Web3TransactionDetail struct {
 	ChainId NullableInt64 `json:"chain_id,omitempty"`
 	Currency NullableString `json:"currency,omitempty"`
 	EmplAmount NullableFloat64 `json:"empl_amount,omitempty"`
-	// Unresolved Java type: ao.a
 	Error map[string]interface{} `json:"error,omitempty"`
 	FinalStatusUpdatedAtMillis NullableInt64 `json:"final_status_updated_at_millis,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
 	MaxTokenAmount NullableString `json:"max_token_amount,omitempty"`
 	MinTokenAmount NullableString `json:"min_token_amount,omitempty"`
-	// Unresolved Java type: ao.h
 	Status map[string]interface{} `json:"status,omitempty"`
 	TokenOutAddress NullableString `json:"token_out_address,omitempty"`
 	TokenOutAmount NullableString `json:"token_out_amount,omitempty"`

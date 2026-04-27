@@ -13,11 +13,9 @@ var _ MappedNullable = &HatchGacha{}
 // HatchGacha struct for HatchGacha
 type HatchGacha struct {
 	EmplCost NullableFloat64 `json:"empl_cost,omitempty"`
-	// Unresolved Java type: bo.b
 	GachaType map[string]interface{} `json:"gacha_type,omitempty"`
 	PalImageUrl NullableString `json:"pal_image_url,omitempty"`
 	PalName NullableString `json:"pal_name,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.shared.data.model.blockchain.Pal.PalRank
 	PalRank map[string]interface{} `json:"pal_rank,omitempty"`
 	TokenId NullableString `json:"token_id,omitempty"`
 	AdditionalProperties map[string]interface{}

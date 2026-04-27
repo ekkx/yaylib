@@ -12,9 +12,7 @@ var _ MappedNullable = &ApiB{}
 
 // ApiB struct for ApiB
 type ApiB struct {
-	// Unresolved Java type: bk.b
 	D map[string]interface{} `json:"d,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.api.h0
 	F map[string]interface{} `json:"f,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

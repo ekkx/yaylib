@@ -819,8 +819,6 @@ func (r ApiDeleteFootprintRequest) Execute() (*http.Response, error) {
 /*
 DeleteFootprint Method for DeleteFootprint
 
-Implemented as a Kotlin suspend function on Android.
-
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param userId
  @param footprintId
@@ -1024,8 +1022,6 @@ func (r ApiDisableTwoFactorAuthRequest) Execute() (*http.Response, error) {
 
 /*
 DisableTwoFactorAuth Method for DisableTwoFactorAuth
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiDisableTwoFactorAuthRequest
@@ -1473,8 +1469,6 @@ func (r ApiEnableTwoFactorAuthRequest) Execute() (*TwoStepAuthEnabledResponse, *
 
 /*
 EnableTwoFactorAuth Method for EnableTwoFactorAuth
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiEnableTwoFactorAuthRequest
@@ -2873,8 +2867,6 @@ func (r ApiGetFootprintsRequest) Execute() (*FootprintsResponse, *http.Response,
 /*
 GetFootprints Method for GetFootprints
 
-Implemented as a Kotlin suspend function on Android.
-
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiGetFootprintsRequest
 */
@@ -3617,8 +3609,6 @@ func (r ApiGetTwoFactorAuthRequestInfoRequest) Execute() (*TwoStepAuthRequestInf
 /*
 GetTwoFactorAuthRequestInfo Method for GetTwoFactorAuthRequestInfo
 
-Implemented as a Kotlin suspend function on Android.
-
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiGetTwoFactorAuthRequestInfoRequest
 */
@@ -3715,8 +3705,6 @@ func (r ApiGetTwoFactorAuthStatusRequest) Execute() (*TwoFAStatusResponse, *http
 
 /*
 GetTwoFactorAuthStatus Method for GetTwoFactorAuthStatus
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiGetTwoFactorAuthStatusRequest
@@ -4392,8 +4380,6 @@ func (r ApiGetUserGiftTransactionsRequest) Execute() (*GiftTransactionsResponse,
 /*
 GetUserGiftTransactions Method for GetUserGiftTransactions
 
-Implemented as a Kotlin suspend function on Android.
-
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param userId
  @return ApiGetUserGiftTransactionsRequest
@@ -4600,8 +4586,6 @@ func (r ApiGetUserInterestsRequest) Execute() (*UserInterestsResponse, *http.Res
 
 /*
 GetUserInterests Method for GetUserInterests
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiGetUserInterestsRequest
@@ -5243,8 +5227,6 @@ func (r ApiLoginWithEmailRequest) Execute() (*LoginUserResponse, *http.Response,
 
 /*
 LoginWithEmail Method for LoginWithEmail
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiLoginWithEmailRequest
@@ -7238,8 +7220,6 @@ func (r ApiUpdateUserInterestsRequest) Execute() (*http.Response, error) {
 
 /*
 UpdateUserInterests Method for UpdateUserInterests
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiUpdateUserInterestsRequest

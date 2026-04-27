@@ -12,13 +12,9 @@ var _ MappedNullable = &WebSocketInteractor{}
 
 // WebSocketInteractor struct for WebSocketInteractor
 type WebSocketInteractor struct {
-	// Unresolved Java type: oi.c
 	D map[string]interface{} `json:"d,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.api.WebSocketInteractor.a
 	F map[string]interface{} `json:"f,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.api.WebSocketInteractor.c
 	H map[string]interface{} `json:"h,omitempty"`
-	// Unresolved Java type: ei.z
 	I map[string]interface{} `json:"i,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

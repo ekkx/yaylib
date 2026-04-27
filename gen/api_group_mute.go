@@ -47,8 +47,6 @@ func (r ApiListMutedGroupUsersRequest) Execute() (*GroupMuteUsersResponse, *http
 /*
 ListMutedGroupUsers Method for ListMutedGroupUsers
 
-Implemented as a Kotlin suspend function on Android.
-
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param id
  @return ApiListMutedGroupUsersRequest
@@ -162,8 +160,6 @@ func (r ApiMuteGroupUserRequest) Execute() (*http.Response, error) {
 /*
 MuteGroupUser Method for MuteGroupUser
 
-Implemented as a Kotlin suspend function on Android.
-
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param id
  @param userId
@@ -257,8 +253,6 @@ func (r ApiUnmuteGroupUserRequest) Execute() (*http.Response, error) {
 
 /*
 UnmuteGroupUser Method for UnmuteGroupUser
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param id

@@ -17,7 +17,6 @@ type StickerPack struct {
 	Id NullableInt64 `json:"id,omitempty"`
 	Name NullableString `json:"name,omitempty"`
 	Order NullableInt32 `json:"order,omitempty"`
-	// Unresolved Java type: io.realm.u0
 	Stickers map[string]interface{} `json:"stickers,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

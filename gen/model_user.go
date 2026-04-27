@@ -15,10 +15,8 @@ type User struct {
 	Biography NullableString `json:"biography,omitempty"`
 	BirthDate NullableString `json:"birth_date,omitempty"`
 	BlockingLimit NullableInt32 `json:"blocking_limit,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.data.model.User.ConnectedBy
 	ConnectedBy map[string]interface{} `json:"connected_by,omitempty"`
 	ContactPhones []string `json:"contact_phones,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.shared.data.model.SharedCountry
 	Country map[string]interface{} `json:"country,omitempty"`
 	CoverImage NullableString `json:"cover_image,omitempty"`
 	CoverImageThumbnail NullableString `json:"cover_image_thumbnail,omitempty"`

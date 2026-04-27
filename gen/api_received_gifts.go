@@ -139,8 +139,6 @@ func (r ApiGetReceivedGiftTransactionRequest) Execute() (*GiftReceivedTransactio
 /*
 GetReceivedGiftTransaction Method for GetReceivedGiftTransaction
 
-Implemented as a Kotlin suspend function on Android.
-
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param giftTransactionUuid
  @return ApiGetReceivedGiftTransactionRequest
@@ -240,8 +238,6 @@ func (r ApiListReceivedGiftsRequest) Execute() (*GiftReceivedResponse, *http.Res
 
 /*
 ListReceivedGifts Method for ListReceivedGifts
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListReceivedGiftsRequest
@@ -351,8 +347,6 @@ func (r ApiListReceivedGiftsV1Request) Execute() (*GiftReceivedResponse, *http.R
 
 /*
 ListReceivedGiftsV1 Method for ListReceivedGiftsV1
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListReceivedGiftsV1Request

@@ -15,7 +15,6 @@ type PalActivityLog struct {
 	CreatedAtSeconds NullableInt64 `json:"created_at_seconds,omitempty"`
 	Details NullablePalActivityLogDetails `json:"details,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.api.PalActivityType
 	Type map[string]interface{} `json:"type,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

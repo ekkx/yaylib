@@ -1465,8 +1465,6 @@ func (r ApiGetGroupGiftHistoryRequest) Execute() (*GroupGiftHistoryResponse, *ht
 /*
 GetGroupGiftHistory Method for GetGroupGiftHistory
 
-Implemented as a Kotlin suspend function on Android.
-
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param groupId
  @return ApiGetGroupGiftHistoryRequest
@@ -1585,8 +1583,6 @@ func (r ApiGetGroupGiftTransactionsRequest) Execute() (*GiftTransactionsResponse
 
 /*
 GetGroupGiftTransactions Method for GetGroupGiftTransactions
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param groupId
@@ -1930,8 +1926,6 @@ func (r ApiGetGroupMembersRequest) Execute() (*GroupUsersResponse, *http.Respons
 
 /*
 GetGroupMembers Method for GetGroupMembers
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param id

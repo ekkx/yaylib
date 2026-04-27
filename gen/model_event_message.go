@@ -12,7 +12,6 @@ var _ MappedNullable = &EventMessage{}
 
 // EventMessage struct for EventMessage
 type EventMessage struct {
-	// Unresolved Java type: jp.nanameue.yay.api.WebSocketInteractor.b
 	Data map[string]interface{} `json:"data,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

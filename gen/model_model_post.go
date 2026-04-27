@@ -65,7 +65,6 @@ type ModelPost struct {
 	LikesCount NullableInt32 `json:"likes_count,omitempty"`
 	Mentions []User `json:"mentions,omitempty"`
 	MessageTags []ModelMessageTag `json:"message_tags,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.data.model.Post.Companion.PostType
 	PostType map[string]interface{} `json:"post_type,omitempty"`
 	ReportedCount NullableInt32 `json:"reported_count,omitempty"`
 	RepostsCount NullableInt32 `json:"reposts_count,omitempty"`

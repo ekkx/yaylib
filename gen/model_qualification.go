@@ -13,7 +13,6 @@ var _ MappedNullable = &Qualification{}
 // Qualification struct for Qualification
 type Qualification struct {
 	Qualified NullableBool `json:"qualified,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.data.dto.PalFreePoolQualification
 	Type map[string]interface{} `json:"type,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

@@ -44,7 +44,6 @@ type ModelGroup struct {
 	IsSecret NullableBool `json:"is_secret,omitempty"`
 	IsSeizable NullableBool `json:"is_seizable,omitempty"`
 	IsWalkthroughRequested NullableBool `json:"is_walkthrough_requested,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.data.model.Group.JoinStatus
 	JoinStatus map[string]interface{} `json:"join_status,omitempty"`
 	JoinedCommunityCampaign NullableBool `json:"joined_community_campaign,omitempty"`
 	ModeratorIds []int64 `json:"moderator_ids,omitempty"`
@@ -57,7 +56,6 @@ type ModelGroup struct {
 	SeizableBeforeMillis NullableInt64 `json:"seizable_before_millis,omitempty"`
 	SubCategoryId NullableInt64 `json:"sub_category_id,omitempty"`
 	ThreadsCount NullableInt64 `json:"threads_count,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.data.model.Group.Title
 	Title map[string]interface{} `json:"title,omitempty"`
 	Topic NullableString `json:"topic,omitempty"`
 	UnreadCounts NullableInt64 `json:"unread_counts,omitempty"`

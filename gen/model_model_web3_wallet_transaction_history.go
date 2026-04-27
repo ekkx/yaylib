@@ -24,20 +24,16 @@ type ModelWeb3WalletTransactionHistory struct {
 	GiftTransactionUuid NullableString `json:"gift_transaction_uuid,omitempty"`
 	IsPendingTransaction NullableBool `json:"is_pending_transaction,omitempty"`
 	NftTokenId NullableString `json:"nft_token_id,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.data.model.Web3WalletTransactionHistory.PalTransactionDetail
 	PalTransactionDetail map[string]interface{} `json:"pal_transaction_detail,omitempty"`
 	Price NullableFloat64 `json:"price,omitempty"`
 	RaceId NullableString `json:"race_id,omitempty"`
 	RaceRanks []int32 `json:"race_ranks,omitempty"`
-	// Unresolved Java type: ao.h
 	Status map[string]interface{} `json:"status,omitempty"`
 	ToAddress NullableString `json:"to_address,omitempty"`
 	TokenSymbol NullableString `json:"token_symbol,omitempty"`
 	TransactionCode NullableString `json:"transaction_code,omitempty"`
 	TransactionHashHex NullableString `json:"transaction_hash_hex,omitempty"`
-	// Unresolved Java type: ao.i
 	TransactionHistoryType map[string]interface{} `json:"transaction_history_type,omitempty"`
-	// Unresolved Java type: ao.l
 	TransactionType map[string]interface{} `json:"transaction_type,omitempty"`
 	Value NullableFloat64 `json:"value,omitempty"`
 	ValueSymbol NullableString `json:"value_symbol,omitempty"`

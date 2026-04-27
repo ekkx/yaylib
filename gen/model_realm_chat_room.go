@@ -17,7 +17,6 @@ type RealmChatRoom struct {
 	IsGroup NullableBool `json:"is_group,omitempty"`
 	IsRequest NullableBool `json:"is_request,omitempty"`
 	LastMessage NullableChatRoomLastMessage `json:"last_message,omitempty"`
-	// Unresolved Java type: io.realm.u0
 	Members map[string]interface{} `json:"members,omitempty"`
 	Name NullableString `json:"name,omitempty"`
 	Owner NullableRealmUser `json:"owner,omitempty"`

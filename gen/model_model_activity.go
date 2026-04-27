@@ -30,7 +30,6 @@ type ModelActivity struct {
 	IsBulkInvitation NullableBool `json:"is_bulk_invitation,omitempty"`
 	Title NullableString `json:"title,omitempty"`
 	ToPost NullableModelPost `json:"to_post,omitempty"`
-	// Unresolved Java type: jp.nanameue.yay.data.model.Activity.Companion.ActivityType
 	Type map[string]interface{} `json:"type,omitempty"`
 	Url NullableString `json:"url,omitempty"`
 	User NullableUser `json:"user,omitempty"`

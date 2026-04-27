@@ -12,7 +12,6 @@ var _ MappedNullable = &MissionItem{}
 
 // MissionItem struct for MissionItem
 type MissionItem struct {
-	// Unresolved Java type: jp.nanameue.yay.shared.data.model.campaign.Mission
 	Mission map[string]interface{} `json:"mission,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

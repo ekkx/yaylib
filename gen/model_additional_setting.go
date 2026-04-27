@@ -13,9 +13,7 @@ var _ MappedNullable = &AdditionalSetting{}
 // AdditionalSetting struct for AdditionalSetting
 type AdditionalSetting struct {
 	ApiId NullableString `json:"api_id,omitempty"`
-	// Unresolved Java type: kotlin.jvm.functions.Function1
 	IsOn map[string]interface{} `json:"is_on,omitempty"`
-	// Unresolved Java type: kotlin.jvm.functions.Function1
 	IsOnFromUser map[string]interface{} `json:"is_on_from_user,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

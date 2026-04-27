@@ -12,7 +12,6 @@ var _ MappedNullable = &Callback{}
 
 // Callback struct for Callback
 type Callback struct {
-	// Unresolved Java type: jp.nanameue.yay.data.model.DApp.CallbackMethod
 	CallbackMethod map[string]interface{} `json:"callback_method,omitempty"`
 	Id NullableInt32 `json:"id,omitempty"`
 	ResponseString NullableString `json:"response_string,omitempty"`

@@ -12,10 +12,8 @@ var _ MappedNullable = &Error{}
 
 // Error struct for Error
 type Error struct {
-	// Unresolved Java type: jp.nanameue.yay.data.model.ErrorAction
 	Action map[string]interface{} `json:"action,omitempty"`
 	OriginalCode NullableInt32 `json:"original_code,omitempty"`
-	// Unresolved Java type: java.lang.Throwable
 	Throwable map[string]interface{} `json:"throwable,omitempty"`
 	Type NullableErrorType `json:"type,omitempty"`
 	AdditionalProperties map[string]interface{}

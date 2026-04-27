@@ -12,7 +12,6 @@ var _ MappedNullable = &GifImageCategory{}
 
 // GifImageCategory struct for GifImageCategory
 type GifImageCategory struct {
-	// Unresolved Java type: io.realm.u0
 	Gifs map[string]interface{} `json:"gifs,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
 	Language NullableString `json:"language,omitempty"`

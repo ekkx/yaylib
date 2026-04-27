@@ -332,7 +332,6 @@ func (r ApiCreateThreadPostRequest) MentionIds(mentionIds []int64) ApiCreateThre
 	return r
 }
 
-// Unresolved Java type: pq.g0
 func (r ApiCreateThreadPostRequest) MessageTags(messageTags map[string]interface{}) ApiCreateThreadPostRequest {
 	r.messageTags = &messageTags
 	return r
@@ -343,7 +342,6 @@ func (r ApiCreateThreadPostRequest) PostType(postType PostType) ApiCreateThreadP
 	return r
 }
 
-// Unresolved Java type: pq.g0
 func (r ApiCreateThreadPostRequest) SharedUrl(sharedUrl map[string]interface{}) ApiCreateThreadPostRequest {
 	r.sharedUrl = &sharedUrl
 	return r
@@ -365,8 +363,6 @@ func (r ApiCreateThreadPostRequest) Execute() (*Post, *http.Response, error) {
 
 /*
 CreateThreadPost Method for CreateThreadPost
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param id

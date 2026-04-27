@@ -12,7 +12,6 @@ var _ MappedNullable = &Evolution{}
 
 // Evolution struct for Evolution
 type Evolution struct {
-	// Unresolved Java type: jp.nanameue.yay.shared.data.model.blockchain.Pal.PalGrade
 	Grade map[string]interface{} `json:"grade,omitempty"`
 	Level NullableInt32 `json:"level,omitempty"`
 	PalImageUrl NullableString `json:"pal_image_url,omitempty"`

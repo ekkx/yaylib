@@ -150,7 +150,6 @@ func (r ApiCreateConferenceCallPostRequest) Language(language string) ApiCreateC
 	return r
 }
 
-// Unresolved Java type: pq.g0
 func (r ApiCreateConferenceCallPostRequest) MessageTags(messageTags map[string]interface{}) ApiCreateConferenceCallPostRequest {
 	r.messageTags = &messageTags
 	return r
@@ -167,8 +166,6 @@ func (r ApiCreateConferenceCallPostRequest) Execute() (*CreatePostResponse, *htt
 
 /*
 CreateConferenceCallPost Method for CreateConferenceCallPost
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiCreateConferenceCallPostRequest
@@ -440,7 +437,6 @@ func (r ApiCreatePostRequest) MentionIds(mentionIds []int64) ApiCreatePostReques
 	return r
 }
 
-// Unresolved Java type: pq.g0
 func (r ApiCreatePostRequest) MessageTags(messageTags map[string]interface{}) ApiCreatePostRequest {
 	r.messageTags = &messageTags
 	return r
@@ -451,7 +447,6 @@ func (r ApiCreatePostRequest) PostType(postType PostType) ApiCreatePostRequest {
 	return r
 }
 
-// Unresolved Java type: pq.g0
 func (r ApiCreatePostRequest) SharedUrl(sharedUrl map[string]interface{}) ApiCreatePostRequest {
 	r.sharedUrl = &sharedUrl
 	return r
@@ -473,8 +468,6 @@ func (r ApiCreatePostRequest) Execute() (*Post, *http.Response, error) {
 
 /*
 CreatePost Method for CreatePost
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiCreatePostRequest
@@ -695,7 +688,6 @@ func (r ApiCreateSharePostRequest) Language(language string) ApiCreateSharePostR
 	return r
 }
 
-// Unresolved Java type: pq.g0
 func (r ApiCreateSharePostRequest) MessageTags(messageTags map[string]interface{}) ApiCreateSharePostRequest {
 	r.messageTags = &messageTags
 	return r
@@ -712,8 +704,6 @@ func (r ApiCreateSharePostRequest) Execute() (*Post, *http.Response, error) {
 
 /*
 CreateSharePost Method for CreateSharePost
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiCreateSharePostRequest
@@ -2032,8 +2022,6 @@ func (r ApiGetPostGiftTransactionsRequest) Execute() (*GiftTransactionsResponse,
 
 /*
 GetPostGiftTransactions Method for GetPostGiftTransactions
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param postId
@@ -4079,7 +4067,6 @@ func (r ApiRepostRequest) MentionIds(mentionIds []int64) ApiRepostRequest {
 	return r
 }
 
-// Unresolved Java type: pq.g0
 func (r ApiRepostRequest) MessageTags(messageTags map[string]interface{}) ApiRepostRequest {
 	r.messageTags = &messageTags
 	return r
@@ -4090,7 +4077,6 @@ func (r ApiRepostRequest) PostType(postType PostType) ApiRepostRequest {
 	return r
 }
 
-// Unresolved Java type: pq.g0
 func (r ApiRepostRequest) SharedUrl(sharedUrl map[string]interface{}) ApiRepostRequest {
 	r.sharedUrl = &sharedUrl
 	return r
@@ -4112,8 +4098,6 @@ func (r ApiRepostRequest) Execute() (*CreatePostResponse, *http.Response, error)
 
 /*
 Repost Method for Repost
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiRepostRequest
@@ -4652,7 +4636,6 @@ func (r ApiUpdatePostRequest) Language(language string) ApiUpdatePostRequest {
 	return r
 }
 
-// Unresolved Java type: pq.g0
 func (r ApiUpdatePostRequest) MessageTags(messageTags map[string]interface{}) ApiUpdatePostRequest {
 	r.messageTags = &messageTags
 	return r
@@ -4669,8 +4652,6 @@ func (r ApiUpdatePostRequest) Execute() (*Post, *http.Response, error) {
 
 /*
 UpdatePost Method for UpdatePost
-
-Implemented as a Kotlin suspend function on Android.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param id

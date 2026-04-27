@@ -12,7 +12,6 @@ var _ MappedNullable = &Web3Bag{}
 
 // Web3Bag struct for Web3Bag
 type Web3Bag struct {
-	// Unresolved Java type: jp.nanameue.yay.shared.data.model.empl.Empl
 	Empl map[string]interface{} `json:"empl,omitempty"`
 	PalsCount NullableInt32 `json:"pals_count,omitempty"`
 	AdditionalProperties map[string]interface{}
