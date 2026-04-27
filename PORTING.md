@@ -332,7 +332,81 @@ returned the underlying 401 as the Open error.
 
 ---
 
-## 11. Required headers
+## 11. Resilience: server-as-source-of-truth
+
+The Yay! server emits responses with shapes the spec doesn't always
+predict — fields typed as String on the source side that arrive as
+JSON numbers, enum values that aren't in the extracted vocabulary,
+etc. The reference client absorbs these via lenient JSON
+deserialization; strict decoders would otherwise reject every such
+response and leave callers stuck.
+
+Every port MUST follow these four rules so the SDK keeps working
+when the wire format drifts:
+
+1. **Non-path parameters are optional.** Path parameters stay
+   required (the URL can't be assembled without them). Every other
+   parameter — query, header, body field — MUST be emitted as
+   optional regardless of how the spec or source side declares it.
+   The server is the source of truth for which arguments are
+   actually mandatory; SDK-side rejection just masks calls the
+   server would have accepted.
+
+2. **Enum unmarshaling is tolerant.** The generated typed
+   constants are for IDE help and `IsValid()`-style introspection
+   only. Receiving an unknown string MUST set the field to that
+   string and continue, NOT raise an error. New server values then
+   surface as data the caller can inspect, instead of breaking
+   every call to that endpoint.
+
+3. **Per-call raw escape hatch (`ExecuteRaw` / `executeRaw` /
+   `execute_raw`).** Every request builder MUST expose a sibling
+   that returns the raw response bytes alongside the HTTP response,
+   bypassing the typed JSON decode entirely:
+
+   ```go
+   // Go
+   body, httpResp, err := client.GetTimeline(ctx, "").ExecuteRaw()
+
+   // TS
+   const { body, httpResponse } = await client.getTimeline("").executeRaw();
+
+   // Python
+   body, http_response = await client.get_timeline("").execute_raw()
+   ```
+
+   Return contract: HTTP success returns `(body, response, nil)`;
+   HTTP error (4xx/5xx) returns `(body, response, APIError)` so
+   `CodeOf(err)` still works; transport failure returns
+   `(nil, nil, err)`. Typed JSON-decode failures MUST NOT propagate
+   through this path — that's the whole point of the escape hatch.
+
+4. **Hand-curated overrides.** When the SDK ships a typed shape
+   that's wrong, callers shouldn't have to live on `ExecuteRaw`
+   forever. The build pipeline reads two YAML overlays applied to
+   the spec before code generation:
+
+   - **Manual enum overlay** — declares wire-only enums that have
+     no source-side enum class to extract, plus per-case names
+     that drive the generated constant identifiers.
+   - **Manual DTO override overlay** — replaces a DTO field's
+     extracted type with the wire reality. A `dto:` plus `field:`
+     pair targets exactly one DTO; `field:` alone is a global
+     rule applying to every DTO that declares that field name,
+     and a per-DTO entry wins when both exist.
+
+   Each port's build pipeline MUST consume the same overlays so
+   the same wire patches reach all three languages from a single
+   source.
+
+The recommended workflow when the wire format diverges in
+production: hit the mismatch, capture the body via `ExecuteRaw` (or
+the `APIError.Body()` it left in the typed-path error), pick the
+right overlay to fix it, regenerate, ship.
+
+---
+
+## 12. Required headers
 
 The transport adds these on every API call:
 
@@ -365,7 +439,7 @@ header.
 
 ---
 
-## 12. Retry policy
+## 13. Retry policy
 
 `RetryPolicy` is a struct with `MaxAttempts`, `BaseDelay`, `MaxDelay`,
 `RetryOnPOST`. Defaults: 3 attempts, 200ms base, 30s ceiling, no POST
@@ -388,7 +462,7 @@ event stream wants to keep recovering. Document the difference loudly.
 
 ---
 
-## 13. UUID and identity
+## 14. UUID and identity
 
 `NewUUIDv4` (Go) / `newUUIDv4()` (TS) / `new_uuid_v4()` (Python) all
 produce a canonical 8-4-4-4-12 hex UUID v4 from the language's
@@ -402,7 +476,7 @@ loads a session keeps its device identity.
 
 ---
 
-## 14. Test parity
+## 15. Test parity
 
 Every port SHOULD include the following behavior tests (the Go
 versions in `*_test.go` are reference fixtures — translate the
@@ -439,10 +513,20 @@ scenarios, not the Go API mechanics):
 - WebSocket dial carries no Bearer.
 - OnDrop fires when the per-sub buffer overflows.
 - Stable connection (>= 30s) resets the failure budget.
+- ExecuteRaw on a typed-decode-failing endpoint returns the raw body
+  with no error (typed JSON-decode errors absorbed; HTTP errors
+  still surface as APIError with body intact).
+- A response whose JSON shape doesn't match the typed model: typed
+  Execute returns the parse error with the raw body in
+  APIError.Body(); ExecuteRaw on the same call returns
+  (body, response, nil).
+- Unknown enum value in a server response is accepted (typed field
+  set to the unknown string, no error). IsValid() reports false on
+  it; the typed constants stay usable.
 
 ---
 
-## 15. Versioning
+## 16. Versioning
 
 `major` is locked across the three languages — a breaking change in
 any language bumps all three. `minor` and `patch` drift freely. The
@@ -454,7 +538,7 @@ v3 migration mechanically rewrites `/v2` → `/v3` in import paths.
 
 ---
 
-## 16. What's deliberately NOT in this document
+## 17. What's deliberately NOT in this document
 
 - Internal transport details (RoundTripper, connection pool, mutex
   placement). Pick the language-native equivalent.
