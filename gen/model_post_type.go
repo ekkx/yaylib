@@ -24,6 +24,7 @@ const (
 	POSTTYPE_ShareableThread PostType = "shareable_thread"
 	POSTTYPE_SharePal PostType = "sharepal"
 	POSTTYPE_Undefined PostType = "undefined"
+	POSTTYPE_Text PostType = "text"
 )
 
 // All allowed values of PostType enum
@@ -40,6 +41,7 @@ var AllowedPostTypeEnumValues = []PostType{
 	"shareable_thread",
 	"sharepal",
 	"undefined",
+	"text",
 }
 
 func (v *PostType) UnmarshalJSON(src []byte) error {

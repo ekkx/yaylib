@@ -2479,6 +2479,7 @@ const (
 	PostTypeShareableurl    = gen.POSTTYPE_ShareableUrl
 	PostTypeSharepal        = gen.POSTTYPE_SharePal
 	PostTypeSurvey          = gen.POSTTYPE_Survey
+	PostTypeText            = gen.POSTTYPE_Text
 	PostTypeThread          = gen.POSTTYPE_Thread
 	PostTypeUndefined       = gen.POSTTYPE_Undefined
 	PostTypeVideo           = gen.POSTTYPE_Video
