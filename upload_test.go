@@ -356,6 +356,20 @@ func TestUploadPostImages_RejectsEmptyAndOverflow(t *testing.T) {
 	}
 }
 
+func TestUploadReportImages_RejectsOverflow(t *testing.T) {
+	c := loggedInClient("http://does-not-matter", 1)
+	ctx := context.Background()
+
+	tooMany := make([]Upload, MaxReportImagesPerUpload+1)
+	for i := range tooMany {
+		tooMany[i] = Upload{Filename: "x.jpg", Body: bytes.NewReader([]byte{0})}
+	}
+	if _, err := c.UploadReportImages(ctx, tooMany); err == nil {
+		t.Errorf("UploadReportImages(%d files) expected error (cap is %d)",
+			len(tooMany), MaxReportImagesPerUpload)
+	}
+}
+
 func TestUploadAvatarImage_PutFailureSurfacesError(t *testing.T) {
 	f, srv := newFakeUploadServer(t)
 	defer srv.Close()
@@ -420,10 +434,7 @@ func TestUploadVideo_HappyPath(t *testing.T) {
 
 	c := NewClient(WithBaseURL(srv.URL))
 	mp4Body := []byte("\x00\x00\x00 ftypisom--mp4-bytes--")
-	name, err := c.UploadVideo(context.Background(), Upload{
-		Filename: "clip.mp4",
-		Body:     bytes.NewReader(mp4Body),
-	})
+	name, err := c.UploadVideo(context.Background(), bytes.NewReader(mp4Body))
 	if err != nil {
 		t.Fatalf("UploadVideo: %v", err)
 	}
@@ -444,7 +455,7 @@ func TestUploadVideo_HappyPath(t *testing.T) {
 
 func TestUploadVideo_NilBody(t *testing.T) {
 	c := NewClient(WithBaseURL("http://does-not-matter"))
-	_, err := c.UploadVideo(context.Background(), Upload{Filename: "clip.mp4"})
+	_, err := c.UploadVideo(context.Background(), nil)
 	if err == nil {
 		t.Fatal("UploadVideo with nil body expected error")
 	}
