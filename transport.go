@@ -96,7 +96,7 @@ func (t *Transport) attemptOnce(r *http.Request, bodyBytes []byte) (*http.Respon
 	// 401 auto-refresh. The oauth/token endpoint itself is excluded so a
 	// failed refresh doesn't loop.
 	if resp.StatusCode == http.StatusUnauthorized && !isOAuthTokenPath(r.URL.Path) {
-		return t.handle401(resp, r, bodyBytes, sentAccess), nil
+		return t.handle401(resp, r, bodyBytes, sentAccess)
 	}
 	return resp, nil
 }
@@ -142,15 +142,24 @@ func (t *Transport) setHeaders(r *http.Request, accessToken string) {
 }
 
 // handle401 buffers the 401 response body, attempts a token refresh, and
-// retries the original request once with the new Authorization. On any
-// failure path it restores and returns the original 401 response so the
-// caller still sees the server's error body.
-func (t *Transport) handle401(orig *http.Response, req *http.Request, reqBody []byte, staleToken string) *http.Response {
+// retries the original request once with the new Authorization.
+//
+// Behavior of the three failure modes:
+//   - No refresh token / refresh itself failed: the original 401 is
+//     returned (with its body intact) so the caller sees the server's
+//     "your credentials are bad" message — that's the correct signal.
+//   - Refresh succeeded but the post-refresh retry failed (network
+//     error, dial timeout, etc.): the retry error is returned instead
+//     of the stale 401. Restoring the 401 here would mislead the caller
+//     into prompting for re-auth when the real problem is the network.
+//   - Refresh succeeded and the retry succeeded: that response is
+//     returned and the original 401 body is dropped.
+func (t *Transport) handle401(orig *http.Response, req *http.Request, reqBody []byte, staleToken string) (*http.Response, error) {
 	origBody, _ := io.ReadAll(orig.Body)
 	orig.Body.Close()
-	restore := func() *http.Response {
+	restore := func() (*http.Response, error) {
 		orig.Body = io.NopCloser(bytes.NewReader(origBody))
-		return orig
+		return orig, nil
 	}
 
 	c := t.client
@@ -171,9 +180,9 @@ func (t *Transport) handle401(orig *http.Response, req *http.Request, reqBody []
 
 	resp2, err := t.Base.RoundTrip(r2)
 	if err != nil {
-		return restore()
+		return nil, err
 	}
-	return resp2
+	return resp2, nil
 }
 
 // getClientIP returns the cached X-Client-IP value, safe to call
@@ -199,7 +208,7 @@ func (c *Client) maybeFetchClientIP() {
 	c.clientIPMu.Unlock()
 
 	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		ctx, cancel := context.WithTimeout(c.lifecycleCtx, 30*time.Second)
 		defer cancel()
 
 		ip := ""

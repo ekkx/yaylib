@@ -202,6 +202,57 @@ func TestTransport_401RefreshFailureSurfaces401(t *testing.T) {
 	}
 }
 
+func TestTransport_401RefreshSucceedsButRetryNetworkErrorSurfacesError(t *testing.T) {
+	// Server: oauth/token returns fresh tokens. Data path returns 401
+	// once, then closes the connection on the retry to simulate a
+	// post-refresh network failure.
+	var dataAttempt int32
+	srv := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.Contains(r.URL.Path, "/api/v1/oauth/token") {
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"access_token":  "NEW_ACC",
+				"refresh_token": "NEW_REF",
+			})
+			return
+		}
+		n := atomic.AddInt32(&dataAttempt, 1)
+		if n == 1 {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		// Force a connection-level failure on the retry by hijacking
+		// and abruptly closing the underlying TCP socket.
+		hj, ok := w.(http.Hijacker)
+		if !ok {
+			t.Fatal("server doesn't support hijack")
+		}
+		conn, _, err := hj.Hijack()
+		if err != nil {
+			t.Fatalf("hijack: %v", err)
+		}
+		_ = conn.Close()
+	}))
+	srv.Start()
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	c.SetTokens("STALE", "REF")
+
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, srv.URL+"/v1/anywhere", nil)
+	resp, err := c.httpClient.Do(req)
+	if err == nil {
+		// httpClient.Do may surface as resp + 0 bytes if the connection
+		// was closed mid-response, but our handle401 path returns
+		// (nil, err) so we expect err non-nil here.
+		resp.Body.Close()
+		t.Fatal("expected error from broken retry, got nil")
+	}
+	if c.accessSnapshot() != "NEW_ACC" {
+		t.Errorf("tokens should still be rotated, got access=%q", c.accessSnapshot())
+	}
+}
+
 func TestTransport_LazyFetchClientIPPopulatesHeader(t *testing.T) {
 	const fetchedIP = "203.0.113.7"
 	cap := &requestCapturer{handler: func(w http.ResponseWriter, r *http.Request) {
