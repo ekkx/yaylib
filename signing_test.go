@@ -19,12 +19,15 @@ func TestGenerateSignedInfoAt_Deterministic(t *testing.T) {
 	c.DeviceUUID = "test-uuid"
 
 	got := c.GenerateSignedInfoAt(1700000000)
-	want := md5HexHash("test-api-key" + "test-uuid" + "1700000000" + "yayZ1")
-	if got != want {
-		t.Errorf("GenerateSignedInfoAt(1700000000) = %q, want %q", got, want)
+	wantValue := md5HexHash("test-api-key" + "test-uuid" + "1700000000" + "yayZ1")
+	if got.Value != wantValue {
+		t.Errorf("GenerateSignedInfoAt(1700000000).Value = %q, want %q", got.Value, wantValue)
 	}
-	if len(got) != 32 {
-		t.Errorf("hash length = %d, want 32", len(got))
+	if got.Timestamp != 1700000000 {
+		t.Errorf("GenerateSignedInfoAt(1700000000).Timestamp = %d, want 1700000000", got.Timestamp)
+	}
+	if len(got.Value) != 32 {
+		t.Errorf("hash length = %d, want 32", len(got.Value))
 	}
 }
 
@@ -37,7 +40,7 @@ func TestGenerateSignedInfoAt_DependsOnClientCredentials(t *testing.T) {
 	b.APIKey = "key-B"
 	b.DeviceUUID = "uuid-shared"
 
-	if a.GenerateSignedInfoAt(1) == b.GenerateSignedInfoAt(1) {
+	if a.GenerateSignedInfoAt(1).Value == b.GenerateSignedInfoAt(1).Value {
 		t.Error("different APIKeys must produce different hashes")
 	}
 }
@@ -61,19 +64,19 @@ func TestGenerateSignedInfo_UsesServerTimestamp(t *testing.T) {
 	c.APIKey = "test-api-key"
 	c.DeviceUUID = "test-uuid"
 
-	ts, sig, err := c.GenerateSignedInfo(context.Background())
+	got, err := c.GenerateSignedInfo(context.Background())
 	if err != nil {
 		t.Fatalf("GenerateSignedInfo: %v", err)
 	}
-	if ts != serverTime {
-		t.Errorf("ts = %d, want %d", ts, serverTime)
+	if got.Timestamp != serverTime {
+		t.Errorf("Timestamp = %d, want %d", got.Timestamp, serverTime)
 	}
-	wantSig := md5HexHash("test-api-key" + "test-uuid" + "1750000000" + "yayZ1")
-	if sig != wantSig {
-		t.Errorf("sig = %q, want %q", sig, wantSig)
+	wantValue := md5HexHash("test-api-key" + "test-uuid" + "1750000000" + "yayZ1")
+	if got.Value != wantValue {
+		t.Errorf("Value = %q, want %q", got.Value, wantValue)
 	}
-	if got := c.GenerateSignedInfoAt(ts); got != sig {
-		t.Errorf("GenerateSignedInfoAt(%d) = %q, but GenerateSignedInfo returned %q", ts, got, sig)
+	if recomputed := c.GenerateSignedInfoAt(got.Timestamp); recomputed != got {
+		t.Errorf("GenerateSignedInfoAt = %+v, GenerateSignedInfo = %+v", recomputed, got)
 	}
 }
 
@@ -84,7 +87,7 @@ func TestGenerateSignedInfo_PropagatesServerError(t *testing.T) {
 	defer srv.Close()
 
 	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
-	_, _, err := c.GenerateSignedInfo(context.Background())
+	_, err := c.GenerateSignedInfo(context.Background())
 	if err == nil {
 		t.Fatal("expected error from server 500")
 	}

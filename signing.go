@@ -23,6 +23,19 @@ const signedInfoSharedKey = "yayZ1"
 // rejections we have no way to inspect.
 const signedVersionPlatform = "yay_android"
 
+// SignedInfo bundles the timestamp and MD5 hash a Yay! request needs to
+// pass server-side validation. The two values are bound: changing one
+// without the other invalidates the signature.
+type SignedInfo struct {
+	// Timestamp is the Unix-second timestamp the hash is computed
+	// against. Pass this to whichever request field expects a
+	// "timestamp" (e.g. EditUser.Timestamp).
+	Timestamp int64
+	// Value is the lowercase 32-char MD5 hex digest. Pass this to
+	// the "signed_info" request field.
+	Value string
+}
+
 // GenerateSignedInfo fetches the server's current timestamp and returns
 // it together with the signed_info MD5 hash bound to that timestamp.
 // Pass both to the request: the server validates the hash against the
@@ -32,23 +45,25 @@ const signedVersionPlatform = "yay_android"
 // would produce a hash the server rejects. When you already have a
 // trusted timestamp (tests, batched requests reusing one ts), use
 // GenerateSignedInfoAt instead to skip the network call.
-func (c *Client) GenerateSignedInfo(ctx context.Context) (timestamp int64, signedInfo string, err error) {
+func (c *Client) GenerateSignedInfo(ctx context.Context) (SignedInfo, error) {
 	resp, _, err := c.GetUserTimestamp(ctx).Execute()
 	if err != nil {
-		return 0, "", fmt.Errorf("yaylib: fetch server timestamp: %w", err)
+		return SignedInfo{}, fmt.Errorf("yaylib: fetch server timestamp: %w", err)
 	}
-	ts := resp.GetTime()
-	return ts, c.GenerateSignedInfoAt(ts), nil
+	return c.GenerateSignedInfoAt(resp.GetTime()), nil
 }
 
 // GenerateSignedInfoAt computes the signed_info MD5 hash for the given
 // Unix-second timestamp without any network I/O. Use this when you
 // already have a synchronized timestamp; otherwise prefer
 // GenerateSignedInfo, which fetches the server's view of the clock.
-func (c *Client) GenerateSignedInfoAt(timestamp int64) string {
+func (c *Client) GenerateSignedInfoAt(timestamp int64) SignedInfo {
 	payload := c.APIKey + c.deviceUUIDSnapshot() + strconv.FormatInt(timestamp, 10) + signedInfoSharedKey
 	sum := md5.Sum([]byte(payload))
-	return hex.EncodeToString(sum[:])
+	return SignedInfo{
+		Timestamp: timestamp,
+		Value:     hex.EncodeToString(sum[:]),
+	}
 }
 
 // GenerateSignedVersion returns the signed_version HMAC token that
