@@ -72,9 +72,11 @@ const (
 
 // Client is a high-level Yay! API client. Construct with NewClient(...).
 //
-// Exported configuration fields are safe to read at any time and safe to
-// mutate before any network call has been issued. Changing them after
-// issuing calls is allowed but may be racy with in-flight requests.
+// Exported configuration fields are safe to read at any time. Most are
+// also safe to mutate before any network call has been issued; the
+// header-injection path reads them on every request, so a fresh value
+// will be picked up by the next call. The exception is BaseURL — see
+// its field comment.
 type Client struct {
 	// Wire configuration.
 	APIKey         string
@@ -83,8 +85,21 @@ type Client struct {
 	AppVersion     string
 	UserAgent      string
 	DeviceInfo     string
-	DeviceUUID     string
-	BaseURL        string
+	// DeviceUUID is the per-device identifier sent in X-Device-UUID
+	// (and used in the signed_info MD5 input). Reads / writes from
+	// inside the SDK go through uuidMu so a session restore that
+	// updates this field can't race with the transport's header
+	// injection. External callers are expected to set this only at
+	// construction via WithDeviceUUID; runtime mutation from outside
+	// the SDK is unsynchronized and discouraged.
+	DeviceUUID string
+	uuidMu     sync.RWMutex
+	// BaseURL is captured into the underlying gen.Configuration during
+	// NewClient and is NOT re-read on subsequent requests. Mutating
+	// client.BaseURL after construction has no effect — to target a
+	// different environment, construct a new Client with WithBaseURL
+	// instead.
+	BaseURL string
 
 	// EventStreamURL is the wss:// endpoint used by OpenEventStream.
 	// Defaults to wss://cable.yay.space.
@@ -367,4 +382,22 @@ func (c *Client) refreshSnapshot() string {
 		return ""
 	}
 	return c.Tokens.Refresh
+}
+
+// deviceUUIDSnapshot returns the current device UUID under uuidMu so
+// session restores that overwrite c.DeviceUUID don't race with the
+// transport's header injection or signing-input assembly.
+func (c *Client) deviceUUIDSnapshot() string {
+	c.uuidMu.RLock()
+	defer c.uuidMu.RUnlock()
+	return c.DeviceUUID
+}
+
+// setDeviceUUID atomically replaces the device UUID. Used by session
+// restore so cached tokens stay paired with the device identity that
+// was active when they were issued.
+func (c *Client) setDeviceUUID(u string) {
+	c.uuidMu.Lock()
+	c.DeviceUUID = u
+	c.uuidMu.Unlock()
 }

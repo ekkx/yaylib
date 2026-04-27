@@ -46,7 +46,7 @@ func (c *Client) GenerateSignedInfo(ctx context.Context) (timestamp int64, signe
 // already have a synchronized timestamp; otherwise prefer
 // GenerateSignedInfo, which fetches the server's view of the clock.
 func (c *Client) GenerateSignedInfoAt(timestamp int64) string {
-	payload := c.APIKey + c.DeviceUUID + strconv.FormatInt(timestamp, 10) + signedInfoSharedKey
+	payload := c.APIKey + c.deviceUUIDSnapshot() + strconv.FormatInt(timestamp, 10) + signedInfoSharedKey
 	sum := md5.Sum([]byte(payload))
 	return hex.EncodeToString(sum[:])
 }

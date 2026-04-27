@@ -303,7 +303,9 @@ func (conn *EventStream) connect(ctx context.Context) error {
 	q.Set("app_version", conn.client.APIVersionName)
 	u.RawQuery = q.Encode()
 
-	ws, _, err := websocket.Dial(ctx, u.String(), nil)
+	ws, _, err := websocket.Dial(ctx, u.String(), &websocket.DialOptions{
+		HTTPClient: conn.client.wsHTTPClient(),
+	})
 	if err != nil {
 		return fmt.Errorf("dial: %w", err)
 	}
@@ -427,7 +429,13 @@ func (conn *EventStream) backoff(attempt int) time.Duration {
 	if exp <= 0 {
 		return 0
 	}
-	return time.Duration(rand.Int63n(int64(exp)) + int64(pol.InitialDelay))
+	delay := time.Duration(rand.Int63n(int64(exp)) + int64(pol.InitialDelay))
+	// Final clamp: rand(exp) + InitialDelay can exceed MaxDelay when
+	// InitialDelay is non-trivial, but MaxDelay is the documented ceiling.
+	if delay > pol.MaxDelay {
+		delay = pol.MaxDelay
+	}
+	return delay
 }
 
 // readUntilDisconnect reads frames from the active socket and

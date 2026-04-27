@@ -455,14 +455,32 @@ func (c *Client) UploadVideo(ctx context.Context, file Upload) (string, error) {
 // base transport — so proxy / TLS / dialer customizations from
 // WithHTTPClient still apply — along with the configured timeout.
 func (c *Client) presignedHTTPClient() *http.Client {
-	var base http.RoundTripper = http.DefaultTransport
-	if t, ok := c.httpClient.Transport.(*Transport); ok && t.Base != nil {
-		base = t.Base
-	}
 	return &http.Client{
-		Transport: base,
+		Transport: c.bareTransport(),
 		Timeout:   c.httpClient.Timeout,
 	}
+}
+
+// wsHTTPClient returns an *http.Client suitable for the WebSocket
+// handshake. Same reasoning as presignedHTTPClient — the yaylib
+// Transport's Yay! headers and Bearer token would just confuse the
+// event-stream endpoint, which authenticates via the `token` query
+// parameter — but no timeout, since the resulting connection is
+// long-lived and a Client.Timeout would tear it down.
+func (c *Client) wsHTTPClient() *http.Client {
+	return &http.Client{Transport: c.bareTransport()}
+}
+
+// bareTransport extracts the original http.RoundTripper underlying the
+// client's *http.Client, before the yaylib Transport wraps it. This is
+// what lets WithHTTPClient's proxy / TLS / dialer customizations reach
+// callers that need to bypass the request-modifying middleware (S3
+// presigned PUT, WebSocket handshake).
+func (c *Client) bareTransport() http.RoundTripper {
+	if t, ok := c.httpClient.Transport.(*Transport); ok && t.Base != nil {
+		return t.Base
+	}
+	return http.DefaultTransport
 }
 
 func putToPresignedURL(ctx context.Context, hc *http.Client, rawURL string, body []byte, contentType string) error {

@@ -119,7 +119,7 @@ func (c *Client) fillEmailLogin(body gen.LoginEmailUserRequest) gen.LoginEmailUs
 		body.SetApiKey(c.APIKey)
 	}
 	if body.GetUuid() == "" {
-		body.SetUuid(c.DeviceUUID)
+		body.SetUuid(c.deviceUUIDSnapshot())
 	}
 	return body
 }

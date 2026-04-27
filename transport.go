@@ -114,7 +114,7 @@ func (t *Transport) setHeaders(r *http.Request, accessToken string) {
 	setIfAbsent("User-Agent", c.UserAgent)
 	setIfAbsent("X-App-Version", c.APIVersionName)
 	setIfAbsent("X-Device-Info", c.DeviceInfo)
-	setIfAbsent("X-Device-UUID", c.DeviceUUID)
+	setIfAbsent("X-Device-UUID", c.deviceUUIDSnapshot())
 	setIfAbsent("X-Client-IP", c.getClientIP())
 	setIfAbsent("X-Connection-Type", c.ConnectionType)
 	setIfAbsent("X-Connection-Speed", c.ConnectionSpeed)
