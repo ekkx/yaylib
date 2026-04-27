@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -57,4 +58,43 @@ func (c *Client) GenerateSignedVersion() string {
 	h := hmac.New(sha256.New, []byte(c.APIVersionKey))
 	h.Write([]byte(payload))
 	return base64.StdEncoding.EncodeToString(h.Sum(nil))
+}
+
+// GenerateCallActionSignature requests a server-issued signature
+// authorising the given action against a conference call. The returned
+// payload bundles every field a downstream verifier needs (call id,
+// sender/receiver UUIDs, action, timestamp, signature); pass it as-is
+// to ValidateCallActionSignature, or read individual fields when a
+// different consumer needs them.
+func (c *Client) GenerateCallActionSignature(ctx context.Context, conferenceID int64, targetUserUUID, action string) (*SignaturePayload, error) {
+	resp, _, err := c.CallsAPIService.GenerateCallActionSignature(ctx).
+		ConferenceId(conferenceID).
+		TargetUserUuid(targetUserUUID).
+		Action(action).
+		Execute()
+	if err != nil {
+		return nil, err
+	}
+	payload := resp.GetSignaturePayload()
+	return &payload, nil
+}
+
+// ValidateCallActionSignature replays a payload obtained from
+// GenerateCallActionSignature against the validation endpoint, which
+// returns success only when every field still matches the server's
+// view. The wrapper unpacks the payload into the six query parameters
+// the endpoint expects so callers don't have to.
+func (c *Client) ValidateCallActionSignature(ctx context.Context, payload *SignaturePayload) error {
+	if payload == nil {
+		return errors.New("yaylib: ValidateCallActionSignature: payload is nil")
+	}
+	_, err := c.CallsAPIService.ValidateCallActionSignature(ctx).
+		CallId(payload.GetCallId()).
+		SenderUuid(payload.GetSenderUuid()).
+		ReceiverUuid(payload.GetReceiverUuid()).
+		Action(payload.GetAction()).
+		Timestamp(payload.GetTimestamp()).
+		Signature(payload.GetSignature()).
+		Execute()
+	return err
 }
