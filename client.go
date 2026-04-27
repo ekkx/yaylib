@@ -105,7 +105,11 @@ type Client struct {
 
 	// Active credentials. The transport reads Access to set `Authorization:
 	// Bearer`. Populate via SetTokens or by restoring a cached Session.
-	Tokens *TokenStore
+	// Direct field reads/writes are not safe when other goroutines may be
+	// issuing requests; prefer SetTokens (write) and the internal
+	// accessSnapshot / refreshSnapshot helpers (read), which take tokensMu.
+	Tokens   *TokenStore
+	tokensMu sync.RWMutex
 
 	// UserID is the numeric account ID of the currently logged-in user.
 	// It is populated automatically after a successful LoginWithEmail
@@ -325,7 +329,35 @@ func (c *Client) wireServices() {
 
 // SetTokens activates the given access / refresh tokens for subsequent calls.
 // No persistence happens here; use SaveSession to write to the session cache.
+// Safe to call concurrently with in-flight requests — tokensMu serializes the
+// rotation.
 func (c *Client) SetTokens(access, refresh string) {
+	c.tokensMu.Lock()
+	defer c.tokensMu.Unlock()
+	if c.Tokens == nil {
+		c.Tokens = &TokenStore{}
+	}
 	c.Tokens.Access = access
 	c.Tokens.Refresh = refresh
+}
+
+// accessSnapshot returns the current access token under tokensMu. Use this
+// from request paths instead of touching c.Tokens.Access directly.
+func (c *Client) accessSnapshot() string {
+	c.tokensMu.RLock()
+	defer c.tokensMu.RUnlock()
+	if c.Tokens == nil {
+		return ""
+	}
+	return c.Tokens.Access
+}
+
+// refreshSnapshot returns the current refresh token under tokensMu.
+func (c *Client) refreshSnapshot() string {
+	c.tokensMu.RLock()
+	defer c.tokensMu.RUnlock()
+	if c.Tokens == nil {
+		return ""
+	}
+	return c.Tokens.Refresh
 }

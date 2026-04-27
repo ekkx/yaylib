@@ -78,10 +78,7 @@ func (t *Transport) attemptOnce(r *http.Request, bodyBytes []byte) (*http.Respon
 
 	// Snapshot the access token actually being sent so refreshTokens can
 	// detect when another goroutine has already rotated it.
-	sentAccess := ""
-	if t.client.Tokens != nil {
-		sentAccess = t.client.Tokens.Access
-	}
+	sentAccess := t.client.accessSnapshot()
 
 	t.setHeaders(r, sentAccess)
 
@@ -157,7 +154,7 @@ func (t *Transport) handle401(orig *http.Response, req *http.Request, reqBody []
 	}
 
 	c := t.client
-	if c.Tokens == nil || c.Tokens.Refresh == "" {
+	if c.refreshSnapshot() == "" {
 		return restore()
 	}
 	if err := c.refreshTokens(req.Context(), staleToken); err != nil {
@@ -170,11 +167,7 @@ func (t *Transport) handle401(orig *http.Response, req *http.Request, reqBody []
 	}
 	// Force re-computation of Authorization with the refreshed token.
 	r2.Header.Del("Authorization")
-	newAccess := ""
-	if c.Tokens != nil {
-		newAccess = c.Tokens.Access
-	}
-	t.setHeaders(r2, newAccess)
+	t.setHeaders(r2, c.accessSnapshot())
 
 	resp2, err := t.Base.RoundTrip(r2)
 	if err != nil {

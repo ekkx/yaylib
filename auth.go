@@ -160,30 +160,30 @@ func (c *Client) refreshTokens(ctx context.Context, staleToken string) error {
 	defer c.refreshMu.Unlock()
 
 	// Another goroutine already rotated the access token — use theirs.
-	if c.Tokens == nil || c.Tokens.Access != staleToken {
+	if c.accessSnapshot() != staleToken {
 		return nil
 	}
-	if c.Tokens.Refresh == "" {
+	currentRefresh := c.refreshSnapshot()
+	if currentRefresh == "" {
 		return nil
 	}
 
 	resp, _, err := c.OauthToken(ctx).
 		GrantType("refresh_token").
-		RefreshToken(c.Tokens.Refresh).
+		RefreshToken(currentRefresh).
 		Execute()
 	if err != nil {
 		return err
 	}
 
-	c.Tokens.Access = resp.GetAccessToken()
-	c.Tokens.Refresh = resp.GetRefreshToken()
+	c.SetTokens(resp.GetAccessToken(), resp.GetRefreshToken())
 
 	if c.sessionStore != nil && c.currentEmail != "" {
 		_ = c.SaveSession(&Session{
 			Email:        c.currentEmail,
 			UserID:       resp.GetId(),
-			AccessToken:  c.Tokens.Access,
-			RefreshToken: c.Tokens.Refresh,
+			AccessToken:  resp.GetAccessToken(),
+			RefreshToken: resp.GetRefreshToken(),
 		})
 	}
 	return nil
