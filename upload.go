@@ -436,7 +436,8 @@ func (c *Client) uploadImages(ctx context.Context, category uploadCategory, file
 				recordErr(fmt.Errorf("yaylib: upload %s: empty presigned url", allJobs[i].filename))
 				return
 			}
-			if err := putToPresignedURL(putCtx, hc, rawURL, allJobs[i].body, allJobs[i].contentType); err != nil {
+			body := bytes.NewReader(allJobs[i].body)
+			if err := putToPresignedURL(putCtx, hc, rawURL, body, int64(len(allJobs[i].body)), allJobs[i].contentType); err != nil {
 				recordErr(fmt.Errorf("yaylib: upload %s: %w", allJobs[i].filename, err))
 			}
 		}()
@@ -465,16 +466,22 @@ func (c *Client) uploadImages(ctx context.Context, category uploadCategory, file
 // chat message.
 //
 // Unlike images, the video presigned-URL endpoint does not return a
-// canonical filename, so the random filename SDK generates is what
-// callers hand back to CreatePost. The Upload.Filename field used by
-// the image uploaders has no role here — pass the body directly.
+// canonical filename, so the random filename the SDK generates is
+// what callers hand back to CreatePost. The Upload.Filename field
+// used by the image uploaders has no role here — pass the body
+// directly.
 //
-// The body is read once and fully buffered in memory before the PUT
-// is issued; a 100MB clip means a 100MB allocation. Callers that
-// need to cap upload time should use ctx — the http.Client used for
-// the PUT carries no timeout of its own.
+// Streaming: when body implements io.ReadSeeker (e.g. *os.File,
+// *bytes.Reader), its length is discovered with one round-trip Seek
+// and the body streams directly to S3 — large clips upload at
+// constant memory cost. Other readers fall back to a full in-memory
+// buffer so the size can be set on the PUT request. The PUT runs
+// without an http.Client.Timeout; bound the upload via ctx.
 func (c *Client) UploadVideo(ctx context.Context, body io.Reader) (string, error) {
-	buf, err := readFully(body)
+	if body == nil {
+		return "", fmt.Errorf("yaylib: UploadVideo: body is nil")
+	}
+	stream, size, err := sizedStream(body)
 	if err != nil {
 		return "", fmt.Errorf("yaylib: read video: %w", err)
 	}
@@ -490,10 +497,30 @@ func (c *Client) UploadVideo(ctx context.Context, body io.Reader) (string, error
 	if rawURL == "" {
 		return "", fmt.Errorf("yaylib: empty presigned url")
 	}
-	if err := putToPresignedURL(ctx, c.presignedHTTPClient(), rawURL, buf, "video/mp4"); err != nil {
+	if err := putToPresignedURL(ctx, c.presignedHTTPClient(), rawURL, stream, size, "video/mp4"); err != nil {
 		return "", fmt.Errorf("yaylib: upload video: %w", err)
 	}
 	return name, nil
+}
+
+// sizedStream returns the body and its content length suitable for an
+// HTTP PUT. ReadSeeker inputs are not buffered — Seek discovers the
+// length and rewinds. Anything else is fully read into memory because
+// presigned PUT requires a known Content-Length.
+func sizedStream(body io.Reader) (io.Reader, int64, error) {
+	if rs, ok := body.(io.ReadSeeker); ok {
+		end, err := rs.Seek(0, io.SeekEnd)
+		if err == nil {
+			if _, err := rs.Seek(0, io.SeekStart); err == nil {
+				return rs, end, nil
+			}
+		}
+	}
+	buf, err := io.ReadAll(body)
+	if err != nil {
+		return nil, 0, err
+	}
+	return bytes.NewReader(buf), int64(len(buf)), nil
 }
 
 // presignedHTTPClient returns an *http.Client suitable for S3 presigned
@@ -540,13 +567,17 @@ func (c *Client) bareTransport() http.RoundTripper {
 	return t.Base
 }
 
-func putToPresignedURL(ctx context.Context, hc *http.Client, rawURL string, body []byte, contentType string) error {
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, rawURL, bytes.NewReader(body))
+// putToPresignedURL issues a single PUT against rawURL with the given
+// body and Content-Length. body may be a streaming reader; size must
+// match the bytes that will be read from it (S3 presigned PUT requires
+// a known length).
+func putToPresignedURL(ctx context.Context, hc *http.Client, rawURL string, body io.Reader, size int64, contentType string) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, rawURL, body)
 	if err != nil {
 		return err
 	}
 	req.Header.Set("Content-Type", contentType)
-	req.ContentLength = int64(len(body))
+	req.ContentLength = size
 
 	resp, err := hc.Do(req)
 	if err != nil {
