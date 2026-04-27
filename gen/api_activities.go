@@ -30,6 +30,11 @@ func (r ApiGetUserActivitiesRequest) Execute() (*ActivitiesResponse, *http.Respo
 	return r.ApiService.GetUserActivitiesExecute(r)
 }
 
+func (r ApiGetUserActivitiesRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetUserActivities Method for GetUserActivities
 
@@ -125,17 +130,12 @@ type ApiGetUserActivitiesV1Request struct {
 	ctx context.Context
 	ApiService *ActivitiesAPIService
 	important *bool
-	number *int32
 	fromTimestamp *int64
+	number *int32
 }
 
 func (r ApiGetUserActivitiesV1Request) Important(important bool) ApiGetUserActivitiesV1Request {
 	r.important = &important
-	return r
-}
-
-func (r ApiGetUserActivitiesV1Request) Number(number int32) ApiGetUserActivitiesV1Request {
-	r.number = &number
 	return r
 }
 
@@ -144,8 +144,18 @@ func (r ApiGetUserActivitiesV1Request) FromTimestamp(fromTimestamp int64) ApiGet
 	return r
 }
 
+func (r ApiGetUserActivitiesV1Request) Number(number int32) ApiGetUserActivitiesV1Request {
+	r.number = &number
+	return r
+}
+
 func (r ApiGetUserActivitiesV1Request) Execute() (*ActivitiesResponse, *http.Response, error) {
 	return r.ApiService.GetUserActivitiesV1Execute(r)
+}
+
+func (r ApiGetUserActivitiesV1Request) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -181,18 +191,16 @@ func (a *ActivitiesAPIService) GetUserActivitiesV1Execute(r ApiGetUserActivities
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.important == nil {
-		return localVarReturnValue, nil, reportError("important is required and must be specified")
-	}
-	if r.number == nil {
-		return localVarReturnValue, nil, reportError("number is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "important", r.important, "form", "")
+	if r.important != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "important", r.important, "form", "")
+	}
 	if r.fromTimestamp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_timestamp", r.fromTimestamp, "form", "")
 	}
-	parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

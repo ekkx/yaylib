@@ -20,8 +20,8 @@ type ApiRequestEmailVerificationRequest struct {
 	ApiService *EmailVerificationUrlsAPIService
 	deviceUuid *string
 	email *string
-	locale *string
 	intent *string
+	locale *string
 }
 
 func (r ApiRequestEmailVerificationRequest) DeviceUuid(deviceUuid string) ApiRequestEmailVerificationRequest {
@@ -34,18 +34,23 @@ func (r ApiRequestEmailVerificationRequest) Email(email string) ApiRequestEmailV
 	return r
 }
 
-func (r ApiRequestEmailVerificationRequest) Locale(locale string) ApiRequestEmailVerificationRequest {
-	r.locale = &locale
-	return r
-}
-
 func (r ApiRequestEmailVerificationRequest) Intent(intent string) ApiRequestEmailVerificationRequest {
 	r.intent = &intent
 	return r
 }
 
+func (r ApiRequestEmailVerificationRequest) Locale(locale string) ApiRequestEmailVerificationRequest {
+	r.locale = &locale
+	return r
+}
+
 func (r ApiRequestEmailVerificationRequest) Execute() (*CommonUrlResponse, *http.Response, error) {
 	return r.ApiService.RequestEmailVerificationExecute(r)
+}
+
+func (r ApiRequestEmailVerificationRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -81,15 +86,6 @@ func (a *EmailVerificationUrlsAPIService) RequestEmailVerificationExecute(r ApiR
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.deviceUuid == nil {
-		return localVarReturnValue, nil, reportError("deviceUuid is required and must be specified")
-	}
-	if r.email == nil {
-		return localVarReturnValue, nil, reportError("email is required and must be specified")
-	}
-	if r.locale == nil {
-		return localVarReturnValue, nil, reportError("locale is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -108,12 +104,18 @@ func (a *EmailVerificationUrlsAPIService) RequestEmailVerificationExecute(r ApiR
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "device_uuid", r.deviceUuid, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
+	if r.deviceUuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "device_uuid", r.deviceUuid, "", "")
+	}
+	if r.email != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
+	}
 	if r.intent != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "intent", r.intent, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "locale", r.locale, "", "")
+	if r.locale != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "locale", r.locale, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

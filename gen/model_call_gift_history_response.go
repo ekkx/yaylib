@@ -12,7 +12,7 @@ var _ MappedNullable = &CallGiftHistoryResponse{}
 
 // CallGiftHistoryResponse struct for CallGiftHistoryResponse
 type CallGiftHistoryResponse struct {
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableInt64 `json:"next_page_value,omitempty"`
 	SentGifts []GiftHistory `json:"sent_gifts,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -37,9 +37,9 @@ func NewCallGiftHistoryResponseWithDefaults() *CallGiftHistoryResponse {
 }
 
 // GetNextPageValue returns the NextPageValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CallGiftHistoryResponse) GetNextPageValue() string {
+func (o *CallGiftHistoryResponse) GetNextPageValue() int64 {
 	if o == nil || IsNil(o.NextPageValue.Get()) {
-		var ret string
+		var ret int64
 		return ret
 	}
 	return *o.NextPageValue.Get()
@@ -48,7 +48,7 @@ func (o *CallGiftHistoryResponse) GetNextPageValue() string {
 // GetNextPageValueOk returns a tuple with the NextPageValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CallGiftHistoryResponse) GetNextPageValueOk() (*string, bool) {
+func (o *CallGiftHistoryResponse) GetNextPageValueOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -64,8 +64,8 @@ func (o *CallGiftHistoryResponse) HasNextPageValue() bool {
 	return false
 }
 
-// SetNextPageValue gets a reference to the given NullableString and assigns it to the NextPageValue field.
-func (o *CallGiftHistoryResponse) SetNextPageValue(v string) {
+// SetNextPageValue gets a reference to the given NullableInt64 and assigns it to the NextPageValue field.
+func (o *CallGiftHistoryResponse) SetNextPageValue(v int64) {
 	o.NextPageValue.Set(&v)
 }
 // SetNextPageValueNil sets the value for NextPageValue to be an explicit nil

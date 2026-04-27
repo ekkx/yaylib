@@ -26,6 +26,11 @@ func (r ApiGetGroupNotificationSettingsRequest) Execute() (*GroupNotificationSet
 	return r.ApiService.GetGroupNotificationSettingsExecute(r)
 }
 
+func (r ApiGetGroupNotificationSettingsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetGroupNotificationSettings Method for GetGroupNotificationSettings
 
@@ -133,6 +138,11 @@ func (r ApiUpdateChatRoomNotificationSettingsRequest) Execute() (*NotificationSe
 	return r.ApiService.UpdateChatRoomNotificationSettingsExecute(r)
 }
 
+func (r ApiUpdateChatRoomNotificationSettingsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 UpdateChatRoomNotificationSettings Method for UpdateChatRoomNotificationSettings
 
@@ -169,9 +179,6 @@ func (a *NotificationSettingsAPIService) UpdateChatRoomNotificationSettingsExecu
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.notificationChat == nil {
-		return localVarReturnValue, nil, reportError("notificationChat is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -190,7 +197,9 @@ func (a *NotificationSettingsAPIService) UpdateChatRoomNotificationSettingsExecu
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "notification_chat", r.notificationChat, "", "")
+	if r.notificationChat != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "notification_chat", r.notificationChat, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -260,6 +269,11 @@ func (r ApiUpdateGroupNotificationSettingsRequest) NotificationGroupRequest(noti
 
 func (r ApiUpdateGroupNotificationSettingsRequest) Execute() (*AdditionalSettingsResponse, *http.Response, error) {
 	return r.ApiService.UpdateGroupNotificationSettingsExecute(r)
+}
+
+func (r ApiUpdateGroupNotificationSettingsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*

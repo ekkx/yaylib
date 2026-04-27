@@ -32,6 +32,11 @@ func (r ApiVoteSurveyRequest) Execute() (*VoteSurveyResponse, *http.Response, er
 	return r.ApiService.VoteSurveyExecute(r)
 }
 
+func (r ApiVoteSurveyRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 VoteSurvey Method for VoteSurvey
 
@@ -68,9 +73,6 @@ func (a *SurveysAPIService) VoteSurveyExecute(r ApiVoteSurveyRequest) (*VoteSurv
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.choiceId == nil {
-		return localVarReturnValue, nil, reportError("choiceId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -89,7 +91,9 @@ func (a *SurveysAPIService) VoteSurveyExecute(r ApiVoteSurveyRequest) (*VoteSurv
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "choice_id", r.choiceId, "", "")
+	if r.choiceId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "choice_id", r.choiceId, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

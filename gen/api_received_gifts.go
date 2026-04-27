@@ -32,6 +32,11 @@ func (r ApiGetReceivedGiftSendersRequest) Execute() (*GiftSendersResponse, *http
 	return r.ApiService.GetReceivedGiftSendersExecute(r)
 }
 
+func (r ApiGetReceivedGiftSendersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetReceivedGiftSenders Method for GetReceivedGiftSenders
 
@@ -136,6 +141,11 @@ func (r ApiGetReceivedGiftTransactionRequest) Execute() (*GiftReceivedTransactio
 	return r.ApiService.GetReceivedGiftTransactionExecute(r)
 }
 
+func (r ApiGetReceivedGiftTransactionRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetReceivedGiftTransaction Method for GetReceivedGiftTransaction
 
@@ -234,6 +244,11 @@ type ApiListReceivedGiftsRequest struct {
 
 func (r ApiListReceivedGiftsRequest) Execute() (*GiftReceivedResponse, *http.Response, error) {
 	return r.ApiService.ListReceivedGiftsExecute(r)
+}
+
+func (r ApiListReceivedGiftsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -343,6 +358,11 @@ func (r ApiListReceivedGiftsV1Request) Number(number int32) ApiListReceivedGifts
 
 func (r ApiListReceivedGiftsV1Request) Execute() (*GiftReceivedResponse, *http.Response, error) {
 	return r.ApiService.ListReceivedGiftsV1Execute(r)
+}
+
+func (r ApiListReceivedGiftsV1Request) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*

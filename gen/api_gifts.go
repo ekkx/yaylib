@@ -42,6 +42,11 @@ func (r ApiListGiftsRequest) Execute() (*GiftsResponse, *http.Response, error) {
 	return r.ApiService.ListGiftsExecute(r)
 }
 
+func (r ApiListGiftsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ListGifts Method for ListGifts
 

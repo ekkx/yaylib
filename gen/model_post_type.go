@@ -5,7 +5,6 @@ package gen
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // PostType the model 'PostType'
@@ -13,18 +12,18 @@ type PostType string
 
 // List of PostType
 const (
-	POSTTYPE_CALL PostType = "call"
-	POSTTYPE_IMAGE PostType = "image"
-	POSTTYPE_VIDEO PostType = "video"
-	POSTTYPE_SURVEY PostType = "survey"
-	POSTTYPE_REPOST PostType = "repost"
-	POSTTYPE_THREAD PostType = "thread"
-	POSTTYPE_SHAREABLE_GROUP PostType = "shareable_group"
-	POSTTYPE_SHAREABLE_URL PostType = "shareable_url"
-	POSTTYPE_YOUTUBE PostType = "youtube"
-	POSTTYPE_SHAREABLE_THREAD PostType = "shareable_thread"
-	POSTTYPE_SHAREPAL PostType = "sharepal"
-	POSTTYPE_UNDEFINED PostType = "undefined"
+	POSTTYPE_Call PostType = "call"
+	POSTTYPE_Image PostType = "image"
+	POSTTYPE_Video PostType = "video"
+	POSTTYPE_Survey PostType = "survey"
+	POSTTYPE_Repost PostType = "repost"
+	POSTTYPE_Thread PostType = "thread"
+	POSTTYPE_ShareableGroup PostType = "shareable_group"
+	POSTTYPE_ShareableUrl PostType = "shareable_url"
+	POSTTYPE_Youtube PostType = "youtube"
+	POSTTYPE_ShareableThread PostType = "shareable_thread"
+	POSTTYPE_SharePal PostType = "sharepal"
+	POSTTYPE_Undefined PostType = "undefined"
 )
 
 // All allowed values of PostType enum
@@ -50,25 +49,15 @@ func (v *PostType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := PostType(value)
-	for _, existing := range AllowedPostTypeEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid PostType", value)
+	*v = enumTypeValue
+	return nil
 }
 
 // NewPostTypeFromValue returns a pointer to a valid PostType
 // for the value passed as argument, or an error if the value passed is not allowed by the enum
 func NewPostTypeFromValue(v string) (*PostType, error) {
 	ev := PostType(v)
-	if ev.IsValid() {
-		return &ev, nil
-	} else {
-		return nil, fmt.Errorf("invalid value '%v' for PostType: valid values are %v", v, AllowedPostTypeEnumValues)
-	}
+	return &ev, nil
 }
 
 // IsValid return true if the value is valid for the enum, false otherwise

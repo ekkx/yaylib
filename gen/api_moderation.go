@@ -26,6 +26,11 @@ func (r ApiGetBannedWordsRequest) Execute() (*BanWordsResponse, *http.Response, 
 	return r.ApiService.GetBannedWordsExecute(r)
 }
 
+func (r ApiGetBannedWordsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetBannedWords Method for GetBannedWords
 
@@ -126,6 +131,11 @@ type ApiGetPopularWordsRequest struct {
 
 func (r ApiGetPopularWordsRequest) Execute() (*PopularWordsResponse, *http.Response, error) {
 	return r.ApiService.GetPopularWordsExecute(r)
+}
+
+func (r ApiGetPopularWordsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*

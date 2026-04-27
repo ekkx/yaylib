@@ -26,6 +26,11 @@ func (r ApiGetAppConfigRequest) Execute() (*ApplicationConfigResponse, *http.Res
 	return r.ApiService.GetAppConfigExecute(r)
 }
 
+func (r ApiGetAppConfigRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetAppConfig Method for GetAppConfig
 

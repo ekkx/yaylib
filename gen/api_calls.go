@@ -32,6 +32,11 @@ func (r ApiBulkInviteToCallRequest) Execute() (*http.Response, error) {
 	return r.ApiService.BulkInviteToCallExecute(r)
 }
 
+func (r ApiBulkInviteToCallRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 BulkInviteToCall Method for BulkInviteToCall
 
@@ -129,6 +134,11 @@ func (r ApiBumpCallRequest) ParticipantLimit(participantLimit int32) ApiBumpCall
 
 func (r ApiBumpCallRequest) Execute() (*http.Response, error) {
 	return r.ApiService.BumpCallExecute(r)
+}
+
+func (r ApiBumpCallRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -241,6 +251,11 @@ func (r ApiGenerateCallActionSignatureRequest) Execute() (*CallActionSignatureRe
 	return r.ApiService.GenerateCallActionSignatureExecute(r)
 }
 
+func (r ApiGenerateCallActionSignatureRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GenerateCallActionSignature Method for GenerateCallActionSignature
 
@@ -274,15 +289,6 @@ func (a *CallsAPIService) GenerateCallActionSignatureExecute(r ApiGenerateCallAc
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.action == nil {
-		return localVarReturnValue, nil, reportError("action is required and must be specified")
-	}
-	if r.conferenceId == nil {
-		return localVarReturnValue, nil, reportError("conferenceId is required and must be specified")
-	}
-	if r.targetUserUuid == nil {
-		return localVarReturnValue, nil, reportError("targetUserUuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -301,9 +307,15 @@ func (a *CallsAPIService) GenerateCallActionSignatureExecute(r ApiGenerateCallAc
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "action", r.action, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "conference_id", r.conferenceId, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "target_user_uuid", r.targetUserUuid, "", "")
+	if r.action != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "action", r.action, "", "")
+	}
+	if r.conferenceId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "conference_id", r.conferenceId, "", "")
+	}
+	if r.targetUserUuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "target_user_uuid", r.targetUserUuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -349,6 +361,11 @@ type ApiGetAgoraRtmTokenRequest struct {
 
 func (r ApiGetAgoraRtmTokenRequest) Execute() (*RtmTokenResponse, *http.Response, error) {
 	return r.ApiService.GetAgoraRtmTokenExecute(r)
+}
+
+func (r ApiGetAgoraRtmTokenRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -449,6 +466,11 @@ type ApiGetCallBgmsRequest struct {
 
 func (r ApiGetCallBgmsRequest) Execute() (*BgmsResponse, *http.Response, error) {
 	return r.ApiService.GetCallBgmsExecute(r)
+}
+
+func (r ApiGetCallBgmsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -561,6 +583,11 @@ func (r ApiGetCallGiftHistoryRequest) Execute() (*CallGiftHistoryResponse, *http
 	return r.ApiService.GetCallGiftHistoryExecute(r)
 }
 
+func (r ApiGetCallGiftHistoryRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetCallGiftHistory Method for GetCallGiftHistory
 
@@ -666,6 +693,11 @@ type ApiGetConferenceCallRequest struct {
 
 func (r ApiGetConferenceCallRequest) Execute() (*ConferenceCallResponse, *http.Response, error) {
 	return r.ApiService.GetConferenceCallExecute(r)
+}
+
+func (r ApiGetConferenceCallRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -781,6 +813,11 @@ func (r ApiGetInvitableCallUsersRequest) Execute() (*UsersByTimestampResponse, *
 	return r.ApiService.GetInvitableCallUsersExecute(r)
 }
 
+func (r ApiGetInvitableCallUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetInvitableCallUsers Method for GetInvitableCallUsers
 
@@ -886,6 +923,11 @@ type ApiGetPhoneStatusRequest struct {
 
 func (r ApiGetPhoneStatusRequest) Execute() (*CallStatusResponse, *http.Response, error) {
 	return r.ApiService.GetPhoneStatusExecute(r)
+}
+
+func (r ApiGetPhoneStatusRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1006,6 +1048,11 @@ func (r ApiInviteToCallRequest) Execute() (*http.Response, error) {
 	return r.ApiService.InviteToCallExecute(r)
 }
 
+func (r ApiInviteToCallRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 InviteToCall Method for InviteToCall
 
@@ -1037,15 +1084,6 @@ func (a *CallsAPIService) InviteToCallExecute(r ApiInviteToCallRequest) (*http.R
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.chatRoomId == nil {
-		return nil, reportError("chatRoomId is required and must be specified")
-	}
-	if r.roomId == nil {
-		return nil, reportError("roomId is required and must be specified")
-	}
-	if r.roomUrl == nil {
-		return nil, reportError("roomUrl is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1064,9 +1102,15 @@ func (a *CallsAPIService) InviteToCallExecute(r ApiInviteToCallRequest) (*http.R
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "chat_room_id", r.chatRoomId, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "room_id", r.roomId, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "room_url", r.roomUrl, "", "")
+	if r.chatRoomId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "chat_room_id", r.chatRoomId, "", "")
+	}
+	if r.roomId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "room_id", r.roomId, "", "")
+	}
+	if r.roomUrl != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "room_url", r.roomUrl, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1111,6 +1155,11 @@ func (r ApiInviteToConferenceCallRequest) Execute() (*http.Response, error) {
 	return r.ApiService.InviteToConferenceCallExecute(r)
 }
 
+func (r ApiInviteToConferenceCallRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 InviteToConferenceCall Method for InviteToConferenceCall
 
@@ -1145,9 +1194,6 @@ func (a *CallsAPIService) InviteToConferenceCallExecute(r ApiInviteToConferenceC
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.userIds == nil {
-		return nil, reportError("userIds is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1166,7 +1212,9 @@ func (a *CallsAPIService) InviteToConferenceCallExecute(r ApiInviteToConferenceC
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "user_ids[]", r.userIds, "", "csv")
+	if r.userIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "user_ids[]", r.userIds, "", "csv")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1217,6 +1265,11 @@ func (r ApiKickFromConferenceCallRequest) Execute() (*CallActionSignatureRespons
 	return r.ApiService.KickFromConferenceCallExecute(r)
 }
 
+func (r ApiKickFromConferenceCallRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 KickFromConferenceCall Method for KickFromConferenceCall
 
@@ -1253,12 +1306,6 @@ func (a *CallsAPIService) KickFromConferenceCallExecute(r ApiKickFromConferenceC
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.ban == nil {
-		return localVarReturnValue, nil, reportError("ban is required and must be specified")
-	}
-	if r.uuid == nil {
-		return localVarReturnValue, nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1277,8 +1324,12 @@ func (a *CallsAPIService) KickFromConferenceCallExecute(r ApiKickFromConferenceC
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "ban", r.ban, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.ban != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "ban", r.ban, "", "")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1337,6 +1388,11 @@ func (r ApiLeaveAgoraChannelRequest) Execute() (*http.Response, error) {
 	return r.ApiService.LeaveAgoraChannelExecute(r)
 }
 
+func (r ApiLeaveAgoraChannelRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 LeaveAgoraChannel Method for LeaveAgoraChannel
 
@@ -1368,12 +1424,6 @@ func (a *CallsAPIService) LeaveAgoraChannelExecute(r ApiLeaveAgoraChannelRequest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.conferenceId == nil {
-		return nil, reportError("conferenceId is required and must be specified")
-	}
-	if r.userId == nil {
-		return nil, reportError("userId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1392,8 +1442,12 @@ func (a *CallsAPIService) LeaveAgoraChannelExecute(r ApiLeaveAgoraChannelRequest
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "conference_id", r.conferenceId, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "user_id", r.userId, "", "")
+	if r.conferenceId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "conference_id", r.conferenceId, "", "")
+	}
+	if r.userId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "user_id", r.userId, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1455,6 +1509,11 @@ func (r ApiLeaveConferenceCallRequest) Execute() (*http.Response, error) {
 	return r.ApiService.LeaveConferenceCallExecute(r)
 }
 
+func (r ApiLeaveConferenceCallRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 LeaveConferenceCall Method for LeaveConferenceCall
 
@@ -1486,12 +1545,6 @@ func (a *CallsAPIService) LeaveConferenceCallExecute(r ApiLeaveConferenceCallReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.callSid == nil {
-		return nil, reportError("callSid is required and must be specified")
-	}
-	if r.conferenceId == nil {
-		return nil, reportError("conferenceId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1510,8 +1563,12 @@ func (a *CallsAPIService) LeaveConferenceCallExecute(r ApiLeaveConferenceCallReq
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "call_sid", r.callSid, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "conference_id", r.conferenceId, "", "")
+	if r.callSid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "call_sid", r.callSid, "", "")
+	}
+	if r.conferenceId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "conference_id", r.conferenceId, "", "")
+	}
 	if r.duration != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "duration", r.duration, "", "")
 	}
@@ -1567,6 +1624,11 @@ func (r ApiStartConferenceCallRequest) Execute() (*ConferenceCallResponse, *http
 	return r.ApiService.StartConferenceCallExecute(r)
 }
 
+func (r ApiStartConferenceCallRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 StartConferenceCall Method for StartConferenceCall
 
@@ -1600,12 +1662,6 @@ func (a *CallsAPIService) StartConferenceCallExecute(r ApiStartConferenceCallReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.callSid == nil {
-		return localVarReturnValue, nil, reportError("callSid is required and must be specified")
-	}
-	if r.conferenceId == nil {
-		return localVarReturnValue, nil, reportError("conferenceId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1624,8 +1680,12 @@ func (a *CallsAPIService) StartConferenceCallExecute(r ApiStartConferenceCallReq
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "call_sid", r.callSid, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "conference_id", r.conferenceId, "", "")
+	if r.callSid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "call_sid", r.callSid, "", "")
+	}
+	if r.conferenceId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "conference_id", r.conferenceId, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1667,14 +1727,9 @@ type ApiUpdateCallRequest struct {
 	ctx context.Context
 	ApiService *CallsAPIService
 	callId int64
-	joinableBy *string
 	categoryId *string
 	gameTitle *string
-}
-
-func (r ApiUpdateCallRequest) JoinableBy(joinableBy string) ApiUpdateCallRequest {
-	r.joinableBy = &joinableBy
-	return r
+	joinableBy *string
 }
 
 func (r ApiUpdateCallRequest) CategoryId(categoryId string) ApiUpdateCallRequest {
@@ -1687,8 +1742,18 @@ func (r ApiUpdateCallRequest) GameTitle(gameTitle string) ApiUpdateCallRequest {
 	return r
 }
 
+func (r ApiUpdateCallRequest) JoinableBy(joinableBy string) ApiUpdateCallRequest {
+	r.joinableBy = &joinableBy
+	return r
+}
+
 func (r ApiUpdateCallRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UpdateCallExecute(r)
+}
+
+func (r ApiUpdateCallRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1725,9 +1790,6 @@ func (a *CallsAPIService) UpdateCallExecute(r ApiUpdateCallRequest) (*http.Respo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.joinableBy == nil {
-		return nil, reportError("joinableBy is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1752,7 +1814,9 @@ func (a *CallsAPIService) UpdateCallExecute(r ApiUpdateCallRequest) (*http.Respo
 	if r.gameTitle != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "game_title", r.gameTitle, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "joinable_by", r.joinableBy, "", "")
+	if r.joinableBy != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "joinable_by", r.joinableBy, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1798,6 +1862,11 @@ func (r ApiUpdateCallUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UpdateCallUserExecute(r)
 }
 
+func (r ApiUpdateCallUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 UpdateCallUser Method for UpdateCallUser
 
@@ -1835,9 +1904,6 @@ func (a *CallsAPIService) UpdateCallUserExecute(r ApiUpdateCallUserRequest) (*ht
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.role == nil {
-		return nil, reportError("role is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1856,7 +1922,9 @@ func (a *CallsAPIService) UpdateCallUserExecute(r ApiUpdateCallUserRequest) (*ht
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "role", r.role, "", "")
+	if r.role != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "role", r.role, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1930,6 +1998,11 @@ func (r ApiValidateCallActionSignatureRequest) Execute() (*http.Response, error)
 	return r.ApiService.ValidateCallActionSignatureExecute(r)
 }
 
+func (r ApiValidateCallActionSignatureRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ValidateCallActionSignature Method for ValidateCallActionSignature
 
@@ -1961,31 +2034,25 @@ func (a *CallsAPIService) ValidateCallActionSignatureExecute(r ApiValidateCallAc
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.callId == nil {
-		return nil, reportError("callId is required and must be specified")
-	}
-	if r.senderUuid == nil {
-		return nil, reportError("senderUuid is required and must be specified")
-	}
-	if r.receiverUuid == nil {
-		return nil, reportError("receiverUuid is required and must be specified")
-	}
-	if r.action == nil {
-		return nil, reportError("action is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return nil, reportError("timestamp is required and must be specified")
-	}
-	if r.signature == nil {
-		return nil, reportError("signature is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "call_id", r.callId, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "sender_uuid", r.senderUuid, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "receiver_uuid", r.receiverUuid, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "action", r.action, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "timestamp", r.timestamp, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "signature", r.signature, "form", "")
+	if r.callId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "call_id", r.callId, "form", "")
+	}
+	if r.senderUuid != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "sender_uuid", r.senderUuid, "form", "")
+	}
+	if r.receiverUuid != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "receiver_uuid", r.receiverUuid, "form", "")
+	}
+	if r.action != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "action", r.action, "form", "")
+	}
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "timestamp", r.timestamp, "form", "")
+	}
+	if r.signature != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "signature", r.signature, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

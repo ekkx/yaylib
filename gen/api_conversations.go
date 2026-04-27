@@ -21,16 +21,11 @@ type ApiGetConversationRequest struct {
 	ctx context.Context
 	ApiService *ConversationsAPIService
 	id int64
-	reverse *bool
 	groupId *int64
 	threadId *int64
 	number *int32
 	fromPostId *int64
-}
-
-func (r ApiGetConversationRequest) Reverse(reverse bool) ApiGetConversationRequest {
-	r.reverse = &reverse
-	return r
+	reverse *bool
 }
 
 func (r ApiGetConversationRequest) GroupId(groupId int64) ApiGetConversationRequest {
@@ -53,8 +48,18 @@ func (r ApiGetConversationRequest) FromPostId(fromPostId int64) ApiGetConversati
 	return r
 }
 
+func (r ApiGetConversationRequest) Reverse(reverse bool) ApiGetConversationRequest {
+	r.reverse = &reverse
+	return r
+}
+
 func (r ApiGetConversationRequest) Execute() (*PostsResponse, *http.Response, error) {
 	return r.ApiService.GetConversationExecute(r)
+}
+
+func (r ApiGetConversationRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -93,9 +98,6 @@ func (a *ConversationsAPIService) GetConversationExecute(r ApiGetConversationReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.reverse == nil {
-		return localVarReturnValue, nil, reportError("reverse is required and must be specified")
-	}
 
 	if r.groupId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "group_id", r.groupId, "form", "")
@@ -109,7 +111,9 @@ func (a *ConversationsAPIService) GetConversationExecute(r ApiGetConversationReq
 	if r.fromPostId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_post_id", r.fromPostId, "form", "")
 	}
-	parameterAddToHeaderOrQuery(localVarQueryParams, "reverse", r.reverse, "form", "")
+	if r.reverse != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reverse", r.reverse, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -179,6 +183,11 @@ func (r ApiGetRootPostsRequest) Execute() (*PostsResponse, *http.Response, error
 	return r.ApiService.GetRootPostsExecute(r)
 }
 
+func (r ApiGetRootPostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetRootPosts Method for GetRootPosts
 
@@ -212,11 +221,8 @@ func (a *ConversationsAPIService) GetRootPostsExecute(r ApiGetRootPostsRequest) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.ids == nil {
-		return localVarReturnValue, nil, reportError("ids is required and must be specified")
-	}
 
-	{
+	if r.ids != nil {
 		t := *r.ids
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)

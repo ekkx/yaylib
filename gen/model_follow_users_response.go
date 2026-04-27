@@ -12,7 +12,7 @@ var _ MappedNullable = &FollowUsersResponse{}
 
 // FollowUsersResponse struct for FollowUsersResponse
 type FollowUsersResponse struct {
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableInt64 `json:"next_page_value,omitempty"`
 	Users []RealmUser `json:"users,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -37,9 +37,9 @@ func NewFollowUsersResponseWithDefaults() *FollowUsersResponse {
 }
 
 // GetNextPageValue returns the NextPageValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FollowUsersResponse) GetNextPageValue() string {
+func (o *FollowUsersResponse) GetNextPageValue() int64 {
 	if o == nil || IsNil(o.NextPageValue.Get()) {
-		var ret string
+		var ret int64
 		return ret
 	}
 	return *o.NextPageValue.Get()
@@ -48,7 +48,7 @@ func (o *FollowUsersResponse) GetNextPageValue() string {
 // GetNextPageValueOk returns a tuple with the NextPageValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FollowUsersResponse) GetNextPageValueOk() (*string, bool) {
+func (o *FollowUsersResponse) GetNextPageValueOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -64,8 +64,8 @@ func (o *FollowUsersResponse) HasNextPageValue() bool {
 	return false
 }
 
-// SetNextPageValue gets a reference to the given NullableString and assigns it to the NextPageValue field.
-func (o *FollowUsersResponse) SetNextPageValue(v string) {
+// SetNextPageValue gets a reference to the given NullableInt64 and assigns it to the NextPageValue field.
+func (o *FollowUsersResponse) SetNextPageValue(v int64) {
 	o.NextPageValue.Set(&v)
 }
 // SetNextPageValueNil sets the value for NextPageValue to be an explicit nil

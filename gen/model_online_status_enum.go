@@ -5,7 +5,6 @@ package gen
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // OnlineStatusEnum the model 'OnlineStatusEnum'
@@ -13,8 +12,8 @@ type OnlineStatusEnum string
 
 // List of OnlineStatusEnum
 const (
-	ONLINESTATUSENUM_OFFLINE OnlineStatusEnum = "offline"
-	ONLINESTATUSENUM_HIDDEN OnlineStatusEnum = "hidden"
+	ONLINESTATUSENUM_Offline OnlineStatusEnum = "offline"
+	ONLINESTATUSENUM_Hidden OnlineStatusEnum = "hidden"
 )
 
 // All allowed values of OnlineStatusEnum enum
@@ -30,25 +29,15 @@ func (v *OnlineStatusEnum) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := OnlineStatusEnum(value)
-	for _, existing := range AllowedOnlineStatusEnumEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid OnlineStatusEnum", value)
+	*v = enumTypeValue
+	return nil
 }
 
 // NewOnlineStatusEnumFromValue returns a pointer to a valid OnlineStatusEnum
 // for the value passed as argument, or an error if the value passed is not allowed by the enum
 func NewOnlineStatusEnumFromValue(v string) (*OnlineStatusEnum, error) {
 	ev := OnlineStatusEnum(v)
-	if ev.IsValid() {
-		return &ev, nil
-	} else {
-		return nil, fmt.Errorf("invalid value '%v' for OnlineStatusEnum: valid values are %v", v, AllowedOnlineStatusEnumEnumValues)
-	}
+	return &ev, nil
 }
 
 // IsValid return true if the value is valid for the enum, false otherwise

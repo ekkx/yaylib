@@ -20,9 +20,14 @@ type ApiListMutedGroupUsersRequest struct {
 	ctx context.Context
 	ApiService *GroupMuteAPIService
 	id int64
+	keyword *string
 	cursor *string
 	size *int32
-	keyword *string
+}
+
+func (r ApiListMutedGroupUsersRequest) Keyword(keyword string) ApiListMutedGroupUsersRequest {
+	r.keyword = &keyword
+	return r
 }
 
 func (r ApiListMutedGroupUsersRequest) Cursor(cursor string) ApiListMutedGroupUsersRequest {
@@ -35,13 +40,13 @@ func (r ApiListMutedGroupUsersRequest) Size(size int32) ApiListMutedGroupUsersRe
 	return r
 }
 
-func (r ApiListMutedGroupUsersRequest) Keyword(keyword string) ApiListMutedGroupUsersRequest {
-	r.keyword = &keyword
-	return r
-}
-
 func (r ApiListMutedGroupUsersRequest) Execute() (*GroupMuteUsersResponse, *http.Response, error) {
 	return r.ApiService.ListMutedGroupUsersExecute(r)
+}
+
+func (r ApiListMutedGroupUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -80,18 +85,16 @@ func (a *GroupMuteAPIService) ListMutedGroupUsersExecute(r ApiListMutedGroupUser
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.cursor == nil {
-		return localVarReturnValue, nil, reportError("cursor is required and must be specified")
-	}
-	if r.size == nil {
-		return localVarReturnValue, nil, reportError("size is required and must be specified")
-	}
 
 	if r.keyword != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "keyword", r.keyword, "form", "")
 	}
-	parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "size", r.size, "form", "")
+	if r.cursor != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "cursor", r.cursor, "form", "")
+	}
+	if r.size != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "size", r.size, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -155,6 +158,11 @@ type ApiMuteGroupUserRequest struct {
 
 func (r ApiMuteGroupUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.MuteGroupUserExecute(r)
+}
+
+func (r ApiMuteGroupUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -249,6 +257,11 @@ type ApiUnmuteGroupUserRequest struct {
 
 func (r ApiUnmuteGroupUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnmuteGroupUserExecute(r)
+}
+
+func (r ApiUnmuteGroupUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*

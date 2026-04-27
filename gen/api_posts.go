@@ -21,9 +21,6 @@ type ApiCreateConferenceCallPostRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
 	apiKey *string
-	signedInfo *string
-	timestamp *int64
-	uuid *string
 	attachment2Filename *string
 	attachment3Filename *string
 	attachment4Filename *string
@@ -42,26 +39,14 @@ type ApiCreateConferenceCallPostRequest struct {
 	joinableBy *string
 	language *string
 	messageTags *map[string]interface{}
+	signedInfo *string
 	text *string
+	timestamp *int64
+	uuid *string
 }
 
 func (r ApiCreateConferenceCallPostRequest) ApiKey(apiKey string) ApiCreateConferenceCallPostRequest {
 	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiCreateConferenceCallPostRequest) SignedInfo(signedInfo string) ApiCreateConferenceCallPostRequest {
-	r.signedInfo = &signedInfo
-	return r
-}
-
-func (r ApiCreateConferenceCallPostRequest) Timestamp(timestamp int64) ApiCreateConferenceCallPostRequest {
-	r.timestamp = &timestamp
-	return r
-}
-
-func (r ApiCreateConferenceCallPostRequest) Uuid(uuid string) ApiCreateConferenceCallPostRequest {
-	r.uuid = &uuid
 	return r
 }
 
@@ -155,13 +140,33 @@ func (r ApiCreateConferenceCallPostRequest) MessageTags(messageTags map[string]i
 	return r
 }
 
+func (r ApiCreateConferenceCallPostRequest) SignedInfo(signedInfo string) ApiCreateConferenceCallPostRequest {
+	r.signedInfo = &signedInfo
+	return r
+}
+
 func (r ApiCreateConferenceCallPostRequest) Text(text string) ApiCreateConferenceCallPostRequest {
 	r.text = &text
 	return r
 }
 
+func (r ApiCreateConferenceCallPostRequest) Timestamp(timestamp int64) ApiCreateConferenceCallPostRequest {
+	r.timestamp = &timestamp
+	return r
+}
+
+func (r ApiCreateConferenceCallPostRequest) Uuid(uuid string) ApiCreateConferenceCallPostRequest {
+	r.uuid = &uuid
+	return r
+}
+
 func (r ApiCreateConferenceCallPostRequest) Execute() (*CreatePostResponse, *http.Response, error) {
 	return r.ApiService.CreateConferenceCallPostExecute(r)
+}
+
+func (r ApiCreateConferenceCallPostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -197,18 +202,6 @@ func (a *PostsAPIService) CreateConferenceCallPostExecute(r ApiCreateConferenceC
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return localVarReturnValue, nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
-	}
-	if r.uuid == nil {
-		return localVarReturnValue, nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -227,7 +220,9 @@ func (a *PostsAPIService) CreateConferenceCallPostExecute(r ApiCreateConferenceC
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
 	if r.attachment2Filename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "attachment_2_filename", r.attachment2Filename, "", "")
 	}
@@ -282,12 +277,18 @@ func (a *PostsAPIService) CreateConferenceCallPostExecute(r ApiCreateConferenceC
 	if r.messageTags != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "message_tags", r.messageTags, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
 	if r.text != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "text", r.text, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -466,6 +467,11 @@ func (r ApiCreatePostRequest) Execute() (*Post, *http.Response, error) {
 	return r.ApiService.CreatePostExecute(r)
 }
 
+func (r ApiCreatePostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 CreatePost Method for CreatePost
 
@@ -499,9 +505,6 @@ func (a *PostsAPIService) CreatePostExecute(r ApiCreatePostRequest) (*Post, *htt
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.xJwt == nil {
-		return localVarReturnValue, nil, reportError("xJwt is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -520,7 +523,9 @@ func (a *PostsAPIService) CreatePostExecute(r ApiCreatePostRequest) (*Post, *htt
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Jwt", r.xJwt, "simple", "")
+	if r.xJwt != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Jwt", r.xJwt, "simple", "")
+	}
 	if r.attachment2Filename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "attachment_2_filename", r.attachment2Filename, "", "")
 	}
@@ -625,46 +630,21 @@ type ApiCreateSharePostRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
 	apiKey *string
-	shareableId *int64
-	shareableType *string
-	signedInfo *string
-	timestamp *int64
-	uuid *string
 	color *int32
 	fontSize *int32
 	groupId *int64
 	language *string
 	messageTags *map[string]interface{}
+	shareableId *int64
+	shareableType *string
+	signedInfo *string
 	text *string
+	timestamp *int64
+	uuid *string
 }
 
 func (r ApiCreateSharePostRequest) ApiKey(apiKey string) ApiCreateSharePostRequest {
 	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiCreateSharePostRequest) ShareableId(shareableId int64) ApiCreateSharePostRequest {
-	r.shareableId = &shareableId
-	return r
-}
-
-func (r ApiCreateSharePostRequest) ShareableType(shareableType string) ApiCreateSharePostRequest {
-	r.shareableType = &shareableType
-	return r
-}
-
-func (r ApiCreateSharePostRequest) SignedInfo(signedInfo string) ApiCreateSharePostRequest {
-	r.signedInfo = &signedInfo
-	return r
-}
-
-func (r ApiCreateSharePostRequest) Timestamp(timestamp int64) ApiCreateSharePostRequest {
-	r.timestamp = &timestamp
-	return r
-}
-
-func (r ApiCreateSharePostRequest) Uuid(uuid string) ApiCreateSharePostRequest {
-	r.uuid = &uuid
 	return r
 }
 
@@ -693,13 +673,43 @@ func (r ApiCreateSharePostRequest) MessageTags(messageTags map[string]interface{
 	return r
 }
 
+func (r ApiCreateSharePostRequest) ShareableId(shareableId int64) ApiCreateSharePostRequest {
+	r.shareableId = &shareableId
+	return r
+}
+
+func (r ApiCreateSharePostRequest) ShareableType(shareableType string) ApiCreateSharePostRequest {
+	r.shareableType = &shareableType
+	return r
+}
+
+func (r ApiCreateSharePostRequest) SignedInfo(signedInfo string) ApiCreateSharePostRequest {
+	r.signedInfo = &signedInfo
+	return r
+}
+
 func (r ApiCreateSharePostRequest) Text(text string) ApiCreateSharePostRequest {
 	r.text = &text
 	return r
 }
 
+func (r ApiCreateSharePostRequest) Timestamp(timestamp int64) ApiCreateSharePostRequest {
+	r.timestamp = &timestamp
+	return r
+}
+
+func (r ApiCreateSharePostRequest) Uuid(uuid string) ApiCreateSharePostRequest {
+	r.uuid = &uuid
+	return r
+}
+
 func (r ApiCreateSharePostRequest) Execute() (*Post, *http.Response, error) {
 	return r.ApiService.CreateSharePostExecute(r)
+}
+
+func (r ApiCreateSharePostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -735,24 +745,6 @@ func (a *PostsAPIService) CreateSharePostExecute(r ApiCreateSharePostRequest) (*
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
-	}
-	if r.shareableId == nil {
-		return localVarReturnValue, nil, reportError("shareableId is required and must be specified")
-	}
-	if r.shareableType == nil {
-		return localVarReturnValue, nil, reportError("shareableType is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return localVarReturnValue, nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
-	}
-	if r.uuid == nil {
-		return localVarReturnValue, nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -771,7 +763,9 @@ func (a *PostsAPIService) CreateSharePostExecute(r ApiCreateSharePostRequest) (*
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
 	if r.color != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "color", r.color, "", "")
 	}
@@ -787,14 +781,24 @@ func (a *PostsAPIService) CreateSharePostExecute(r ApiCreateSharePostRequest) (*
 	if r.messageTags != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "message_tags", r.messageTags, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "shareable_id", r.shareableId, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "shareable_type", r.shareableType, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	if r.shareableId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "shareable_id", r.shareableId, "", "")
+	}
+	if r.shareableType != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "shareable_type", r.shareableType, "", "")
+	}
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
 	if r.text != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "text", r.text, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -839,6 +843,11 @@ type ApiDeleteAllPostsRequest struct {
 
 func (r ApiDeleteAllPostsRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeleteAllPostsExecute(r)
+}
+
+func (r ApiDeleteAllPostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -933,6 +942,11 @@ func (r ApiDeletePostsRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeletePostsExecute(r)
 }
 
+func (r ApiDeletePostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 DeletePosts Method for DeletePosts
 
@@ -964,9 +978,6 @@ func (a *PostsAPIService) DeletePostsExecute(r ApiDeletePostsRequest) (*http.Res
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.postsIds == nil {
-		return nil, reportError("postsIds is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -985,7 +996,9 @@ func (a *PostsAPIService) DeletePostsExecute(r ApiDeletePostsRequest) (*http.Res
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "posts_ids[]", r.postsIds, "", "csv")
+	if r.postsIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "posts_ids[]", r.postsIds, "", "csv")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1029,6 +1042,11 @@ func (r ApiGetActiveCallPostRequest) Execute() (*PostResponse, *http.Response, e
 	return r.ApiService.GetActiveCallPostExecute(r)
 }
 
+func (r ApiGetActiveCallPostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetActiveCallPost Method for GetActiveCallPost
 
@@ -1062,11 +1080,10 @@ func (a *PostsAPIService) GetActiveCallPostExecute(r ApiGetActiveCallPostRequest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.userId == nil {
-		return localVarReturnValue, nil, reportError("userId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "user_id", r.userId, "form", "")
+	if r.userId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "user_id", r.userId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1164,6 +1181,11 @@ func (r ApiGetCallFollowersTimelineRequest) ExcludeRecentGomimushi(excludeRecent
 
 func (r ApiGetCallFollowersTimelineRequest) Execute() (*PostsResponse, *http.Response, error) {
 	return r.ApiService.GetCallFollowersTimelineExecute(r)
+}
+
+func (r ApiGetCallFollowersTimelineRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1329,6 +1351,11 @@ func (r ApiGetCallTimelineRequest) Execute() (*PostsResponse, *http.Response, er
 	return r.ApiService.GetCallTimelineExecute(r)
 }
 
+func (r ApiGetCallTimelineRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetCallTimeline Method for GetCallTimeline
 
@@ -1444,19 +1471,14 @@ func (a *PostsAPIService) GetCallTimelineExecute(r ApiGetCallTimelineRequest) (*
 type ApiGetFollowingTimelineRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
-	orderBy *string
 	from *string
 	fromPostId *int64
 	onlyRoot *bool
+	orderBy *string
 	number *int32
 	mxn *int32
 	reduceSelfie *bool
 	customGenerationRange *bool
-}
-
-func (r ApiGetFollowingTimelineRequest) OrderBy(orderBy string) ApiGetFollowingTimelineRequest {
-	r.orderBy = &orderBy
-	return r
 }
 
 func (r ApiGetFollowingTimelineRequest) From(from string) ApiGetFollowingTimelineRequest {
@@ -1471,6 +1493,11 @@ func (r ApiGetFollowingTimelineRequest) FromPostId(fromPostId int64) ApiGetFollo
 
 func (r ApiGetFollowingTimelineRequest) OnlyRoot(onlyRoot bool) ApiGetFollowingTimelineRequest {
 	r.onlyRoot = &onlyRoot
+	return r
+}
+
+func (r ApiGetFollowingTimelineRequest) OrderBy(orderBy string) ApiGetFollowingTimelineRequest {
+	r.orderBy = &orderBy
 	return r
 }
 
@@ -1496,6 +1523,11 @@ func (r ApiGetFollowingTimelineRequest) CustomGenerationRange(customGenerationRa
 
 func (r ApiGetFollowingTimelineRequest) Execute() (*PostsResponse, *http.Response, error) {
 	return r.ApiService.GetFollowingTimelineExecute(r)
+}
+
+func (r ApiGetFollowingTimelineRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1531,9 +1563,6 @@ func (a *PostsAPIService) GetFollowingTimelineExecute(r ApiGetFollowingTimelineR
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.orderBy == nil {
-		return localVarReturnValue, nil, reportError("orderBy is required and must be specified")
-	}
 
 	if r.from != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
@@ -1544,7 +1573,9 @@ func (a *PostsAPIService) GetFollowingTimelineExecute(r ApiGetFollowingTimelineR
 	if r.onlyRoot != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "only_root", r.onlyRoot, "form", "")
 	}
-	parameterAddToHeaderOrQuery(localVarQueryParams, "order_by", r.orderBy, "form", "")
+	if r.orderBy != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "order_by", r.orderBy, "form", "")
+	}
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
@@ -1656,6 +1687,11 @@ func (r ApiGetGroupTimelineRequest) Execute() (*PostsResponse, *http.Response, e
 	return r.ApiService.GetGroupTimelineExecute(r)
 }
 
+func (r ApiGetGroupTimelineRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetGroupTimeline Method for GetGroupTimeline
 
@@ -1689,11 +1725,10 @@ func (a *PostsAPIService) GetGroupTimelineExecute(r ApiGetGroupTimelineRequest) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.groupId == nil {
-		return localVarReturnValue, nil, reportError("groupId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "group_id", r.groupId, "form", "")
+	if r.groupId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "group_id", r.groupId, "form", "")
+	}
 	if r.fromPostId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_post_id", r.fromPostId, "form", "")
 	}
@@ -1766,18 +1801,18 @@ func (a *PostsAPIService) GetGroupTimelineExecute(r ApiGetGroupTimelineRequest) 
 type ApiGetMyPostsRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
-	number *int32
 	fromPostId *int64
+	number *int32
 	includeGroupPost *bool
-}
-
-func (r ApiGetMyPostsRequest) Number(number int32) ApiGetMyPostsRequest {
-	r.number = &number
-	return r
 }
 
 func (r ApiGetMyPostsRequest) FromPostId(fromPostId int64) ApiGetMyPostsRequest {
 	r.fromPostId = &fromPostId
+	return r
+}
+
+func (r ApiGetMyPostsRequest) Number(number int32) ApiGetMyPostsRequest {
+	r.number = &number
 	return r
 }
 
@@ -1788,6 +1823,11 @@ func (r ApiGetMyPostsRequest) IncludeGroupPost(includeGroupPost bool) ApiGetMyPo
 
 func (r ApiGetMyPostsRequest) Execute() (*PostsResponse, *http.Response, error) {
 	return r.ApiService.GetMyPostsExecute(r)
+}
+
+func (r ApiGetMyPostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1823,14 +1863,13 @@ func (a *PostsAPIService) GetMyPostsExecute(r ApiGetMyPostsRequest) (*PostsRespo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.number == nil {
-		return localVarReturnValue, nil, reportError("number is required and must be specified")
-	}
 
 	if r.fromPostId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_post_id", r.fromPostId, "form", "")
 	}
-	parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
 	if r.includeGroupPost != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_group_post", r.includeGroupPost, "form", "")
 	}
@@ -1902,6 +1941,11 @@ func (r ApiGetPostRequest) CacheControl(cacheControl string) ApiGetPostRequest {
 
 func (r ApiGetPostRequest) Execute() (*PostResponse, *http.Response, error) {
 	return r.ApiService.GetPostExecute(r)
+}
+
+func (r ApiGetPostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2020,6 +2064,11 @@ func (r ApiGetPostGiftTransactionsRequest) Execute() (*GiftTransactionsResponse,
 	return r.ApiService.GetPostGiftTransactionsExecute(r)
 }
 
+func (r ApiGetPostGiftTransactionsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetPostGiftTransactions Method for GetPostGiftTransactions
 
@@ -2133,6 +2182,11 @@ func (r ApiGetPostLikersRequest) Execute() (*PostLikersResponse, *http.Response,
 	return r.ApiService.GetPostLikersExecute(r)
 }
 
+func (r ApiGetPostLikersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetPostLikers Method for GetPostLikers
 
@@ -2241,6 +2295,11 @@ func (r ApiGetPostRepostsRequest) FromPostId(fromPostId int64) ApiGetPostReposts
 
 func (r ApiGetPostRepostsRequest) Execute() (*PostsResponse, *http.Response, error) {
 	return r.ApiService.GetPostRepostsExecute(r)
+}
+
+func (r ApiGetPostRepostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2352,6 +2411,11 @@ func (r ApiGetPostUrlMetadataRequest) Execute() (*SharedUrl, *http.Response, err
 	return r.ApiService.GetPostUrlMetadataExecute(r)
 }
 
+func (r ApiGetPostUrlMetadataRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetPostUrlMetadata Method for GetPostUrlMetadata
 
@@ -2385,11 +2449,10 @@ func (a *PostsAPIService) GetPostUrlMetadataExecute(r ApiGetPostUrlMetadataReque
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.url == nil {
-		return localVarReturnValue, nil, reportError("url is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "url", r.url, "form", "")
+	if r.url != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "url", r.url, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -2459,6 +2522,11 @@ func (r ApiGetPostsByIdsRequest) Execute() (*PostsResponse, *http.Response, erro
 	return r.ApiService.GetPostsByIdsExecute(r)
 }
 
+func (r ApiGetPostsByIdsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetPostsByIds Method for GetPostsByIds
 
@@ -2492,11 +2560,8 @@ func (a *PostsAPIService) GetPostsByIdsExecute(r ApiGetPostsByIdsRequest) (*Post
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.postIds == nil {
-		return localVarReturnValue, nil, reportError("postIds is required and must be specified")
-	}
 
-	{
+	if r.postIds != nil {
 		t := *r.postIds
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
@@ -2581,6 +2646,11 @@ func (r ApiGetPostsByTagRequest) Number(number int32) ApiGetPostsByTagRequest {
 
 func (r ApiGetPostsByTagRequest) Execute() (*PostsResponse, *http.Response, error) {
 	return r.ApiService.GetPostsByTagExecute(r)
+}
+
+func (r ApiGetPostsByTagRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2695,6 +2765,11 @@ func (r ApiGetRecentEngagementPostsRequest) Execute() (*PostsResponse, *http.Res
 	return r.ApiService.GetRecentEngagementPostsExecute(r)
 }
 
+func (r ApiGetRecentEngagementPostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetRecentEngagementPosts Method for GetRecentEngagementPosts
 
@@ -2728,11 +2803,10 @@ func (a *PostsAPIService) GetRecentEngagementPostsExecute(r ApiGetRecentEngageme
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.number == nil {
-		return localVarReturnValue, nil, reportError("number is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -2808,6 +2882,11 @@ func (r ApiGetRecommendedPostTagsRequest) Execute() (*PostTagsResponse, *http.Re
 	return r.ApiService.GetRecommendedPostTagsExecute(r)
 }
 
+func (r ApiGetRecommendedPostTagsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetRecommendedPostTags Method for GetRecommendedPostTags
 
@@ -2841,12 +2920,6 @@ func (a *PostsAPIService) GetRecommendedPostTagsExecute(r ApiGetRecommendedPostT
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.saveRecentSearch == nil {
-		return localVarReturnValue, nil, reportError("saveRecentSearch is required and must be specified")
-	}
-	if r.tag == nil {
-		return localVarReturnValue, nil, reportError("tag is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -2865,8 +2938,12 @@ func (a *PostsAPIService) GetRecommendedPostTagsExecute(r ApiGetRecommendedPostT
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "save_recent_search", r.saveRecentSearch, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "tag", r.tag, "", "")
+	if r.saveRecentSearch != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "save_recent_search", r.saveRecentSearch, "", "")
+	}
+	if r.tag != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "tag", r.tag, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -2931,6 +3008,11 @@ func (r ApiGetRecommendedTimelineRequest) Execute() (*PostsResponse, *http.Respo
 	return r.ApiService.GetRecommendedTimelineExecute(r)
 }
 
+func (r ApiGetRecommendedTimelineRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetRecommendedTimeline Method for GetRecommendedTimeline
 
@@ -2964,19 +3046,16 @@ func (a *PostsAPIService) GetRecommendedTimelineExecute(r ApiGetRecommendedTimel
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.experimentNum == nil {
-		return localVarReturnValue, nil, reportError("experimentNum is required and must be specified")
-	}
-	if r.variantNum == nil {
-		return localVarReturnValue, nil, reportError("variantNum is required and must be specified")
-	}
-	if r.number == nil {
-		return localVarReturnValue, nil, reportError("number is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "experiment_num", r.experimentNum, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "variant_num", r.variantNum, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	if r.experimentNum != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "experiment_num", r.experimentNum, "form", "")
+	}
+	if r.variantNum != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "variant_num", r.variantNum, "form", "")
+	}
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -3031,10 +3110,10 @@ func (a *PostsAPIService) GetRecommendedTimelineExecute(r ApiGetRecommendedTimel
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiGetTimelineByModeRequest struct {
+type ApiGetTimelineRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
-	noreplyMode string
+	noreplyMode NoreplyMode
 	orderBy *string
 	experimentOlderAgeRules *bool
 	from *string
@@ -3047,69 +3126,74 @@ type ApiGetTimelineByModeRequest struct {
 	customGenerationRange *bool
 }
 
-func (r ApiGetTimelineByModeRequest) OrderBy(orderBy string) ApiGetTimelineByModeRequest {
+func (r ApiGetTimelineRequest) OrderBy(orderBy string) ApiGetTimelineRequest {
 	r.orderBy = &orderBy
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) ExperimentOlderAgeRules(experimentOlderAgeRules bool) ApiGetTimelineByModeRequest {
+func (r ApiGetTimelineRequest) ExperimentOlderAgeRules(experimentOlderAgeRules bool) ApiGetTimelineRequest {
 	r.experimentOlderAgeRules = &experimentOlderAgeRules
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) From(from string) ApiGetTimelineByModeRequest {
+func (r ApiGetTimelineRequest) From(from string) ApiGetTimelineRequest {
 	r.from = &from
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) FromPostId(fromPostId int64) ApiGetTimelineByModeRequest {
+func (r ApiGetTimelineRequest) FromPostId(fromPostId int64) ApiGetTimelineRequest {
 	r.fromPostId = &fromPostId
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) Number(number int32) ApiGetTimelineByModeRequest {
+func (r ApiGetTimelineRequest) Number(number int32) ApiGetTimelineRequest {
 	r.number = &number
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) Mxn(mxn int32) ApiGetTimelineByModeRequest {
+func (r ApiGetTimelineRequest) Mxn(mxn int32) ApiGetTimelineRequest {
 	r.mxn = &mxn
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) En(en int32) ApiGetTimelineByModeRequest {
+func (r ApiGetTimelineRequest) En(en int32) ApiGetTimelineRequest {
 	r.en = &en
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) Vn(vn int32) ApiGetTimelineByModeRequest {
+func (r ApiGetTimelineRequest) Vn(vn int32) ApiGetTimelineRequest {
 	r.vn = &vn
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) ReduceSelfie(reduceSelfie bool) ApiGetTimelineByModeRequest {
+func (r ApiGetTimelineRequest) ReduceSelfie(reduceSelfie bool) ApiGetTimelineRequest {
 	r.reduceSelfie = &reduceSelfie
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) CustomGenerationRange(customGenerationRange bool) ApiGetTimelineByModeRequest {
+func (r ApiGetTimelineRequest) CustomGenerationRange(customGenerationRange bool) ApiGetTimelineRequest {
 	r.customGenerationRange = &customGenerationRange
 	return r
 }
 
-func (r ApiGetTimelineByModeRequest) Execute() (*PostsResponse, *http.Response, error) {
-	return r.ApiService.GetTimelineByModeExecute(r)
+func (r ApiGetTimelineRequest) Execute() (*PostsResponse, *http.Response, error) {
+	return r.ApiService.GetTimelineExecute(r)
+}
+
+func (r ApiGetTimelineRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
-GetTimelineByMode Method for GetTimelineByMode
+GetTimeline Method for GetTimeline
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param noreplyMode
- @return ApiGetTimelineByModeRequest
+ @return ApiGetTimelineRequest
 */
-func (a *PostsAPIService) GetTimelineByMode(ctx context.Context, noreplyMode string) ApiGetTimelineByModeRequest {
-	return ApiGetTimelineByModeRequest{
+func (a *PostsAPIService) GetTimeline(ctx context.Context, noreplyMode NoreplyMode) ApiGetTimelineRequest {
+	return ApiGetTimelineRequest{
 		ApiService: a,
 		ctx: ctx,
 		noreplyMode: noreplyMode,
@@ -3118,7 +3202,7 @@ func (a *PostsAPIService) GetTimelineByMode(ctx context.Context, noreplyMode str
 
 // Execute executes the request
 //  @return PostsResponse
-func (a *PostsAPIService) GetTimelineByModeExecute(r ApiGetTimelineByModeRequest) (*PostsResponse, *http.Response, error) {
+func (a *PostsAPIService) GetTimelineExecute(r ApiGetTimelineRequest) (*PostsResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -3126,7 +3210,7 @@ func (a *PostsAPIService) GetTimelineByModeExecute(r ApiGetTimelineByModeRequest
 		localVarReturnValue  *PostsResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PostsAPIService.GetTimelineByMode")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PostsAPIService.GetTimeline")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -3137,11 +3221,10 @@ func (a *PostsAPIService) GetTimelineByModeExecute(r ApiGetTimelineByModeRequest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.orderBy == nil {
-		return localVarReturnValue, nil, reportError("orderBy is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "order_by", r.orderBy, "form", "")
+	if r.orderBy != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "order_by", r.orderBy, "form", "")
+	}
 	if r.experimentOlderAgeRules != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "experiment_older_age_rules", r.experimentOlderAgeRules, "form", "")
 	}
@@ -3256,6 +3339,11 @@ func (r ApiGetUserTimelineRequest) Execute() (*PostsResponse, *http.Response, er
 	return r.ApiService.GetUserTimelineExecute(r)
 }
 
+func (r ApiGetUserTimelineRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetUserTimeline Method for GetUserTimeline
 
@@ -3289,11 +3377,10 @@ func (a *PostsAPIService) GetUserTimelineExecute(r ApiGetUserTimelineRequest) (*
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.userId == nil {
-		return localVarReturnValue, nil, reportError("userId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "user_id", r.userId, "form", "")
+	if r.userId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "user_id", r.userId, "form", "")
+	}
 	if r.fromPostId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_post_id", r.fromPostId, "form", "")
 	}
@@ -3372,6 +3459,11 @@ func (r ApiLikePostsRequest) Execute() (*LikePostsResponse, *http.Response, erro
 	return r.ApiService.LikePostsExecute(r)
 }
 
+func (r ApiLikePostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 LikePosts Method for LikePosts
 
@@ -3405,9 +3497,6 @@ func (a *PostsAPIService) LikePostsExecute(r ApiLikePostsRequest) (*LikePostsRes
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.postIds == nil {
-		return localVarReturnValue, nil, reportError("postIds is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -3426,7 +3515,9 @@ func (a *PostsAPIService) LikePostsExecute(r ApiLikePostsRequest) (*LikePostsRes
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "post_ids[]", r.postIds, "", "csv")
+	if r.postIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "post_ids[]", r.postIds, "", "csv")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -3473,6 +3564,11 @@ type ApiMovePostToSpecificThreadRequest struct {
 
 func (r ApiMovePostToSpecificThreadRequest) Execute() (*ThreadInfo, *http.Response, error) {
 	return r.ApiService.MovePostToSpecificThreadExecute(r)
+}
+
+func (r ApiMovePostToSpecificThreadRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -3589,6 +3685,11 @@ func (r ApiMovePostToThreadRequest) Title(title string) ApiMovePostToThreadReque
 
 func (r ApiMovePostToThreadRequest) Execute() (*ThreadInfo, *http.Response, error) {
 	return r.ApiService.MovePostToThreadExecute(r)
+}
+
+func (r ApiMovePostToThreadRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -3709,6 +3810,11 @@ func (r ApiPinGroupPostRequest) Execute() (*http.Response, error) {
 	return r.ApiService.PinGroupPostExecute(r)
 }
 
+func (r ApiPinGroupPostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 PinGroupPost Method for PinGroupPost
 
@@ -3740,12 +3846,6 @@ func (a *PostsAPIService) PinGroupPostExecute(r ApiPinGroupPostRequest) (*http.R
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.groupId == nil {
-		return nil, reportError("groupId is required and must be specified")
-	}
-	if r.postId == nil {
-		return nil, reportError("postId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -3764,8 +3864,12 @@ func (a *PostsAPIService) PinGroupPostExecute(r ApiPinGroupPostRequest) (*http.R
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "group_id", r.groupId, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "post_id", r.postId, "", "")
+	if r.groupId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "group_id", r.groupId, "", "")
+	}
+	if r.postId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "post_id", r.postId, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -3846,6 +3950,11 @@ func (r ApiReportPostRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ReportPostExecute(r)
 }
 
+func (r ApiReportPostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ReportPost Method for ReportPost
 
@@ -3880,12 +3989,6 @@ func (a *PostsAPIService) ReportPostExecute(r ApiReportPostRequest) (*http.Respo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.categoryId == nil {
-		return nil, reportError("categoryId is required and must be specified")
-	}
-	if r.opponentId == nil {
-		return nil, reportError("opponentId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -3904,8 +4007,12 @@ func (a *PostsAPIService) ReportPostExecute(r ApiReportPostRequest) (*http.Respo
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "category_id", r.categoryId, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "opponent_id", r.opponentId, "", "")
+	if r.categoryId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "category_id", r.categoryId, "", "")
+	}
+	if r.opponentId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "opponent_id", r.opponentId, "", "")
+	}
 	if r.reason != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "reason", r.reason, "", "")
 	}
@@ -3953,7 +4060,6 @@ type ApiRepostRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
 	xJwt *string
-	postId *int64
 	attachment2Filename *string
 	attachment3Filename *string
 	attachment4Filename *string
@@ -3971,6 +4077,7 @@ type ApiRepostRequest struct {
 	language *string
 	mentionIds *[]int64
 	messageTags *map[string]interface{}
+	postId *int64
 	postType *PostType
 	sharedUrl *map[string]interface{}
 	text *string
@@ -3979,11 +4086,6 @@ type ApiRepostRequest struct {
 
 func (r ApiRepostRequest) XJwt(xJwt string) ApiRepostRequest {
 	r.xJwt = &xJwt
-	return r
-}
-
-func (r ApiRepostRequest) PostId(postId int64) ApiRepostRequest {
-	r.postId = &postId
 	return r
 }
 
@@ -4072,6 +4174,11 @@ func (r ApiRepostRequest) MessageTags(messageTags map[string]interface{}) ApiRep
 	return r
 }
 
+func (r ApiRepostRequest) PostId(postId int64) ApiRepostRequest {
+	r.postId = &postId
+	return r
+}
+
 func (r ApiRepostRequest) PostType(postType PostType) ApiRepostRequest {
 	r.postType = &postType
 	return r
@@ -4094,6 +4201,11 @@ func (r ApiRepostRequest) VideoFileName(videoFileName string) ApiRepostRequest {
 
 func (r ApiRepostRequest) Execute() (*CreatePostResponse, *http.Response, error) {
 	return r.ApiService.RepostExecute(r)
+}
+
+func (r ApiRepostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4129,12 +4241,6 @@ func (a *PostsAPIService) RepostExecute(r ApiRepostRequest) (*CreatePostResponse
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.xJwt == nil {
-		return localVarReturnValue, nil, reportError("xJwt is required and must be specified")
-	}
-	if r.postId == nil {
-		return localVarReturnValue, nil, reportError("postId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -4153,7 +4259,9 @@ func (a *PostsAPIService) RepostExecute(r ApiRepostRequest) (*CreatePostResponse
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Jwt", r.xJwt, "simple", "")
+	if r.xJwt != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Jwt", r.xJwt, "simple", "")
+	}
 	if r.attachment2Filename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "attachment_2_filename", r.attachment2Filename, "", "")
 	}
@@ -4205,7 +4313,9 @@ func (a *PostsAPIService) RepostExecute(r ApiRepostRequest) (*CreatePostResponse
 	if r.messageTags != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "message_tags", r.messageTags, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "post_id", r.postId, "", "")
+	if r.postId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "post_id", r.postId, "", "")
+	}
 	if r.postType != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "post_type", r.postType, "", "")
 	}
@@ -4294,6 +4404,11 @@ func (r ApiSearchPostsRequest) Execute() (*PostsResponse, *http.Response, error)
 	return r.ApiService.SearchPostsExecute(r)
 }
 
+func (r ApiSearchPostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 SearchPosts Method for SearchPosts
 
@@ -4327,19 +4442,16 @@ func (a *PostsAPIService) SearchPostsExecute(r ApiSearchPostsRequest) (*PostsRes
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.keyword == nil {
-		return localVarReturnValue, nil, reportError("keyword is required and must be specified")
-	}
-	if r.postOwnerScope == nil {
-		return localVarReturnValue, nil, reportError("postOwnerScope is required and must be specified")
-	}
-	if r.onlyMedia == nil {
-		return localVarReturnValue, nil, reportError("onlyMedia is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "keyword", r.keyword, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "post_owner_scope", r.postOwnerScope, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "only_media", r.onlyMedia, "form", "")
+	if r.keyword != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "keyword", r.keyword, "form", "")
+	}
+	if r.postOwnerScope != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "post_owner_scope", r.postOwnerScope, "form", "")
+	}
+	if r.onlyMedia != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "only_media", r.onlyMedia, "form", "")
+	}
 	if r.fromPostId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_post_id", r.fromPostId, "form", "")
 	}
@@ -4408,6 +4520,11 @@ type ApiUnlikePostRequest struct {
 
 func (r ApiUnlikePostRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnlikePostExecute(r)
+}
+
+func (r ApiUnlikePostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4505,6 +4622,11 @@ func (r ApiUnpinGroupPostRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnpinGroupPostExecute(r)
 }
 
+func (r ApiUnpinGroupPostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 UnpinGroupPost Method for UnpinGroupPost
 
@@ -4536,11 +4658,10 @@ func (a *PostsAPIService) UnpinGroupPostExecute(r ApiUnpinGroupPostRequest) (*ht
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.groupId == nil {
-		return nil, reportError("groupId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "group_id", r.groupId, "form", "")
+	if r.groupId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "group_id", r.groupId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -4591,33 +4712,18 @@ type ApiUpdatePostRequest struct {
 	ApiService *PostsAPIService
 	id int64
 	apiKey *string
-	signedInfo *string
-	timestamp *int64
-	uuid *string
 	color *int32
 	fontSize *int32
 	language *string
 	messageTags *map[string]interface{}
+	signedInfo *string
 	text *string
+	timestamp *int64
+	uuid *string
 }
 
 func (r ApiUpdatePostRequest) ApiKey(apiKey string) ApiUpdatePostRequest {
 	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiUpdatePostRequest) SignedInfo(signedInfo string) ApiUpdatePostRequest {
-	r.signedInfo = &signedInfo
-	return r
-}
-
-func (r ApiUpdatePostRequest) Timestamp(timestamp int64) ApiUpdatePostRequest {
-	r.timestamp = &timestamp
-	return r
-}
-
-func (r ApiUpdatePostRequest) Uuid(uuid string) ApiUpdatePostRequest {
-	r.uuid = &uuid
 	return r
 }
 
@@ -4641,13 +4747,33 @@ func (r ApiUpdatePostRequest) MessageTags(messageTags map[string]interface{}) Ap
 	return r
 }
 
+func (r ApiUpdatePostRequest) SignedInfo(signedInfo string) ApiUpdatePostRequest {
+	r.signedInfo = &signedInfo
+	return r
+}
+
 func (r ApiUpdatePostRequest) Text(text string) ApiUpdatePostRequest {
 	r.text = &text
 	return r
 }
 
+func (r ApiUpdatePostRequest) Timestamp(timestamp int64) ApiUpdatePostRequest {
+	r.timestamp = &timestamp
+	return r
+}
+
+func (r ApiUpdatePostRequest) Uuid(uuid string) ApiUpdatePostRequest {
+	r.uuid = &uuid
+	return r
+}
+
 func (r ApiUpdatePostRequest) Execute() (*Post, *http.Response, error) {
 	return r.ApiService.UpdatePostExecute(r)
+}
+
+func (r ApiUpdatePostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4686,18 +4812,6 @@ func (a *PostsAPIService) UpdatePostExecute(r ApiUpdatePostRequest) (*Post, *htt
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return localVarReturnValue, nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
-	}
-	if r.uuid == nil {
-		return localVarReturnValue, nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -4716,7 +4830,9 @@ func (a *PostsAPIService) UpdatePostExecute(r ApiUpdatePostRequest) (*Post, *htt
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
 	if r.color != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "color", r.color, "", "")
 	}
@@ -4729,12 +4845,18 @@ func (a *PostsAPIService) UpdatePostExecute(r ApiUpdatePostRequest) (*Post, *htt
 	if r.messageTags != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "message_tags", r.messageTags, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
 	if r.text != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "text", r.text, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -4775,18 +4897,18 @@ func (a *PostsAPIService) UpdatePostExecute(r ApiUpdatePostRequest) (*Post, *htt
 type ApiValidatePostRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
-	text *string
 	groupId *int64
+	text *string
 	threadId *int64
-}
-
-func (r ApiValidatePostRequest) Text(text string) ApiValidatePostRequest {
-	r.text = &text
-	return r
 }
 
 func (r ApiValidatePostRequest) GroupId(groupId int64) ApiValidatePostRequest {
 	r.groupId = &groupId
+	return r
+}
+
+func (r ApiValidatePostRequest) Text(text string) ApiValidatePostRequest {
+	r.text = &text
 	return r
 }
 
@@ -4797,6 +4919,11 @@ func (r ApiValidatePostRequest) ThreadId(threadId int64) ApiValidatePostRequest 
 
 func (r ApiValidatePostRequest) Execute() (*ValidationPostResponse, *http.Response, error) {
 	return r.ApiService.ValidatePostExecute(r)
+}
+
+func (r ApiValidatePostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4832,9 +4959,6 @@ func (a *PostsAPIService) ValidatePostExecute(r ApiValidatePostRequest) (*Valida
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.text == nil {
-		return localVarReturnValue, nil, reportError("text is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -4856,7 +4980,9 @@ func (a *PostsAPIService) ValidatePostExecute(r ApiValidatePostRequest) (*Valida
 	if r.groupId != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "group_id", r.groupId, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "text", r.text, "", "")
+	if r.text != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "text", r.text, "", "")
+	}
 	if r.threadId != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "thread_id", r.threadId, "", "")
 	}
@@ -4905,6 +5031,11 @@ type ApiViewPostVideoRequest struct {
 
 func (r ApiViewPostVideoRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ViewPostVideoExecute(r)
+}
+
+func (r ApiViewPostVideoRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*

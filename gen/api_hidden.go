@@ -31,6 +31,11 @@ func (r ApiCreateMuteKeywordRequest) Execute() (*CreateMuteKeywordResponse, *htt
 	return r.ApiService.CreateMuteKeywordExecute(r)
 }
 
+func (r ApiCreateMuteKeywordRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 CreateMuteKeyword Method for CreateMuteKeyword
 
@@ -139,6 +144,11 @@ func (r ApiDeleteMuteKeywordRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeleteMuteKeywordExecute(r)
 }
 
+func (r ApiDeleteMuteKeywordRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 DeleteMuteKeyword Method for DeleteMuteKeyword
 
@@ -170,11 +180,8 @@ func (a *HiddenAPIService) DeleteMuteKeywordExecute(r ApiDeleteMuteKeywordReques
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.ids == nil {
-		return nil, reportError("ids is required and must be specified")
-	}
 
-	{
+	if r.ids != nil {
 		t := *r.ids
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
@@ -245,6 +252,11 @@ func (r ApiHideChatsRequest) Execute() (*http.Response, error) {
 	return r.ApiService.HideChatsExecute(r)
 }
 
+func (r ApiHideChatsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 HideChats Method for HideChats
 
@@ -276,9 +288,6 @@ func (a *HiddenAPIService) HideChatsExecute(r ApiHideChatsRequest) (*http.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.chatRoomId == nil {
-		return nil, reportError("chatRoomId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -297,7 +306,9 @@ func (a *HiddenAPIService) HideChatsExecute(r ApiHideChatsRequest) (*http.Respon
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "chat_room_id", r.chatRoomId, "", "")
+	if r.chatRoomId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "chat_room_id", r.chatRoomId, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -341,6 +352,11 @@ func (r ApiHideUsersRequest) Execute() (*http.Response, error) {
 	return r.ApiService.HideUsersExecute(r)
 }
 
+func (r ApiHideUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 HideUsers Method for HideUsers
 
@@ -372,9 +388,6 @@ func (a *HiddenAPIService) HideUsersExecute(r ApiHideUsersRequest) (*http.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.userId == nil {
-		return nil, reportError("userId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -393,7 +406,9 @@ func (a *HiddenAPIService) HideUsersExecute(r ApiHideUsersRequest) (*http.Respon
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "user_id", r.userId, "", "")
+	if r.userId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "user_id", r.userId, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -443,6 +458,11 @@ func (r ApiListHiddenChatsRequest) Execute() (*ChatRoomsResponse, *http.Response
 	return r.ApiService.ListHiddenChatsExecute(r)
 }
 
+func (r ApiListHiddenChatsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ListHiddenChats Method for ListHiddenChats
 
@@ -476,11 +496,10 @@ func (a *HiddenAPIService) ListHiddenChatsExecute(r ApiListHiddenChatsRequest) (
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.number == nil {
-		return localVarReturnValue, nil, reportError("number is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
 	if r.fromTimestamp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_timestamp", r.fromTimestamp, "form", "")
 	}
@@ -557,6 +576,11 @@ func (r ApiListHiddenUsersRequest) Number(number int32) ApiListHiddenUsersReques
 
 func (r ApiListHiddenUsersRequest) Execute() (*HiddenResponse, *http.Response, error) {
 	return r.ApiService.ListHiddenUsersExecute(r)
+}
+
+func (r ApiListHiddenUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -662,6 +686,11 @@ func (r ApiListMuteKeywordsRequest) Execute() (*MuteKeywordResponse, *http.Respo
 	return r.ApiService.ListMuteKeywordsExecute(r)
 }
 
+func (r ApiListMuteKeywordsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ListMuteKeywords Method for ListMuteKeywords
 
@@ -765,6 +794,11 @@ func (r ApiUnhideChatsRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnhideChatsExecute(r)
 }
 
+func (r ApiUnhideChatsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 UnhideChats Method for UnhideChats
 
@@ -796,11 +830,10 @@ func (a *HiddenAPIService) UnhideChatsExecute(r ApiUnhideChatsRequest) (*http.Re
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.chatRoomIds == nil {
-		return nil, reportError("chatRoomIds is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "chat_room_ids", r.chatRoomIds, "form", "")
+	if r.chatRoomIds != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "chat_room_ids", r.chatRoomIds, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -861,6 +894,11 @@ func (r ApiUnhideUsersRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnhideUsersExecute(r)
 }
 
+func (r ApiUnhideUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 UnhideUsers Method for UnhideUsers
 
@@ -892,11 +930,8 @@ func (a *HiddenAPIService) UnhideUsersExecute(r ApiUnhideUsersRequest) (*http.Re
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.userIds == nil {
-		return nil, reportError("userIds is required and must be specified")
-	}
 
-	{
+	if r.userIds != nil {
 		t := *r.userIds
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)

@@ -31,6 +31,11 @@ func (r ApiPinGroupRequest) Execute() (*http.Response, error) {
 	return r.ApiService.PinGroupExecute(r)
 }
 
+func (r ApiPinGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 PinGroup Method for PinGroup
 
@@ -62,9 +67,6 @@ func (a *PinnedAPIService) PinGroupExecute(r ApiPinGroupRequest) (*http.Response
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.id == nil {
-		return nil, reportError("id is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -83,7 +85,9 @@ func (a *PinnedAPIService) PinGroupExecute(r ApiPinGroupRequest) (*http.Response
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "id", r.id, "", "")
+	if r.id != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "id", r.id, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -127,6 +131,11 @@ func (r ApiPinPostRequest) Execute() (*http.Response, error) {
 	return r.ApiService.PinPostExecute(r)
 }
 
+func (r ApiPinPostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 PinPost Method for PinPost
 
@@ -158,9 +167,6 @@ func (a *PinnedAPIService) PinPostExecute(r ApiPinPostRequest) (*http.Response, 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.id == nil {
-		return nil, reportError("id is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -179,7 +185,9 @@ func (a *PinnedAPIService) PinPostExecute(r ApiPinPostRequest) (*http.Response, 
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "id", r.id, "", "")
+	if r.id != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "id", r.id, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -223,6 +231,11 @@ func (r ApiPinReviewRequest) Execute() (*http.Response, error) {
 	return r.ApiService.PinReviewExecute(r)
 }
 
+func (r ApiPinReviewRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 PinReview Method for PinReview
 
@@ -254,9 +267,6 @@ func (a *PinnedAPIService) PinReviewExecute(r ApiPinReviewRequest) (*http.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.id == nil {
-		return nil, reportError("id is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -275,7 +285,9 @@ func (a *PinnedAPIService) PinReviewExecute(r ApiPinReviewRequest) (*http.Respon
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "id", r.id, "", "")
+	if r.id != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "id", r.id, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -312,6 +324,11 @@ type ApiUnpinGroupRequest struct {
 
 func (r ApiUnpinGroupRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnpinGroupExecute(r)
+}
+
+func (r ApiUnpinGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -402,6 +419,11 @@ type ApiUnpinReviewRequest struct {
 
 func (r ApiUnpinReviewRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnpinReviewExecute(r)
+}
+
+func (r ApiUnpinReviewRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*

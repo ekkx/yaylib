@@ -36,6 +36,11 @@ func (r ApiListGenresRequest) Execute() (*GenresResponse, *http.Response, error)
 	return r.ApiService.ListGenresExecute(r)
 }
 
+func (r ApiListGenresRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ListGenres Method for ListGenres
 
@@ -69,11 +74,10 @@ func (a *GenresAPIService) ListGenresExecute(r ApiListGenresRequest) (*GenresRes
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.number == nil {
-		return localVarReturnValue, nil, reportError("number is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
 	if r.from != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}

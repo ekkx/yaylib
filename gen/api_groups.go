@@ -28,6 +28,11 @@ func (r ApiAcceptGroupJoinRequestRequest) Execute() (*http.Response, error) {
 	return r.ApiService.AcceptGroupJoinRequestExecute(r)
 }
 
+func (r ApiAcceptGroupJoinRequestRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 AcceptGroupJoinRequest Method for AcceptGroupJoinRequest
 
@@ -121,6 +126,11 @@ func (r ApiAcceptGroupTransferRequest) Execute() (*http.Response, error) {
 	return r.ApiService.AcceptGroupTransferExecute(r)
 }
 
+func (r ApiAcceptGroupTransferRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 AcceptGroupTransfer Method for AcceptGroupTransfer
 
@@ -210,6 +220,11 @@ type ApiBanGroupUserRequest struct {
 
 func (r ApiBanGroupUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.BanGroupUserExecute(r)
+}
+
+func (r ApiBanGroupUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -305,6 +320,11 @@ func (r ApiCancelGroupTransferRequest) Execute() (*http.Response, error) {
 	return r.ApiService.CancelGroupTransferExecute(r)
 }
 
+func (r ApiCancelGroupTransferRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 CancelGroupTransfer Method for CancelGroupTransfer
 
@@ -388,16 +408,11 @@ func (a *GroupsAPIService) CancelGroupTransferExecute(r ApiCancelGroupTransferRe
 type ApiCreateGroupRequest struct {
 	ctx context.Context
 	ApiService *GroupsAPIService
-	apiKey *string
-	hideFromGameEight *bool
-	signedInfo *string
-	timestamp *int64
-	topic *string
-	uuid *string
 	allowMembersToPostImageAndVideo *bool
 	allowMembersToPostUrl *bool
 	allowOwnershipTransfer *bool
 	allowThreadCreationBy *string
+	apiKey *string
 	callTimelineDisplay *bool
 	coverImageFilename *string
 	description *string
@@ -407,42 +422,17 @@ type ApiCreateGroupRequest struct {
 	groupIconFilename *string
 	guidelines *string
 	hideConferenceCall *bool
+	hideFromGameEight *bool
 	hideReportedPosts *bool
 	isPrivate *bool
 	onlyMobileVerified *bool
 	onlyVerifiedAge *bool
 	secret *bool
+	signedInfo *string
 	subCategoryId *string
-}
-
-func (r ApiCreateGroupRequest) ApiKey(apiKey string) ApiCreateGroupRequest {
-	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiCreateGroupRequest) HideFromGameEight(hideFromGameEight bool) ApiCreateGroupRequest {
-	r.hideFromGameEight = &hideFromGameEight
-	return r
-}
-
-func (r ApiCreateGroupRequest) SignedInfo(signedInfo string) ApiCreateGroupRequest {
-	r.signedInfo = &signedInfo
-	return r
-}
-
-func (r ApiCreateGroupRequest) Timestamp(timestamp int64) ApiCreateGroupRequest {
-	r.timestamp = &timestamp
-	return r
-}
-
-func (r ApiCreateGroupRequest) Topic(topic string) ApiCreateGroupRequest {
-	r.topic = &topic
-	return r
-}
-
-func (r ApiCreateGroupRequest) Uuid(uuid string) ApiCreateGroupRequest {
-	r.uuid = &uuid
-	return r
+	timestamp *int64
+	topic *string
+	uuid *string
 }
 
 func (r ApiCreateGroupRequest) AllowMembersToPostImageAndVideo(allowMembersToPostImageAndVideo bool) ApiCreateGroupRequest {
@@ -462,6 +452,11 @@ func (r ApiCreateGroupRequest) AllowOwnershipTransfer(allowOwnershipTransfer boo
 
 func (r ApiCreateGroupRequest) AllowThreadCreationBy(allowThreadCreationBy string) ApiCreateGroupRequest {
 	r.allowThreadCreationBy = &allowThreadCreationBy
+	return r
+}
+
+func (r ApiCreateGroupRequest) ApiKey(apiKey string) ApiCreateGroupRequest {
+	r.apiKey = &apiKey
 	return r
 }
 
@@ -510,6 +505,11 @@ func (r ApiCreateGroupRequest) HideConferenceCall(hideConferenceCall bool) ApiCr
 	return r
 }
 
+func (r ApiCreateGroupRequest) HideFromGameEight(hideFromGameEight bool) ApiCreateGroupRequest {
+	r.hideFromGameEight = &hideFromGameEight
+	return r
+}
+
 func (r ApiCreateGroupRequest) HideReportedPosts(hideReportedPosts bool) ApiCreateGroupRequest {
 	r.hideReportedPosts = &hideReportedPosts
 	return r
@@ -535,13 +535,38 @@ func (r ApiCreateGroupRequest) Secret(secret bool) ApiCreateGroupRequest {
 	return r
 }
 
+func (r ApiCreateGroupRequest) SignedInfo(signedInfo string) ApiCreateGroupRequest {
+	r.signedInfo = &signedInfo
+	return r
+}
+
 func (r ApiCreateGroupRequest) SubCategoryId(subCategoryId string) ApiCreateGroupRequest {
 	r.subCategoryId = &subCategoryId
 	return r
 }
 
+func (r ApiCreateGroupRequest) Timestamp(timestamp int64) ApiCreateGroupRequest {
+	r.timestamp = &timestamp
+	return r
+}
+
+func (r ApiCreateGroupRequest) Topic(topic string) ApiCreateGroupRequest {
+	r.topic = &topic
+	return r
+}
+
+func (r ApiCreateGroupRequest) Uuid(uuid string) ApiCreateGroupRequest {
+	r.uuid = &uuid
+	return r
+}
+
 func (r ApiCreateGroupRequest) Execute() (*CreateGroupResponse, *http.Response, error) {
 	return r.ApiService.CreateGroupExecute(r)
+}
+
+func (r ApiCreateGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -577,24 +602,6 @@ func (a *GroupsAPIService) CreateGroupExecute(r ApiCreateGroupRequest) (*CreateG
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
-	}
-	if r.hideFromGameEight == nil {
-		return localVarReturnValue, nil, reportError("hideFromGameEight is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return localVarReturnValue, nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
-	}
-	if r.topic == nil {
-		return localVarReturnValue, nil, reportError("topic is required and must be specified")
-	}
-	if r.uuid == nil {
-		return localVarReturnValue, nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -625,7 +632,9 @@ func (a *GroupsAPIService) CreateGroupExecute(r ApiCreateGroupRequest) (*CreateG
 	if r.allowThreadCreationBy != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "allow_thread_creation_by", r.allowThreadCreationBy, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
 	if r.callTimelineDisplay != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "call_timeline_display", r.callTimelineDisplay, "", "")
 	}
@@ -653,7 +662,9 @@ func (a *GroupsAPIService) CreateGroupExecute(r ApiCreateGroupRequest) (*CreateG
 	if r.hideConferenceCall != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "hide_conference_call", r.hideConferenceCall, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "hide_from_game_eight", r.hideFromGameEight, "", "")
+	if r.hideFromGameEight != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "hide_from_game_eight", r.hideFromGameEight, "", "")
+	}
 	if r.hideReportedPosts != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "hide_reported_posts", r.hideReportedPosts, "", "")
 	}
@@ -669,13 +680,21 @@ func (a *GroupsAPIService) CreateGroupExecute(r ApiCreateGroupRequest) (*CreateG
 	if r.secret != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "secret", r.secret, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
 	if r.subCategoryId != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "sub_category_id", r.subCategoryId, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "topic", r.topic, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
+	if r.topic != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "topic", r.topic, "", "")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -722,6 +741,11 @@ type ApiDeclineGroupJoinRequestRequest struct {
 
 func (r ApiDeclineGroupJoinRequestRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeclineGroupJoinRequestExecute(r)
+}
+
+func (r ApiDeclineGroupJoinRequestRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -815,6 +839,11 @@ type ApiDeputizeGroupUsersRequest struct {
 
 func (r ApiDeputizeGroupUsersRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeputizeGroupUsersExecute(r)
+}
+
+func (r ApiDeputizeGroupUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -937,6 +966,11 @@ func (r ApiDeputizeGroupUsersMassRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeputizeGroupUsersMassExecute(r)
 }
 
+func (r ApiDeputizeGroupUsersMassRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 DeputizeGroupUsersMass Method for DeputizeGroupUsersMass
 
@@ -971,21 +1005,6 @@ func (a *GroupsAPIService) DeputizeGroupUsersMassExecute(r ApiDeputizeGroupUsers
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return nil, reportError("apiKey is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return nil, reportError("timestamp is required and must be specified")
-	}
-	if r.userIds == nil {
-		return nil, reportError("userIds is required and must be specified")
-	}
-	if r.uuid == nil {
-		return nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1004,11 +1023,21 @@ func (a *GroupsAPIService) DeputizeGroupUsersMassExecute(r ApiDeputizeGroupUsers
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "user_ids[]", r.userIds, "", "csv")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
+	if r.userIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "user_ids[]", r.userIds, "", "csv")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1046,6 +1075,11 @@ type ApiFireGroupUserRequest struct {
 
 func (r ApiFireGroupUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.FireGroupUserExecute(r)
+}
+
+func (r ApiFireGroupUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1139,6 +1173,11 @@ type ApiGetGroupRequest struct {
 
 func (r ApiGetGroupRequest) Execute() (*GroupResponse, *http.Response, error) {
 	return r.ApiService.GetGroupExecute(r)
+}
+
+func (r ApiGetGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1248,6 +1287,11 @@ func (r ApiGetGroupBanListRequest) Execute() (*UsersResponse, *http.Response, er
 	return r.ApiService.GetGroupBanListExecute(r)
 }
 
+func (r ApiGetGroupBanListRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetGroupBanList Method for GetGroupBanList
 
@@ -1284,11 +1328,10 @@ func (a *GroupsAPIService) GetGroupBanListExecute(r ApiGetGroupBanListRequest) (
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.page == nil {
-		return localVarReturnValue, nil, reportError("page is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	if r.page != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -1350,6 +1393,11 @@ type ApiGetGroupCreateQuotaRequest struct {
 
 func (r ApiGetGroupCreateQuotaRequest) Execute() (*CreateQuotaResponse, *http.Response, error) {
 	return r.ApiService.GetGroupCreateQuotaExecute(r)
+}
+
+func (r ApiGetGroupCreateQuotaRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1460,6 +1508,11 @@ func (r ApiGetGroupGiftHistoryRequest) From(from string) ApiGetGroupGiftHistoryR
 
 func (r ApiGetGroupGiftHistoryRequest) Execute() (*GroupGiftHistoryResponse, *http.Response, error) {
 	return r.ApiService.GetGroupGiftHistoryExecute(r)
+}
+
+func (r ApiGetGroupGiftHistoryRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1581,6 +1634,11 @@ func (r ApiGetGroupGiftTransactionsRequest) Execute() (*GiftTransactionsResponse
 	return r.ApiService.GetGroupGiftTransactionsExecute(r)
 }
 
+func (r ApiGetGroupGiftTransactionsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetGroupGiftTransactions Method for GetGroupGiftTransactions
 
@@ -1700,6 +1758,11 @@ func (r ApiGetGroupHighlightsRequest) Execute() (*PostsResponse, *http.Response,
 	return r.ApiService.GetGroupHighlightsExecute(r)
 }
 
+func (r ApiGetGroupHighlightsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetGroupHighlights Method for GetGroupHighlights
 
@@ -1806,6 +1869,11 @@ type ApiGetGroupMemberRequest struct {
 
 func (r ApiGetGroupMemberRequest) Execute() (*GroupUserResponse, *http.Response, error) {
 	return r.ApiService.GetGroupMemberExecute(r)
+}
+
+func (r ApiGetGroupMemberRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1922,6 +1990,11 @@ func (r ApiGetGroupMembersRequest) FromId(fromId int64) ApiGetGroupMembersReques
 
 func (r ApiGetGroupMembersRequest) Execute() (*GroupUsersResponse, *http.Response, error) {
 	return r.ApiService.GetGroupMembersExecute(r)
+}
+
+func (r ApiGetGroupMembersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2050,6 +2123,11 @@ func (r ApiGetGroupReceivedGiftSendersRequest) Execute() (*GiftSendersResponse, 
 	return r.ApiService.GetGroupReceivedGiftSendersExecute(r)
 }
 
+func (r ApiGetGroupReceivedGiftSendersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetGroupReceivedGiftSenders Method for GetGroupReceivedGiftSenders
 
@@ -2089,15 +2167,13 @@ func (a *GroupsAPIService) GetGroupReceivedGiftSendersExecute(r ApiGetGroupRecei
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.userId == nil {
-		return localVarReturnValue, nil, reportError("userId is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "user_id", r.userId, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "timestamp", r.timestamp, "form", "")
+	if r.userId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "user_id", r.userId, "form", "")
+	}
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "timestamp", r.timestamp, "form", "")
+	}
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
@@ -2168,6 +2244,11 @@ func (r ApiGetGroupUnreadStatusRequest) FromTime(fromTime int64) ApiGetGroupUnre
 
 func (r ApiGetGroupUnreadStatusRequest) Execute() (*UnreadStatusResponse, *http.Response, error) {
 	return r.ApiService.GetGroupUnreadStatusExecute(r)
+}
+
+func (r ApiGetGroupUnreadStatusRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2283,6 +2364,11 @@ func (r ApiGetInvitableGroupUsersRequest) Execute() (*UsersByTimestampResponse, 
 	return r.ApiService.GetInvitableGroupUsersExecute(r)
 }
 
+func (r ApiGetInvitableGroupUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetInvitableGroupUsers Method for GetInvitableGroupUsers
 
@@ -2395,6 +2481,11 @@ func (r ApiGetJoinedGroupStatusesRequest) Execute() (map[string]string, *http.Re
 	return r.ApiService.GetJoinedGroupStatusesExecute(r)
 }
 
+func (r ApiGetJoinedGroupStatusesRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetJoinedGroupStatuses Method for GetJoinedGroupStatuses
 
@@ -2428,11 +2519,8 @@ func (a *GroupsAPIService) GetJoinedGroupStatusesExecute(r ApiGetJoinedGroupStat
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.ids == nil {
-		return localVarReturnValue, nil, reportError("ids is required and must be specified")
-	}
 
-	{
+	if r.ids != nil {
 		t := *r.ids
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
@@ -2517,6 +2605,11 @@ func (r ApiGetRelatableGroupsRequest) From(from string) ApiGetRelatableGroupsReq
 
 func (r ApiGetRelatableGroupsRequest) Execute() (*GroupsRelatedResponse, *http.Response, error) {
 	return r.ApiService.GetRelatableGroupsExecute(r)
+}
+
+func (r ApiGetRelatableGroupsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2638,6 +2731,11 @@ func (r ApiGetRelatedGroupsRequest) Execute() (*GroupsRelatedResponse, *http.Res
 	return r.ApiService.GetRelatedGroupsExecute(r)
 }
 
+func (r ApiGetRelatedGroupsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetRelatedGroups Method for GetRelatedGroups
 
@@ -2756,6 +2854,11 @@ func (r ApiGetUserGroupListRequest) Execute() (*GroupsResponse, *http.Response, 
 	return r.ApiService.GetUserGroupListExecute(r)
 }
 
+func (r ApiGetUserGroupListRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetUserGroupList Method for GetUserGroupList
 
@@ -2789,15 +2892,13 @@ func (a *GroupsAPIService) GetUserGroupListExecute(r ApiGetUserGroupListRequest)
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.page == nil {
-		return localVarReturnValue, nil, reportError("page is required and must be specified")
-	}
-	if r.userId == nil {
-		return localVarReturnValue, nil, reportError("userId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "user_id", r.userId, "form", "")
+	if r.page != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	}
+	if r.userId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "user_id", r.userId, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -2868,6 +2969,11 @@ func (r ApiInviteToGroupRequest) Execute() (*http.Response, error) {
 	return r.ApiService.InviteToGroupExecute(r)
 }
 
+func (r ApiInviteToGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 InviteToGroup Method for InviteToGroup
 
@@ -2902,9 +3008,6 @@ func (a *GroupsAPIService) InviteToGroupExecute(r ApiInviteToGroupRequest) (*htt
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.userIds == nil {
-		return nil, reportError("userIds is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -2923,7 +3026,9 @@ func (a *GroupsAPIService) InviteToGroupExecute(r ApiInviteToGroupRequest) (*htt
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "user_ids[]", r.userIds, "", "csv")
+	if r.userIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "user_ids[]", r.userIds, "", "csv")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -2960,6 +3065,11 @@ type ApiJoinGroupRequest struct {
 
 func (r ApiJoinGroupRequest) Execute() (*http.Response, error) {
 	return r.ApiService.JoinGroupExecute(r)
+}
+
+func (r ApiJoinGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -3050,6 +3160,11 @@ type ApiLeaveGroupRequest struct {
 
 func (r ApiLeaveGroupRequest) Execute() (*http.Response, error) {
 	return r.ApiService.LeaveGroupExecute(r)
+}
+
+func (r ApiLeaveGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -3153,6 +3268,11 @@ func (r ApiListGroupCategoriesRequest) Execute() (*GroupCategoriesResponse, *htt
 	return r.ApiService.ListGroupCategoriesExecute(r)
 }
 
+func (r ApiListGroupCategoriesRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ListGroupCategories Method for ListGroupCategories
 
@@ -3186,11 +3306,10 @@ func (a *GroupsAPIService) ListGroupCategoriesExecute(r ApiListGroupCategoriesRe
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.page == nil {
-		return localVarReturnValue, nil, reportError("page is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	if r.page != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
+	}
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
@@ -3279,6 +3398,11 @@ func (r ApiListGroupsRequest) SubCategoryId(subCategoryId int64) ApiListGroupsRe
 
 func (r ApiListGroupsRequest) Execute() (*GroupsResponse, *http.Response, error) {
 	return r.ApiService.ListGroupsExecute(r)
+}
+
+func (r ApiListGroupsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -3396,6 +3520,11 @@ func (r ApiListMyGroupsRequest) Execute() (*GroupsResponse, *http.Response, erro
 	return r.ApiService.ListMyGroupsExecute(r)
 }
 
+func (r ApiListMyGroupsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ListMyGroups Method for ListMyGroups
 
@@ -3498,6 +3627,11 @@ func (r ApiPinGroupHighlightPostRequest) Execute() (*http.Response, error) {
 	return r.ApiService.PinGroupHighlightPostExecute(r)
 }
 
+func (r ApiPinGroupHighlightPostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 PinGroupHighlightPost Method for PinGroupHighlightPost
 
@@ -3591,6 +3725,11 @@ func (r ApiRemoveGroupCoverRequest) Execute() (*http.Response, error) {
 	return r.ApiService.RemoveGroupCoverExecute(r)
 }
 
+func (r ApiRemoveGroupCoverRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 RemoveGroupCover Method for RemoveGroupCover
 
@@ -3681,6 +3820,11 @@ func (r ApiRemoveGroupDeputiesRequest) Execute() (*http.Response, error) {
 	return r.ApiService.RemoveGroupDeputiesExecute(r)
 }
 
+func (r ApiRemoveGroupDeputiesRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 RemoveGroupDeputies Method for RemoveGroupDeputies
 
@@ -3769,6 +3913,11 @@ type ApiRemoveGroupIconRequest struct {
 
 func (r ApiRemoveGroupIconRequest) Execute() (*http.Response, error) {
 	return r.ApiService.RemoveGroupIconExecute(r)
+}
+
+func (r ApiRemoveGroupIconRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -3867,6 +4016,11 @@ func (r ApiRemoveRelatedGroupsRequest) Execute() (*http.Response, error) {
 	return r.ApiService.RemoveRelatedGroupsExecute(r)
 }
 
+func (r ApiRemoveRelatedGroupsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 RemoveRelatedGroups Method for RemoveRelatedGroups
 
@@ -3901,11 +4055,8 @@ func (a *GroupsAPIService) RemoveRelatedGroupsExecute(r ApiRemoveRelatedGroupsRe
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.relatedGroupId == nil {
-		return nil, reportError("relatedGroupId is required and must be specified")
-	}
 
-	{
+	if r.relatedGroupId != nil {
 		t := *r.relatedGroupId
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
@@ -4013,6 +4164,11 @@ func (r ApiReportGroupRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ReportGroupExecute(r)
 }
 
+func (r ApiReportGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ReportGroup Method for ReportGroup
 
@@ -4047,12 +4203,6 @@ func (a *GroupsAPIService) ReportGroupExecute(r ApiReportGroupRequest) (*http.Re
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.categoryId == nil {
-		return nil, reportError("categoryId is required and must be specified")
-	}
-	if r.opponentId == nil {
-		return nil, reportError("opponentId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -4071,8 +4221,12 @@ func (a *GroupsAPIService) ReportGroupExecute(r ApiReportGroupRequest) (*http.Re
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "category_id", r.categoryId, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "opponent_id", r.opponentId, "", "")
+	if r.categoryId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "category_id", r.categoryId, "", "")
+	}
+	if r.opponentId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "opponent_id", r.opponentId, "", "")
+	}
 	if r.reason != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "reason", r.reason, "", "")
 	}
@@ -4124,6 +4278,11 @@ type ApiRequestGroupWalkthroughRequest struct {
 
 func (r ApiRequestGroupWalkthroughRequest) Execute() (*http.Response, error) {
 	return r.ApiService.RequestGroupWalkthroughExecute(r)
+}
+
+func (r ApiRequestGroupWalkthroughRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4211,18 +4370,13 @@ type ApiSearchGroupPostsRequest struct {
 	ApiService *GroupsAPIService
 	id int64
 	keyword *string
-	onlyThreadPosts *bool
 	fromPostId *int64
 	number *int32
+	onlyThreadPosts *bool
 }
 
 func (r ApiSearchGroupPostsRequest) Keyword(keyword string) ApiSearchGroupPostsRequest {
 	r.keyword = &keyword
-	return r
-}
-
-func (r ApiSearchGroupPostsRequest) OnlyThreadPosts(onlyThreadPosts bool) ApiSearchGroupPostsRequest {
-	r.onlyThreadPosts = &onlyThreadPosts
 	return r
 }
 
@@ -4236,8 +4390,18 @@ func (r ApiSearchGroupPostsRequest) Number(number int32) ApiSearchGroupPostsRequ
 	return r
 }
 
+func (r ApiSearchGroupPostsRequest) OnlyThreadPosts(onlyThreadPosts bool) ApiSearchGroupPostsRequest {
+	r.onlyThreadPosts = &onlyThreadPosts
+	return r
+}
+
 func (r ApiSearchGroupPostsRequest) Execute() (*PostsResponse, *http.Response, error) {
 	return r.ApiService.SearchGroupPostsExecute(r)
+}
+
+func (r ApiSearchGroupPostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4276,21 +4440,19 @@ func (a *GroupsAPIService) SearchGroupPostsExecute(r ApiSearchGroupPostsRequest)
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.keyword == nil {
-		return localVarReturnValue, nil, reportError("keyword is required and must be specified")
-	}
-	if r.onlyThreadPosts == nil {
-		return localVarReturnValue, nil, reportError("onlyThreadPosts is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "keyword", r.keyword, "form", "")
+	if r.keyword != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "keyword", r.keyword, "form", "")
+	}
 	if r.fromPostId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_post_id", r.fromPostId, "form", "")
 	}
 	if r.number != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
 	}
-	parameterAddToHeaderOrQuery(localVarQueryParams, "only_thread_posts", r.onlyThreadPosts, "form", "")
+	if r.onlyThreadPosts != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "only_thread_posts", r.onlyThreadPosts, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -4361,6 +4523,11 @@ func (r ApiSetGroupTitleRequest) Execute() (*http.Response, error) {
 	return r.ApiService.SetGroupTitleExecute(r)
 }
 
+func (r ApiSetGroupTitleRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 SetGroupTitle Method for SetGroupTitle
 
@@ -4395,9 +4562,6 @@ func (a *GroupsAPIService) SetGroupTitleExecute(r ApiSetGroupTitleRequest) (*htt
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.title == nil {
-		return nil, reportError("title is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -4416,7 +4580,9 @@ func (a *GroupsAPIService) SetGroupTitleExecute(r ApiSetGroupTitleRequest) (*htt
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "title", r.title, "", "")
+	if r.title != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "title", r.title, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -4453,6 +4619,11 @@ type ApiTakeOverGroupRequest struct {
 
 func (r ApiTakeOverGroupRequest) Execute() (*http.Response, error) {
 	return r.ApiService.TakeOverGroupExecute(r)
+}
+
+func (r ApiTakeOverGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4575,6 +4746,11 @@ func (r ApiTransferGroupRequest) Execute() (*http.Response, error) {
 	return r.ApiService.TransferGroupExecute(r)
 }
 
+func (r ApiTransferGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 TransferGroup Method for TransferGroup
 
@@ -4609,21 +4785,6 @@ func (a *GroupsAPIService) TransferGroupExecute(r ApiTransferGroupRequest) (*htt
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return nil, reportError("apiKey is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return nil, reportError("timestamp is required and must be specified")
-	}
-	if r.userId == nil {
-		return nil, reportError("userId is required and must be specified")
-	}
-	if r.uuid == nil {
-		return nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -4642,11 +4803,21 @@ func (a *GroupsAPIService) TransferGroupExecute(r ApiTransferGroupRequest) (*htt
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "user_id", r.userId, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
+	if r.userId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "user_id", r.userId, "", "")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -4684,6 +4855,11 @@ type ApiUnbanGroupUserRequest struct {
 
 func (r ApiUnbanGroupUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnbanGroupUserExecute(r)
+}
+
+func (r ApiUnbanGroupUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4780,6 +4956,11 @@ func (r ApiUnpinGroupHighlightPostRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnpinGroupHighlightPostExecute(r)
 }
 
+func (r ApiUnpinGroupHighlightPostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 UnpinGroupHighlightPost Method for UnpinGroupHighlightPost
 
@@ -4867,14 +5048,11 @@ type ApiUpdateGroupRequest struct {
 	ctx context.Context
 	ApiService *GroupsAPIService
 	id int64
-	apiKey *string
-	signedInfo *string
-	timestamp *int64
-	uuid *string
 	allowMembersToPostImageAndVideo *bool
 	allowMembersToPostUrl *bool
 	allowOwnershipTransfer *bool
 	allowThreadCreationBy *string
+	apiKey *string
 	callTimelineDisplay *bool
 	coverImageFilename *string
 	description *string
@@ -4890,28 +5068,11 @@ type ApiUpdateGroupRequest struct {
 	onlyMobileVerified *bool
 	onlyVerifiedAge *bool
 	secret *bool
+	signedInfo *string
 	subCategoryId *string
+	timestamp *int64
 	topic *string
-}
-
-func (r ApiUpdateGroupRequest) ApiKey(apiKey string) ApiUpdateGroupRequest {
-	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiUpdateGroupRequest) SignedInfo(signedInfo string) ApiUpdateGroupRequest {
-	r.signedInfo = &signedInfo
-	return r
-}
-
-func (r ApiUpdateGroupRequest) Timestamp(timestamp int64) ApiUpdateGroupRequest {
-	r.timestamp = &timestamp
-	return r
-}
-
-func (r ApiUpdateGroupRequest) Uuid(uuid string) ApiUpdateGroupRequest {
-	r.uuid = &uuid
-	return r
+	uuid *string
 }
 
 func (r ApiUpdateGroupRequest) AllowMembersToPostImageAndVideo(allowMembersToPostImageAndVideo bool) ApiUpdateGroupRequest {
@@ -4931,6 +5092,11 @@ func (r ApiUpdateGroupRequest) AllowOwnershipTransfer(allowOwnershipTransfer boo
 
 func (r ApiUpdateGroupRequest) AllowThreadCreationBy(allowThreadCreationBy string) ApiUpdateGroupRequest {
 	r.allowThreadCreationBy = &allowThreadCreationBy
+	return r
+}
+
+func (r ApiUpdateGroupRequest) ApiKey(apiKey string) ApiUpdateGroupRequest {
+	r.apiKey = &apiKey
 	return r
 }
 
@@ -5009,8 +5175,18 @@ func (r ApiUpdateGroupRequest) Secret(secret bool) ApiUpdateGroupRequest {
 	return r
 }
 
+func (r ApiUpdateGroupRequest) SignedInfo(signedInfo string) ApiUpdateGroupRequest {
+	r.signedInfo = &signedInfo
+	return r
+}
+
 func (r ApiUpdateGroupRequest) SubCategoryId(subCategoryId string) ApiUpdateGroupRequest {
 	r.subCategoryId = &subCategoryId
+	return r
+}
+
+func (r ApiUpdateGroupRequest) Timestamp(timestamp int64) ApiUpdateGroupRequest {
+	r.timestamp = &timestamp
 	return r
 }
 
@@ -5019,8 +5195,18 @@ func (r ApiUpdateGroupRequest) Topic(topic string) ApiUpdateGroupRequest {
 	return r
 }
 
+func (r ApiUpdateGroupRequest) Uuid(uuid string) ApiUpdateGroupRequest {
+	r.uuid = &uuid
+	return r
+}
+
 func (r ApiUpdateGroupRequest) Execute() (*GroupResponse, *http.Response, error) {
 	return r.ApiService.UpdateGroupExecute(r)
+}
+
+func (r ApiUpdateGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -5059,18 +5245,6 @@ func (a *GroupsAPIService) UpdateGroupExecute(r ApiUpdateGroupRequest) (*GroupRe
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return localVarReturnValue, nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return localVarReturnValue, nil, reportError("timestamp is required and must be specified")
-	}
-	if r.uuid == nil {
-		return localVarReturnValue, nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -5101,7 +5275,9 @@ func (a *GroupsAPIService) UpdateGroupExecute(r ApiUpdateGroupRequest) (*GroupRe
 	if r.allowThreadCreationBy != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "allow_thread_creation_by", r.allowThreadCreationBy, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
 	if r.callTimelineDisplay != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "call_timeline_display", r.callTimelineDisplay, "", "")
 	}
@@ -5147,15 +5323,21 @@ func (a *GroupsAPIService) UpdateGroupExecute(r ApiUpdateGroupRequest) (*GroupRe
 	if r.secret != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "secret", r.secret, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
 	if r.subCategoryId != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "sub_category_id", r.subCategoryId, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
 	if r.topic != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "topic", r.topic, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -5209,6 +5391,11 @@ func (r ApiUpdateRelatedGroupsRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UpdateRelatedGroupsExecute(r)
 }
 
+func (r ApiUpdateRelatedGroupsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 UpdateRelatedGroups Method for UpdateRelatedGroups
 
@@ -5243,11 +5430,8 @@ func (a *GroupsAPIService) UpdateRelatedGroupsExecute(r ApiUpdateRelatedGroupsRe
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.relatedGroupId == nil {
-		return nil, reportError("relatedGroupId is required and must be specified")
-	}
 
-	{
+	if r.relatedGroupId != nil {
 		t := *r.relatedGroupId
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
@@ -5311,6 +5495,11 @@ type ApiVisitGroupRequest struct {
 
 func (r ApiVisitGroupRequest) Execute() (*http.Response, error) {
 	return r.ApiService.VisitGroupExecute(r)
+}
+
+func (r ApiVisitGroupRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -5402,6 +5591,11 @@ type ApiWithdrawGroupDeputyRequest struct {
 
 func (r ApiWithdrawGroupDeputyRequest) Execute() (*http.Response, error) {
 	return r.ApiService.WithdrawGroupDeputyExecute(r)
+}
+
+func (r ApiWithdrawGroupDeputyRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -5503,6 +5697,11 @@ func (r ApiWithdrawGroupTransferRequest) Execute() (*http.Response, error) {
 	return r.ApiService.WithdrawGroupTransferExecute(r)
 }
 
+func (r ApiWithdrawGroupTransferRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 WithdrawGroupTransfer Method for WithdrawGroupTransfer
 
@@ -5537,9 +5736,6 @@ func (a *GroupsAPIService) WithdrawGroupTransferExecute(r ApiWithdrawGroupTransf
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.userId == nil {
-		return nil, reportError("userId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -5558,7 +5754,9 @@ func (a *GroupsAPIService) WithdrawGroupTransferExecute(r ApiWithdrawGroupTransf
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "user_id", r.userId, "", "")
+	if r.userId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "user_id", r.userId, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

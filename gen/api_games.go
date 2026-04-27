@@ -21,17 +21,12 @@ type ApiListGameAppsRequest struct {
 	ctx context.Context
 	ApiService *GamesAPIService
 	number *int32
-	ids *[]int64
 	fromId *int64
+	ids *[]int64
 }
 
 func (r ApiListGameAppsRequest) Number(number int32) ApiListGameAppsRequest {
 	r.number = &number
-	return r
-}
-
-func (r ApiListGameAppsRequest) Ids(ids []int64) ApiListGameAppsRequest {
-	r.ids = &ids
 	return r
 }
 
@@ -40,8 +35,18 @@ func (r ApiListGameAppsRequest) FromId(fromId int64) ApiListGameAppsRequest {
 	return r
 }
 
+func (r ApiListGameAppsRequest) Ids(ids []int64) ApiListGameAppsRequest {
+	r.ids = &ids
+	return r
+}
+
 func (r ApiListGameAppsRequest) Execute() (*GamesResponse, *http.Response, error) {
 	return r.ApiService.ListGameAppsExecute(r)
+}
+
+func (r ApiListGameAppsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -77,18 +82,14 @@ func (a *GamesAPIService) ListGameAppsExecute(r ApiListGameAppsRequest) (*GamesR
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.number == nil {
-		return localVarReturnValue, nil, reportError("number is required and must be specified")
-	}
-	if r.ids == nil {
-		return localVarReturnValue, nil, reportError("ids is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
 	if r.fromId != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_id", r.fromId, "form", "")
 	}
-	{
+	if r.ids != nil {
 		t := *r.ids
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
@@ -161,6 +162,11 @@ type ApiListGameWalkthroughsRequest struct {
 
 func (r ApiListGameWalkthroughsRequest) Execute() ([]Walkthrough, *http.Response, error) {
 	return r.ApiService.ListGameWalkthroughsExecute(r)
+}
+
+func (r ApiListGameWalkthroughsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*

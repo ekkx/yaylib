@@ -31,6 +31,11 @@ func (r ApiAcceptChatRequestRequest) Execute() (*http.Response, error) {
 	return r.ApiService.AcceptChatRequestExecute(r)
 }
 
+func (r ApiAcceptChatRequestRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 AcceptChatRequest Method for AcceptChatRequest
 
@@ -62,9 +67,6 @@ func (a *ChatRoomsAPIService) AcceptChatRequestExecute(r ApiAcceptChatRequestReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.chatRoomIds == nil {
-		return nil, reportError("chatRoomIds is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -83,7 +85,9 @@ func (a *ChatRoomsAPIService) AcceptChatRequestExecute(r ApiAcceptChatRequestReq
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "chat_room_ids[]", r.chatRoomIds, "", "csv")
+	if r.chatRoomIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "chat_room_ids[]", r.chatRoomIds, "", "csv")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -115,20 +119,10 @@ func (a *ChatRoomsAPIService) AcceptChatRequestExecute(r ApiAcceptChatRequestReq
 type ApiCreateChatRoomRequest struct {
 	ctx context.Context
 	ApiService *ChatRoomsAPIService
-	name *string
-	withUserIds *[]int64
 	backgroundFilename *string
 	iconFilename *string
-}
-
-func (r ApiCreateChatRoomRequest) Name(name string) ApiCreateChatRoomRequest {
-	r.name = &name
-	return r
-}
-
-func (r ApiCreateChatRoomRequest) WithUserIds(withUserIds []int64) ApiCreateChatRoomRequest {
-	r.withUserIds = &withUserIds
-	return r
+	name *string
+	withUserIds *[]int64
 }
 
 func (r ApiCreateChatRoomRequest) BackgroundFilename(backgroundFilename string) ApiCreateChatRoomRequest {
@@ -141,8 +135,23 @@ func (r ApiCreateChatRoomRequest) IconFilename(iconFilename string) ApiCreateCha
 	return r
 }
 
+func (r ApiCreateChatRoomRequest) Name(name string) ApiCreateChatRoomRequest {
+	r.name = &name
+	return r
+}
+
+func (r ApiCreateChatRoomRequest) WithUserIds(withUserIds []int64) ApiCreateChatRoomRequest {
+	r.withUserIds = &withUserIds
+	return r
+}
+
 func (r ApiCreateChatRoomRequest) Execute() (*CreateChatRoomResponse, *http.Response, error) {
 	return r.ApiService.CreateChatRoomExecute(r)
+}
+
+func (r ApiCreateChatRoomRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -178,12 +187,6 @@ func (a *ChatRoomsAPIService) CreateChatRoomExecute(r ApiCreateChatRoomRequest) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.name == nil {
-		return localVarReturnValue, nil, reportError("name is required and must be specified")
-	}
-	if r.withUserIds == nil {
-		return localVarReturnValue, nil, reportError("withUserIds is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -208,8 +211,12 @@ func (a *ChatRoomsAPIService) CreateChatRoomExecute(r ApiCreateChatRoomRequest) 
 	if r.iconFilename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "icon_filename", r.iconFilename, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "name", r.name, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "with_user_ids[]", r.withUserIds, "", "csv")
+	if r.name != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "name", r.name, "", "")
+	}
+	if r.withUserIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "with_user_ids[]", r.withUserIds, "", "csv")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -251,17 +258,12 @@ type ApiCreateChatRoomV1Request struct {
 	ctx context.Context
 	ApiService *ChatRoomsAPIService
 	himaChat *bool
-	withUserId *int64
 	matchingId *int64
+	withUserId *int64
 }
 
 func (r ApiCreateChatRoomV1Request) HimaChat(himaChat bool) ApiCreateChatRoomV1Request {
 	r.himaChat = &himaChat
-	return r
-}
-
-func (r ApiCreateChatRoomV1Request) WithUserId(withUserId int64) ApiCreateChatRoomV1Request {
-	r.withUserId = &withUserId
 	return r
 }
 
@@ -270,8 +272,18 @@ func (r ApiCreateChatRoomV1Request) MatchingId(matchingId int64) ApiCreateChatRo
 	return r
 }
 
+func (r ApiCreateChatRoomV1Request) WithUserId(withUserId int64) ApiCreateChatRoomV1Request {
+	r.withUserId = &withUserId
+	return r
+}
+
 func (r ApiCreateChatRoomV1Request) Execute() (*CreateChatRoomResponse, *http.Response, error) {
 	return r.ApiService.CreateChatRoomV1Execute(r)
+}
+
+func (r ApiCreateChatRoomV1Request) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -307,12 +319,6 @@ func (a *ChatRoomsAPIService) CreateChatRoomV1Execute(r ApiCreateChatRoomV1Reque
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.himaChat == nil {
-		return localVarReturnValue, nil, reportError("himaChat is required and must be specified")
-	}
-	if r.withUserId == nil {
-		return localVarReturnValue, nil, reportError("withUserId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -331,11 +337,15 @@ func (a *ChatRoomsAPIService) CreateChatRoomV1Execute(r ApiCreateChatRoomV1Reque
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "hima_chat", r.himaChat, "", "")
+	if r.himaChat != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "hima_chat", r.himaChat, "", "")
+	}
 	if r.matchingId != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "matching_id", r.matchingId, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "with_user_id", r.withUserId, "", "")
+	if r.withUserId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "with_user_id", r.withUserId, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -382,6 +392,11 @@ type ApiDeleteChatMessageRequest struct {
 
 func (r ApiDeleteChatMessageRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeleteChatMessageExecute(r)
+}
+
+func (r ApiDeleteChatMessageRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -482,6 +497,11 @@ func (r ApiDeleteChatRoomsRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeleteChatRoomsExecute(r)
 }
 
+func (r ApiDeleteChatRoomsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 DeleteChatRooms Method for DeleteChatRooms
 
@@ -513,9 +533,6 @@ func (a *ChatRoomsAPIService) DeleteChatRoomsExecute(r ApiDeleteChatRoomsRequest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.chatRoomIds == nil {
-		return nil, reportError("chatRoomIds is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -534,7 +551,9 @@ func (a *ChatRoomsAPIService) DeleteChatRoomsExecute(r ApiDeleteChatRoomsRequest
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "chat_room_ids[]", r.chatRoomIds, "", "csv")
+	if r.chatRoomIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "chat_room_ids[]", r.chatRoomIds, "", "csv")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -589,6 +608,11 @@ func (r ApiGetChatMessagesRequest) ToMessageId(toMessageId int64) ApiGetChatMess
 
 func (r ApiGetChatMessagesRequest) Execute() (*MessagesResponse, *http.Response, error) {
 	return r.ApiService.GetChatMessagesExecute(r)
+}
+
+func (r ApiGetChatMessagesRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -700,6 +724,11 @@ func (r ApiGetChatRequestCountRequest) Execute() (*TotalChatRequestResponse, *ht
 	return r.ApiService.GetChatRequestCountExecute(r)
 }
 
+func (r ApiGetChatRequestCountRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetChatRequestCount Method for GetChatRequestCount
 
@@ -803,6 +832,11 @@ func (r ApiGetChatRequestsRequest) Execute() (*ChatRoomsResponse, *http.Response
 	return r.ApiService.GetChatRequestsExecute(r)
 }
 
+func (r ApiGetChatRequestsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetChatRequests Method for GetChatRequests
 
@@ -902,6 +936,11 @@ type ApiGetChatRoomRequest struct {
 
 func (r ApiGetChatRoomRequest) Execute() (*ChatRoomResponse, *http.Response, error) {
 	return r.ApiService.GetChatRoomExecute(r)
+}
+
+func (r ApiGetChatRoomRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1010,6 +1049,11 @@ func (r ApiGetChatUnreadStatusRequest) Execute() (*UnreadStatusResponse, *http.R
 	return r.ApiService.GetChatUnreadStatusExecute(r)
 }
 
+func (r ApiGetChatUnreadStatusRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetChatUnreadStatus Method for GetChatUnreadStatus
 
@@ -1116,6 +1160,11 @@ func (r ApiGetMainChatRoomsRequest) Execute() (*ChatRoomsResponse, *http.Respons
 	return r.ApiService.GetMainChatRoomsExecute(r)
 }
 
+func (r ApiGetMainChatRoomsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetMainChatRooms Method for GetMainChatRooms
 
@@ -1220,6 +1269,11 @@ func (r ApiGetUpdatedChatRoomsRequest) FromTime(fromTime int64) ApiGetUpdatedCha
 
 func (r ApiGetUpdatedChatRoomsRequest) Execute() (*ChatRoomsResponse, *http.Response, error) {
 	return r.ApiService.GetUpdatedChatRoomsExecute(r)
+}
+
+func (r ApiGetUpdatedChatRoomsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1329,6 +1383,11 @@ func (r ApiInviteToChatRoomRequest) Execute() (*http.Response, error) {
 	return r.ApiService.InviteToChatRoomExecute(r)
 }
 
+func (r ApiInviteToChatRoomRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 InviteToChatRoom Method for InviteToChatRoom
 
@@ -1363,9 +1422,6 @@ func (a *ChatRoomsAPIService) InviteToChatRoomExecute(r ApiInviteToChatRoomReque
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.withUserIds == nil {
-		return nil, reportError("withUserIds is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1384,7 +1440,9 @@ func (a *ChatRoomsAPIService) InviteToChatRoomExecute(r ApiInviteToChatRoomReque
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "with_user_ids[]", r.withUserIds, "", "csv")
+	if r.withUserIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "with_user_ids[]", r.withUserIds, "", "csv")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1429,6 +1487,11 @@ func (r ApiKickFromChatRoomRequest) Execute() (*http.Response, error) {
 	return r.ApiService.KickFromChatRoomExecute(r)
 }
 
+func (r ApiKickFromChatRoomRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 KickFromChatRoom Method for KickFromChatRoom
 
@@ -1463,9 +1526,6 @@ func (a *ChatRoomsAPIService) KickFromChatRoomExecute(r ApiKickFromChatRoomReque
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.withUserIds == nil {
-		return nil, reportError("withUserIds is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1484,7 +1544,9 @@ func (a *ChatRoomsAPIService) KickFromChatRoomExecute(r ApiKickFromChatRoomReque
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "with_user_ids[]", r.withUserIds, "", "csv")
+	if r.withUserIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "with_user_ids[]", r.withUserIds, "", "csv")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1521,6 +1583,11 @@ type ApiPinChatRoomRequest struct {
 
 func (r ApiPinChatRoomRequest) Execute() (*http.Response, error) {
 	return r.ApiService.PinChatRoomExecute(r)
+}
+
+func (r ApiPinChatRoomRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1619,6 +1686,11 @@ func (r ApiReadChatAttachmentsRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ReadChatAttachmentsExecute(r)
 }
 
+func (r ApiReadChatAttachmentsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ReadChatAttachments Method for ReadChatAttachments
 
@@ -1713,6 +1785,11 @@ type ApiReadChatMessageRequest struct {
 
 func (r ApiReadChatMessageRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ReadChatMessageExecute(r)
+}
+
+func (r ApiReadChatMessageRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1814,6 +1891,11 @@ func (r ApiReadChatVideosRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ReadChatVideosExecute(r)
 }
 
+func (r ApiReadChatVideosRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ReadChatVideos Method for ReadChatVideos
 
@@ -1848,9 +1930,6 @@ func (a *ChatRoomsAPIService) ReadChatVideosExecute(r ApiReadChatVideosRequest) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.videoMsgIds == nil {
-		return nil, reportError("videoMsgIds is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1869,7 +1948,9 @@ func (a *ChatRoomsAPIService) ReadChatVideosExecute(r ApiReadChatVideosRequest) 
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "video_msg_ids[]", r.videoMsgIds, "", "csv")
+	if r.videoMsgIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "video_msg_ids[]", r.videoMsgIds, "", "csv")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1906,6 +1987,11 @@ type ApiRemoveChatRoomBackgroundRequest struct {
 
 func (r ApiRemoveChatRoomBackgroundRequest) Execute() (*http.Response, error) {
 	return r.ApiService.RemoveChatRoomBackgroundExecute(r)
+}
+
+func (r ApiRemoveChatRoomBackgroundRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2040,6 +2126,11 @@ func (r ApiReportChatRoomRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ReportChatRoomExecute(r)
 }
 
+func (r ApiReportChatRoomRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ReportChatRoom Method for ReportChatRoom
 
@@ -2074,12 +2165,6 @@ func (a *ChatRoomsAPIService) ReportChatRoomExecute(r ApiReportChatRoomRequest) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.categoryId == nil {
-		return nil, reportError("categoryId is required and must be specified")
-	}
-	if r.opponentId == nil {
-		return nil, reportError("opponentId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -2098,8 +2183,12 @@ func (a *ChatRoomsAPIService) ReportChatRoomExecute(r ApiReportChatRoomRequest) 
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "category_id", r.categoryId, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "opponent_id", r.opponentId, "", "")
+	if r.categoryId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "category_id", r.categoryId, "", "")
+	}
+	if r.opponentId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "opponent_id", r.opponentId, "", "")
+	}
 	if r.reason != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "reason", r.reason, "", "")
 	}
@@ -2147,21 +2236,16 @@ type ApiSendChatMessageRequest struct {
 	ctx context.Context
 	ApiService *ChatRoomsAPIService
 	id int64
-	messageType *MessageType
 	attachmentFileName *string
 	callType *string
 	fontSize *int32
 	gifImageId *int64
+	messageType *MessageType
 	parentId *int64
 	stickerId *int64
 	stickerPackId *int64
 	text *string
 	videoFileName *string
-}
-
-func (r ApiSendChatMessageRequest) MessageType(messageType MessageType) ApiSendChatMessageRequest {
-	r.messageType = &messageType
-	return r
 }
 
 func (r ApiSendChatMessageRequest) AttachmentFileName(attachmentFileName string) ApiSendChatMessageRequest {
@@ -2181,6 +2265,11 @@ func (r ApiSendChatMessageRequest) FontSize(fontSize int32) ApiSendChatMessageRe
 
 func (r ApiSendChatMessageRequest) GifImageId(gifImageId int64) ApiSendChatMessageRequest {
 	r.gifImageId = &gifImageId
+	return r
+}
+
+func (r ApiSendChatMessageRequest) MessageType(messageType MessageType) ApiSendChatMessageRequest {
+	r.messageType = &messageType
 	return r
 }
 
@@ -2211,6 +2300,11 @@ func (r ApiSendChatMessageRequest) VideoFileName(videoFileName string) ApiSendCh
 
 func (r ApiSendChatMessageRequest) Execute() (*MessageResponse, *http.Response, error) {
 	return r.ApiService.SendChatMessageExecute(r)
+}
+
+func (r ApiSendChatMessageRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2249,9 +2343,6 @@ func (a *ChatRoomsAPIService) SendChatMessageExecute(r ApiSendChatMessageRequest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.messageType == nil {
-		return localVarReturnValue, nil, reportError("messageType is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -2282,7 +2373,9 @@ func (a *ChatRoomsAPIService) SendChatMessageExecute(r ApiSendChatMessageRequest
 	if r.gifImageId != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "gif_image_id", r.gifImageId, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "message_type", r.messageType, "", "")
+	if r.messageType != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "message_type", r.messageType, "", "")
+	}
 	if r.parentId != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "parent_id", r.parentId, "", "")
 	}
@@ -2343,6 +2436,11 @@ type ApiUnpinChatRoomRequest struct {
 
 func (r ApiUnpinChatRoomRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnpinChatRoomExecute(r)
+}
+
+func (r ApiUnpinChatRoomRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2451,6 +2549,11 @@ func (r ApiUpdateChatRoomRequest) Name(name string) ApiUpdateChatRoomRequest {
 
 func (r ApiUpdateChatRoomRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UpdateChatRoomExecute(r)
+}
+
+func (r ApiUpdateChatRoomRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*

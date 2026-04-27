@@ -18,19 +18,19 @@ type AuthAPIService service
 type ApiOauthTokenRequest struct {
 	ctx context.Context
 	ApiService *AuthAPIService
-	grantType *string
 	email *string
+	grantType *string
 	password *string
 	refreshToken *string
 }
 
-func (r ApiOauthTokenRequest) GrantType(grantType string) ApiOauthTokenRequest {
-	r.grantType = &grantType
+func (r ApiOauthTokenRequest) Email(email string) ApiOauthTokenRequest {
+	r.email = &email
 	return r
 }
 
-func (r ApiOauthTokenRequest) Email(email string) ApiOauthTokenRequest {
-	r.email = &email
+func (r ApiOauthTokenRequest) GrantType(grantType string) ApiOauthTokenRequest {
+	r.grantType = &grantType
 	return r
 }
 
@@ -46,6 +46,11 @@ func (r ApiOauthTokenRequest) RefreshToken(refreshToken string) ApiOauthTokenReq
 
 func (r ApiOauthTokenRequest) Execute() (*TokenResponse, *http.Response, error) {
 	return r.ApiService.OauthTokenExecute(r)
+}
+
+func (r ApiOauthTokenRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -81,9 +86,6 @@ func (a *AuthAPIService) OauthTokenExecute(r ApiOauthTokenRequest) (*TokenRespon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.grantType == nil {
-		return localVarReturnValue, nil, reportError("grantType is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/x-www-form-urlencoded"}
@@ -105,7 +107,9 @@ func (a *AuthAPIService) OauthTokenExecute(r ApiOauthTokenRequest) (*TokenRespon
 	if r.email != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "grant_type", r.grantType, "", "")
+	if r.grantType != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "grant_type", r.grantType, "", "")
+	}
 	if r.password != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
 	}

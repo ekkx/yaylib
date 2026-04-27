@@ -5,7 +5,6 @@ package gen
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // MissionType the model 'MissionType'
@@ -13,10 +12,10 @@ type MissionType string
 
 // List of MissionType
 const (
-	MISSIONTYPE_DAILY MissionType = "daily"
-	MISSIONTYPE_SPECIAL MissionType = "special"
-	MISSIONTYPE_UNLIMITED MissionType = "unlimited"
-	MISSIONTYPE_ONCE MissionType = "once"
+	MISSIONTYPE_Daily MissionType = "daily"
+	MISSIONTYPE_Special MissionType = "special"
+	MISSIONTYPE_Endless MissionType = "unlimited"
+	MISSIONTYPE_Normal MissionType = "once"
 )
 
 // All allowed values of MissionType enum
@@ -34,25 +33,15 @@ func (v *MissionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := MissionType(value)
-	for _, existing := range AllowedMissionTypeEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid MissionType", value)
+	*v = enumTypeValue
+	return nil
 }
 
 // NewMissionTypeFromValue returns a pointer to a valid MissionType
 // for the value passed as argument, or an error if the value passed is not allowed by the enum
 func NewMissionTypeFromValue(v string) (*MissionType, error) {
 	ev := MissionType(v)
-	if ev.IsValid() {
-		return &ev, nil
-	} else {
-		return nil, fmt.Errorf("invalid value '%v' for MissionType: valid values are %v", v, AllowedMissionTypeEnumValues)
-	}
+	return &ev, nil
 }
 
 // IsValid return true if the value is valid for the enum, false otherwise

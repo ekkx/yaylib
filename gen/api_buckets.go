@@ -31,6 +31,11 @@ func (r ApiGetBucketPresignedUrlsRequest) Execute() (*PresignedUrlsResponse, *ht
 	return r.ApiService.GetBucketPresignedUrlsExecute(r)
 }
 
+func (r ApiGetBucketPresignedUrlsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetBucketPresignedUrls Method for GetBucketPresignedUrls
 
@@ -64,11 +69,8 @@ func (a *BucketsAPIService) GetBucketPresignedUrlsExecute(r ApiGetBucketPresigne
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.fileNames == nil {
-		return localVarReturnValue, nil, reportError("fileNames is required and must be specified")
-	}
 
-	{
+	if r.fileNames != nil {
 		t := *r.fileNames
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)

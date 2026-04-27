@@ -13,7 +13,7 @@ var _ MappedNullable = &GroupsRelatedResponse{}
 // GroupsRelatedResponse struct for GroupsRelatedResponse
 type GroupsRelatedResponse struct {
 	Groups []Group `json:"groups,omitempty"`
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableInt64 `json:"next_page_value,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -70,9 +70,9 @@ func (o *GroupsRelatedResponse) SetGroups(v []Group) {
 }
 
 // GetNextPageValue returns the NextPageValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GroupsRelatedResponse) GetNextPageValue() string {
+func (o *GroupsRelatedResponse) GetNextPageValue() int64 {
 	if o == nil || IsNil(o.NextPageValue.Get()) {
-		var ret string
+		var ret int64
 		return ret
 	}
 	return *o.NextPageValue.Get()
@@ -81,7 +81,7 @@ func (o *GroupsRelatedResponse) GetNextPageValue() string {
 // GetNextPageValueOk returns a tuple with the NextPageValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GroupsRelatedResponse) GetNextPageValueOk() (*string, bool) {
+func (o *GroupsRelatedResponse) GetNextPageValueOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -97,8 +97,8 @@ func (o *GroupsRelatedResponse) HasNextPageValue() bool {
 	return false
 }
 
-// SetNextPageValue gets a reference to the given NullableString and assigns it to the NextPageValue field.
-func (o *GroupsRelatedResponse) SetNextPageValue(v string) {
+// SetNextPageValue gets a reference to the given NullableInt64 and assigns it to the NextPageValue field.
+func (o *GroupsRelatedResponse) SetNextPageValue(v int64) {
 	o.NextPageValue.Set(&v)
 }
 // SetNextPageValueNil sets the value for NextPageValue to be an explicit nil

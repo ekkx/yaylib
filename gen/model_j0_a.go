@@ -5,7 +5,6 @@ package gen
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // J0A the model 'J0A'
@@ -32,25 +31,15 @@ func (v *J0A) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := J0A(value)
-	for _, existing := range AllowedJ0AEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid J0A", value)
+	*v = enumTypeValue
+	return nil
 }
 
 // NewJ0AFromValue returns a pointer to a valid J0A
 // for the value passed as argument, or an error if the value passed is not allowed by the enum
 func NewJ0AFromValue(v string) (*J0A, error) {
 	ev := J0A(v)
-	if ev.IsValid() {
-		return &ev, nil
-	} else {
-		return nil, fmt.Errorf("invalid value '%v' for J0A: valid values are %v", v, AllowedJ0AEnumValues)
-	}
+	return &ev, nil
 }
 
 // IsValid return true if the value is valid for the enum, false otherwise

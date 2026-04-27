@@ -28,6 +28,11 @@ func (r ApiAddThreadMemberRequest) Execute() (*http.Response, error) {
 	return r.ApiService.AddThreadMemberExecute(r)
 }
 
+func (r ApiAddThreadMemberRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 AddThreadMember Method for AddThreadMember
 
@@ -126,6 +131,11 @@ func (r ApiCreateThreadRequest) Execute() (*ThreadInfo, *http.Response, error) {
 	return r.ApiService.CreateThreadExecute(r)
 }
 
+func (r ApiCreateThreadRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 CreateThread Method for CreateThread
 
@@ -222,8 +232,8 @@ func (a *ThreadsAPIService) CreateThreadExecute(r ApiCreateThreadRequest) (*Thre
 type ApiCreateThreadPostRequest struct {
 	ctx context.Context
 	ApiService *ThreadsAPIService
-	xJwt *string
 	id int64
+	xJwt *string
 	attachment2Filename *string
 	attachment3Filename *string
 	attachment4Filename *string
@@ -361,6 +371,11 @@ func (r ApiCreateThreadPostRequest) Execute() (*Post, *http.Response, error) {
 	return r.ApiService.CreateThreadPostExecute(r)
 }
 
+func (r ApiCreateThreadPostRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 CreateThreadPost Method for CreateThreadPost
 
@@ -397,9 +412,6 @@ func (a *ThreadsAPIService) CreateThreadPostExecute(r ApiCreateThreadPostRequest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.xJwt == nil {
-		return localVarReturnValue, nil, reportError("xJwt is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -418,7 +430,9 @@ func (a *ThreadsAPIService) CreateThreadPostExecute(r ApiCreateThreadPostRequest
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Jwt", r.xJwt, "simple", "")
+	if r.xJwt != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Jwt", r.xJwt, "simple", "")
+	}
 	if r.attachment2Filename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "attachment_2_filename", r.attachment2Filename, "", "")
 	}
@@ -529,6 +543,11 @@ func (r ApiDeleteThreadRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeleteThreadExecute(r)
 }
 
+func (r ApiDeleteThreadRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 DeleteThread Method for DeleteThread
 
@@ -624,6 +643,11 @@ func (r ApiGetJoinedThreadStatusesRequest) Execute() (map[string]string, *http.R
 	return r.ApiService.GetJoinedThreadStatusesExecute(r)
 }
 
+func (r ApiGetJoinedThreadStatusesRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetJoinedThreadStatuses Method for GetJoinedThreadStatuses
 
@@ -657,11 +681,8 @@ func (a *ThreadsAPIService) GetJoinedThreadStatusesExecute(r ApiGetJoinedThreadS
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.ids == nil {
-		return localVarReturnValue, nil, reportError("ids is required and must be specified")
-	}
 
-	{
+	if r.ids != nil {
 		t := *r.ids
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
@@ -734,6 +755,11 @@ type ApiGetThreadRequest struct {
 
 func (r ApiGetThreadRequest) Execute() (*ThreadInfo, *http.Response, error) {
 	return r.ApiService.GetThreadExecute(r)
+}
+
+func (r ApiGetThreadRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -853,6 +879,11 @@ func (r ApiGetThreadPostsRequest) From(from int64) ApiGetThreadPostsRequest {
 
 func (r ApiGetThreadPostsRequest) Execute() (*PostsResponse, *http.Response, error) {
 	return r.ApiService.GetThreadPostsExecute(r)
+}
+
+func (r ApiGetThreadPostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -982,6 +1013,11 @@ func (r ApiListThreadsRequest) Execute() (*GroupThreadListResponse, *http.Respon
 	return r.ApiService.ListThreadsExecute(r)
 }
 
+func (r ApiListThreadsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ListThreads Method for ListThreads
 
@@ -1015,11 +1051,10 @@ func (a *ThreadsAPIService) ListThreadsExecute(r ApiListThreadsRequest) (*GroupT
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.groupId == nil {
-		return localVarReturnValue, nil, reportError("groupId is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "group_id", r.groupId, "form", "")
+	if r.groupId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "group_id", r.groupId, "form", "")
+	}
 	if r.from != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
@@ -1089,6 +1124,11 @@ type ApiRemoveThreadMemberRequest struct {
 
 func (r ApiRemoveThreadMemberRequest) Execute() (*http.Response, error) {
 	return r.ApiService.RemoveThreadMemberExecute(r)
+}
+
+func (r ApiRemoveThreadMemberRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1178,13 +1218,8 @@ type ApiUpdateThreadRequest struct {
 	ctx context.Context
 	ApiService *ThreadsAPIService
 	id int64
-	title *string
 	threadIconFilename *string
-}
-
-func (r ApiUpdateThreadRequest) Title(title string) ApiUpdateThreadRequest {
-	r.title = &title
-	return r
+	title *string
 }
 
 func (r ApiUpdateThreadRequest) ThreadIconFilename(threadIconFilename string) ApiUpdateThreadRequest {
@@ -1192,8 +1227,18 @@ func (r ApiUpdateThreadRequest) ThreadIconFilename(threadIconFilename string) Ap
 	return r
 }
 
+func (r ApiUpdateThreadRequest) Title(title string) ApiUpdateThreadRequest {
+	r.title = &title
+	return r
+}
+
 func (r ApiUpdateThreadRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UpdateThreadExecute(r)
+}
+
+func (r ApiUpdateThreadRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1230,9 +1275,6 @@ func (a *ThreadsAPIService) UpdateThreadExecute(r ApiUpdateThreadRequest) (*http
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.title == nil {
-		return nil, reportError("title is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1254,7 +1296,9 @@ func (a *ThreadsAPIService) UpdateThreadExecute(r ApiUpdateThreadRequest) (*http
 	if r.threadIconFilename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "thread_icon_filename", r.threadIconFilename, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "title", r.title, "", "")
+	if r.title != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "title", r.title, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err

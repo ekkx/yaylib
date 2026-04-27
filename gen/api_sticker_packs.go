@@ -24,6 +24,11 @@ func (r ApiListStickerPacksRequest) Execute() (*StickerPacksResponse, *http.Resp
 	return r.ApiService.ListStickerPacksExecute(r)
 }
 
+func (r ApiListStickerPacksRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ListStickerPacks Method for ListStickerPacks
 

@@ -27,6 +27,11 @@ func (r ApiAgreePolicyRequest) Execute() (*http.Response, error) {
 	return r.ApiService.AgreePolicyExecute(r)
 }
 
+func (r ApiAgreePolicyRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 AgreePolicy Method for AgreePolicy
 
@@ -117,6 +122,11 @@ func (r ApiBlockUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.BlockUserExecute(r)
 }
 
+func (r ApiBlockUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 BlockUser Method for BlockUser
 
@@ -202,8 +212,8 @@ type ApiChangeEmailRequest struct {
 	ApiService *UsersAPIService
 	apiKey *string
 	email *string
-	password *string
 	emailGrantToken *string
+	password *string
 }
 
 func (r ApiChangeEmailRequest) ApiKey(apiKey string) ApiChangeEmailRequest {
@@ -216,18 +226,23 @@ func (r ApiChangeEmailRequest) Email(email string) ApiChangeEmailRequest {
 	return r
 }
 
-func (r ApiChangeEmailRequest) Password(password string) ApiChangeEmailRequest {
-	r.password = &password
-	return r
-}
-
 func (r ApiChangeEmailRequest) EmailGrantToken(emailGrantToken string) ApiChangeEmailRequest {
 	r.emailGrantToken = &emailGrantToken
 	return r
 }
 
+func (r ApiChangeEmailRequest) Password(password string) ApiChangeEmailRequest {
+	r.password = &password
+	return r
+}
+
 func (r ApiChangeEmailRequest) Execute() (*LoginUpdateResponse, *http.Response, error) {
 	return r.ApiService.ChangeEmailExecute(r)
+}
+
+func (r ApiChangeEmailRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -263,15 +278,6 @@ func (a *UsersAPIService) ChangeEmailExecute(r ApiChangeEmailRequest) (*LoginUpd
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
-	}
-	if r.email == nil {
-		return localVarReturnValue, nil, reportError("email is required and must be specified")
-	}
-	if r.password == nil {
-		return localVarReturnValue, nil, reportError("password is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -290,12 +296,18 @@ func (a *UsersAPIService) ChangeEmailExecute(r ApiChangeEmailRequest) (*LoginUpd
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
+	if r.email != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
+	}
 	if r.emailGrantToken != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "email_grant_token", r.emailGrantToken, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
+	if r.password != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -360,6 +372,11 @@ func (r ApiChangePasswordRequest) Execute() (*LoginUpdateResponse, *http.Respons
 	return r.ApiService.ChangePasswordExecute(r)
 }
 
+func (r ApiChangePasswordRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ChangePassword Method for ChangePassword
 
@@ -393,15 +410,6 @@ func (a *UsersAPIService) ChangePasswordExecute(r ApiChangePasswordRequest) (*Lo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
-	}
-	if r.currentPassword == nil {
-		return localVarReturnValue, nil, reportError("currentPassword is required and must be specified")
-	}
-	if r.password == nil {
-		return localVarReturnValue, nil, reportError("password is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -420,9 +428,15 @@ func (a *UsersAPIService) ChangePasswordExecute(r ApiChangePasswordRequest) (*Lo
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "current_password", r.currentPassword, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
+	if r.currentPassword != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "current_password", r.currentPassword, "", "")
+	}
+	if r.password != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -469,6 +483,11 @@ type ApiCreateBookmarkRequest struct {
 
 func (r ApiCreateBookmarkRequest) Execute() (*BookmarkPostResponse, *http.Response, error) {
 	return r.ApiService.CreateBookmarkExecute(r)
+}
+
+func (r ApiCreateBookmarkRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -610,6 +629,11 @@ func (r ApiCreateReviewRequest) Execute() (*http.Response, error) {
 	return r.ApiService.CreateReviewExecute(r)
 }
 
+func (r ApiCreateReviewRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 CreateReview Method for CreateReview
 
@@ -641,24 +665,6 @@ func (a *UsersAPIService) CreateReviewExecute(r ApiCreateReviewRequest) (*http.R
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return nil, reportError("apiKey is required and must be specified")
-	}
-	if r.comment == nil {
-		return nil, reportError("comment is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return nil, reportError("timestamp is required and must be specified")
-	}
-	if r.userIds == nil {
-		return nil, reportError("userIds is required and must be specified")
-	}
-	if r.uuid == nil {
-		return nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -677,12 +683,24 @@ func (a *UsersAPIService) CreateReviewExecute(r ApiCreateReviewRequest) (*http.R
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "comment", r.comment, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "user_ids[]", r.userIds, "", "csv")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
+	if r.comment != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "comment", r.comment, "", "")
+	}
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
+	if r.userIds != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "user_ids[]", r.userIds, "", "csv")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -720,6 +738,11 @@ type ApiDeleteBookmarkRequest struct {
 
 func (r ApiDeleteBookmarkRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeleteBookmarkExecute(r)
+}
+
+func (r ApiDeleteBookmarkRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -814,6 +837,11 @@ type ApiDeleteFootprintRequest struct {
 
 func (r ApiDeleteFootprintRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeleteFootprintExecute(r)
+}
+
+func (r ApiDeleteFootprintRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -914,6 +942,11 @@ func (r ApiDeleteMyReviewsRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DeleteMyReviewsExecute(r)
 }
 
+func (r ApiDeleteMyReviewsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 DeleteMyReviews Method for DeleteMyReviews
 
@@ -945,11 +978,8 @@ func (a *UsersAPIService) DeleteMyReviewsExecute(r ApiDeleteMyReviewsRequest) (*
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.reviewIds == nil {
-		return nil, reportError("reviewIds is required and must be specified")
-	}
 
-	{
+	if r.reviewIds != nil {
 		t := *r.reviewIds
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
@@ -1020,6 +1050,11 @@ func (r ApiDisableTwoFactorAuthRequest) Execute() (*http.Response, error) {
 	return r.ApiService.DisableTwoFactorAuthExecute(r)
 }
 
+func (r ApiDisableTwoFactorAuthRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 DisableTwoFactorAuth Method for DisableTwoFactorAuth
 
@@ -1051,9 +1086,6 @@ func (a *UsersAPIService) DisableTwoFactorAuthExecute(r ApiDisableTwoFactorAuthR
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.code == nil {
-		return nil, reportError("code is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1072,7 +1104,9 @@ func (a *UsersAPIService) DisableTwoFactorAuthExecute(r ApiDisableTwoFactorAuthR
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "code", r.code, "", "")
+	if r.code != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "code", r.code, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1105,41 +1139,21 @@ type ApiEditUserRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
 	apiKey *string
-	nickname *string
-	signedInfo *string
-	timestamp *int64
-	uuid *string
 	biography *string
 	countryCode *string
 	coverImageFilename *string
 	gender *int32
+	nickname *string
 	prefecture *string
 	profileIconFilename *string
+	signedInfo *string
+	timestamp *int64
 	username *string
+	uuid *string
 }
 
 func (r ApiEditUserRequest) ApiKey(apiKey string) ApiEditUserRequest {
 	r.apiKey = &apiKey
-	return r
-}
-
-func (r ApiEditUserRequest) Nickname(nickname string) ApiEditUserRequest {
-	r.nickname = &nickname
-	return r
-}
-
-func (r ApiEditUserRequest) SignedInfo(signedInfo string) ApiEditUserRequest {
-	r.signedInfo = &signedInfo
-	return r
-}
-
-func (r ApiEditUserRequest) Timestamp(timestamp int64) ApiEditUserRequest {
-	r.timestamp = &timestamp
-	return r
-}
-
-func (r ApiEditUserRequest) Uuid(uuid string) ApiEditUserRequest {
-	r.uuid = &uuid
 	return r
 }
 
@@ -1163,6 +1177,11 @@ func (r ApiEditUserRequest) Gender(gender int32) ApiEditUserRequest {
 	return r
 }
 
+func (r ApiEditUserRequest) Nickname(nickname string) ApiEditUserRequest {
+	r.nickname = &nickname
+	return r
+}
+
 func (r ApiEditUserRequest) Prefecture(prefecture string) ApiEditUserRequest {
 	r.prefecture = &prefecture
 	return r
@@ -1173,13 +1192,33 @@ func (r ApiEditUserRequest) ProfileIconFilename(profileIconFilename string) ApiE
 	return r
 }
 
+func (r ApiEditUserRequest) SignedInfo(signedInfo string) ApiEditUserRequest {
+	r.signedInfo = &signedInfo
+	return r
+}
+
+func (r ApiEditUserRequest) Timestamp(timestamp int64) ApiEditUserRequest {
+	r.timestamp = &timestamp
+	return r
+}
+
 func (r ApiEditUserRequest) Username(username string) ApiEditUserRequest {
 	r.username = &username
 	return r
 }
 
+func (r ApiEditUserRequest) Uuid(uuid string) ApiEditUserRequest {
+	r.uuid = &uuid
+	return r
+}
+
 func (r ApiEditUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.EditUserExecute(r)
+}
+
+func (r ApiEditUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1213,21 +1252,6 @@ func (a *UsersAPIService) EditUserExecute(r ApiEditUserRequest) (*http.Response,
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return nil, reportError("apiKey is required and must be specified")
-	}
-	if r.nickname == nil {
-		return nil, reportError("nickname is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return nil, reportError("timestamp is required and must be specified")
-	}
-	if r.uuid == nil {
-		return nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1246,7 +1270,9 @@ func (a *UsersAPIService) EditUserExecute(r ApiEditUserRequest) (*http.Response,
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
 	if r.biography != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "biography", r.biography, "", "")
 	}
@@ -1259,19 +1285,27 @@ func (a *UsersAPIService) EditUserExecute(r ApiEditUserRequest) (*http.Response,
 	if r.gender != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "gender", r.gender, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "nickname", r.nickname, "", "")
+	if r.nickname != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "nickname", r.nickname, "", "")
+	}
 	if r.prefecture != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "prefecture", r.prefecture, "", "")
 	}
 	if r.profileIconFilename != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "profile_icon_filename", r.profileIconFilename, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
 	if r.username != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "username", r.username, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1345,6 +1379,11 @@ func (r ApiEditUserV2Request) Execute() (*http.Response, error) {
 	return r.ApiService.EditUserV2Execute(r)
 }
 
+func (r ApiEditUserV2Request) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 EditUserV2 Method for EditUserV2
 
@@ -1376,24 +1415,6 @@ func (a *UsersAPIService) EditUserV2Execute(r ApiEditUserV2Request) (*http.Respo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return nil, reportError("apiKey is required and must be specified")
-	}
-	if r.isPrivate == nil {
-		return nil, reportError("isPrivate is required and must be specified")
-	}
-	if r.nickname == nil {
-		return nil, reportError("nickname is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return nil, reportError("timestamp is required and must be specified")
-	}
-	if r.uuid == nil {
-		return nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1412,12 +1433,24 @@ func (a *UsersAPIService) EditUserV2Execute(r ApiEditUserV2Request) (*http.Respo
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "is_private", r.isPrivate, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "nickname", r.nickname, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
+	if r.isPrivate != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "is_private", r.isPrivate, "", "")
+	}
+	if r.nickname != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "nickname", r.nickname, "", "")
+	}
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -1467,6 +1500,11 @@ func (r ApiEnableTwoFactorAuthRequest) Execute() (*TwoStepAuthEnabledResponse, *
 	return r.ApiService.EnableTwoFactorAuthExecute(r)
 }
 
+func (r ApiEnableTwoFactorAuthRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 EnableTwoFactorAuth Method for EnableTwoFactorAuth
 
@@ -1500,12 +1538,6 @@ func (a *UsersAPIService) EnableTwoFactorAuthExecute(r ApiEnableTwoFactorAuthReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.code == nil {
-		return localVarReturnValue, nil, reportError("code is required and must be specified")
-	}
-	if r.type_ == nil {
-		return localVarReturnValue, nil, reportError("type_ is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1524,8 +1556,12 @@ func (a *UsersAPIService) EnableTwoFactorAuthExecute(r ApiEnableTwoFactorAuthReq
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "code", r.code, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "type", r.type_, "", "")
+	if r.code != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "code", r.code, "", "")
+	}
+	if r.type_ != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "type", r.type_, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1571,6 +1607,11 @@ type ApiFollowUserRequest struct {
 
 func (r ApiFollowUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.FollowUserExecute(r)
+}
+
+func (r ApiFollowUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1668,6 +1709,11 @@ func (r ApiFollowUsersRequest) Execute() (*http.Response, error) {
 	return r.ApiService.FollowUsersExecute(r)
 }
 
+func (r ApiFollowUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 FollowUsers Method for FollowUsers
 
@@ -1699,11 +1745,8 @@ func (a *UsersAPIService) FollowUsersExecute(r ApiFollowUsersRequest) (*http.Res
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.userIds == nil {
-		return nil, reportError("userIds is required and must be specified")
-	}
 
-	{
+	if r.userIds != nil {
 		t := *r.userIds
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
@@ -1780,6 +1823,11 @@ func (r ApiGetActiveFollowingsRequest) Execute() (*ActiveFollowingsResponse, *ht
 	return r.ApiService.GetActiveFollowingsExecute(r)
 }
 
+func (r ApiGetActiveFollowingsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetActiveFollowings Method for GetActiveFollowings
 
@@ -1813,11 +1861,10 @@ func (a *UsersAPIService) GetActiveFollowingsExecute(r ApiGetActiveFollowingsReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.onlyOnline == nil {
-		return localVarReturnValue, nil, reportError("onlyOnline is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "only_online", r.onlyOnline, "form", "")
+	if r.onlyOnline != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "only_online", r.onlyOnline, "form", "")
+	}
 	if r.fromLoggedinAt != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from_loggedin_at", r.fromLoggedinAt, "form", "")
 	}
@@ -1882,6 +1929,11 @@ type ApiGetAdditionalNotificationSettingRequest struct {
 
 func (r ApiGetAdditionalNotificationSettingRequest) Execute() (*AdditionalSettingsResponse, *http.Response, error) {
 	return r.ApiService.GetAdditionalNotificationSettingExecute(r)
+}
+
+func (r ApiGetAdditionalNotificationSettingRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -1979,6 +2031,11 @@ type ApiGetBlockedUserIdsRequest struct {
 
 func (r ApiGetBlockedUserIdsRequest) Execute() (*BlockedUserIdsResponse, *http.Response, error) {
 	return r.ApiService.GetBlockedUserIdsExecute(r)
+}
+
+func (r ApiGetBlockedUserIdsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2088,6 +2145,11 @@ func (r ApiGetBlockedUsersRequest) FromId(fromId int64) ApiGetBlockedUsersReques
 
 func (r ApiGetBlockedUsersRequest) Execute() (*BlockedUsersResponse, *http.Response, error) {
 	return r.ApiService.GetBlockedUsersExecute(r)
+}
+
+func (r ApiGetBlockedUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2200,6 +2262,11 @@ func (r ApiGetBookmarkedPostsRequest) From(from string) ApiGetBookmarkedPostsReq
 
 func (r ApiGetBookmarkedPostsRequest) Execute() (*PostsResponse, *http.Response, error) {
 	return r.ApiService.GetBookmarkedPostsExecute(r)
+}
+
+func (r ApiGetBookmarkedPostsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2329,6 +2396,11 @@ func (r ApiGetChatableFollowingsRequest) Execute() (*FollowUsersResponse, *http.
 	return r.ApiService.GetChatableFollowingsExecute(r)
 }
 
+func (r ApiGetChatableFollowingsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetChatableFollowings Method for GetChatableFollowings
 
@@ -2440,6 +2512,11 @@ func (r ApiGetDefaultSettingsRequest) Execute() (*DefaultSettingsResponse, *http
 	return r.ApiService.GetDefaultSettingsExecute(r)
 }
 
+func (r ApiGetDefaultSettingsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetDefaultSettings Method for GetDefaultSettings
 
@@ -2535,6 +2612,11 @@ type ApiGetFollowRequestCountRequest struct {
 
 func (r ApiGetFollowRequestCountRequest) Execute() (*FollowRequestCountResponse, *http.Response, error) {
 	return r.ApiService.GetFollowRequestCountExecute(r)
+}
+
+func (r ApiGetFollowRequestCountRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2638,6 +2720,11 @@ func (r ApiGetFollowRequestsRequest) FromTimestamp(fromTimestamp int64) ApiGetFo
 
 func (r ApiGetFollowRequestsRequest) Execute() (*UsersByTimestampResponse, *http.Response, error) {
 	return r.ApiService.GetFollowRequestsExecute(r)
+}
+
+func (r ApiGetFollowRequestsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2746,6 +2833,11 @@ func (r ApiGetFollowingsBornTodayRequest) Execute() (*UsersResponse, *http.Respo
 	return r.ApiService.GetFollowingsBornTodayExecute(r)
 }
 
+func (r ApiGetFollowingsBornTodayRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetFollowingsBornToday Method for GetFollowingsBornToday
 
@@ -2840,18 +2932,18 @@ func (a *UsersAPIService) GetFollowingsBornTodayExecute(r ApiGetFollowingsBornTo
 type ApiGetFootprintsRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
-	number *int32
 	mode *string
+	number *int32
 	from *string
-}
-
-func (r ApiGetFootprintsRequest) Number(number int32) ApiGetFootprintsRequest {
-	r.number = &number
-	return r
 }
 
 func (r ApiGetFootprintsRequest) Mode(mode string) ApiGetFootprintsRequest {
 	r.mode = &mode
+	return r
+}
+
+func (r ApiGetFootprintsRequest) Number(number int32) ApiGetFootprintsRequest {
+	r.number = &number
 	return r
 }
 
@@ -2862,6 +2954,11 @@ func (r ApiGetFootprintsRequest) From(from string) ApiGetFootprintsRequest {
 
 func (r ApiGetFootprintsRequest) Execute() (*FootprintsResponse, *http.Response, error) {
 	return r.ApiService.GetFootprintsExecute(r)
+}
+
+func (r ApiGetFootprintsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -2897,14 +2994,13 @@ func (a *UsersAPIService) GetFootprintsExecute(r ApiGetFootprintsRequest) (*Foot
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.number == nil {
-		return localVarReturnValue, nil, reportError("number is required and must be specified")
-	}
 
 	if r.mode != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "mode", r.mode, "form", "")
 	}
-	parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
 	if r.from != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "from", r.from, "form", "")
 	}
@@ -2970,6 +3066,11 @@ type ApiGetFreshUserRequest struct {
 
 func (r ApiGetFreshUserRequest) Execute() (*UserResponse, *http.Response, error) {
 	return r.ApiService.GetFreshUserExecute(r)
+}
+
+func (r ApiGetFreshUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -3084,6 +3185,11 @@ func (r ApiGetHimaUsersRequest) Execute() (*HimaUsersResponse, *http.Response, e
 	return r.ApiService.GetHimaUsersExecute(r)
 }
 
+func (r ApiGetHimaUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetHimaUsers Method for GetHimaUsers
 
@@ -3193,6 +3299,11 @@ func (r ApiGetMyReviewsRequest) Execute() (*ReviewsResponse, *http.Response, err
 	return r.ApiService.GetMyReviewsExecute(r)
 }
 
+func (r ApiGetMyReviewsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetMyReviews Method for GetMyReviews
 
@@ -3291,6 +3402,11 @@ type ApiGetPolicyAgreementsRequest struct {
 
 func (r ApiGetPolicyAgreementsRequest) Execute() (*PolicyAgreementsResponse, *http.Response, error) {
 	return r.ApiService.GetPolicyAgreementsExecute(r)
+}
+
+func (r ApiGetPolicyAgreementsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -3403,6 +3519,11 @@ func (r ApiGetRecommendedFollowUsersRequest) Execute() (*UsersResponse, *http.Re
 	return r.ApiService.GetRecommendedFollowUsersExecute(r)
 }
 
+func (r ApiGetRecommendedFollowUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetRecommendedFollowUsers Method for GetRecommendedFollowUsers
 
@@ -3509,6 +3630,11 @@ func (r ApiGetResetCountersRequest) Execute() (*RefreshCounterRequestsResponse, 
 	return r.ApiService.GetResetCountersExecute(r)
 }
 
+func (r ApiGetResetCountersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetResetCounters Method for GetResetCounters
 
@@ -3604,6 +3730,11 @@ type ApiGetTwoFactorAuthRequestInfoRequest struct {
 
 func (r ApiGetTwoFactorAuthRequestInfoRequest) Execute() (*TwoStepAuthRequestInfoResponse, *http.Response, error) {
 	return r.ApiService.GetTwoFactorAuthRequestInfoExecute(r)
+}
+
+func (r ApiGetTwoFactorAuthRequestInfoRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -3703,6 +3834,11 @@ func (r ApiGetTwoFactorAuthStatusRequest) Execute() (*TwoFAStatusResponse, *http
 	return r.ApiService.GetTwoFactorAuthStatusExecute(r)
 }
 
+func (r ApiGetTwoFactorAuthStatusRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetTwoFactorAuthStatus Method for GetTwoFactorAuthStatus
 
@@ -3799,6 +3935,11 @@ type ApiGetUserRequest struct {
 
 func (r ApiGetUserRequest) Execute() (*UserResponse, *http.Response, error) {
 	return r.ApiService.GetUserExecute(r)
+}
+
+func (r ApiGetUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -3902,6 +4043,11 @@ func (r ApiGetUserByQrRequest) Execute() (*UserResponse, *http.Response, error) 
 	return r.ApiService.GetUserByQrExecute(r)
 }
 
+func (r ApiGetUserByQrRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetUserByQr Method for GetUserByQr
 
@@ -4000,6 +4146,11 @@ type ApiGetUserCustomDefinitionsRequest struct {
 
 func (r ApiGetUserCustomDefinitionsRequest) Execute() (*UserCustomDefinitionsResponse, *http.Response, error) {
 	return r.ApiService.GetUserCustomDefinitionsExecute(r)
+}
+
+func (r ApiGetUserCustomDefinitionsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4116,6 +4267,11 @@ func (r ApiGetUserFollowersRequest) UserNickname(userNickname string) ApiGetUser
 
 func (r ApiGetUserFollowersRequest) Execute() (*FollowUsersResponse, *http.Response, error) {
 	return r.ApiService.GetUserFollowersExecute(r)
+}
+
+func (r ApiGetUserFollowersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4252,6 +4408,11 @@ func (r ApiGetUserFollowingsRequest) Execute() (*FollowUsersResponse, *http.Resp
 	return r.ApiService.GetUserFollowingsExecute(r)
 }
 
+func (r ApiGetUserFollowingsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetUserFollowings Method for GetUserFollowings
 
@@ -4377,6 +4538,11 @@ func (r ApiGetUserGiftTransactionsRequest) Execute() (*GiftTransactionsResponse,
 	return r.ApiService.GetUserGiftTransactionsExecute(r)
 }
 
+func (r ApiGetUserGiftTransactionsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetUserGiftTransactions Method for GetUserGiftTransactions
 
@@ -4484,6 +4650,11 @@ func (r ApiGetUserInfoRequest) Execute() (*UserResponse, *http.Response, error) 
 	return r.ApiService.GetUserInfoExecute(r)
 }
 
+func (r ApiGetUserInfoRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetUserInfo Method for GetUserInfo
 
@@ -4582,6 +4753,11 @@ type ApiGetUserInterestsRequest struct {
 
 func (r ApiGetUserInterestsRequest) Execute() (*UserInterestsResponse, *http.Response, error) {
 	return r.ApiService.GetUserInterestsExecute(r)
+}
+
+func (r ApiGetUserInterestsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4687,6 +4863,11 @@ func (r ApiGetUserPresignedUrlRequest) Execute() (*PresignedUrlResponse, *http.R
 	return r.ApiService.GetUserPresignedUrlExecute(r)
 }
 
+func (r ApiGetUserPresignedUrlRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetUserPresignedUrl Method for GetUserPresignedUrl
 
@@ -4720,11 +4901,10 @@ func (a *UsersAPIService) GetUserPresignedUrlExecute(r ApiGetUserPresignedUrlReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.videoFileName == nil {
-		return localVarReturnValue, nil, reportError("videoFileName is required and must be specified")
-	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "video_file_name", r.videoFileName, "form", "")
+	if r.videoFileName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "video_file_name", r.videoFileName, "form", "")
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -4793,6 +4973,11 @@ func (r ApiGetUserReviewsRequest) FromId(fromId int64) ApiGetUserReviewsRequest 
 
 func (r ApiGetUserReviewsRequest) Execute() (*ReviewsResponse, *http.Response, error) {
 	return r.ApiService.GetUserReviewsExecute(r)
+}
+
+func (r ApiGetUserReviewsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -4896,6 +5081,11 @@ type ApiGetUserTimestampRequest struct {
 
 func (r ApiGetUserTimestampRequest) Execute() (*UserTimestampResponse, *http.Response, error) {
 	return r.ApiService.GetUserTimestampExecute(r)
+}
+
+func (r ApiGetUserTimestampRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -5007,6 +5197,11 @@ func (r ApiGetUsersByIdsRequest) Execute() (*UsersResponse, *http.Response, erro
 	return r.ApiService.GetUsersByIdsExecute(r)
 }
 
+func (r ApiGetUsersByIdsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 GetUsersByIds Method for GetUsersByIds
 
@@ -5040,14 +5235,8 @@ func (a *UsersAPIService) GetUsersByIdsExecute(r ApiGetUsersByIdsRequest) (*User
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.xJwt == nil {
-		return localVarReturnValue, nil, reportError("xJwt is required and must be specified")
-	}
-	if r.userIds == nil {
-		return localVarReturnValue, nil, reportError("userIds is required and must be specified")
-	}
 
-	{
+	if r.userIds != nil {
 		t := *r.userIds
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
@@ -5075,7 +5264,9 @@ func (a *UsersAPIService) GetUsersByIdsExecute(r ApiGetUsersByIdsRequest) (*User
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Jwt", r.xJwt, "simple", "")
+	if r.xJwt != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-Jwt", r.xJwt, "simple", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -5120,6 +5311,11 @@ type ApiGetWebSocketTokenRequest struct {
 
 func (r ApiGetWebSocketTokenRequest) Execute() (*WebSocketTokenResponse, *http.Response, error) {
 	return r.ApiService.GetWebSocketTokenExecute(r)
+}
+
+func (r ApiGetWebSocketTokenRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -5223,6 +5419,11 @@ func (r ApiLoginWithEmailRequest) LoginEmailUserRequest(loginEmailUserRequest Lo
 
 func (r ApiLoginWithEmailRequest) Execute() (*LoginUserResponse, *http.Response, error) {
 	return r.ApiService.LoginWithEmailExecute(r)
+}
+
+func (r ApiLoginWithEmailRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -5333,6 +5534,11 @@ func (r ApiLogoutRequest) Execute() (*http.Response, error) {
 	return r.ApiService.LogoutExecute(r)
 }
 
+func (r ApiLogoutRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 Logout Method for Logout
 
@@ -5364,9 +5570,6 @@ func (a *UsersAPIService) LogoutExecute(r ApiLogoutRequest) (*http.Response, err
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.uuid == nil {
-		return nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -5385,7 +5588,9 @@ func (a *UsersAPIService) LogoutExecute(r ApiLogoutRequest) (*http.Response, err
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -5421,6 +5626,11 @@ type ApiPingAliveRequest struct {
 
 func (r ApiPingAliveRequest) Execute() (*http.Response, error) {
 	return r.ApiService.PingAliveExecute(r)
+}
+
+func (r ApiPingAliveRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -5509,6 +5719,11 @@ func (r ApiRemoveCoverImageRequest) Execute() (*http.Response, error) {
 	return r.ApiService.RemoveCoverImageExecute(r)
 }
 
+func (r ApiRemoveCoverImageRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 RemoveCoverImage Method for RemoveCoverImage
 
@@ -5595,6 +5810,11 @@ func (r ApiRemoveProfilePhotoRequest) Execute() (*http.Response, error) {
 	return r.ApiService.RemoveProfilePhotoExecute(r)
 }
 
+func (r ApiRemoveProfilePhotoRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 RemoveProfilePhoto Method for RemoveProfilePhoto
 
@@ -5678,10 +5898,10 @@ type ApiReplyToReviewRequest struct {
 	id int64
 	apiKey *string
 	comment *string
+	context *string
 	signedInfo *string
 	timestamp *int64
 	uuid *string
-	context *string
 }
 
 func (r ApiReplyToReviewRequest) ApiKey(apiKey string) ApiReplyToReviewRequest {
@@ -5691,6 +5911,11 @@ func (r ApiReplyToReviewRequest) ApiKey(apiKey string) ApiReplyToReviewRequest {
 
 func (r ApiReplyToReviewRequest) Comment(comment string) ApiReplyToReviewRequest {
 	r.comment = &comment
+	return r
+}
+
+func (r ApiReplyToReviewRequest) Context(context string) ApiReplyToReviewRequest {
+	r.context = &context
 	return r
 }
 
@@ -5709,13 +5934,13 @@ func (r ApiReplyToReviewRequest) Uuid(uuid string) ApiReplyToReviewRequest {
 	return r
 }
 
-func (r ApiReplyToReviewRequest) Context(context string) ApiReplyToReviewRequest {
-	r.context = &context
-	return r
-}
-
 func (r ApiReplyToReviewRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ReplyToReviewExecute(r)
+}
+
+func (r ApiReplyToReviewRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -5752,21 +5977,6 @@ func (a *UsersAPIService) ReplyToReviewExecute(r ApiReplyToReviewRequest) (*http
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return nil, reportError("apiKey is required and must be specified")
-	}
-	if r.comment == nil {
-		return nil, reportError("comment is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return nil, reportError("timestamp is required and must be specified")
-	}
-	if r.uuid == nil {
-		return nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -5785,14 +5995,24 @@ func (a *UsersAPIService) ReplyToReviewExecute(r ApiReplyToReviewRequest) (*http
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "comment", r.comment, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
+	if r.comment != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "comment", r.comment, "", "")
+	}
 	if r.context != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "context", r.context, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -5867,6 +6087,11 @@ func (r ApiReportUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ReportUserExecute(r)
 }
 
+func (r ApiReportUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ReportUser Method for ReportUser
 
@@ -5901,9 +6126,6 @@ func (a *UsersAPIService) ReportUserExecute(r ApiReportUserRequest) (*http.Respo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.categoryId == nil {
-		return nil, reportError("categoryId is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -5922,7 +6144,9 @@ func (a *UsersAPIService) ReportUserExecute(r ApiReportUserRequest) (*http.Respo
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "category_id", r.categoryId, "", "")
+	if r.categoryId != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "category_id", r.categoryId, "", "")
+	}
 	if r.reason != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "reason", r.reason, "", "")
 	}
@@ -5982,6 +6206,11 @@ func (r ApiRequestFollowRequest) Execute() (*http.Response, error) {
 	return r.ApiService.RequestFollowExecute(r)
 }
 
+func (r ApiRequestFollowRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 RequestFollow Method for RequestFollow
 
@@ -6016,9 +6245,6 @@ func (a *UsersAPIService) RequestFollowExecute(r ApiRequestFollowRequest) (*http
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.action == nil {
-		return nil, reportError("action is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -6037,7 +6263,9 @@ func (a *UsersAPIService) RequestFollowExecute(r ApiRequestFollowRequest) (*http
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "action", r.action, "", "")
+	if r.action != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "action", r.action, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -6073,6 +6301,11 @@ type ApiResendConfirmEmailRequest struct {
 
 func (r ApiResendConfirmEmailRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ResendConfirmEmailExecute(r)
+}
+
+func (r ApiResendConfirmEmailRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -6167,6 +6400,11 @@ func (r ApiResetCountersRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ResetCountersExecute(r)
 }
 
+func (r ApiResetCountersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ResetCounters Method for ResetCounters
 
@@ -6198,9 +6436,6 @@ func (a *UsersAPIService) ResetCountersExecute(r ApiResetCountersRequest) (*http
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.counter == nil {
-		return nil, reportError("counter is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -6219,7 +6454,9 @@ func (a *UsersAPIService) ResetCountersExecute(r ApiResetCountersRequest) (*http
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "counter", r.counter, "", "")
+	if r.counter != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "counter", r.counter, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -6275,6 +6512,11 @@ func (r ApiResetPasswordRequest) Execute() (*http.Response, error) {
 	return r.ApiService.ResetPasswordExecute(r)
 }
 
+func (r ApiResetPasswordRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 ResetPassword Method for ResetPassword
 
@@ -6306,15 +6548,6 @@ func (a *UsersAPIService) ResetPasswordExecute(r ApiResetPasswordRequest) (*http
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.email == nil {
-		return nil, reportError("email is required and must be specified")
-	}
-	if r.emailGrantToken == nil {
-		return nil, reportError("emailGrantToken is required and must be specified")
-	}
-	if r.password == nil {
-		return nil, reportError("password is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -6333,9 +6566,15 @@ func (a *UsersAPIService) ResetPasswordExecute(r ApiResetPasswordRequest) (*http
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "email_grant_token", r.emailGrantToken, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
+	if r.email != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
+	}
+	if r.emailGrantToken != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "email_grant_token", r.emailGrantToken, "", "")
+	}
+	if r.password != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "password", r.password, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -6431,6 +6670,11 @@ func (r ApiSearchUsersRequest) SaveRecentSearch(saveRecentSearch bool) ApiSearch
 
 func (r ApiSearchUsersRequest) Execute() (*UsersResponse, *http.Response, error) {
 	return r.ApiService.SearchUsersExecute(r)
+}
+
+func (r ApiSearchUsersRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -6560,6 +6804,11 @@ func (r ApiSetHimaRequest) Execute() (*http.Response, error) {
 	return r.ApiService.SetHimaExecute(r)
 }
 
+func (r ApiSetHimaRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 SetHima Method for SetHima
 
@@ -6645,6 +6894,11 @@ type ApiUnblockUserRequest struct {
 
 func (r ApiUnblockUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnblockUserExecute(r)
+}
+
+func (r ApiUnblockUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -6735,6 +6989,11 @@ type ApiUnfollowUserRequest struct {
 
 func (r ApiUnfollowUserRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UnfollowUserExecute(r)
+}
+
+func (r ApiUnfollowUserRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -6838,6 +7097,11 @@ func (r ApiUpdateAdditionalNotificationSettingRequest) Execute() (*http.Response
 	return r.ApiService.UpdateAdditionalNotificationSettingExecute(r)
 }
 
+func (r ApiUpdateAdditionalNotificationSettingRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 UpdateAdditionalNotificationSetting Method for UpdateAdditionalNotificationSetting
 
@@ -6869,12 +7133,6 @@ func (a *UsersAPIService) UpdateAdditionalNotificationSettingExecute(r ApiUpdate
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.mode == nil {
-		return nil, reportError("mode is required and must be specified")
-	}
-	if r.on == nil {
-		return nil, reportError("on is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -6893,8 +7151,12 @@ func (a *UsersAPIService) UpdateAdditionalNotificationSettingExecute(r ApiUpdate
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "mode", r.mode, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "on", r.on, "", "")
+	if r.mode != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "mode", r.mode, "", "")
+	}
+	if r.on != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "on", r.on, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -6962,6 +7224,11 @@ func (r ApiUpdateLanguageRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UpdateLanguageExecute(r)
 }
 
+func (r ApiUpdateLanguageRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
 /*
 UpdateLanguage Method for UpdateLanguage
 
@@ -6993,21 +7260,6 @@ func (a *UsersAPIService) UpdateLanguageExecute(r ApiUpdateLanguageRequest) (*ht
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return nil, reportError("apiKey is required and must be specified")
-	}
-	if r.language == nil {
-		return nil, reportError("language is required and must be specified")
-	}
-	if r.signedInfo == nil {
-		return nil, reportError("signedInfo is required and must be specified")
-	}
-	if r.timestamp == nil {
-		return nil, reportError("timestamp is required and must be specified")
-	}
-	if r.uuid == nil {
-		return nil, reportError("uuid is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -7026,11 +7278,21 @@ func (a *UsersAPIService) UpdateLanguageExecute(r ApiUpdateLanguageRequest) (*ht
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "language", r.language, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
-	parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
+	if r.language != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "language", r.language, "", "")
+	}
+	if r.signedInfo != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "signed_info", r.signedInfo, "", "")
+	}
+	if r.timestamp != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "timestamp", r.timestamp, "", "")
+	}
+	if r.uuid != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "uuid", r.uuid, "", "")
+	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return nil, err
@@ -7063,8 +7325,8 @@ type ApiUpdateLoginRequest struct {
 	ctx context.Context
 	ApiService *UsersAPIService
 	apiKey *string
-	email *string
 	currentPassword *string
+	email *string
 	emailGrantToken *string
 	password *string
 }
@@ -7074,13 +7336,13 @@ func (r ApiUpdateLoginRequest) ApiKey(apiKey string) ApiUpdateLoginRequest {
 	return r
 }
 
-func (r ApiUpdateLoginRequest) Email(email string) ApiUpdateLoginRequest {
-	r.email = &email
+func (r ApiUpdateLoginRequest) CurrentPassword(currentPassword string) ApiUpdateLoginRequest {
+	r.currentPassword = &currentPassword
 	return r
 }
 
-func (r ApiUpdateLoginRequest) CurrentPassword(currentPassword string) ApiUpdateLoginRequest {
-	r.currentPassword = &currentPassword
+func (r ApiUpdateLoginRequest) Email(email string) ApiUpdateLoginRequest {
+	r.email = &email
 	return r
 }
 
@@ -7096,6 +7358,11 @@ func (r ApiUpdateLoginRequest) Password(password string) ApiUpdateLoginRequest {
 
 func (r ApiUpdateLoginRequest) Execute() (*LoginUpdateResponse, *http.Response, error) {
 	return r.ApiService.UpdateLoginExecute(r)
+}
+
+func (r ApiUpdateLoginRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*
@@ -7131,12 +7398,6 @@ func (a *UsersAPIService) UpdateLoginExecute(r ApiUpdateLoginRequest) (*LoginUpd
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.apiKey == nil {
-		return localVarReturnValue, nil, reportError("apiKey is required and must be specified")
-	}
-	if r.email == nil {
-		return localVarReturnValue, nil, reportError("email is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -7155,11 +7416,15 @@ func (a *UsersAPIService) UpdateLoginExecute(r ApiUpdateLoginRequest) (*LoginUpd
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	if r.apiKey != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "api_key", r.apiKey, "", "")
+	}
 	if r.currentPassword != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "current_password", r.currentPassword, "", "")
 	}
-	parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
+	if r.email != nil {
+		parameterAddToHeaderOrQuery(localVarFormParams, "email", r.email, "", "")
+	}
 	if r.emailGrantToken != nil {
 		parameterAddToHeaderOrQuery(localVarFormParams, "email_grant_token", r.emailGrantToken, "", "")
 	}
@@ -7216,6 +7481,11 @@ func (r ApiUpdateUserInterestsRequest) CommonIdsRequest(commonIdsRequest CommonI
 
 func (r ApiUpdateUserInterestsRequest) Execute() (*http.Response, error) {
 	return r.ApiService.UpdateUserInterestsExecute(r)
+}
+
+func (r ApiUpdateUserInterestsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
 }
 
 /*

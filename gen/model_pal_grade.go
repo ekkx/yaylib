@@ -5,7 +5,6 @@ package gen
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // PalGrade the model 'PalGrade'
@@ -13,10 +12,10 @@ type PalGrade string
 
 // List of PalGrade
 const (
-	PALGRADE_EGG PalGrade = "Egg"
-	PALGRADE_PAL PalGrade = "Pal"
-	PALGRADE_SUPER_PAL PalGrade = "Super Pal"
-	PALGRADE_ULTIMATE_PAL PalGrade = "Ultimate Pal"
+	PALGRADE_Egg PalGrade = "Egg"
+	PALGRADE_Normal PalGrade = "Pal"
+	PALGRADE_Super PalGrade = "Super Pal"
+	PALGRADE_UltimatePal PalGrade = "Ultimate Pal"
 )
 
 // All allowed values of PalGrade enum
@@ -34,25 +33,15 @@ func (v *PalGrade) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := PalGrade(value)
-	for _, existing := range AllowedPalGradeEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid PalGrade", value)
+	*v = enumTypeValue
+	return nil
 }
 
 // NewPalGradeFromValue returns a pointer to a valid PalGrade
 // for the value passed as argument, or an error if the value passed is not allowed by the enum
 func NewPalGradeFromValue(v string) (*PalGrade, error) {
 	ev := PalGrade(v)
-	if ev.IsValid() {
-		return &ev, nil
-	} else {
-		return nil, fmt.Errorf("invalid value '%v' for PalGrade: valid values are %v", v, AllowedPalGradeEnumValues)
-	}
+	return &ev, nil
 }
 
 // IsValid return true if the value is valid for the enum, false otherwise
