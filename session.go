@@ -194,10 +194,16 @@ func (f *fileStore) Delete(email string) error {
 // -- Convenience methods on *Client -----------------------------------------
 
 // LoadSession loads the cached session for email and applies its tokens,
-// DeviceUUID, UserID, and email-binding to the client so subsequent calls
-// (uploads that need UserID, 401-refresh that needs currentEmail) work
-// the same as if LoginWithEmail had just succeeded. Returns ErrNoSession
-// when nothing is cached. Errors when no session store is configured.
+// UserID, and email-binding to the client so subsequent calls (uploads
+// that need UserID, 401-refresh that needs currentEmail) work the same
+// as if LoginWithEmail had just succeeded. The session's DeviceUUID is
+// intentionally NOT applied — DeviceUUID is part of client identity and
+// must be pinned at construction via WithDeviceUUID; mutating it
+// concurrently with in-flight requests would race with the transport's
+// header injection.
+//
+// Returns ErrNoSession when nothing is cached. Errors when no session
+// store is configured.
 func (c *Client) LoadSession(email string) (*Session, error) {
 	if c.sessionStore == nil {
 		return nil, fmt.Errorf("yaylib: session store not configured (use WithSessionStore)")
@@ -207,17 +213,20 @@ func (c *Client) LoadSession(email string) (*Session, error) {
 		return nil, err
 	}
 	c.SetTokens(s.AccessToken, s.RefreshToken)
-	if s.DeviceUUID != "" {
-		c.DeviceUUID = s.DeviceUUID
-	}
 	c.currentEmail = email
 	c.UserID = s.UserID
 	return s, nil
 }
 
 // SaveSession writes the session and also activates its tokens, UserID,
-// and email-binding on the client. Errors when no session store is
-// configured.
+// and email-binding on the client. The session's DeviceUUID field is
+// populated from the client at write time (so the persisted record
+// keeps device identity), but the reverse direction — overwriting
+// c.DeviceUUID from the session — is omitted on purpose: it would race
+// with the transport's header injection on concurrent in-flight
+// requests, and DeviceUUID is meant to be pinned at construction.
+//
+// Errors when no session store is configured.
 func (c *Client) SaveSession(s *Session) error {
 	if c.sessionStore == nil {
 		return fmt.Errorf("yaylib: session store not configured (use WithSessionStore)")
@@ -232,9 +241,6 @@ func (c *Client) SaveSession(s *Session) error {
 		return err
 	}
 	c.SetTokens(s.AccessToken, s.RefreshToken)
-	if s.DeviceUUID != "" {
-		c.DeviceUUID = s.DeviceUUID
-	}
 	if s.Email != "" {
 		c.currentEmail = s.Email
 	}

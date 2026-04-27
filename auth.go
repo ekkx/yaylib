@@ -163,6 +163,9 @@ func (c *Client) maybeRestore(email string, skip bool) (*gen.LoginUserResponse, 
 func (c *Client) acceptLogin(email string, resp *gen.LoginUserResponse) error {
 	c.currentEmail = email
 	c.UserID = resp.GetUserId()
+	// Activate tokens unconditionally so an immediate follow-up request
+	// works even when a later session-store write fails.
+	c.SetTokens(resp.GetAccessToken(), resp.GetRefreshToken())
 	if c.sessionStore != nil && email != "" {
 		if err := c.SaveSession(&Session{
 			Email:        email,
@@ -172,9 +175,7 @@ func (c *Client) acceptLogin(email string, resp *gen.LoginUserResponse) error {
 		}); err != nil {
 			return fmt.Errorf("%w: %v", ErrSessionSaveFailed, err)
 		}
-		return nil
 	}
-	c.SetTokens(resp.GetAccessToken(), resp.GetRefreshToken())
 	return nil
 }
 
