@@ -133,7 +133,7 @@ func TestEventStream_SubscribeAndReceiveEvent(t *testing.T) {
 	})
 
 	c := newStreamTestClient(fs.srv.URL)
-	c.Tokens.Access = "stub" // skip auth-refresh path
+	c.SetTokens("stub", "") // skip auth-refresh path
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -173,7 +173,7 @@ func TestEventStream_RejectedSubscription(t *testing.T) {
 	})
 
 	c := newStreamTestClient(fs.srv.URL)
-	c.Tokens.Access = "stub"
+	c.SetTokens("stub", "")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -205,7 +205,7 @@ func TestEventStream_MultipleChannels(t *testing.T) {
 	})
 
 	c := newStreamTestClient(fs.srv.URL)
-	c.Tokens.Access = "stub"
+	c.SetTokens("stub", "")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -269,7 +269,7 @@ func TestEventStream_ReconnectAfterServerClose(t *testing.T) {
 	})
 
 	c := newStreamTestClient(fs.srv.URL)
-	c.Tokens.Access = "stub"
+	c.SetTokens("stub", "")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -322,7 +322,7 @@ func TestEventStream_Unsubscribe(t *testing.T) {
 	})
 
 	c := newStreamTestClient(fs.srv.URL)
-	c.Tokens.Access = "stub"
+	c.SetTokens("stub", "")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -363,7 +363,7 @@ func TestEventStream_SubscribeTimeout(t *testing.T) {
 	})
 
 	c := newStreamTestClient(fs.srv.URL)
-	c.Tokens.Access = "stub"
+	c.SetTokens("stub", "")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -388,7 +388,7 @@ func TestEventStream_DoneAndErrOnCleanClose(t *testing.T) {
 	})
 
 	c := newStreamTestClient(fs.srv.URL)
-	c.Tokens.Access = "stub"
+	c.SetTokens("stub", "")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -418,7 +418,7 @@ func TestEventStream_ErrAfterReconnectExhausted(t *testing.T) {
 	})
 
 	c := newStreamTestClient(fs.srv.URL)
-	c.Tokens.Access = "stub"
+	c.SetTokens("stub", "")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -453,7 +453,7 @@ func TestSubscription_DoneFiresOnUnsubscribe(t *testing.T) {
 	})
 
 	c := newStreamTestClient(fs.srv.URL)
-	c.Tokens.Access = "stub"
+	c.SetTokens("stub", "")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 

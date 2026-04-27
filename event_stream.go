@@ -25,6 +25,14 @@ const DefaultEventStreamURL = "wss://cable.yay.space"
 const (
 	defaultSubscribeTimeout = 10 * time.Second
 	defaultEventBuffer      = 64
+
+	// reconnectStableThreshold is how long a freshly-dialed connection
+	// must stay alive before runLoop treats it as "actually healthy"
+	// and resets the failure budget. Anything shorter — including the
+	// flap pattern where the server sends a single welcome frame and
+	// drops — counts toward MaxAttempts so a misconfigured peer can
+	// no longer reconnect forever.
+	reconnectStableThreshold = 30 * time.Second
 )
 
 // ReconnectPolicy controls how a *EventStream behaves after the
@@ -38,6 +46,13 @@ type ReconnectPolicy struct {
 
 	// MaxAttempts caps the total reconnect attempts (excluding the
 	// initial dial). 0 means unlimited.
+	//
+	// Note that 0 here means "unlimited", whereas RetryPolicy.MaxAttempts
+	// (HTTP retry) treats values < 2 as "disabled". The two policies
+	// have opposite semantics for the zero value because their default
+	// behaviors are also opposite — an unattended event stream wants to
+	// keep recovering, an HTTP request shouldn't retry without explicit
+	// opt-in.
 	MaxAttempts int
 
 	// InitialDelay is the first backoff sleep. Each subsequent attempt
@@ -65,13 +80,22 @@ type EventStreamOptions struct {
 	Reconnect ReconnectPolicy
 
 	// EventBuffer is the per-Subscription channel buffer. Slow consumers
-	// past this point cause events to be dropped silently — choose a
-	// value large enough for your traffic. Defaults to 64.
+	// past this point cause events to be dropped — observe drops via
+	// OnDrop. Defaults to 64.
 	EventBuffer int
 
 	// SubscribeTimeout caps how long Subscribe blocks waiting for the
 	// server's confirm_subscription frame. Defaults to 10s.
 	SubscribeTimeout time.Duration
+
+	// OnDrop is invoked synchronously from the dispatcher whenever a
+	// subscription's event buffer is full and an incoming event has
+	// to be dropped. It exists so backpressure stays observable —
+	// the dispatcher never blocks on slow consumers, but a silent
+	// drop is hard to debug. Keep the callback fast (it runs on the
+	// read pump); for anything heavy, hand the event off to a
+	// goroutine. Nil means "drop silently", the legacy behavior.
+	OnDrop func(Event)
 }
 
 // Channel identifies one subscribable event-stream channel. Use the
@@ -229,8 +253,12 @@ func (s *Subscription) deliver(ev Event) {
 	select {
 	case s.events <- ev:
 	default:
-		// Buffer full — drop. Caller is responsible for sizing
-		// EventBuffer big enough for their traffic.
+		// Buffer full — drop. Surface to the user via OnDrop when
+		// configured so backpressure can be observed; otherwise the
+		// drop is silent.
+		if cb := s.conn.opts.OnDrop; cb != nil {
+			cb(ev)
+		}
 	}
 }
 
@@ -408,9 +436,13 @@ func (conn *EventStream) runLoop() {
 		// Re-subscribe everything we knew about before. Failures here
 		// surface to per-sub Err but don't abort the whole conn.
 		conn.resubscribeAll()
-		if conn.readUntilDisconnect() {
-			// Got at least one post-welcome frame, treat as stable —
-			// reset the failure budget so a future blip starts fresh.
+		connectedAt := time.Now()
+		conn.readUntilDisconnect()
+		if time.Since(connectedAt) >= reconnectStableThreshold {
+			// The connection survived long enough to be considered
+			// stable — reset the failure budget so the next blip
+			// starts fresh. A connection that drops sooner counts
+			// toward MaxAttempts so genuine flaps can't loop forever.
 			attempt = 0
 		}
 
@@ -439,11 +471,10 @@ func (conn *EventStream) backoff(attempt int) time.Duration {
 }
 
 // readUntilDisconnect reads frames from the active socket and
-// dispatches them. It returns when the socket closes or errors,
-// reporting whether at least one post-welcome frame arrived (the
-// caller uses that as a proxy for "the connection was actually
-// healthy"). Any error is recorded as the conn's final error.
-func (conn *EventStream) readUntilDisconnect() (gotFrame bool) {
+// dispatches them. It returns when the socket closes or errors;
+// any error is recorded as the conn's final error. Time-based
+// stability tracking lives in runLoop.
+func (conn *EventStream) readUntilDisconnect() {
 	conn.wsMu.RLock()
 	ws := conn.ws
 	conn.wsMu.RUnlock()
@@ -456,7 +487,6 @@ func (conn *EventStream) readUntilDisconnect() (gotFrame bool) {
 			conn.setFinalErr(err)
 			return
 		}
-		gotFrame = true
 		conn.dispatch(data)
 	}
 }
@@ -613,7 +643,12 @@ func (conn *EventStream) Subscribe(ctx context.Context, ch Channel) (*Subscripti
 	conn.subs[ident] = sub
 	conn.subsMu.Unlock()
 
-	_ = conn.writeCommand(ctx, "subscribe", ident)
+	// Fail fast on a write failure rather than waiting out
+	// SubscribeTimeout for a confirm that can't possibly arrive.
+	if err := conn.writeCommand(ctx, "subscribe", ident); err != nil {
+		conn.removeSub(ident)
+		return nil, fmt.Errorf("subscribe %q: %w", ident, err)
+	}
 
 	timeout := conn.opts.SubscribeTimeout
 	t := time.NewTimer(timeout)
