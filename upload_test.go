@@ -838,6 +838,125 @@ func TestUploadAvatarImage_EmptyPresignedResponse(t *testing.T) {
 	}
 }
 
+func TestPresignedPUT_DoesNotLeakBearer(t *testing.T) {
+	f, srv := newFakeUploadServer(t)
+	defer srv.Close()
+
+	c := loggedInClient(srv.URL, 1)
+	c.SetTokens("SECRET-ACCESS-TOKEN", "REF") // would normally be Bearer
+	body := encodeImage(t, "png", 5, 5)
+
+	if _, err := c.UploadAvatarImage(context.Background(), Upload{
+		Filename: "x.png", Body: bytes.NewReader(body),
+	}); err != nil {
+		t.Fatalf("UploadAvatarImage: %v", err)
+	}
+
+	// Inspect headers the fakeUploadServer captured for the PUT path.
+	// We don't store them today — re-wrap the test server to record
+	// Authorization on PUT requests for this specific assertion.
+	_ = f
+	// Round-trip the assertion through a dedicated capturing server:
+	cap := &bearerCapturingServer{}
+	srv2 := httptest.NewServer(cap)
+	defer srv2.Close()
+
+	c2 := loggedInClient(srv2.URL, 1)
+	c2.SetTokens("SECRET-ACCESS-TOKEN", "REF")
+	if _, err := c2.UploadAvatarImage(context.Background(), Upload{
+		Filename: "x.png", Body: bytes.NewReader(body),
+	}); err != nil {
+		t.Fatalf("UploadAvatarImage(capturing): %v", err)
+	}
+
+	for _, h := range cap.putAuth {
+		if h != "" {
+			t.Errorf("S3 PUT carried Authorization=%q, want empty (presigned URL signs via query)", h)
+		}
+	}
+	if len(cap.putAuth) == 0 {
+		t.Fatal("no PUT requests captured")
+	}
+}
+
+type bearerCapturingServer struct {
+	mu      sync.Mutex
+	putAuth []string
+}
+
+func (b *bearerCapturingServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	switch {
+	case r.Method == http.MethodGet && r.URL.Path == "/v1/buckets/presigned_urls":
+		names := r.URL.Query()["file_names[]"]
+		urls := make([]map[string]string, len(names))
+		for i, n := range names {
+			urls[i] = map[string]string{
+				"filename": "s3/" + n,
+				"url":      "http://" + r.Host + "/uploads/s3/" + n,
+			}
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{"presigned_urls": urls})
+	case r.Method == http.MethodPut && strings.HasPrefix(r.URL.Path, "/uploads/"):
+		b.mu.Lock()
+		b.putAuth = append(b.putAuth, r.Header.Get("Authorization"))
+		b.mu.Unlock()
+		// Also drain body so the client doesn't hang.
+		_, _ = io.Copy(io.Discard, r.Body)
+		w.WriteHeader(http.StatusOK)
+	default:
+		http.Error(w, "unknown route", http.StatusNotFound)
+	}
+}
+
+func TestClient_ConcurrentSetTokensAndRequest(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{}`))
+	}))
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithClientIP("127.0.0.1"))
+	defer c.Close()
+
+	var wg sync.WaitGroup
+	stop := make(chan struct{})
+	for i := 0; i < 4; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			for {
+				select {
+				case <-stop:
+					return
+				default:
+					c.SetTokens(fmt.Sprintf("acc-%d", i), fmt.Sprintf("ref-%d", i))
+				}
+			}
+		}(i)
+	}
+	for i := 0; i < 4; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for {
+				select {
+				case <-stop:
+					return
+				default:
+					req, _ := http.NewRequest(http.MethodGet, srv.URL+"/v1/anywhere", nil)
+					if resp, err := c.httpClient.Do(req); err == nil {
+						resp.Body.Close()
+					}
+				}
+			}
+		}()
+	}
+	time.Sleep(100 * time.Millisecond)
+	close(stop)
+	wg.Wait()
+}
+
 func TestUploadAvatarImage_ErrorIsWrapped(t *testing.T) {
 	c := loggedInClient("http://127.0.0.1:1", 1) // unroutable
 	body := encodeImage(t, "png", 5, 5)

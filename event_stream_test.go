@@ -444,6 +444,114 @@ func TestEventStream_ErrAfterReconnectExhausted(t *testing.T) {
 	}
 }
 
+func TestEventStream_OnDropFiresWhenBufferFull(t *testing.T) {
+	const ident = `{"channel":"ChatRoomChannel"}`
+	send := make(chan struct{})
+	fs := newFakeServer(t, func(s *wsSession) {
+		s.sendWelcome()
+		msg := <-s.received
+		s.confirm(msg["identifier"])
+		<-send
+		// Push more events than the EventBuffer holds. The first
+		// fills the buffer; the rest must drop.
+		for i := 0; i < 5; i++ {
+			s.pushEvent(ident, "chat_deleted", map[string]int64{"room_id": int64(i)})
+		}
+		<-s.ctx.Done()
+	})
+
+	c := newStreamTestClient(fs.srv.URL)
+	c.SetTokens("stub", "")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var dropped atomic.Int32
+	conn, err := c.OpenEventStream(ctx, EventStreamOptions{
+		Reconnect:   ReconnectPolicy{Disabled: true},
+		EventBuffer: 1,
+		OnDrop:      func(Event) { dropped.Add(1) },
+	})
+	if err != nil {
+		t.Fatalf("OpenEventStream: %v", err)
+	}
+	defer conn.Close()
+
+	if _, err := conn.Subscribe(ctx, ChatRoomChannel()); err != nil {
+		t.Fatalf("Subscribe: %v", err)
+	}
+	close(send) // unleash the burst — we never consume sub.Events()
+
+	deadline := time.Now().Add(2 * time.Second)
+	for time.Now().Before(deadline) {
+		if dropped.Load() > 0 {
+			break
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	if got := dropped.Load(); got == 0 {
+		t.Errorf("OnDrop fired %d times, want >= 1", got)
+	}
+}
+
+func TestEventStream_StableConnectionResetsAttemptBudget(t *testing.T) {
+	// Shrink the threshold so a tightly-timed test can still cross it.
+	old := reconnectStableThreshold
+	reconnectStableThreshold = 50 * time.Millisecond
+	t.Cleanup(func() { reconnectStableThreshold = old })
+
+	var attempts atomic.Int32
+	dropAfter := make(chan struct{})
+	fs := newFakeServer(t, func(s *wsSession) {
+		n := attempts.Add(1)
+		s.sendWelcome()
+		msg := <-s.received
+		s.confirm(msg["identifier"])
+		// First two connections each stay alive past
+		// reconnectStableThreshold, then drop. Without the time-based
+		// reset the loop would exhaust at MaxAttempts=1 after the
+		// second connection — only the reset lets a 3rd dial happen.
+		if n <= 2 {
+			time.Sleep(80 * time.Millisecond)
+			s.close()
+			return
+		}
+		<-dropAfter
+		<-s.ctx.Done()
+	})
+
+	c := newStreamTestClient(fs.srv.URL)
+	c.SetTokens("stub", "")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	conn, err := c.OpenEventStream(ctx, EventStreamOptions{
+		Reconnect: ReconnectPolicy{
+			MaxAttempts:  1,
+			InitialDelay: 10 * time.Millisecond,
+			MaxDelay:     20 * time.Millisecond,
+		},
+	})
+	if err != nil {
+		t.Fatalf("OpenEventStream: %v", err)
+	}
+	defer conn.Close()
+	if _, err := conn.Subscribe(ctx, ChatRoomChannel()); err != nil {
+		t.Fatalf("Subscribe: %v", err)
+	}
+
+	deadline := time.Now().Add(2 * time.Second)
+	for time.Now().Before(deadline) {
+		if attempts.Load() >= 3 {
+			break
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	close(dropAfter)
+	if got := attempts.Load(); got < 3 {
+		t.Errorf("attempts = %d, want >= 3 (stable connection should have reset the failure budget)", got)
+	}
+}
+
 func TestSubscription_DoneFiresOnUnsubscribe(t *testing.T) {
 	fs := newFakeServer(t, func(s *wsSession) {
 		s.sendWelcome()
