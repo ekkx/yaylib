@@ -552,6 +552,127 @@ func TestEventStream_StableConnectionResetsAttemptBudget(t *testing.T) {
 	}
 }
 
+func TestEventStream_MultipleSubsResubscribeAfterReconnect(t *testing.T) {
+	const (
+		identChat  = `{"channel":"ChatRoomChannel"}`
+		identGroup = `{"channel":"GroupUpdatesChannel"}`
+	)
+	var attempts atomic.Int32
+	secondReady := make(chan struct{})
+	fs := newFakeServer(t, func(s *wsSession) {
+		n := attempts.Add(1)
+		s.sendWelcome()
+		// Each connection should see TWO subscribe commands when the
+		// client reconnects with two active subs.
+		seen := map[string]bool{}
+		for len(seen) < 2 {
+			msg := <-s.received
+			if msg["command"] != "subscribe" {
+				continue
+			}
+			seen[msg["identifier"]] = true
+			s.confirm(msg["identifier"])
+		}
+		if !seen[identChat] || !seen[identGroup] {
+			t.Errorf("attempt %d: subscribed idents = %v, want both chat + group", n, seen)
+		}
+		if n == 1 {
+			s.close()
+			return
+		}
+		// After reconnect, push one event on each channel so the
+		// test can confirm both subs are still wired up.
+		s.pushEvent(identChat, "chat_deleted", map[string]int64{"room_id": 11})
+		s.pushEvent(identGroup, "new_post", map[string]int64{"group_id": 22})
+		close(secondReady)
+		<-s.ctx.Done()
+	})
+
+	c := newStreamTestClient(fs.srv.URL)
+	c.SetTokens("stub", "")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	conn, err := c.OpenEventStream(ctx, EventStreamOptions{
+		Reconnect: ReconnectPolicy{
+			InitialDelay: 20 * time.Millisecond,
+			MaxDelay:     50 * time.Millisecond,
+		},
+	})
+	if err != nil {
+		t.Fatalf("OpenEventStream: %v", err)
+	}
+	defer conn.Close()
+
+	subChat, err := conn.Subscribe(ctx, ChatRoomChannel())
+	if err != nil {
+		t.Fatalf("Subscribe chat: %v", err)
+	}
+	subGroup, err := conn.Subscribe(ctx, GroupUpdatesChannel())
+	if err != nil {
+		t.Fatalf("Subscribe group: %v", err)
+	}
+
+	<-secondReady
+	gotChat := false
+	gotGroup := false
+	deadline := time.After(3 * time.Second)
+	for !(gotChat && gotGroup) {
+		select {
+		case ev := <-subChat.Events():
+			if e, ok := ev.(*ChatDeletedEvent); ok && e.RoomID == 11 {
+				gotChat = true
+			}
+		case ev := <-subGroup.Events():
+			if e, ok := ev.(*GroupUpdatedEvent); ok && e.GroupID == 22 {
+				gotGroup = true
+			}
+		case <-deadline:
+			t.Fatalf("post-reconnect events missing: chat=%v group=%v", gotChat, gotGroup)
+		}
+	}
+}
+
+func TestEventStream_WSDialDoesNotLeakBearer(t *testing.T) {
+	got := make(chan string, 1)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/v1/users/ws_token", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"token":"stub"}`))
+	})
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Capture Authorization on the upgrade request, then 400 so
+		// the dial fails fast — we only care about the header.
+		select {
+		case got <- r.Header.Get("Authorization"):
+		default:
+		}
+		http.Error(w, "no upgrade in this test", http.StatusBadRequest)
+	})
+	srv := httptest.NewServer(mux)
+	defer srv.Close()
+
+	c := NewClient(
+		WithBaseURL(srv.URL),
+		WithEventStreamURL(strings.Replace(srv.URL, "http://", "ws://", 1)),
+		WithClientIP("127.0.0.1"),
+	)
+	c.SetTokens("SECRET-ACCESS-TOKEN", "REF")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	_, _ = c.OpenEventStream(ctx, EventStreamOptions{Reconnect: ReconnectPolicy{Disabled: true}})
+
+	select {
+	case auth := <-got:
+		if auth != "" {
+			t.Errorf("WS upgrade carried Authorization=%q, want empty (token is in query)", auth)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("upgrade request never reached server")
+	}
+}
+
 func TestSubscription_DoneFiresOnUnsubscribe(t *testing.T) {
 	fs := newFakeServer(t, func(s *wsSession) {
 		s.sendWelcome()
