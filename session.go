@@ -193,9 +193,11 @@ func (f *fileStore) Delete(email string) error {
 
 // -- Convenience methods on *Client -----------------------------------------
 
-// LoadSession loads the cached session for email and applies its tokens and
-// DeviceUUID to the client. Returns ErrNoSession when nothing is cached.
-// Errors when no session store is configured.
+// LoadSession loads the cached session for email and applies its tokens,
+// DeviceUUID, UserID, and email-binding to the client so subsequent calls
+// (uploads that need UserID, 401-refresh that needs currentEmail) work
+// the same as if LoginWithEmail had just succeeded. Returns ErrNoSession
+// when nothing is cached. Errors when no session store is configured.
 func (c *Client) LoadSession(email string) (*Session, error) {
 	if c.sessionStore == nil {
 		return nil, fmt.Errorf("yaylib: session store not configured (use WithSessionStore)")
@@ -208,11 +210,14 @@ func (c *Client) LoadSession(email string) (*Session, error) {
 	if s.DeviceUUID != "" {
 		c.DeviceUUID = s.DeviceUUID
 	}
+	c.currentEmail = email
+	c.UserID = s.UserID
 	return s, nil
 }
 
-// SaveSession writes the session and also activates its tokens on the
-// client. Errors when no session store is configured.
+// SaveSession writes the session and also activates its tokens, UserID,
+// and email-binding on the client. Errors when no session store is
+// configured.
 func (c *Client) SaveSession(s *Session) error {
 	if c.sessionStore == nil {
 		return fmt.Errorf("yaylib: session store not configured (use WithSessionStore)")
@@ -229,6 +234,12 @@ func (c *Client) SaveSession(s *Session) error {
 	c.SetTokens(s.AccessToken, s.RefreshToken)
 	if s.DeviceUUID != "" {
 		c.DeviceUUID = s.DeviceUUID
+	}
+	if s.Email != "" {
+		c.currentEmail = s.Email
+	}
+	if s.UserID != 0 {
+		c.UserID = s.UserID
 	}
 	return nil
 }
