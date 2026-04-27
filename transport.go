@@ -11,9 +11,10 @@ import (
 	"time"
 )
 
-// TokenStore holds the active OAuth credentials. The Transport reads Access
-// for every request; Refresh is used for automatic token refresh on 401.
-type TokenStore struct {
+// Tokens is an immutable snapshot of the OAuth credentials a Client has
+// active at one point in time. Returned by (*Client).Tokens; mutate by
+// calling SetTokens or by going through the login / refresh flows.
+type Tokens struct {
 	Access  string
 	Refresh string
 }
@@ -78,7 +79,7 @@ func (t *Transport) attemptOnce(r *http.Request, bodyBytes []byte) (*http.Respon
 
 	// Snapshot the access token actually being sent so refreshTokens can
 	// detect when another goroutine has already rotated it.
-	sentAccess := t.client.accessSnapshot()
+	sentAccess := t.client.Tokens().Access
 
 	t.setHeaders(r, sentAccess)
 
@@ -163,7 +164,7 @@ func (t *Transport) handle401(orig *http.Response, req *http.Request, reqBody []
 	}
 
 	c := t.client
-	if c.refreshSnapshot() == "" {
+	if c.Tokens().Refresh == "" {
 		return restore()
 	}
 	if err := c.refreshTokens(req.Context(), staleToken); err != nil {
@@ -176,7 +177,7 @@ func (t *Transport) handle401(orig *http.Response, req *http.Request, reqBody []
 	}
 	// Force re-computation of Authorization with the refreshed token.
 	r2.Header.Del("Authorization")
-	t.setHeaders(r2, c.accessSnapshot())
+	t.setHeaders(r2, c.Tokens().Access)
 
 	resp2, err := t.Base.RoundTrip(r2)
 	if err != nil {

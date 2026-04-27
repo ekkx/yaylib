@@ -141,8 +141,8 @@ func TestTransport_401TriggersRefreshAndRetries(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("final status = %d, want 200", resp.StatusCode)
 	}
-	if c.accessSnapshot() != "NEW_ACC" {
-		t.Errorf("access token after refresh = %q, want NEW_ACC", c.accessSnapshot())
+	if c.Tokens().Access != "NEW_ACC" {
+		t.Errorf("access token after refresh = %q, want NEW_ACC", c.Tokens().Access)
 	}
 
 	requests := cap.snapshot()
@@ -248,8 +248,8 @@ func TestTransport_401RefreshSucceedsButRetryNetworkErrorSurfacesError(t *testin
 		resp.Body.Close()
 		t.Fatal("expected error from broken retry, got nil")
 	}
-	if c.accessSnapshot() != "NEW_ACC" {
-		t.Errorf("tokens should still be rotated, got access=%q", c.accessSnapshot())
+	if c.Tokens().Access != "NEW_ACC" {
+		t.Errorf("tokens should still be rotated, got access=%q", c.Tokens().Access)
 	}
 }
 

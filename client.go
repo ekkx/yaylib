@@ -73,6 +73,23 @@ const (
 
 // Client is a high-level Yay! API client. Construct with NewClient(...).
 //
+// API surface contract:
+//
+// Every Yay! operation is reachable as a top-level method on *Client —
+// LoginWithEmail, GetRecommendedTimeline, CreatePost, BlockUser, and
+// the rest. Operation IDs are globally unique, so the embed promotion
+// the SDK uses to expose them never collides; an IDE's autocomplete
+// on the Client value lists every operation directly.
+//
+// For escape-hatch access to the raw generated layer — bypassing
+// SDK-side wrappers (the LoginWithEmail cache, header injection
+// expectations, etc.) or reaching new server fields the wrapper
+// hasn't picked up yet — call into the service field by its type
+// name: client.AuthAPIService.LoginWithEmail(ctx)..., or
+// client.PostsAPIService.CreatePost(ctx)..., and so on. The same
+// concurrency / timeout rules apply because these still go through
+// the SDK's *Transport.
+//
 // Concurrency:
 //
 //   - Once NewClient returns, treat the exported "wire configuration"
@@ -133,12 +150,10 @@ type Client struct {
 	clientIPMu       sync.Mutex
 	clientIPFetching bool
 
-	// Active credentials. The transport reads Access to set `Authorization:
-	// Bearer`. Populate via SetTokens or by restoring a cached Session.
-	// Direct field reads/writes are not safe when other goroutines may be
-	// issuing requests; prefer SetTokens (write) and the internal
-	// accessSnapshot / refreshSnapshot helpers (read), which take authMu.
-	Tokens *TokenStore
+	// tokens holds the active OAuth credentials. The field is unexported
+	// so callers can't bypass authMu — read snapshots via (*Client).Tokens
+	// and rotate via SetTokens or the login / refresh flows.
+	tokens *Tokens
 
 	// UserID is the numeric account ID of the currently logged-in user.
 	// It is populated automatically after a successful LoginWithEmail
@@ -155,7 +170,7 @@ type Client struct {
 	// data race.
 	UserID int64
 
-	// authMu guards Tokens.Access / Tokens.Refresh, UserID, and
+	// authMu guards tokens.Access / tokens.Refresh, UserID, and
 	// currentEmail. These fields move together (login → activate
 	// tokens + record identity, refresh → rotate tokens, session
 	// restore → install all three), so a single RWMutex avoids a
@@ -338,7 +353,7 @@ func NewClient(opts ...Option) *Client {
 		ConnectionType:  DefaultConnectionType,
 		ConnectionSpeed: DefaultConnectionSpeed,
 		AcceptLanguage:  DefaultAcceptLanguage,
-		Tokens:          &TokenStore{},
+		tokens:          &Tokens{},
 		RetryPolicy:     DefaultRetryPolicy(),
 	}
 
@@ -419,32 +434,23 @@ func (c *Client) Close() error {
 func (c *Client) SetTokens(access, refresh string) {
 	c.authMu.Lock()
 	defer c.authMu.Unlock()
-	if c.Tokens == nil {
-		c.Tokens = &TokenStore{}
+	if c.tokens == nil {
+		c.tokens = &Tokens{}
 	}
-	c.Tokens.Access = access
-	c.Tokens.Refresh = refresh
+	c.tokens.Access = access
+	c.tokens.Refresh = refresh
 }
 
-// accessSnapshot returns the current access token under authMu. Use this
-// from request paths instead of touching c.Tokens.Access directly.
-func (c *Client) accessSnapshot() string {
+// Tokens returns a snapshot of the access / refresh tokens currently
+// active on the Client. The returned value is a copy — modifying it
+// has no effect on the Client. Mutate via SetTokens.
+func (c *Client) Tokens() Tokens {
 	c.authMu.RLock()
 	defer c.authMu.RUnlock()
-	if c.Tokens == nil {
-		return ""
+	if c.tokens == nil {
+		return Tokens{}
 	}
-	return c.Tokens.Access
-}
-
-// refreshSnapshot returns the current refresh token under authMu.
-func (c *Client) refreshSnapshot() string {
-	c.authMu.RLock()
-	defer c.authMu.RUnlock()
-	if c.Tokens == nil {
-		return ""
-	}
-	return c.Tokens.Refresh
+	return *c.tokens
 }
 
 // userIDSnapshot returns the current account UserID under authMu.

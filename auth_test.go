@@ -72,7 +72,7 @@ func TestLoginWithEmail_FreshLoginPersistsSession(t *testing.T) {
 	if resp.GetUserId() != 4242 {
 		t.Errorf("UserID = %d, want 4242", resp.GetUserId())
 	}
-	if got := c.accessSnapshot(); got != "ACC" {
+	if got := c.Tokens().Access; got != "ACC" {
 		t.Errorf("access token = %q, want ACC", got)
 	}
 	if c.UserID != 4242 {
@@ -119,8 +119,8 @@ func TestLoginWithEmail_RestoresFromStoreWithoutHTTP(t *testing.T) {
 	if resp.GetUserId() != 99 || resp.GetAccessToken() != "AT" {
 		t.Errorf("synthesized resp = %+v", resp)
 	}
-	if c.accessSnapshot() != "AT" {
-		t.Errorf("client tokens not applied from store, got %q", c.accessSnapshot())
+	if c.Tokens().Access != "AT" {
+		t.Errorf("client tokens not applied from store, got %q", c.Tokens().Access)
 	}
 	if c.UserID != 99 {
 		t.Errorf("Client.UserID = %d, want 99", c.UserID)
@@ -194,7 +194,36 @@ func TestLoginWithEmail_SaveFailureWrapsErrSessionSaveFailed(t *testing.T) {
 	if resp == nil || resp.GetAccessToken() != "AT" {
 		t.Errorf("resp should still be populated on persist failure, got %+v", resp)
 	}
-	if c.accessSnapshot() != "AT" {
-		t.Errorf("tokens should be active even when persist failed, got %q", c.accessSnapshot())
+	if c.Tokens().Access != "AT" {
+		t.Errorf("tokens should be active even when persist failed, got %q", c.Tokens().Access)
+	}
+}
+
+func TestLoginWithEmail_TwoFARequiredSurfacesErrorCode(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.HasSuffix(r.URL.Path, "/login_with_email") {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"error_code": int(ErrCodeRequired2FA),
+			"message":    "2FA required",
+		})
+	}))
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	_, _, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute()
+	if err == nil {
+		t.Fatal("expected error from 2FA-required server, got nil")
+	}
+	if got := CodeOf(err); got != ErrCodeRequired2FA {
+		t.Errorf("CodeOf(err) = %v, want ErrCodeRequired2FA", got)
+	}
+	if c.Tokens().Access != "" {
+		t.Errorf("tokens should not be set on 2FA-required, got %q", c.Tokens().Access)
 	}
 }

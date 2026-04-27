@@ -23,6 +23,18 @@ import (
 //
 // Chain .NoCache() before Execute to force a fresh login regardless of
 // cache contents.
+//
+// Why only LoginWithEmail has this wrapper:
+//
+// LoginWithEmail is the SDK's session entry point. The wrapper exists
+// so that "log in with email/password and don't think about caching"
+// is a one-liner. Other auth-flow body endpoints (CreateUser,
+// EditUser, LoginWithSns, OauthToken / refresh) are intentionally NOT
+// wrapped — they don't sit on the cache boundary, and adding a
+// chain wrapper to each would multiply API surface without changing
+// behavior. Reach those through the embedded service field directly,
+// e.g. client.UsersAPIService.CreateUser(ctx)... or
+// client.AuthAPIService.OauthToken(ctx)...
 type LoginWithEmailRequest struct {
 	client    *Client
 	ctx       context.Context
@@ -184,7 +196,7 @@ func (c *Client) acceptLogin(email string, resp *gen.LoginUserResponse) error {
 //
 // It is safe to call concurrently: only one refresh runs at a time, and a
 // caller that arrives with a staleToken matching an access token that has
-// already been rotated is a no-op (the new token is in c.Tokens).
+// already been rotated is a no-op (the new token is read via Tokens()).
 //
 // When a session store is configured and an account email is known, the
 // refreshed tokens are persisted so they survive process restarts.
@@ -193,10 +205,11 @@ func (c *Client) refreshTokens(ctx context.Context, staleToken string) error {
 	defer c.refreshMu.Unlock()
 
 	// Another goroutine already rotated the access token — use theirs.
-	if c.accessSnapshot() != staleToken {
+	snap := c.Tokens()
+	if snap.Access != staleToken {
 		return nil
 	}
-	currentRefresh := c.refreshSnapshot()
+	currentRefresh := snap.Refresh
 	if currentRefresh == "" {
 		return nil
 	}
