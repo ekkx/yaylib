@@ -40,6 +40,7 @@
 package yaylib
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"sync"
@@ -184,6 +185,13 @@ type Client struct {
 
 	api *gen.APIClient
 
+	// lifecycleCtx is canceled when Close runs. Background work owned
+	// by the Client — the lazy X-Client-IP fetch, every EventStream
+	// opened by OpenEventStream — derives from this ctx so they stop
+	// promptly instead of running until their own timeout / disconnect.
+	lifecycleCtx    context.Context
+	lifecycleCancel context.CancelFunc
+
 	// Every Yay! operation is promoted onto *Client through these embeds so
 	// callers use e.g. client.LoginWithEmail(ctx) without a service prefix.
 	//
@@ -274,6 +282,12 @@ func WithConnectionSpeed(s string) Option { return func(c *Client) { c.Connectio
 
 // WithHTTPClient sets a custom *http.Client. The client's Transport is wrapped
 // to add Yay!-required headers.
+//
+// NewClient takes a snapshot — it shallow-copies the supplied
+// *http.Client and wraps the copy's Transport. Mutating the original
+// after construction (e.g. changing Timeout, swapping Transport)
+// does NOT affect the SDK; pass a fresh option-set to a new Client
+// instead.
 func WithHTTPClient(h *http.Client) Option {
 	return func(c *Client) { c.httpClient = h }
 }
@@ -295,13 +309,23 @@ func WithRetryPolicy(p RetryPolicy) Option {
 
 // NewClient constructs a Client with all Yay! defaults filled in. Override
 // specific fields with With... options.
+//
+// Call (*Client).Close when the Client is no longer needed: it cancels
+// the lifecycle context that backs every goroutine the SDK starts on
+// behalf of the Client (lazy X-Client-IP fetch, open event streams).
+// Letting a Client go out of scope without Close is a goroutine leak
+// of bounded duration — the lazy IP fetch self-terminates after 30s
+// and event streams stay alive until their socket drops.
 func NewClient(opts ...Option) *Client {
 	userAgent := fmt.Sprintf("%s %s (%sx %s %s)",
 		DefaultDeviceType, DefaultDeviceOS, DefaultDeviceDensity,
 		DefaultDeviceScreen, DefaultDeviceModel)
 	deviceInfo := fmt.Sprintf("yay %s %s", DefaultAppVersion, userAgent)
 
+	lifecycleCtx, lifecycleCancel := context.WithCancel(context.Background())
 	c := &Client{
+		lifecycleCtx:    lifecycleCtx,
+		lifecycleCancel: lifecycleCancel,
 		APIKey:          DefaultAPIKey,
 		APIVersionKey:   DefaultAPIVersionKey,
 		APIVersionName:  DefaultAPIVersionName,
@@ -376,6 +400,16 @@ func (c *Client) wireServices() {
 	c.SurveysAPIService = a.SurveysAPI
 	c.ThreadsAPIService = a.ThreadsAPI
 	c.UsersAPIService = a.UsersAPI
+}
+
+// Close cancels the Client's lifecycle context, stopping every goroutine
+// the SDK started on its behalf — the lazy X-Client-IP fetch and every
+// EventStream opened via OpenEventStream. It is safe to call multiple
+// times; subsequent calls are no-ops. After Close the Client must not
+// issue new requests.
+func (c *Client) Close() error {
+	c.lifecycleCancel()
+	return nil
 }
 
 // SetTokens activates the given access / refresh tokens for subsequent calls.
