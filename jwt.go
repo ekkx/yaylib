@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// NewXJwt returns the short-lived HS256 JWT required by some write endpoints
+// GenerateXJwt returns the short-lived HS256 JWT required by some write endpoints
 // (most visibly CreatePost). The token is signed with the client's
 // APIVersionKey, carries only {iat, exp=iat+5}, and must be regenerated for
 // each call because the 5-second validity window expires quickly.
@@ -16,15 +16,15 @@ import (
 // Usage:
 //
 //	resp, _, err := client.CreatePost(ctx).
-//	    XJwt(client.NewXJwt()).
+//	    XJwt(client.GenerateXJwt()).
 //	    Text("...").
 //	    PostType("text").
 //	    Execute()
-func (c *Client) NewXJwt() string {
-	return newXJwt(c.APIVersionKey, time.Now().Unix(), 5)
+func (c *Client) GenerateXJwt() string {
+	return generateXJwt(c.APIVersionKey, time.Now().Unix(), 5)
 }
 
-func newXJwt(key string, iat, ttl int64) string {
+func generateXJwt(key string, iat, ttl int64) string {
 	header := base64.RawURLEncoding.EncodeToString([]byte(`{"alg":"HS256"}`))
 	payload := base64.RawURLEncoding.EncodeToString(
 		[]byte(fmt.Sprintf(`{"iat":%d,"exp":%d}`, iat, iat+ttl)))

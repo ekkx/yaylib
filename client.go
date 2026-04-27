@@ -25,7 +25,7 @@
 //   - automatic 401 → refresh-token retry, with the refreshed access token
 //     persisted back to the session cache,
 //   - a helper that mints the short-lived HS256 `X-Jwt` token some write
-//     endpoints require (see Client.NewXJwt),
+//     endpoints require (see Client.GenerateXJwt),
 //   - typed error inspection: yaylib.CodeOf(err) returns an ErrorCode and
 //     yaylib.ErrorResponseOf(err) returns the parsed *ErrorResponse,
 //   - real-time server-pushed events via Client.OpenEventStream — chat
