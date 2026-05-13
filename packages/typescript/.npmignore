@@ -1,5 +1,1 @@
-src
-tsconfig.json
-node_modules
-*.tgz
-.gitignore
+README.md

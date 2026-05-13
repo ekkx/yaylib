@@ -79,7 +79,7 @@ type Configuration struct {
 func NewConfiguration() *Configuration {
 	cfg := &Configuration{
 		DefaultHeader:    make(map[string]string),
-		UserAgent:        "yay-api/0.1.0/go",
+		UserAgent:        "yay-api/0.1.0",
 		Debug:            false,
 		Servers:          ServerConfigurations{
 			{
