@@ -11,6 +11,14 @@ event stream, and the typed errors. Internal details (transports,
 connection pools, mutex placement) are deliberately out of scope —
 each language solves them in its own native way.
 
+**Runtime scope**: server-side runtimes only. The Yay! API's CORS
+configuration rejects requests from external browser origins, so the
+SDK is not expected to run in a web page; the TypeScript port targets
+Node 18+, Bun, Deno, and Cloudflare Workers (every JS runtime with
+fetch and a Node-compatible crypto module). The Python port targets
+the equivalent server-side runtimes. This lets every port reach for
+its host's full crypto primitive set (MD5 etc.) without polyfilling.
+
 ---
 
 ## 1. Naming and case

@@ -5,6 +5,7 @@
     "moduleResolution": "node",
     "ignoreDeprecations": "5.0",
     "lib": ["es2020", "dom"],
+    "types": ["node"],
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

@@ -26,12 +26,15 @@
   "scripts": {
     "build": "tsc && tsc -p tsconfig.esm.json",
     "typecheck": "tsc --noEmit",
+    "test": "tsx tests/signing.test.ts",
     "prepare": "npm run build"
   },
   "engines": {
     "node": ">=18"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.4.0"
   }
 }
