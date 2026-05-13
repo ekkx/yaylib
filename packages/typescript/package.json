@@ -26,7 +26,7 @@
   "scripts": {
     "build": "tsc && tsc -p tsconfig.esm.json",
     "typecheck": "tsc --noEmit",
-    "test": "tsx tests/signing.test.ts && tsx tests/auth_refresh.test.ts && tsx tests/session_file.test.ts",
+    "test": "tsx tests/signing.test.ts && tsx tests/auth_refresh.test.ts && tsx tests/session_file.test.ts && tsx tests/auth.test.ts",
     "prepare": "npm run build"
   },
   "engines": {

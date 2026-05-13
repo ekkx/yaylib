@@ -49,3 +49,5 @@ export {
   generateSignedVersion,
   generateXJwt,
 } from "./signing";
+
+export { type LoginWithEmailBuilder, loginWithEmail } from "./auth";

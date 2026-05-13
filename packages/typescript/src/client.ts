@@ -264,6 +264,26 @@ export class Client {
     /* TODO: cancel lazy fetches and open event streams. */
   }
 
+  /**
+   * LoginWithEmail with transparent session caching (PORTING.md §6).
+   *
+   * If a SessionStore is configured, a hit returns the persisted session
+   * synthesized into a LoginUserResponse without issuing any HTTP. A miss
+   * (or `.noCache()`) issues the OAuth login, persists the session, and
+   * activates tokens / userID / email on the client.
+   *
+   *   await client.loginWithEmail()
+   *     .email("...").password("...").execute();
+   *
+   * For 2FA-required accounts, chain `.twoFACode("...")` on the retry.
+   */
+  loginWithEmail(): import("./auth").LoginWithEmailBuilder {
+    // Lazy import to avoid a circular module load at construction time.
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { loginWithEmail } = require("./auth") as typeof import("./auth");
+    return loginWithEmail(this);
+  }
+
   /** Internal — invoked by the auth-refresh middleware (transport.ts). */
   private _tryRefresh(staleAccess: string): Promise<boolean> {
     if (this._refreshInFlight) return this._refreshInFlight;
