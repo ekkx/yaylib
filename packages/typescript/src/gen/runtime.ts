@@ -429,3 +429,17 @@ export class TextApiResponse {
         return await this.raw.text();
     };
 }
+
+// objectToJSON is referenced by generated APIs for form-data field
+// serialization but is missing from the v7.10.0 runtime template. The
+// recursive form is correct for arrays, plain objects, and primitives.
+export function objectToJSON(obj: any): any {
+  if (obj == null) return obj;
+  if (Array.isArray(obj)) return obj.map(objectToJSON);
+  if (typeof obj === 'object') {
+    const out: Record<string, any> = {};
+    for (const key of Object.keys(obj)) out[key] = objectToJSON(obj[key]);
+    return out;
+  }
+  return obj;
+}

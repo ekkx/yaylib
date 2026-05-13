@@ -1,0 +1,5 @@
+dist/
+node_modules/
+.gen-scratch/
+*.tsbuildinfo
+package-lock.json
