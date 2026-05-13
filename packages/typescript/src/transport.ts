@@ -1,9 +1,15 @@
-// PORTING.md §12: required headers injected on every API call. This
-// middleware sets the headers the Yay! server validates and picks the
-// right Authorization scheme. The 401 auto-refresh chain (§6.1) lives in
-// auth.ts; this module covers only headers.
+// PORTING.md §12: required headers injected on every API call, plus the
+// 401 auto-refresh chain (§6.1). The headers middleware sets the headers
+// the Yay! server validates and picks the right Authorization scheme;
+// the refresh middleware detects a 401 response, asks the client to
+// refresh the access token, and retries the original request once.
 
-import type { Middleware, RequestContext, FetchParams } from "./gen/runtime";
+import type {
+  Middleware,
+  RequestContext,
+  ResponseContext,
+  FetchParams,
+} from "./gen/runtime";
 
 export interface TransportContext {
   userAgent: string;
@@ -17,6 +23,20 @@ export interface TransportContext {
   clientIP(): string;
   accessToken(): string;
 }
+
+// RefreshFn attempts a one-shot refresh of the access token using the
+// stale value carried by the original 401 request. Implementations MUST
+// collapse concurrent calls — when multiple in-flight requests fail with
+// 401 at the same time, only one OAuth /token round-trip should happen
+// and the others MUST await the same outcome (PORTING.md §6.1).
+//
+// Return values:
+//   - true  : the access token is now fresh; the caller should retry the
+//             original request with the new Bearer.
+//   - false : refresh failed (no refresh token, refresh endpoint
+//             returned non-2xx, or the credentials store is empty). The
+//             caller MUST surface the original 401 to the user.
+export type RefreshFn = (staleAccess: string) => Promise<boolean>;
 
 const OAUTH_TOKEN_PATH = "/api/v1/oauth/token";
 
@@ -89,6 +109,66 @@ export function buildHeadersMiddleware(ctx: TransportContext): Middleware {
         url: req.url,
         init: { ...init, headers },
       };
+    },
+  };
+}
+
+// buildAuthRefreshMiddleware watches every response, kicks off a single
+// OAuth /token refresh on 401 (excluding the OAuth endpoint itself),
+// and retries the original request once with the new Bearer. The
+// post-middleware semantics mirror the Go transport's handle401:
+//
+//   - Refresh success: re-issue the request, return the retry response
+//     (the original 401 body is dropped).
+//   - Refresh failure: return undefined so the original 401 propagates
+//     to the caller with its body intact.
+//   - Refresh success + retry transport error: the error bubbles out of
+//     the post-middleware as if the original fetch had failed at the
+//     transport layer — callers see the retry's network error rather
+//     than a misleading 401.
+//
+// The middleware reads the Authorization header set by the headers
+// middleware to learn which access token was actually sent, so the
+// RefreshFn can no-op when a concurrent caller has already rotated the
+// token by the time control returns here.
+export function buildAuthRefreshMiddleware(ctx: {
+  refresh: RefreshFn;
+  accessToken(): string;
+  fetchApi?: typeof fetch;
+}): Middleware {
+  return {
+    post: async (rc: ResponseContext): Promise<Response | void> => {
+      const { response, init, url, fetch: contextFetch } = rc;
+      if (response.status !== 401) return undefined;
+      if (isOAuthTokenPath(url)) return undefined;
+
+      const headers = (init.headers ?? {}) as Record<string, string>;
+      const authHeader =
+        Object.entries(headers).find(([k]) => k.toLowerCase() === "authorization")?.[1] ?? "";
+      const staleAccess = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+
+      const refreshOK = await ctx.refresh(staleAccess);
+      if (!refreshOK) return undefined;
+
+      // Drain the original 401 body so the underlying connection can be
+      // released; we're about to discard the response in favour of the
+      // retry.
+      try {
+        await response.arrayBuffer();
+      } catch {
+        /* ignore */
+      }
+
+      const retryHeaders: Record<string, string> = { ...headers };
+      const newAccess = ctx.accessToken();
+      if (newAccess) {
+        retryHeaders["Authorization"] = `Bearer ${newAccess}`;
+      }
+      // X-Timestamp MUST stay fresh — the original value is now stale.
+      retryHeaders["X-Timestamp"] = String(Math.floor(Date.now() / 1000));
+
+      const fetchImpl = ctx.fetchApi ?? contextFetch ?? globalThis.fetch;
+      return await fetchImpl(url, { ...init, headers: retryHeaders });
     },
   };
 }

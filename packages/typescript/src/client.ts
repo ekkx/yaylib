@@ -56,10 +56,13 @@ import {
   buildDeviceInfo,
   buildUserAgent,
 } from "./config";
-import type { SessionStore } from "./session";
+import type { Session, SessionStore } from "./session";
 import type { Tokens } from "./tokens";
 import { emptyTokens } from "./tokens";
-import { buildHeadersMiddleware } from "./transport";
+import {
+  buildAuthRefreshMiddleware,
+  buildHeadersMiddleware,
+} from "./transport";
 
 export interface ClientOptions {
   baseURL?: string;
@@ -111,6 +114,10 @@ export class Client {
   private _userID = 0;
   private _currentEmail = "";
   private _clientIP = "";
+  // Single-flight refresh tracking — concurrent 401s collapse onto one
+  // OAuth /token round-trip (PORTING.md §6.1).
+  private _refreshInFlight: Promise<boolean> | null = null;
+  private readonly _fetchApi?: typeof fetch;
   readonly sessionStore?: SessionStore;
 
   // Per-tag API instances. The flat operation surface (PORTING.md §2)
@@ -162,6 +169,7 @@ export class Client {
     this.connectionSpeed = opts.connectionSpeed ?? DEFAULT_CONNECTION_SPEED;
     this.acceptLanguage = opts.acceptLanguage ?? DEFAULT_ACCEPT_LANGUAGE;
     this.sessionStore = opts.sessionStore;
+    this._fetchApi = opts.fetchApi;
 
     const config = new Configuration({
       basePath: this.baseURL,
@@ -178,6 +186,11 @@ export class Client {
           apiKey: this.apiKey,
           clientIP: () => this._clientIP,
           accessToken: () => this._tokens.access,
+        }),
+        buildAuthRefreshMiddleware({
+          refresh: (stale) => this._tryRefresh(stale),
+          accessToken: () => this._tokens.access,
+          fetchApi: opts.fetchApi,
         }),
       ],
     });
@@ -249,5 +262,93 @@ export class Client {
   // close is a no-op so callers can wire it up unconditionally.
   async close(): Promise<void> {
     /* TODO: cancel lazy fetches and open event streams. */
+  }
+
+  /** Internal — invoked by the auth-refresh middleware (transport.ts). */
+  private _tryRefresh(staleAccess: string): Promise<boolean> {
+    if (this._refreshInFlight) return this._refreshInFlight;
+    const promise = this._doRefresh(staleAccess).finally(() => {
+      this._refreshInFlight = null;
+    });
+    this._refreshInFlight = promise;
+    return promise;
+  }
+
+  private async _doRefresh(staleAccess: string): Promise<boolean> {
+    // Another concurrent caller already rotated the token while we were
+    // queued. Skip the OAuth round-trip and let the caller retry with
+    // the current Bearer.
+    if (this._tokens.access !== staleAccess) return true;
+    if (!this._tokens.refresh) return false;
+
+    const form = new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: this._tokens.refresh,
+    });
+    const fetchImpl = this._fetchApi ?? globalThis.fetch;
+
+    let res: Response;
+    try {
+      res = await fetchImpl(`${this.baseURL}/api/v1/oauth/token`, {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${btoa(this.apiKey)}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: form.toString(),
+      });
+    } catch {
+      return false;
+    }
+
+    if (!res.ok) {
+      try {
+        await res.arrayBuffer();
+      } catch {
+        /* ignore */
+      }
+      return false;
+    }
+
+    let parsed: { access_token?: string; refresh_token?: string };
+    try {
+      parsed = (await res.json()) as {
+        access_token?: string;
+        refresh_token?: string;
+      };
+    } catch {
+      return false;
+    }
+    if (!parsed.access_token || !parsed.refresh_token) return false;
+
+    this._tokens = {
+      access: parsed.access_token,
+      refresh: parsed.refresh_token,
+    };
+
+    // Persist the rotated session so subsequent restarts don't re-login.
+    // PORTING.md §5: persist failure during the 401 auto-refresh path is
+    // non-fatal — log and continue.
+    if (this.sessionStore && this._currentEmail) {
+      const session: Session = {
+        email: this._currentEmail,
+        userID: this._userID,
+        accessToken: this._tokens.access,
+        refreshToken: this._tokens.refresh,
+        deviceUUID: this._deviceUUID,
+        updatedAt: new Date().toISOString(),
+      };
+      try {
+        await this.sessionStore.save(session);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          "yaylib: failed to persist refreshed session:",
+          err instanceof Error ? err.message : err,
+        );
+      }
+    }
+
+    return true;
   }
 }
