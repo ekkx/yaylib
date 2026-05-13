@@ -1,4 +1,4 @@
-// Package yaylib is a Go client for Yay! (jp.nanameue.yay).
+// Package yaylib is a Go client for the Yay! API.
 //
 // Usage:
 //
