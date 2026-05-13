@@ -81,6 +81,26 @@ SHOULD start usable without any explicit option.
 same lifecycle event: cancel background work owned by the Client (lazy
 X-Client-IP fetch, every open EventStream).
 
+### 3.1 Embedded wire constants
+
+The Yay! server validates several constants on every request. The Go
+reference exposes them as `Default*` values in `client.go`; every
+port MUST publish constants with the same names and the same default
+values so a caller constructing a client without options gets a
+Yay!-compatible client out of the box.
+
+Two composition rules are easy to miss when reading the Go code in
+isolation, so they are pinned here:
+
+- `User-Agent` = `<DeviceType> <DeviceOS> (<DeviceDensity>x <DeviceScreen> <DeviceModel>)` — e.g. `android 11 (3.5x 1440x2960 Galaxy S9)`.
+- `X-Device-Info` = `yay <AppVersion> <User-Agent>` — e.g. `yay 4.26.1 android 11 (3.5x 1440x2960 Galaxy S9)`.
+
+Two signing-only constants travel alongside the defaults and are
+referenced from §7:
+
+- `signed_info` MD5 suffix: `yayZ1` (wire pepper).
+- `signed_version` platform identifier: `yay_android` (hard-coded; deviating risks per-platform allowlist rejection).
+
 ---
 
 ## 4. Tokens
@@ -145,6 +165,37 @@ Sync vs async:
 - TS: all three return `Promise<...>` — file I/O is async in Node.
 - Python: all three are `async def`.
 
+### 5.1 File-backed JSON schema
+
+The default file-backed implementation persists every session under
+one top-level object keyed by email. The exact shape (which every
+port MUST honour for cross-language session-file compatibility):
+
+```json
+{
+  "sessions": {
+    "<email>": {
+      "email":         "<string>",
+      "user_id":       0,
+      "access_token":  "<string>",
+      "refresh_token": "<string>",
+      "device_uuid":   "<string>",
+      "updated_at":    "<RFC3339 timestamp>"
+    }
+  }
+}
+```
+
+`device_uuid` is mandatory in records the SDK writes — restoring a
+session without restoring its matching device UUID invalidates every
+`signed_info` the client would later compute (§7). `user_id` is the
+authenticated user id required by the upload helpers (§8). The outer
+`sessions` map allows one file to hold multiple identities.
+
+File permissions SHOULD be `0o600` on POSIX; the file contains
+access tokens. Writes SHOULD be atomic (temp-file + rename) so a
+crashed write never leaves a half-truncated session file behind.
+
 ---
 
 ## 6. LoginWithEmail is the only auth wrapper
@@ -170,6 +221,23 @@ behavior. Every port MUST follow this rule:
 - Leave other body-builder auth endpoints as plain calls into the
   generated client.
 - Document the asymmetry where the LoginWithEmail wrapper is defined.
+
+### 6.1 401 auto-refresh contract
+
+The transport refreshes the access token automatically on a 401 from
+any non-OAuth endpoint. The Go reference is in `transport.go`; the
+non-obvious behaviour the port MUST match:
+
+1. **Refresh success**: re-issue the original request once with the new Bearer, return THAT response (drop the original 401 body).
+2. **Refresh failure** (no refresh token / refresh itself returned non-2xx): return the original 401 with its body intact — the caller needs the server's "your credentials are bad" message to prompt re-auth.
+3. **Refresh success + retry transport error**: return the retry transport error, NOT the stale 401. Restoring the 401 here would mislead the caller into prompting for re-auth when the real problem is the network.
+
+Other invariants:
+
+- The OAuth endpoint itself (`/api/v1/oauth/token` and subpaths) is excluded from the auto-refresh path to prevent infinite loops.
+- The OAuth endpoint uses `Authorization: Basic <base64(APIKey)>` and `Content-Type: application/x-www-form-urlencoded`; every other endpoint uses `Authorization: Bearer <access>`.
+- The server rotates BOTH `access_token` and `refresh_token` on each refresh — the SDK MUST persist the new refresh token.
+- Concurrent 401s MUST collapse to a single refresh call (mutex / promise / asyncio lock); the others wait and retry with the new token. Parallel refreshes invalidate each other.
 
 ---
 
@@ -198,15 +266,107 @@ Plain string returns (`SignedVersion`, `XJwt`) are not wrapped in a
 struct — they're single values whose only use is to fill one request
 header / field.
 
+### 7.1 Cross-language test vectors
+
+Formulas are implemented in `signing.go` and `jwt.go`; what the
+contract pins is **byte-identical output across languages**. Every
+port MUST add a golden-value test for each of the three vectors
+below. If they pass, the implementation is correct; if any fails,
+the formula has drifted (encoding, key choice, message body,
+trailing whitespace).
+
+**signed_info** with `APIKey` = default, `DeviceUUID` = `00000000-0000-0000-0000-000000000000`, `timestamp` = `1700000000`:
+
+```
+=> "253b7ca3e67590204034a73326d2be87"
+```
+
+**signed_version** with default `APIVersionKey` and `APIVersionName` = `4.26`:
+
+```
+=> "zyKEqdZqaEqJjSRItHvchU9HmgWHNLtn02sWXwzQ4iQ="
+```
+
+(Standard base64 with one trailing `=`; some language stdlib
+encoders append `\n` and need explicit trimming.)
+
+**X-Jwt** with default `APIVersionKey`, `iat` = `1700000000`:
+
+```
+=> "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MTcwMDAwMDAwNX0.-UYjGTM53-Uwe8tNGjBf4ZLx644_zUEK8fpW1w16KfA"
+```
+
+(Base64 URL-safe with `=` padding stripped — NOT standard base64.
+Header JSON has no `typ` and no spaces; payload JSON has key order
+`iat` then `exp`, also no spaces. The TTL is 5 seconds, so callers
+MUST regenerate per request — a token prepared offline and sent
+later fails.)
+
+**Call action signature flow**: the signature is computed server-side
+(client never sees the secret). `GenerateCallActionSignature` posts
+to `/v1/calls/action_signature/generate` and returns the full
+`SignaturePayload`; `ValidateCallActionSignature` replays it against
+`/v2/calls/action_signature/validate` as six query parameters
+(`call_id` / `sender_uuid` / `receiver_uuid` / `action` /
+`timestamp` / `signature`). Every port wraps the validation call
+to spread the payload across those six parameters so callers pass
+the payload through as one value.
+
 ---
 
 ## 8. Uploads
 
-Thirteen typed `Upload<Xxx>Image[s]` methods + `UploadVideo`. Each
-maps to a specific bucket-side category path and thumbnail policy
-(see the Go source for the exhaustive table; the table is part of
-the contract — every port MUST replicate the categories with the
-same paths and same thumbnail dimensions).
+Thirteen typed `Upload<Xxx>Image[s]` methods + `UploadVideo`. The
+exhaustive category table (method ↔ bucket path ↔ thumbnail size ↔
+file caps) is encoded in `upload.go`; every port MUST replicate the
+same set with the same names and the same values. Naming convention:
+self-user methods take no userID parameter (they read `Client.UserID`
+and fail with a clear "not logged in" error when it is zero);
+room/group methods take the corresponding ID as the first argument.
+
+The pieces of the upload protocol that aren't visible from category
+struct definitions alone — and that every port MUST honour:
+
+**Filename format** (the server pattern-matches these strings; format
+drift breaks uploads silently):
+
+- Main: `<category-path>/<random16>_<unix_ms>_<index>_size_<W>x<H>.<ext>`
+- Thumb: `<category-path>/thumb_<random16>_<unix_ms>_<index>_size_<W>x<H>.<ext>`
+- `<random16>`: 16 chars from `[0-9A-Za-z]`, freshly generated per upload call.
+- `<unix_ms>`: wall-clock millisecond at call time, shared across every file in a multi-image call.
+- `<W>x<H>`: source image's native resolution. Main and thumb carry the SAME `WxH` token (the server enforces consistency).
+- `<Y/M/D>` in date-bucketed categories: decimal, NO zero-padding — `2026/4/26`, not `2026/04/26`.
+- Thumb extension MUST equal main extension.
+
+**Server-canonical filename** (the most common porting bug):
+
+The presigned-URL response returns a `filename` field with an `s3/`
+prefix prepended (e.g. `s3/user/123/avatar/...`). The Upload method's
+return value MUST be that canonical name, NOT the locally-generated
+path the SDK PUT to. Callers pass it to
+`EditUser.profile_icon_filename` / `CreatePost.attachment_filename` /
+etc. Sending the locally-generated name (without `s3/`) makes the
+server treat the upload as missing and silently drop the main image.
+
+**Animated-GIF thumbnail rule**:
+
+Animated GIFs MUST stay animated through the thumbnail step (decode
+all frames → per-frame composite to full canvas → bilinear resize →
+Floyd–Steinberg dither → re-encode with `DisposalNone`). Skipping
+the thumb, encoding it as a static frame, or transcoding to JPEG
+triggers server-side moderation and DELETES the main image too.
+
+**Video uploads**:
+
+- Endpoint: `GET /v1/users/presigned_url?video_file_name=<flat-name>` returns one `presigned_url` (no thumbnail companion).
+- Flat filename: `<random16>_<unix_ms>.mp4` (no category path, no `_size_WxH` suffix).
+- The server does NOT return a canonical filename for videos; `UploadVideo` returns the same flat name the SDK generated. Callers pass it to `CreatePost.video_file_name` / `SendChatMessage.video_file_name`.
+- Content-Type: `video/mp4`.
+
+**Content-Type mapping** (matching extension keeps S3 intermediaries
+happy even though the presigned URL signs only the host):
+`.jpg`/`.jpeg`/unknown → `image/jpeg`, `.png` → `image/png`,
+`.gif` → `image/gif`, `.mp4` → `video/mp4`.
 
 Image upload input shape: `{ filename, body }` per file. `filename`
 is used to detect the extension and Content-Type. For multi-image
@@ -330,6 +490,55 @@ Authentication: every Open call fetches a short-lived token via
 `GetWebSocketToken`. An unauthenticated Client (no access token) is
 returned the underlying 401 as the Open error.
 
+### 10.1 Wire constants
+
+The handshake / subscribe / event-dispatch flow itself is in
+`event_stream.go` (Rails-ActionCable-style JSON). What every port
+MUST replicate exactly — these are pattern-matched server-side and
+silent failures result from drift:
+
+**Dial URL**: `wss://cable.yay.space?token=<jwt>&app_version=<APIVersionName>`.
+The dial carries NO `Authorization` header (authentication is
+exclusively the `token` query parameter). The token comes from
+`GET /v1/users/ws_token` and has a 30-second TTL at handshake time
+only (established connections continue past `exp`).
+
+**Channel identifiers** (the server matches these strings literally
+when routing later frames — the space after `,` is significant, and
+the IDs are JSON STRINGS not numbers):
+
+| Channel | Identifier (verbatim) |
+|---|---|
+| `ChatRoomChannel` | `{"channel":"ChatRoomChannel"}` |
+| `MessagesChannel(roomID)` | `{"channel":"MessagesChannel", "chat_room_id":"<rid>"}` |
+| `GroupUpdatesChannel` | `{"channel":"GroupUpdatesChannel"}` |
+| `GroupPostsChannel(groupID)` | `{"channel":"GroupPostsChannel", "group_id":"<gid>"}` |
+
+**Frame inventory**: client sends `{"command":"subscribe","identifier":...}`
+and `{"command":"unsubscribe","identifier":...}`; server sends
+`{"type":"welcome"}` once after dial, `{"type":"ping"}` periodically
+(silently ignored — no pong), `{"type":"confirm_subscription","identifier":...}`,
+`{"type":"disconnect", ...}`, and events as
+`{"identifier":..., "message":{"event":..., "data":...}}` (some
+events use `"message"` instead of `"data"` — accept both).
+
+**Event-to-DTO inventory** — the wire `event` name does NOT always
+match the SDK-side type name, and porters MUST preserve the SDK
+names verbatim so user code is portable:
+
+| Wire `event` | SDK type |
+|---|---|
+| `new_message` | `NewMessageEvent` |
+| `video_processed` | `VideoProcessedEvent` |
+| `chat_deleted` | `ChatDeletedEvent` |
+| `total_chat_request` | `TotalChatRequestEvent` |
+| `unsubscribed` | `UnsubscribedEvent` |
+| `new_post` | `GroupUpdatedEvent` (payload is `{group_id}`, NOT a post) |
+| `conference_call_finished` | `CallFinishedEvent` |
+
+`video_thumbnail_big_url` is a WebSocket-only field on `new_message`
+— it does NOT appear on the REST `Message` DTO. Treat it as nullable.
+
 ---
 
 ## 11. Resilience: server-as-source-of-truth
@@ -410,18 +619,23 @@ right overlay to fix it, regenerate, ship.
 
 The transport adds these on every API call:
 
-- `User-Agent`
-- `X-App-Version`
-- `X-Device-Info`
+- `User-Agent` (composed, see §3.1)
+- `X-App-Version` (= `APIVersionName`)
+- `X-Device-Info` (composed, see §3.1)
 - `X-Device-UUID`
-- `X-Client-IP` — fetched lazily after the first request, cached
+- `X-Client-IP` (fetched lazily from `GET /v2/users/timestamp.ip_address` on the first request, cached)
 - `X-Connection-Type`
-- `X-Connection-Speed`
+- `X-Connection-Speed` (literal `0 kbps`, with the space)
 - `Accept-Language`
-- `X-Timestamp` — fresh every request
-- `Authorization: Bearer <access>` — for normal endpoints
-- `Authorization: Basic base64(api_key)` — for `/api/v1/oauth/token*`
-- `Content-Type: application/json;charset=UTF-8` — when JSON
+- `X-Timestamp` (fresh every request — MUST NOT be cached)
+- `Authorization: Bearer <access>` for normal endpoints
+- `Authorization: Basic <base64(APIKey)>` for `/api/v1/oauth/token*` only; base64 is standard (with padding), NOT URL-safe
+- `Content-Type: application/json;charset=UTF-8` when JSON. The casing and the lack of space between `;` and `charset` are wire-significant; some intermediaries normalize this and the server has been observed to reject the normalized form.
+
+Caller-provided header values win (set-if-absent) EXCEPT
+`X-Timestamp` and `Content-Type` — those two are always normalized
+by the transport so a test override of `X-Device-Info` / `User-Agent`
+cannot accidentally pin a stale timestamp.
 
 The Yay! server validates these. Missing or stale values produce
 opaque 4xx responses that look like auth bugs. Every port MUST inject
