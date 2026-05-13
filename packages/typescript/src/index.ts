@@ -22,6 +22,8 @@ export {
   newMemoryStore,
 } from "./session";
 
+export { FileSessionStore, newSessionStore } from "./session_file";
+
 export {
   APIError,
   type ErrorResponse,
