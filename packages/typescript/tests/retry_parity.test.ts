@@ -127,8 +127,11 @@ async function honorsRetryInBody(): Promise<void> {
 
 // Cancellation must surface an error rather than a stale success. Go uses
 // a 100ms context against 500ms base backoff; here the timings are shrunk
-// (TS sleeps aren't abort-aware) but the asserted contract is identical:
-// an aborted request never returns a clean 2xx.
+// (TS sleeps aren't abort-aware) but the asserted contract is identical
+// to Go's (`if err == nil { fatal }`): an aborted request never returns
+// a clean success. The raw operation is awaited directly — executeRaw
+// would try to drain an aborted-and-thus-unusable body — so we just
+// assert the call rejected, which is the behavioral contract.
 async function retryRespectsCancellation(): Promise<void> {
   const session = newMockSession();
   const c = new Client({
@@ -138,19 +141,17 @@ async function retryRespectsCancellation(): Promise<void> {
   });
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), 50);
-  const res = await c.executeRaw(() =>
-    c.bucketsAPI.getBucketPresignedUrlsRaw({}, { signal: ac.signal }),
-  );
-  clearTimeout(timer);
-  const cleanSuccess =
-    res.error === undefined &&
-    res.httpResponse !== undefined &&
-    res.httpResponse.status >= 200 &&
-    res.httpResponse.status < 300;
+  let threw = false;
+  try {
+    await c.bucketsAPI.getBucketPresignedUrlsRaw({}, { signal: ac.signal });
+  } catch {
+    threw = true;
+  } finally {
+    clearTimeout(timer);
+  }
   assert(
-    "retryRespectsCancellation: aborted request did not yield a clean 2xx",
-    !cleanSuccess,
-    `error=${String(res.error?.message)} status=${res.httpResponse?.status}`,
+    "retryRespectsCancellation: aborted request surfaced an error, not a clean success",
+    threw,
   );
 }
 

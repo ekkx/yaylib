@@ -11,6 +11,18 @@
 // single event per subscribe and exposes no socket-fault knob, so those
 // are not expressible here (§15 covers reconnect/reject/timeout, which
 // are).
+//
+// Multiple-sub resubscribe (§15) also stays a local fixture
+// (event_stream.test.ts:multipleSubsResubscribeAfterReconnect): the
+// shared server's drop-after-confirm closes the socket after the *first*
+// subscribe per connection, so observing both subs re-confirmed requires
+// the resubscribe order to vary across reconnects. Go's reference passes
+// only because Go map iteration is randomized; the TS SDK resubscribes
+// in deterministic insertion order, so the multi-sub case cannot be
+// satisfied against this contract and is left to the in-process fixture
+// (which controls the fake server frame-by-frame). The single-sub
+// reconnectAfterServerClose below already proves reconnect + re-subscribe
+// per §15.
 
 import { chatRoomChannel, groupUpdatesChannel } from "../src/channels";
 import type { Event } from "../src/events";
@@ -162,36 +174,6 @@ async function doneAndErrOnCleanClose(): Promise<void> {
   );
 }
 
-async function multipleSubsResubscribeAfterReconnect(): Promise<void> {
-  const c = mockStreamClient("drop-after-confirm");
-  c.setTokens("stub", "");
-  const conn = await c.openEventStream({
-    reconnect: { initialDelayMs: 10, maxDelayMs: 30 },
-  });
-  try {
-    const sub1 = await conn.subscribe(chatRoomChannel());
-    const sub2 = await conn.subscribe(groupUpdatesChannel());
-    let chat = 0;
-    let group = 0;
-    sub1.onEvent((ev) => {
-      if (ev.type === "ChatDeletedEvent") chat++;
-    });
-    sub2.onEvent((ev) => {
-      if (ev.type === "GroupUpdatedEvent") group++;
-    });
-    // Both subs must keep receiving across reconnect cycles, proving
-    // every sub is re-subscribed on the new connection.
-    const ok = await waitUntil(() => chat >= 2 && group >= 2, 7000);
-    assert(
-      "stream: every sub re-subscribed across reconnect cycles",
-      ok,
-      `chat=${chat} group=${group}`,
-    );
-  } finally {
-    await conn.close();
-  }
-}
-
 async function wsDialDoesNotLeakBearer(): Promise<void> {
   const c = mockStreamClient("");
   // Tokens are set, but the WS dial must authenticate via the query
@@ -231,6 +213,5 @@ run(async () => {
   await reconnectAfterServerClose();
   await subscribeTimeout();
   await doneAndErrOnCleanClose();
-  await multipleSubsResubscribeAfterReconnect();
   await wsDialDoesNotLeakBearer();
 });
