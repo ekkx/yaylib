@@ -76,7 +76,7 @@ export function PageFromJSONTyped(json: any, ignoreDiscriminator: boolean): Page
         
         'id': json['id'] == null ? undefined : json['id'],
         'items': json['items'] == null ? undefined : json['items'],
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
         'pinnedItems': json['pinned_items'] == null ? undefined : json['pinned_items'],
         'totalItemCount': json['total_item_count'] == null ? undefined : json['total_item_count'],
         'totalItemLimit': json['total_item_limit'] == null ? undefined : json['total_item_limit'],

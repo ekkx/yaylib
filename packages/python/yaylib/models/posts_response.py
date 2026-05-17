@@ -28,12 +28,12 @@ class PostsResponse(BaseModel):
     PostsResponse
     """ # noqa: E501
     has_more_hot_posts: Optional[StrictBool] = None
-    next_page_value: Optional[StrictStr] = None
+    next_page_value: Optional[str] = None
     pinned_posts: Optional[List[Post]] = None
     posts: Optional[List[Post]] = None
     __properties: ClassVar[List[str]] = ["has_more_hot_posts", "next_page_value", "pinned_posts", "posts"]
 
-    model_config = ConfigDict(
+    model_config = ConfigDict(coerce_numbers_to_str=True, 
         populate_by_name=True,
         validate_assignment=True,
         protected_namespaces=(),

@@ -71,7 +71,7 @@ export function PostsResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
     return {
         
         'hasMoreHotPosts': json['has_more_hot_posts'] == null ? undefined : json['has_more_hot_posts'],
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
         'pinnedPosts': json['pinned_posts'] == null ? undefined : ((json['pinned_posts'] as Array<any>).map(PostFromJSON)),
         'posts': json['posts'] == null ? undefined : ((json['posts'] as Array<any>).map(PostFromJSON)),
     };

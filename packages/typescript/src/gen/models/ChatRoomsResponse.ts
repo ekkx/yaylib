@@ -35,10 +35,10 @@ export interface ChatRoomsResponse {
     chatRooms?: Array<RealmChatRoom> | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof ChatRoomsResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {Array<RealmChatRoom>}
@@ -65,7 +65,7 @@ export function ChatRoomsResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'chatRooms': json['chat_rooms'] == null ? undefined : ((json['chat_rooms'] as Array<any>).map(RealmChatRoomFromJSON)),
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
         'pinnedChatRooms': json['pinned_chat_rooms'] == null ? undefined : ((json['pinned_chat_rooms'] as Array<any>).map(RealmChatRoomFromJSON)),
     };
 }

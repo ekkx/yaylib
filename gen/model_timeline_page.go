@@ -14,7 +14,7 @@ var _ MappedNullable = &TimelinePage{}
 type TimelinePage struct {
 	Id NullableInt64 `json:"id,omitempty"`
 	Items []map[string]interface{} `json:"items,omitempty"`
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	PinnedItems []map[string]interface{} `json:"pinned_items,omitempty"`
 	ShowMoreHotPostsButton NullableBool `json:"show_more_hot_posts_button,omitempty"`
 	TotalItemCount NullableInt32 `json:"total_item_count,omitempty"`

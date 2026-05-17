@@ -13,7 +13,7 @@ var _ MappedNullable = &PostsResponse{}
 // PostsResponse struct for PostsResponse
 type PostsResponse struct {
 	HasMoreHotPosts NullableBool `json:"has_more_hot_posts,omitempty"`
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	PinnedPosts []Post `json:"pinned_posts,omitempty"`
 	Posts []Post `json:"posts,omitempty"`
 	AdditionalProperties map[string]interface{}

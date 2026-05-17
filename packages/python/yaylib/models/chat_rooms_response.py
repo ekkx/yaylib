@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.realm_chat_room import RealmChatRoom
 from typing import Optional, Set
@@ -28,11 +28,11 @@ class ChatRoomsResponse(BaseModel):
     ChatRoomsResponse
     """ # noqa: E501
     chat_rooms: Optional[List[RealmChatRoom]] = None
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[str] = None
     pinned_chat_rooms: Optional[List[RealmChatRoom]] = None
     __properties: ClassVar[List[str]] = ["chat_rooms", "next_page_value", "pinned_chat_rooms"]
 
-    model_config = ConfigDict(
+    model_config = ConfigDict(coerce_numbers_to_str=True, 
         populate_by_name=True,
         validate_assignment=True,
         protected_namespaces=(),

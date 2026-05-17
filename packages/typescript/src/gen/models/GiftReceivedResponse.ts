@@ -64,7 +64,7 @@ export function GiftReceivedResponseFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
         'receivedGifts': json['received_gifts'] == null ? undefined : ((json['received_gifts'] as Array<any>).map(ReceivedGiftFromJSON)),
         'totalCount': json['total_count'] == null ? undefined : json['total_count'],
     };

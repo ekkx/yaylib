@@ -29,11 +29,11 @@ class HiddenResponse(BaseModel):
     """ # noqa: E501
     hidden_users: Optional[List[RealmUser]] = None
     limit: Optional[StrictInt] = None
-    next_page_value: Optional[StrictStr] = None
+    next_page_value: Optional[str] = None
     total_count: Optional[StrictInt] = None
     __properties: ClassVar[List[str]] = ["hidden_users", "limit", "next_page_value", "total_count"]
 
-    model_config = ConfigDict(
+    model_config = ConfigDict(coerce_numbers_to_str=True, 
         populate_by_name=True,
         validate_assignment=True,
         protected_namespaces=(),

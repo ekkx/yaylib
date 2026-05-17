@@ -12,7 +12,7 @@ var _ MappedNullable = &GroupThreadListResponse{}
 
 // GroupThreadListResponse struct for GroupThreadListResponse
 type GroupThreadListResponse struct {
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	Threads []ThreadInfo `json:"threads,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

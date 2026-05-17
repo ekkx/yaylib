@@ -59,7 +59,7 @@ export function GiftExchangeHistoriesResponseFromJSONTyped(json: any, ignoreDisc
     return {
         
         'giftExchangeHistories': json['gift_exchange_histories'] == null ? undefined : ((json['gift_exchange_histories'] as Array<any>).map(GiftExchangeHistoryFromJSON)),
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
     };
 }
 

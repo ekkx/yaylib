@@ -59,7 +59,7 @@ export function GroupsRelatedResponseFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'groups': json['groups'] == null ? undefined : ((json['groups'] as Array<any>).map(GroupFromJSON)),
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
     };
 }
 

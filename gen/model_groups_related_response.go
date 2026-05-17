@@ -13,7 +13,7 @@ var _ MappedNullable = &GroupsRelatedResponse{}
 // GroupsRelatedResponse struct for GroupsRelatedResponse
 type GroupsRelatedResponse struct {
 	Groups []Group `json:"groups,omitempty"`
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 

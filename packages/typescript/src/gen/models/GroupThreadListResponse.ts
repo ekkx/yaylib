@@ -58,7 +58,7 @@ export function GroupThreadListResponseFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
         'threads': json['threads'] == null ? undefined : ((json['threads'] as Array<any>).map(ThreadInfoFromJSON)),
     };
 }

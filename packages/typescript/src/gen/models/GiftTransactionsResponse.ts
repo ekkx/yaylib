@@ -65,7 +65,7 @@ export function GiftTransactionsResponseFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'hideGiftsReceived': json['hide_gifts_received'] == null ? undefined : json['hide_gifts_received'],
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
         'sentGifts': json['sent_gifts'] == null ? undefined : ((json['sent_gifts'] as Array<any>).map(GiftHistoryFromJSON)),
     };
 }

@@ -59,7 +59,7 @@ export function FootprintsResponseFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'footprints': json['footprints'] == null ? undefined : ((json['footprints'] as Array<any>).map(FootprintDTOFromJSON)),
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
     };
 }
 

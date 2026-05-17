@@ -13,7 +13,7 @@ var _ MappedNullable = &GenresResponse{}
 // GenresResponse struct for GenresResponse
 type GenresResponse struct {
 	Genres []RealmGenre `json:"genres,omitempty"`
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 

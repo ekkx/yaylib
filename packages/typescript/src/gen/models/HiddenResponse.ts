@@ -72,7 +72,7 @@ export function HiddenResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'hiddenUsers': json['hidden_users'] == null ? undefined : ((json['hidden_users'] as Array<any>).map(RealmUserFromJSON)),
         'limit': json['limit'] == null ? undefined : json['limit'],
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
         'totalCount': json['total_count'] == null ? undefined : json['total_count'],
     };
 }

@@ -27,12 +27,12 @@ class GiftReceivedResponse(BaseModel):
     """
     GiftReceivedResponse
     """ # noqa: E501
-    next_page_value: Optional[StrictStr] = None
+    next_page_value: Optional[str] = None
     received_gifts: Optional[List[ReceivedGift]] = None
     total_count: Optional[StrictInt] = None
     __properties: ClassVar[List[str]] = ["next_page_value", "received_gifts", "total_count"]
 
-    model_config = ConfigDict(
+    model_config = ConfigDict(coerce_numbers_to_str=True, 
         populate_by_name=True,
         validate_assignment=True,
         protected_namespaces=(),

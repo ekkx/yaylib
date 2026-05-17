@@ -14,7 +14,7 @@ var _ MappedNullable = &HiddenResponse{}
 type HiddenResponse struct {
 	HiddenUsers []RealmUser `json:"hidden_users,omitempty"`
 	Limit NullableInt32 `json:"limit,omitempty"`
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	TotalCount NullableInt32 `json:"total_count,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

@@ -12,7 +12,7 @@ var _ MappedNullable = &CallGiftHistoryResponse{}
 
 // CallGiftHistoryResponse struct for CallGiftHistoryResponse
 type CallGiftHistoryResponse struct {
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	SentGifts []GiftHistory `json:"sent_gifts,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

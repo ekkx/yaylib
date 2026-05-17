@@ -82,7 +82,7 @@ export function TimelinePageFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'id': json['id'] == null ? undefined : json['id'],
         'items': json['items'] == null ? undefined : json['items'],
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
         'pinnedItems': json['pinned_items'] == null ? undefined : json['pinned_items'],
         'showMoreHotPostsButton': json['show_more_hot_posts_button'] == null ? undefined : json['show_more_hot_posts_button'],
         'totalItemCount': json['total_item_count'] == null ? undefined : json['total_item_count'],

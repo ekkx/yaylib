@@ -28,10 +28,10 @@ class GiftExchangeHistoriesResponse(BaseModel):
     GiftExchangeHistoriesResponse
     """ # noqa: E501
     gift_exchange_histories: Optional[List[GiftExchangeHistory]] = None
-    next_page_value: Optional[StrictStr] = None
+    next_page_value: Optional[str] = None
     __properties: ClassVar[List[str]] = ["gift_exchange_histories", "next_page_value"]
 
-    model_config = ConfigDict(
+    model_config = ConfigDict(coerce_numbers_to_str=True, 
         populate_by_name=True,
         validate_assignment=True,
         protected_namespaces=(),

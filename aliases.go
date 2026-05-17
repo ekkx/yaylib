@@ -361,6 +361,7 @@ type (
 	NullableCreatePostResponse                            = gen.NullableCreatePostResponse
 	NullableCreateQuotaResponse                           = gen.NullableCreateQuotaResponse
 	NullableCreateUserResponse                            = gen.NullableCreateUserResponse
+	NullableCursor                                        = gen.NullableCursor
 	NullableDAppDTO                                       = gen.NullableDAppDTO
 	NullableDAppsInfoDTO                                  = gen.NullableDAppsInfoDTO
 	NullableDailyQuest                                    = gen.NullableDailyQuest
@@ -1599,6 +1600,7 @@ var (
 	NewNullableCreatePostResponse                                = gen.NewNullableCreatePostResponse
 	NewNullableCreateQuotaResponse                               = gen.NewNullableCreateQuotaResponse
 	NewNullableCreateUserResponse                                = gen.NewNullableCreateUserResponse
+	NewNullableCursor                                            = gen.NewNullableCursor
 	NewNullableDAppDTO                                           = gen.NewNullableDAppDTO
 	NewNullableDAppsInfoDTO                                      = gen.NewNullableDAppsInfoDTO
 	NewNullableDailyQuest                                        = gen.NewNullableDailyQuest

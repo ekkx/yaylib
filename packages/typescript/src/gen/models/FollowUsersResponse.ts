@@ -58,7 +58,7 @@ export function FollowUsersResponseFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
         'users': json['users'] == null ? undefined : ((json['users'] as Array<any>).map(RealmUserFromJSON)),
     };
 }

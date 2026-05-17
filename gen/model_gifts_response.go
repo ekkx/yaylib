@@ -13,7 +13,7 @@ var _ MappedNullable = &GiftsResponse{}
 // GiftsResponse struct for GiftsResponse
 type GiftsResponse struct {
 	Gifts []RealmGift `json:"gifts,omitempty"`
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	TotalCount NullableInt32 `json:"total_count,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

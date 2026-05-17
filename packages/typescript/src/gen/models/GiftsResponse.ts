@@ -65,7 +65,7 @@ export function GiftsResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
     return {
         
         'gifts': json['gifts'] == null ? undefined : ((json['gifts'] as Array<any>).map(RealmGiftFromJSON)),
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
         'totalCount': json['total_count'] == null ? undefined : json['total_count'],
     };
 }

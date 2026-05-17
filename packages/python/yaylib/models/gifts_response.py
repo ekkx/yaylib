@@ -28,11 +28,11 @@ class GiftsResponse(BaseModel):
     GiftsResponse
     """ # noqa: E501
     gifts: Optional[List[RealmGift]] = None
-    next_page_value: Optional[StrictStr] = None
+    next_page_value: Optional[str] = None
     total_count: Optional[StrictInt] = None
     __properties: ClassVar[List[str]] = ["gifts", "next_page_value", "total_count"]
 
-    model_config = ConfigDict(
+    model_config = ConfigDict(coerce_numbers_to_str=True, 
         populate_by_name=True,
         validate_assignment=True,
         protected_namespaces=(),

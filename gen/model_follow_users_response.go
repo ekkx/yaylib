@@ -12,7 +12,7 @@ var _ MappedNullable = &FollowUsersResponse{}
 
 // FollowUsersResponse struct for FollowUsersResponse
 type FollowUsersResponse struct {
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	Users []RealmUser `json:"users,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

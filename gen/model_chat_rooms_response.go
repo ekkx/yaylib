@@ -13,7 +13,7 @@ var _ MappedNullable = &ChatRoomsResponse{}
 // ChatRoomsResponse struct for ChatRoomsResponse
 type ChatRoomsResponse struct {
 	ChatRooms []RealmChatRoom `json:"chat_rooms,omitempty"`
-	NextPageValue NullableInt64 `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	PinnedChatRooms []RealmChatRoom `json:"pinned_chat_rooms,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -71,9 +71,9 @@ func (o *ChatRoomsResponse) SetChatRooms(v []RealmChatRoom) {
 }
 
 // GetNextPageValue returns the NextPageValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ChatRoomsResponse) GetNextPageValue() int64 {
+func (o *ChatRoomsResponse) GetNextPageValue() string {
 	if o == nil || IsNil(o.NextPageValue.Get()) {
-		var ret int64
+		var ret string
 		return ret
 	}
 	return *o.NextPageValue.Get()
@@ -82,7 +82,7 @@ func (o *ChatRoomsResponse) GetNextPageValue() int64 {
 // GetNextPageValueOk returns a tuple with the NextPageValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ChatRoomsResponse) GetNextPageValueOk() (*int64, bool) {
+func (o *ChatRoomsResponse) GetNextPageValueOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -98,8 +98,8 @@ func (o *ChatRoomsResponse) HasNextPageValue() bool {
 	return false
 }
 
-// SetNextPageValue gets a reference to the given NullableInt64 and assigns it to the NextPageValue field.
-func (o *ChatRoomsResponse) SetNextPageValue(v int64) {
+// SetNextPageValue gets a reference to the given NullableString and assigns it to the NextPageValue field.
+func (o *ChatRoomsResponse) SetNextPageValue(v string) {
 	o.NextPageValue.Set(&v)
 }
 // SetNextPageValueNil sets the value for NextPageValue to be an explicit nil

@@ -59,7 +59,7 @@ export function GenresResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'genres': json['genres'] == null ? undefined : ((json['genres'] as Array<any>).map(RealmGenreFromJSON)),
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
     };
 }
 

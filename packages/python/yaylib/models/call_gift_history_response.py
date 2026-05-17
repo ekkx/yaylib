@@ -27,11 +27,11 @@ class CallGiftHistoryResponse(BaseModel):
     """
     CallGiftHistoryResponse
     """ # noqa: E501
-    next_page_value: Optional[StrictStr] = None
+    next_page_value: Optional[str] = None
     sent_gifts: Optional[List[GiftHistory]] = None
     __properties: ClassVar[List[str]] = ["next_page_value", "sent_gifts"]
 
-    model_config = ConfigDict(
+    model_config = ConfigDict(coerce_numbers_to_str=True, 
         populate_by_name=True,
         validate_assignment=True,
         protected_namespaces=(),

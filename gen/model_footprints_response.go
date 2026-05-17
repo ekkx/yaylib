@@ -13,7 +13,7 @@ var _ MappedNullable = &FootprintsResponse{}
 // FootprintsResponse struct for FootprintsResponse
 type FootprintsResponse struct {
 	Footprints []FootprintDTO `json:"footprints,omitempty"`
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 

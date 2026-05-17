@@ -13,7 +13,7 @@ var _ MappedNullable = &GiftExchangeHistoriesResponse{}
 // GiftExchangeHistoriesResponse struct for GiftExchangeHistoriesResponse
 type GiftExchangeHistoriesResponse struct {
 	GiftExchangeHistories []GiftExchangeHistory `json:"gift_exchange_histories,omitempty"`
-	NextPageValue NullableString `json:"next_page_value,omitempty"`
+	NextPageValue NullableCursor `json:"next_page_value,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 

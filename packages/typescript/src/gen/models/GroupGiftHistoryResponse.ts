@@ -59,7 +59,7 @@ export function GroupGiftHistoryResponseFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'giftHistory': json['gift_history'] == null ? undefined : ((json['gift_history'] as Array<any>).map(GroupGiftHistoryFromJSON)),
-        'nextPageValue': json['next_page_value'] == null ? undefined : json['next_page_value'],
+        'nextPageValue': json['next_page_value'] == null ? undefined : String(json['next_page_value']),
     };
 }
 

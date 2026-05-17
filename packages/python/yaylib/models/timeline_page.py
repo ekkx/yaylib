@@ -28,14 +28,14 @@ class TimelinePage(BaseModel):
     """ # noqa: E501
     id: Optional[StrictInt] = None
     items: Optional[List[Dict[str, Any]]] = None
-    next_page_value: Optional[StrictStr] = None
+    next_page_value: Optional[str] = None
     pinned_items: Optional[List[Dict[str, Any]]] = None
     show_more_hot_posts_button: Optional[StrictBool] = None
     total_item_count: Optional[StrictInt] = None
     total_item_limit: Optional[StrictInt] = None
     __properties: ClassVar[List[str]] = ["id", "items", "next_page_value", "pinned_items", "show_more_hot_posts_button", "total_item_count", "total_item_limit"]
 
-    model_config = ConfigDict(
+    model_config = ConfigDict(coerce_numbers_to_str=True, 
         populate_by_name=True,
         validate_assignment=True,
         protected_namespaces=(),
