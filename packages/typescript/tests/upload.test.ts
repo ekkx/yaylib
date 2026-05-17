@@ -425,6 +425,7 @@ async function scenarioVideoHappyAndNil(): Promise<void> {
   });
 }
 
+// PORTING:S17
 async function scenarioGifThumbStaysGif(): Promise<void> {
   await withFakeServer({}, async (baseURL, st) => {
     const c = loggedIn(baseURL, 1);

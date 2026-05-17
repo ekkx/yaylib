@@ -23,6 +23,7 @@ from ._parity import mock_client, mock_get
 NO_RETRY = RetryPolicy(max_attempts=0, base_delay=0.0, max_delay=0.0)
 
 
+# PORTING:S7
 async def test_401_triggers_refresh_and_retries():
     # expired-token: protected requests 401 (error_code -3) until the
     # token endpoint is hit (a simulated refresh), then the happy path —
@@ -46,6 +47,7 @@ async def test_401_triggers_refresh_and_retries():
         await c.close()
 
 
+# PORTING:S8
 async def test_401_refresh_failure_surfaces_401():
     # fail-401-times-2: the data request 401s and the refresh call (same
     # session+scenario counter) also 401s, so the refresh fails and the

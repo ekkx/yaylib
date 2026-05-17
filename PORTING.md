@@ -570,7 +570,7 @@ etc. The reference client absorbs these via lenient JSON
 deserialization; strict decoders would otherwise reject every such
 response and leave callers stuck.
 
-Every port MUST follow these four rules so the SDK keeps working
+Every port MUST follow these five rules so the SDK keeps working
 when the wire format drifts:
 
 1. **Non-path parameters are optional.** Path parameters stay
@@ -588,29 +588,52 @@ when the wire format drifts:
    surface as data the caller can inspect, instead of breaking
    every call to that endpoint.
 
-3. **Per-call raw escape hatch (`ExecuteRaw` / `executeRaw` /
-   `execute_raw`).** Every request builder MUST expose a sibling
-   that returns the raw response bytes alongside the HTTP response,
-   bypassing the typed JSON decode entirely:
+3. **Any 2xx status is a success.** The server answers some
+   successful calls with a 2xx the spec didn't enumerate — login
+   returns `201`, not `200`. The typed decode MUST treat *any*
+   `200`–`299` as the success body and decode it into the
+   operation's success model; it MUST NOT key on the exact
+   documented status and discard a perfectly valid body (returning
+   null / raising) just because the code was `201`. Equivalently:
+   the status-code → response-type lookup falls back to the single
+   documented 2xx success type for any unlisted 2xx.
+
+4. **Per-call raw escape hatch (`ExecuteRaw` / `executeRaw` /
+   `execute_raw`).** Every operation MUST expose a raw sibling that
+   returns the unparsed response bytes alongside the HTTP response,
+   bypassing the typed JSON decode entirely. The call shape is
+   language-idiomatic (Go/TS keep the builder; the generated Python
+   client is method-based, so the raw sibling is the generated
+   `*_without_preload_content` operation handed to
+   `client.execute_raw(...)`):
 
    ```go
-   // Go
+   // Go — builder sibling
    body, httpResp, err := client.GetTimeline(ctx, "").ExecuteRaw()
 
-   // TS
-   const { body, httpResponse } = await client.getTimeline("").executeRaw();
+   // TS — pass the generated *Raw operation
+   const { body, httpResponse } =
+       await client.executeRaw(() => client.postsAPI.getTimelineRaw());
 
-   // Python
-   body, http_response = await client.get_timeline("").execute_raw()
+   // Python — pass the generated *_without_preload_content coroutine
+   body, http_response = await client.execute_raw(
+       client.posts_api.get_timeline_without_preload_content()
+   )
    ```
 
-   Return contract: HTTP success returns `(body, response, nil)`;
-   HTTP error (4xx/5xx) returns `(body, response, APIError)` so
-   `CodeOf(err)` still works; transport failure returns
-   `(nil, nil, err)`. Typed JSON-decode failures MUST NOT propagate
-   through this path — that's the whole point of the escape hatch.
+   Return contract (idiomatic per language, same semantics): HTTP
+   success yields `(body, response)`; an HTTP error (4xx/5xx) still
+   surfaces the body + status as an `APIError` (so `CodeOf(err)` /
+   `codeOf` / `code_of` keeps working) — Go/TS return it in the
+   tuple/object, Python raises it; a transport failure surfaces as
+   the transport error / `APIError`. Typed JSON-decode failures MUST
+   NOT propagate through this path — that's the whole point of the
+   escape hatch. (Rule 3 still applies on the typed path: a 2xx body
+   the typed model rejects surfaces there as an `APIError` carrying
+   the raw body, never a bare validation error with nothing to
+   inspect.)
 
-4. **Hand-curated overrides.** When the SDK ships a typed shape
+5. **Hand-curated overrides.** When the SDK ships a typed shape
    that's wrong, callers shouldn't have to live on `ExecuteRaw`
    forever. The build pipeline reads two YAML overlays applied to
    the spec before code generation:
@@ -802,61 +825,133 @@ loads a session keeps its device identity.
 
 ## 15. Test parity
 
-Every port SHOULD include the following behavior tests (the Go
-versions in `*_test.go` are reference fixtures — translate the
-scenarios, not the Go API mechanics):
+Every port MUST cover the scenarios below (the Go versions in
+`*_test.go` are reference fixtures — translate the scenario, not the
+Go API mechanics). Each has a **stable ID**; the test that covers it
+in every language carries that ID as a tag so coverage is
+mechanically checkable — see §15.1.
 
-- Login fresh → tokens active + persisted to store.
-- Login cached → no HTTP, tokens applied from store.
-- Login store load error → return error without HTTP (rate-limit
-  protection).
-- Login save error → wrapped as `ErrSessionSaveFailed`, tokens still
-  active.
-- 2FA-required server response surfaces as `ErrCodeRequired2FA`.
-- Required headers injected on every request; OAuth endpoints get
-  Basic; others get Bearer.
-- 401 → refresh → retry chain.
-- 401 refresh failure surfaces the original 401 body.
-- Refresh succeeds + retry network error surfaces the retry error,
-  not a stale 401.
-- Lazy X-Client-IP fetch populates the header on the second request.
-- Retry honors `retry_in` from the body.
-- Retry respects context cancellation.
-- POST not retried by default; POST 429 retried.
-- Upload happy paths for the major categories (avatar / post /
-  chat-message / report) including correct filename shape and
-  thumbnail upload.
-- Upload presigned PUT carries no Bearer.
-- Upload thumbnail extension matches main extension (incl. animated
-  GIF preservation).
-- Event stream subscribe + receive on each channel type.
-- Event stream reconnect after server close, re-subscribes all subs.
-- Multiple-sub reconnect: after reconnect both subs are resubscribed
-  and both still receive events.
-- Event stream subscribe rejection / timeout.
-- WebSocket dial carries no Bearer.
-- OnDrop fires when the per-sub buffer overflows.
-- Stable connection (>= 30s) resets the failure budget.
-- ExecuteRaw on a typed-decode-failing endpoint returns the raw body
-  with no error (typed JSON-decode errors absorbed; HTTP errors
-  still surface as APIError with body intact).
-- A response whose JSON shape doesn't match the typed model: typed
-  Execute returns the parse error with the raw body in
-  APIError.Body(); ExecuteRaw on the same call returns
-  (body, response, nil).
-- Unknown enum value in a server response is accepted (typed field
-  set to the unknown string, no error). IsValid() reports false on
-  it; the typed constants stay usable.
-- Host routing (§12.1): a host-routed operation goes to the
+Auth / session:
+
+- **S1** Login fresh → tokens active + persisted to store.
+- **S2** Login cached → no HTTP, tokens applied from store.
+- **S3** Login store load error → return error without HTTP
+  (rate-limit protection).
+- **S4** Login save error → wrapped as `ErrSessionSaveFailed`,
+  tokens still active.
+- **S5** 2FA-required server response surfaces as
+  `ErrCodeRequired2FA` (via `CodeOf`/`codeOf`/`code_of`).
+- **S6** Required headers injected on every request; OAuth endpoints
+  get `Basic`; others get `Bearer`.
+- **S7** 401 → refresh → retry chain.
+- **S8** 401 refresh failure surfaces the original 401 body.
+- **S9** Refresh succeeds + retry network error surfaces the retry
+  error, not a stale 401.
+- **S10** Lazy `X-Client-IP` fetch populates the header on the
+  second request.
+- **S11** Concurrent 401s collapse to a single refresh; the other
+  in-flight requests retry with the new token, not their own
+  refresh (§6.1).
+
+Retry:
+
+- **S12** Retry honors `retry_in` from the body.
+- **S13** Retry respects context cancellation.
+- **S14** POST not retried by default; POST 429 retried.
+
+Uploads (representative categories — see scope note below):
+
+- **S15** Upload happy paths for avatar / post / chat-message /
+  report including correct filename shape and thumbnail upload.
+- **S16** Upload presigned PUT carries no Bearer.
+- **S17** Upload thumbnail extension matches main extension (incl.
+  animated-GIF preservation).
+
+Event stream:
+
+- **S18** Subscribe + receive on each channel type.
+- **S19** Reconnect after server close, re-subscribes all subs.
+- **S20** Multiple-sub reconnect: after reconnect both subs are
+  resubscribed and both still receive events.
+- **S21** Subscribe rejection / timeout.
+- **S22** WebSocket dial carries no Bearer.
+- **S23** `OnDrop` fires when the per-sub buffer overflows.
+- **S24** Stable connection (>= 30s) resets the failure budget.
+- **S25** The wire `event` name → SDK event type mapping (§10.1) is
+  preserved verbatim, including the skewed ones (`new_post` →
+  `GroupUpdatedEvent`, `conference_call_finished` →
+  `CallFinishedEvent`).
+
+Server-as-source-of-truth (§11):
+
+- **S26** `ExecuteRaw` on a typed-decode-failing endpoint returns
+  the raw body with no error (typed JSON-decode absorbed; HTTP
+  errors still surface as `APIError` with body intact).
+- **S27** A 2xx body that doesn't match the typed model: the typed
+  call surfaces an `APIError` that **retains the raw body**; the raw
+  escape hatch on the same call returns `(body, response)` without
+  error.
+- **S28** Unknown enum value in a response is accepted (typed field
+  set to the unknown string, no error; `IsValid()`/membership
+  reports false; the typed constants stay usable).
+- **S29** A success answered with a non-200 2xx (e.g. login `201`)
+  still decodes into the typed success model — the status-code
+  lookup falls back to the documented 2xx type, it does not discard
+  the body (§11 rule 3).
+- **S30** `CodeOf`/`codeOf`/`code_of` on an error envelope resolves
+  to the **typed `ErrorCode` constant** (e.g. `ErrCodeRequired2FA`),
+  not a bare integer; an unknown/absent code yields `ErrCodeUnknown`
+  and never throws.
+
+Transport / observability:
+
+- **S31** Host routing (§12.1): a host-routed operation goes to the
   configured auxiliary base URL; a non-routed operation stays on the
   primary base URL. Two stand-in servers, assert which one each call
   reached.
-- Logging (§12.2): with no logger, an operation that hits the
-  `token_persist_fail` path produces zero output. With a capturing
-  logger injected, the same path emits one WARN record carrying
-  `event=token_persist_fail`; assert no captured record (any level,
-  any field) contains the access token, refresh token, password, or
-  API key.
+- **S32** Logging (§12.2): with no logger, zero output. With a
+  capturing logger, the `token_persist_fail` path emits exactly one
+  WARN record with `event=token_persist_fail` and its documented
+  fields. **Redaction is asserted across every logged event path**
+  exercised by the suite (not only persist-fail): no captured record
+  (any level, any field, any `event`) contains an access/refresh
+  token, password, API key, `signed_info`/`signed_version`, the
+  `X-Jwt` value, the `Authorization` header, or any request/response
+  body.
+
+**Scope notes (deliberate boundaries, not gaps):**
+
+- Uploads: the shared hermetic parity exercises the representative
+  categories above. The full 13-category path / thumbnail-size /
+  YMD-no-zero-pad / `s3/`-canonical table (§8) is asserted by each
+  port's *local* fixtures, not the shared parity run — the shared S3
+  receiver is behavioral-only and cannot echo the per-category
+  arithmetic.
+- The call-action-signature wrapper (§7.1) round-trips a server-side
+  secret, so it cannot be unit-parity-tested hermetically; it is
+  exercised by the credentials-gated live smoke, not the shared
+  parity suite. Treat it as integration-only.
+
+### 15.1 Traceability
+
+§15 is the cross-language behavior contract; drift between it and
+the three test suites must be **mechanically detectable**, not found
+by periodic manual audit.
+
+- Every scenario has a stable ID `S<n>`. IDs are append-only: never
+  renumber or reuse a retired ID (mark it removed instead).
+- The test covering `S<n>` in each language carries a tag comment on
+  or next to the test declaration: Go/TS `// PORTING:S<n>`, Python
+  `# PORTING:S<n>` (one test may cover several: `// PORTING:S7,S8`).
+- `scripts/parity-matrix.sh` parses the `S<n>` IDs from this section
+  and greps the Go / TS / Python test trees for the tags, printing a
+  scenario × language matrix and exiting non-zero if any scenario is
+  not tagged in all three (untagged-but-existing tests surface as
+  gaps to backfill, not false failures).
+- Any PR that adds or changes a parity scenario MUST update this
+  list (new ID) and tag the test in every language in the same
+  change. Tagging of pre-existing tests is backfilled incrementally;
+  the matrix script is the running TODO.
 
 ---
 

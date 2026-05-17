@@ -7,11 +7,13 @@ from yaylib.models.post import Post
 from yaylib.models.post_type import PostType
 
 
+# PORTING:S28
 def test_unknown_enum_value_is_kept_as_string():
     post = Post.from_dict({"post_type": "__mock_unknown_enum__"})
     assert post.post_type == "__mock_unknown_enum__"
 
 
+# PORTING:S28
 def test_known_enum_value_decodes_to_typed_constant():
     post = Post.from_dict({"post_type": "image"})
     assert post.post_type == PostType.IMAGE
@@ -22,6 +24,7 @@ def test_known_enum_value_decodes_to_typed_constant():
     assert "image" == PostType.IMAGE
 
 
+# PORTING:S28
 def test_known_value_recognized_unknown_value_not():
     # There is no dedicated IsValid()-style predicate on the enum in
     # this port; the membership of a value among the enumerated

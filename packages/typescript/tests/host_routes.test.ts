@@ -39,6 +39,7 @@ function assert(name: string, cond: boolean, detail = ""): void {
   }
 }
 
+// PORTING:S31
 async function main(): Promise<void> {
   const primaryHits: string[] = [];
   const auxHits: string[] = [];

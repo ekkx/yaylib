@@ -18,6 +18,7 @@ from ._server import serve
 ERR_CODE_REQUIRED_2FA = -31
 
 
+# PORTING:S5
 async def test_2fa_required_surfaces_typed_code():
     def handler(path, method, body):
         if path.endswith("/login_with_email"):
@@ -59,6 +60,7 @@ class _LoadErrorStore(MemorySessionStore):
         raise RuntimeError("corrupt JSON")
 
 
+# PORTING:S3
 async def test_login_store_load_error_returns_without_http():
     hits = 0
 

@@ -58,6 +58,8 @@ func (h *captureHandler) byEvent(event string) (capturedRecord, bool) {
 
 // Default client is silent: the discard handler reports not-enabled at
 // every level, so slog never formats a record and nothing is written.
+//
+// PORTING:S32
 func TestLogging_DefaultIsSilent(t *testing.T) {
 	c := NewClient()
 	for _, lvl := range []slog.Level{slog.LevelDebug, slog.LevelInfo, slog.LevelWarn, slog.LevelError} {
@@ -72,6 +74,8 @@ func TestLogging_DefaultIsSilent(t *testing.T) {
 // key into any record (PORTING.md §12.2 + §15). The expired-token
 // scenario serves 401 until the token endpoint is hit, then a fresh
 // TokenResponse, then the happy path — exactly the refresh chain.
+//
+// PORTING:S32
 func TestLogging_RefreshPersistFailEventAndRedaction(t *testing.T) {
 	h := &captureHandler{}
 	c := mockClient(t, "expired-token",

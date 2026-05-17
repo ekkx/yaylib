@@ -31,6 +31,7 @@ from ._parity import mock_stream_client, ws_close_all
 _DISABLED = EventStreamOptions(reconnect=ReconnectPolicy(disabled=True))
 
 
+# PORTING:S18,S25
 async def test_subscribe_and_receive_event():
     c = mock_stream_client("")
     c.set_tokens("stub", "")
@@ -44,6 +45,7 @@ async def test_subscribe_and_receive_event():
         await c.close()
 
 
+# PORTING:S21
 async def test_rejected_subscription():
     c = mock_stream_client("reject")
     c.set_tokens("stub", "")
@@ -55,6 +57,7 @@ async def test_rejected_subscription():
         await c.close()
 
 
+# PORTING:S18,S25
 async def test_multiple_channels():
     c = mock_stream_client("")
     c.set_tokens("stub", "")
@@ -74,6 +77,7 @@ async def test_multiple_channels():
         await c.close()
 
 
+# PORTING:S19
 async def test_reconnect_after_server_close():
     # drop-after-confirm closes the socket right after pushing the event,
     # so the client must reconnect and re-subscribe to keep receiving.
@@ -96,6 +100,7 @@ async def test_reconnect_after_server_close():
         await c.close()
 
 
+# PORTING:S21
 async def test_subscribe_timeout():
     c = mock_stream_client("no-confirm")
     c.set_tokens("stub", "")
@@ -123,6 +128,7 @@ async def test_done_and_err_on_clean_close():
         await c.close()
 
 
+# PORTING:S20
 async def test_multiple_subs_resubscribe_after_reconnect():
     # Mode "" keeps the socket open so BOTH subscribes confirm on one
     # stable connection (drop-after-confirm closes after the first
@@ -162,6 +168,7 @@ async def test_multiple_subs_resubscribe_after_reconnect():
         await c.close()
 
 
+# PORTING:S22
 async def test_ws_dial_does_not_leak_bearer():
     c = mock_stream_client("")
     # Tokens are set, but the WS dial must authenticate via the query

@@ -145,6 +145,7 @@ const FAST_RECONNECT = { initialDelayMs: 20, maxDelayMs: 50 };
 
 // ---- scenarios --------------------------------------------------------
 
+// PORTING:S18,S25
 async function subscribeAndReceiveEvent(): Promise<void> {
   const hub = new Hub((s) => {
     s.welcome();
@@ -166,6 +167,7 @@ async function subscribeAndReceiveEvent(): Promise<void> {
   await conn.close();
 }
 
+// PORTING:S21
 async function rejectedSubscription(): Promise<void> {
   const hub = new Hub((s) => {
     s.welcome();
@@ -185,6 +187,7 @@ async function rejectedSubscription(): Promise<void> {
   await conn.close();
 }
 
+// PORTING:S18,S25
 async function multipleChannels(): Promise<void> {
   const hub = new Hub((s) => {
     s.welcome();
@@ -213,6 +216,7 @@ async function multipleChannels(): Promise<void> {
   await conn.close();
 }
 
+// PORTING:S19
 async function reconnectAfterServerClose(): Promise<void> {
   let attempts = 0;
   const hub = new Hub((s) => {
@@ -266,6 +270,7 @@ async function unsubscribe(): Promise<void> {
   await conn.close();
 }
 
+// PORTING:S21
 async function subscribeTimeout(): Promise<void> {
   const hub = new Hub((s) => {
     s.welcome();
@@ -307,6 +312,7 @@ async function errAfterReconnectExhausted(): Promise<void> {
   await conn.close();
 }
 
+// PORTING:S23
 async function onDropFiresWhenBufferFull(): Promise<void> {
   let dropped = 0;
   const ident = `{"channel":"ChatRoomChannel"}`;
@@ -333,6 +339,7 @@ async function onDropFiresWhenBufferFull(): Promise<void> {
   await conn.close();
 }
 
+// PORTING:S24
 async function stableConnectionResetsAttemptBudget(): Promise<void> {
   let attempts = 0;
   const hub = new Hub((s) => {
@@ -362,6 +369,7 @@ async function stableConnectionResetsAttemptBudget(): Promise<void> {
   await conn.close();
 }
 
+// PORTING:S20
 async function multipleSubsResubscribeAfterReconnect(): Promise<void> {
   const identChat = `{"channel":"ChatRoomChannel"}`;
   const identGroup = `{"channel":"GroupUpdatesChannel"}`;

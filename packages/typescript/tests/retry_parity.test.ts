@@ -45,6 +45,7 @@ async function retriesOn5xx(): Promise<void> {
 // RetryOnPOST=false (default): POST 5xx is not retried, but a 429 is
 // retried regardless — the server explicitly asked and there is no
 // duplicate-creation risk.
+// PORTING:S14
 async function retriesPOSTOn429(): Promise<void> {
   const c = mockClient("fail-429-times-1", {
     retryPolicy: policy({ maxAttempts: 3, baseDelay: 1 }),
@@ -56,6 +57,7 @@ async function retriesPOSTOn429(): Promise<void> {
 
 // fail-503-times-1 would succeed on a retry, but POST 5xx is not retried
 // by default, so the single 503 surfaces.
+// PORTING:S14
 async function noRetryPOSTByDefault(): Promise<void> {
   const c = mockClient("fail-503-times-1", {
     retryPolicy: policy({ maxAttempts: 5, baseDelay: 1 }),
@@ -110,6 +112,7 @@ async function disabledByZeroPolicy(): Promise<void> {
 
 // retry-after-1: initial 429 carrying retry_in: 1 (seconds), then happy.
 // The middleware must honor the body directive over its computed backoff.
+// PORTING:S12
 async function honorsRetryInBody(): Promise<void> {
   const c = mockClient("retry-after-1", {
     retryPolicy: policy({ maxAttempts: 2, baseDelay: 1, maxDelay: 5000 }),
@@ -132,6 +135,7 @@ async function honorsRetryInBody(): Promise<void> {
 // a clean success. The raw operation is awaited directly — executeRaw
 // would try to drain an aborted-and-thus-unusable body — so we just
 // assert the call rejected, which is the behavioral contract.
+// PORTING:S13
 async function retryRespectsCancellation(): Promise<void> {
   const session = newMockSession();
   const c = new Client({

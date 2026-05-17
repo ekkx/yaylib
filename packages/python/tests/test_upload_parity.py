@@ -43,6 +43,7 @@ def _png(w: int, h: int) -> bytes:
     return buf.getvalue()
 
 
+# PORTING:S15
 async def test_upload_avatar_image_happy_path():
     c = mock_client("")
     c.set_login_identity("", 42)
@@ -56,6 +57,7 @@ async def test_upload_avatar_image_happy_path():
         await c.close()
 
 
+# PORTING:S15
 async def test_upload_avatar_image_filename_shape():
     c = mock_client("")
     c.set_login_identity("", 1)
@@ -93,6 +95,7 @@ async def test_upload_video_happy_path():
         await c.close()
 
 
+# PORTING:S16
 async def test_presigned_put_does_not_leak_bearer():
     # Tokens are set, but the presigned PUT must authenticate via the
     # signed query only. The shared S3 receiver answers 403 if the PUT

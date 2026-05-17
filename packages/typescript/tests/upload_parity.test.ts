@@ -42,6 +42,7 @@ function encodePng(w: number, h: number): Uint8Array {
   return new Uint8Array(PNG.sync.write(png));
 }
 
+// PORTING:S15
 async function uploadAvatarHappyPath(): Promise<void> {
   const c = mockClient("");
   c.setLoginIdentity("", 42);
@@ -61,6 +62,7 @@ async function uploadAvatarHappyPath(): Promise<void> {
   );
 }
 
+// PORTING:S15
 async function uploadAvatarFilenameShape(): Promise<void> {
   const c = mockClient("");
   c.setLoginIdentity("", 1);
@@ -103,6 +105,7 @@ async function uploadVideoHappyPath(): Promise<void> {
   );
 }
 
+// PORTING:S16
 async function presignedPUTDoesNotLeakBearer(): Promise<void> {
   // Tokens are set, but the presigned PUT must authenticate via the
   // signed query only. The shared S3 receiver answers 403 if the PUT

@@ -25,6 +25,7 @@ import (
 // non-image guards, and the pure filename/path/MIME helpers stay as
 // local fixtures in upload_test.go.
 
+// PORTING:S15
 func TestUploadAvatarImage_HappyPath(t *testing.T) {
 	c := mockClient(t, "")
 	c.UserID = 42
@@ -45,6 +46,7 @@ func TestUploadAvatarImage_HappyPath(t *testing.T) {
 	}
 }
 
+// PORTING:S15
 func TestUploadAvatarImage_FilenameShape(t *testing.T) {
 	c := mockClient(t, "")
 	c.UserID = 1
@@ -89,6 +91,7 @@ func TestUploadVideo_HappyPath(t *testing.T) {
 	}
 }
 
+// PORTING:S16
 func TestPresignedPUT_DoesNotLeakBearer(t *testing.T) {
 	// Tokens are set, but the presigned PUT must authenticate via the
 	// signed query only. The shared S3 receiver answers 403 if the PUT

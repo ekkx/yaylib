@@ -23,6 +23,7 @@ _REQUIRED = [
 ]
 
 
+# PORTING:S6
 async def test_injects_required_headers_with_bearer():
     captured = {}
 
@@ -49,6 +50,7 @@ async def test_injects_required_headers_with_bearer():
     assert captured.get("X-Connection-Speed") == "0 kbps"
 
 
+# PORTING:S6
 async def test_oauth_endpoint_uses_basic_auth():
     # The /api/v1/oauth/token call is reachable through the 401
     # auto-refresh path; capture the Authorization scheme the server

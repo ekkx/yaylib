@@ -12,6 +12,8 @@ import (
 // (no decode error), so a server that adds a new variant does not
 // break older clients. IsValid() reports false for such a value, and
 // the named constants stay usable for the values the SDK does know.
+//
+// PORTING:S28
 func TestUnknownEnumValueIsAccepted(t *testing.T) {
 	var p gen.Post
 	if err := json.Unmarshal([]byte(`{"post_type":"__mock_unknown_enum__"}`), &p); err != nil {

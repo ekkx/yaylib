@@ -48,6 +48,7 @@ async function expectThrow(name: string, fn: () => Promise<unknown>): Promise<vo
   }
 }
 
+// PORTING:S18,S25
 async function subscribeAndReceiveEvent(): Promise<void> {
   const c = mockStreamClient("");
   c.setTokens("stub", "");
@@ -70,6 +71,7 @@ async function subscribeAndReceiveEvent(): Promise<void> {
   }
 }
 
+// PORTING:S21
 async function rejectedSubscription(): Promise<void> {
   const c = mockStreamClient("reject");
   c.setTokens("stub", "");
@@ -83,6 +85,7 @@ async function rejectedSubscription(): Promise<void> {
   }
 }
 
+// PORTING:S18,S25
 async function multipleChannels(): Promise<void> {
   const c = mockStreamClient("");
   c.setTokens("stub", "");
@@ -109,6 +112,7 @@ async function multipleChannels(): Promise<void> {
   }
 }
 
+// PORTING:S19
 async function reconnectAfterServerClose(): Promise<void> {
   // drop-after-confirm closes the socket right after pushing the event,
   // so the client must reconnect and re-subscribe to keep receiving.
@@ -136,6 +140,7 @@ async function reconnectAfterServerClose(): Promise<void> {
   }
 }
 
+// PORTING:S21
 async function subscribeTimeout(): Promise<void> {
   const c = mockStreamClient("no-confirm");
   c.setTokens("stub", "");
@@ -174,6 +179,7 @@ async function doneAndErrOnCleanClose(): Promise<void> {
   );
 }
 
+// PORTING:S22
 async function wsDialDoesNotLeakBearer(): Promise<void> {
   const c = mockStreamClient("");
   // Tokens are set, but the WS dial must authenticate via the query

@@ -158,6 +158,7 @@ func loggedInClient(srvURL string, userID int64) *Client {
 	return c
 }
 
+// PORTING:S15
 func TestUploadPostImages_HappyPath(t *testing.T) {
 	f, srv := newFakeUploadServer(t)
 	defer srv.Close()
@@ -514,6 +515,7 @@ func TestUploadVideoCallSnapshotImage_SkipsThumb(t *testing.T) {
 	}
 }
 
+// PORTING:S17
 func TestUploadAvatarImage_GIFThumbStaysGIF(t *testing.T) {
 	f, srv := newFakeUploadServer(t)
 	defer srv.Close()

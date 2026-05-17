@@ -30,6 +30,8 @@ func awaitEvent(t *testing.T, sub *Subscription, d time.Duration) Event {
 	}
 }
 
+// PORTING:S18
+// PORTING:S25
 func TestEventStream_SubscribeAndReceiveEvent(t *testing.T) {
 	c := mockStreamClient(t, "")
 	c.SetTokens("stub", "")
@@ -56,6 +58,7 @@ func TestEventStream_SubscribeAndReceiveEvent(t *testing.T) {
 	}
 }
 
+// PORTING:S21
 func TestEventStream_RejectedSubscription(t *testing.T) {
 	c := mockStreamClient(t, "reject")
 	c.SetTokens("stub", "")
@@ -73,6 +76,8 @@ func TestEventStream_RejectedSubscription(t *testing.T) {
 	}
 }
 
+// PORTING:S18
+// PORTING:S25
 func TestEventStream_MultipleChannels(t *testing.T) {
 	c := mockStreamClient(t, "")
 	c.SetTokens("stub", "")
@@ -112,6 +117,7 @@ func TestEventStream_MultipleChannels(t *testing.T) {
 	}
 }
 
+// PORTING:S19
 func TestEventStream_ReconnectAfterServerClose(t *testing.T) {
 	c := mockStreamClient(t, "drop-after-confirm")
 	c.SetTokens("stub", "")
@@ -142,6 +148,7 @@ func TestEventStream_ReconnectAfterServerClose(t *testing.T) {
 	}
 }
 
+// PORTING:S21
 func TestEventStream_SubscribeTimeout(t *testing.T) {
 	c := mockStreamClient(t, "no-confirm")
 	c.SetTokens("stub", "")
@@ -186,6 +193,7 @@ func TestEventStream_DoneAndErrOnCleanClose(t *testing.T) {
 	}
 }
 
+// PORTING:S20
 func TestEventStream_MultipleSubsResubscribeAfterReconnect(t *testing.T) {
 	c := mockStreamClient(t, "drop-after-confirm")
 	c.SetTokens("stub", "")
@@ -229,6 +237,7 @@ func TestEventStream_MultipleSubsResubscribeAfterReconnect(t *testing.T) {
 	}
 }
 
+// PORTING:S22
 func TestEventStream_WSDialDoesNotLeakBearer(t *testing.T) {
 	c := mockStreamClient(t, "")
 	// Tokens are set, but the WS dial must authenticate via the query

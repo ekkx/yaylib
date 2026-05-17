@@ -17,6 +17,7 @@ from yaylib.errors import APIError
 from ._parity import mock_client, require_mock
 
 
+# PORTING:S26,S27
 async def test_typed_call_on_malformed_body_raises_apierror_with_raw_body():
     require_mock()
     c = mock_client("body-malformed")
@@ -33,6 +34,7 @@ async def test_typed_call_on_malformed_body_raises_apierror_with_raw_body():
         await c.close()
 
 
+# PORTING:S26,S27
 async def test_execute_raw_returns_body_and_response_without_raising():
     require_mock()
     c = mock_client("body-malformed")

@@ -35,6 +35,7 @@ func TestTransport_RetriesOn5xx(t *testing.T) {
 	}
 }
 
+// PORTING:S14
 func TestTransport_RetriesPOSTOn429(t *testing.T) {
 	// RetryOnPOST=false (default): POST 5xx is not retried, but a 429
 	// is retried regardless because the server explicitly asked for it
@@ -56,6 +57,7 @@ func TestTransport_RetriesPOSTOn429(t *testing.T) {
 	}
 }
 
+// PORTING:S14
 func TestTransport_NoRetryPOSTByDefault(t *testing.T) {
 	// fail-503-times-1 would succeed on a retry, but POST 5xx is not
 	// retried by default, so the single 503 surfaces.
@@ -126,6 +128,7 @@ func TestTransport_DisabledByZeroPolicy(t *testing.T) {
 	}
 }
 
+// PORTING:S12
 func TestTransport_HonorsRetryInBody(t *testing.T) {
 	c := mockClient(t, "retry-after-1", WithRetryPolicy(RetryPolicy{
 		MaxAttempts: 2,
@@ -148,6 +151,7 @@ func TestTransport_HonorsRetryInBody(t *testing.T) {
 	}
 }
 
+// PORTING:S13
 func TestTransport_RetryRespectsContextCancellation(t *testing.T) {
 	c := mockClient(t, "fail-503-times-99", WithRetryPolicy(RetryPolicy{
 		MaxAttempts: 10,

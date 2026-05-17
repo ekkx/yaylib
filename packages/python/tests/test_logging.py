@@ -71,6 +71,7 @@ async def _run(client: Client) -> None:
 
 
 @pytest.mark.asyncio
+# PORTING:S32
 async def test_default_client_is_silent():
     # The default logger discards everything (NullHandler) and does not
     # propagate, so a library consumer that never opts in sees nothing.
@@ -83,6 +84,7 @@ async def test_default_client_is_silent():
 
 
 @pytest.mark.asyncio
+# PORTING:S32
 async def test_logger_events_and_redaction():
     cap = _Capture()
     log = logging.getLogger("yaylib.test.parity")

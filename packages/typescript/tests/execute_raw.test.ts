@@ -41,6 +41,7 @@ async function withServer(
 const NO_RETRY = { maxAttempts: 0, baseDelay: 1, maxDelay: 1, retryOnPOST: false };
 const dec = (b?: Uint8Array) => (b ? new TextDecoder().decode(b) : "");
 
+// PORTING:S26,S27
 async function successReturnsRawBytes(): Promise<void> {
   const payload = JSON.stringify({ time: 1700000000, ip_address: "1.2.3.4" });
   await withServer({ status: 200, body: payload }, async (baseURL) => {
@@ -52,6 +53,7 @@ async function successReturnsRawBytes(): Promise<void> {
   });
 }
 
+// PORTING:S26,S27
 async function badJsonOnSuccessDoesNotThrow(): Promise<void> {
   await withServer({ status: 200, body: "this is <not> json" }, async (baseURL) => {
     const c = new Client({ baseURL, retryPolicy: NO_RETRY });
@@ -68,6 +70,7 @@ async function badJsonOnSuccessDoesNotThrow(): Promise<void> {
   });
 }
 
+// PORTING:S26,S27
 async function httpErrorReturnsAPIErrorWithCode(): Promise<void> {
   const errBody = JSON.stringify({ error_code: 7, message: "forbidden" });
   await withServer({ status: 403, body: errBody }, async (baseURL) => {
