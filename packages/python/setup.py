@@ -30,6 +30,7 @@ REQUIRES = [
     "aiohttp-retry >= 2.8.3",
     "pydantic >= 2",
     "typing-extensions >= 4.7.1",
+    "pillow >= 9.0.0",
 ]
 
 setup(
