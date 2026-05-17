@@ -13,7 +13,9 @@ import contextlib
 import json
 import logging
 import uuid as _uuid
-from typing import Optional
+from typing import List, Optional
+
+import yaylib.upload as _upload
 from urllib.parse import urlencode
 
 from yaylib.api.activities_api import ActivitiesApi
@@ -289,6 +291,105 @@ class Client:
         self._bg_tasks.clear()
         await self._transport.close()
 
+    # ---- uploads (PORTING.md §8) ----
+
+    def _upload_deps(self) -> "_UploadDeps":
+        return _UploadDeps(self)
+
+    def _require_user_id(self) -> int:
+        if not self._user_id:
+            raise ValueError(
+                "yaylib: not logged in (call login_with_email before "
+                "user-bound uploads)"
+            )
+        return self._user_id
+
+    async def upload_avatar_image(self, file: _upload.Upload) -> str:
+        return await _upload.upload_single_image(
+            self._upload_deps(),
+            _upload.user_avatar_upload(self._require_user_id()),
+            file,
+        )
+
+    async def upload_cover_image(self, file: _upload.Upload) -> str:
+        return await _upload.upload_single_image(
+            self._upload_deps(),
+            _upload.user_cover_upload(self._require_user_id()),
+            file,
+        )
+
+    async def upload_post_images(self, files: List[_upload.Upload]) -> List[str]:
+        return await _upload.upload_images(
+            self._upload_deps(),
+            _upload.user_post_upload(self._require_user_id()),
+            files,
+        )
+
+    async def upload_chat_message_images(
+        self, room_id: int, files: List[_upload.Upload]
+    ) -> List[str]:
+        return await _upload.upload_images(
+            self._upload_deps(),
+            _upload.chat_message_upload(room_id, self._require_user_id()),
+            files,
+        )
+
+    async def upload_chat_background_image(
+        self, room_id: int, file: _upload.Upload
+    ) -> str:
+        return await _upload.upload_single_image(
+            self._upload_deps(), _upload.chat_background_upload(room_id), file
+        )
+
+    async def upload_group_icon_image(
+        self, group_id: int, file: _upload.Upload
+    ) -> str:
+        return await _upload.upload_single_image(
+            self._upload_deps(), _upload.group_icon_upload(group_id), file
+        )
+
+    async def upload_group_cover_image(
+        self, group_id: int, file: _upload.Upload
+    ) -> str:
+        return await _upload.upload_single_image(
+            self._upload_deps(), _upload.group_cover_upload(group_id), file
+        )
+
+    async def upload_group_creation_icon_image(self, file: _upload.Upload) -> str:
+        return await _upload.upload_single_image(
+            self._upload_deps(), _upload.group_creation_icon_upload(), file
+        )
+
+    async def upload_group_creation_cover_image(self, file: _upload.Upload) -> str:
+        return await _upload.upload_single_image(
+            self._upload_deps(), _upload.group_creation_cover_upload(), file
+        )
+
+    async def upload_signup_avatar_image(self, file: _upload.Upload) -> str:
+        return await _upload.upload_single_image(
+            self._upload_deps(), _upload.signup_avatar_upload(), file
+        )
+
+    async def upload_thread_icon_image(
+        self, group_id: int, file: _upload.Upload
+    ) -> str:
+        return await _upload.upload_single_image(
+            self._upload_deps(), _upload.thread_icon_upload(group_id), file
+        )
+
+    async def upload_report_images(self, files: List[_upload.Upload]) -> List[str]:
+        return await _upload.upload_images(
+            self._upload_deps(), _upload.report_upload(), files
+        )
+
+    async def upload_video_call_snapshot_image(self, file: _upload.Upload) -> str:
+        return await _upload.upload_single_image(
+            self._upload_deps(), _upload.video_call_snapshot_upload(), file
+        )
+
+    async def upload_video(self, body) -> str:
+        return await _upload.upload_video(self._upload_deps(), body)
+
     # ---- lazy X-Client-IP (PORTING.md §12) ----
 
     def _maybe_fetch_client_ip(self) -> None:
@@ -446,3 +547,43 @@ class Client:
                 )
 
         return True
+
+
+class _UploadDeps:
+    """Adapter implementing upload.UploadDeps over a Client.
+
+    The presigned-URL fetch goes through the wrapped generated client so
+    it carries auth + retry; the PUT goes through the transport's
+    UNWRAPPED round-trip so it never carries a Bearer and never recurses
+    into the refresh/retry hook (PORTING.md §6.1 / §8).
+    """
+
+    __slots__ = ("_c",)
+
+    def __init__(self, client: "Client") -> None:
+        self._c = client
+
+    def user_id(self) -> int:
+        return self._c._user_id
+
+    async def get_presigned_urls(self, file_names):
+        resp = await self._c.buckets_api.get_bucket_presigned_urls(
+            file_names=file_names
+        )
+        return resp.presigned_urls or []
+
+    async def get_video_presigned_url(self, video_file_name: str) -> str:
+        resp = await self._c.users_api.get_user_presigned_url(
+            video_file_name=video_file_name
+        )
+        return resp.presigned_url or ""
+
+    async def raw_put(self, url: str, body: bytes, content_type: str) -> None:
+        res = await self._c._transport.send_unwrapped(
+            "PUT", url, {"Content-Type": content_type}, body
+        )
+        if not (200 <= res.status <= 299):
+            preview = ""
+            if res.data:
+                preview = res.data[:512].decode("utf-8", "replace").strip()
+            raise ValueError(f"PUT {res.status}: {preview}")
