@@ -5,10 +5,9 @@
 //
 // The full operation surface lives across 23 generated *Api classes. Each
 // is instantiated against the same Configuration so they share the
-// middleware chain (headers / auth / retry). A code-generation pass
-// equivalent to Go's `cmd/gen-aliases` will eventually emit the flat
-// promotion layer; for the spike we expose the per-service instances on
-// the client so callers can reach operations as
+// middleware chain (headers / auth / retry). A generated promotion layer
+// will eventually emit the flat surface; for the spike we expose the
+// per-service instances on the client so callers can reach operations as
 // `client.usersAPI.getUser(...)` while we wire up the wrapper layer.
 
 import {

@@ -63,9 +63,8 @@ export function errorResponseOf(err: unknown): ErrorResponse | null {
 
 // codeOf surfaces the server's error_code for switch dispatch. Returns 0
 // (ErrCodeUnknown placeholder) when the error is not an APIError or carries
-// no recognizable code. The typed ErrorCode constants are emitted by
-// `cmd/gen-errors` equivalent — until that lands the port returns numeric
-// codes only.
+// no recognizable code. The typed ErrorCode constants are generated —
+// until that lands the port returns numeric codes only.
 export function codeOf(err: unknown): number {
   const r = errorResponseOf(err);
   return r?.errorCode ?? 0;
