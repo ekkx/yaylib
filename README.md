@@ -12,6 +12,6 @@
 
 <sub>あらゆる操作の自動化や、ボットの開発が可能です。</sub>
 
-<a href="https://github.com/ekkx/yaylib/issues/new?template=bug_report.yml">バグを報告</a>&nbsp;·&nbsp;<a href="https://github.com/ekkx/yaylib/issues/new?template=feature_request.yml">機能をリクエスト</a>&nbsp;·&nbsp;<a href="https://discord.gg/MEuBfNtqRN">Discord に参加</a>
+<a href="https://discord.gg/MEuBfNtqRN">Discord に参加</a>
 
 </div>
