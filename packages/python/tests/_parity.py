@@ -157,3 +157,14 @@ async def mock_post(client: Client):
     return await client._transport.request(
         "POST", mock_base_url() + PARITY_POST_PATH, body="payload"
     )
+
+
+async def ws_close_all() -> None:
+    """Hit the shared server's admin route that closes every live
+    event-stream connection. The mockserver exposes this specifically to
+    drive reconnect / multi-subscription parity without out-of-band
+    orchestration.
+    """
+    async with aiohttp.ClientSession() as s:
+        async with s.post(mock_base_url() + "/__mock/ws/close") as r:
+            await r.read()

@@ -26,7 +26,7 @@ from yaylib.event_stream import (
     group_updates_channel,
 )
 
-from ._parity import mock_stream_client
+from ._parity import mock_stream_client, ws_close_all
 
 _DISABLED = EventStreamOptions(reconnect=ReconnectPolicy(disabled=True))
 
@@ -124,7 +124,14 @@ async def test_done_and_err_on_clean_close():
 
 
 async def test_multiple_subs_resubscribe_after_reconnect():
-    c = mock_stream_client("drop-after-confirm")
+    # Mode "" keeps the socket open so BOTH subscribes confirm on one
+    # stable connection (drop-after-confirm closes after the first
+    # confirm, which the Go reference only survives via Go's random
+    # map-iteration on resubscribe — not reproducible under Python's
+    # insertion-ordered dict). The reconnect is driven deterministically
+    # by the server's admin close route, which the mockserver exposes
+    # exactly for multi-subscription reconnect parity.
+    c = mock_stream_client("")
     c.set_tokens("stub", "")
     opts = EventStreamOptions(
         reconnect=ReconnectPolicy(initial_delay=0.01, max_delay=0.03)
@@ -134,16 +141,23 @@ async def test_multiple_subs_resubscribe_after_reconnect():
             sub1 = await stream.subscribe(chat_room_channel())
             sub2 = await stream.subscribe(group_updates_channel())
 
-            # Both subs must keep receiving across reconnect cycles,
-            # proving every sub is re-subscribed on the new connection.
-            # Independent per-sub queues buffer events as they arrive, so
-            # reading each channel's two cycles sequentially is race-free.
-            for _ in range(2):
-                ev = await sub1.next_event(timeout=4.0)
-                assert isinstance(ev, ChatDeletedEvent)
-            for _ in range(2):
-                ev = await sub2.next_event(timeout=4.0)
-                assert isinstance(ev, GroupUpdatedEvent)
+            # Initial representative event on each channel.
+            assert isinstance(
+                await sub1.next_event(timeout=3.0), ChatDeletedEvent
+            )
+            assert isinstance(
+                await sub2.next_event(timeout=3.0), GroupUpdatedEvent
+            )
+
+            # Force a server-side close; the client must reconnect and
+            # re-subscribe EVERY sub, after which both receive again.
+            await ws_close_all()
+            assert isinstance(
+                await sub1.next_event(timeout=4.0), ChatDeletedEvent
+            )
+            assert isinstance(
+                await sub2.next_event(timeout=4.0), GroupUpdatedEvent
+            )
     finally:
         await c.close()
 
