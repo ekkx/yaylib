@@ -94,6 +94,7 @@ function get(headers: Record<string, string>, key: string): string {
 
 // #6a — every request carries the required headers; with tokens set the
 // Authorization scheme is Bearer on a normal endpoint.
+// PORTING:S6
 async function requiredHeadersInjected(): Promise<void> {
   await withServer(
     () => ({ status: 200, body: "{}" }),
@@ -127,6 +128,7 @@ async function requiredHeadersInjected(): Promise<void> {
 // #6b — the OAuth token endpoint gets Basic; a normal endpoint gets
 // Bearer. Asserted on the same client so the scheme selection is the
 // transport's, not the caller's.
+// PORTING:S6
 async function oauthEndpointUsesBasicAuth(): Promise<void> {
   await withServer(
     (req) => {
@@ -168,6 +170,7 @@ async function oauthEndpointUsesBasicAuth(): Promise<void> {
 
 // #10 — lazy X-Client-IP. The first request carries none; the SDK learns
 // the IP from the timestamp lookup response; a later request carries it.
+// PORTING:S10
 async function lazyClientIPPopulatesHeader(): Promise<void> {
   const FETCHED_IP = "203.0.113.7";
   await withServer(
@@ -222,6 +225,7 @@ async function lazyClientIPPopulatesHeader(): Promise<void> {
 
 // #9 — 401 → refresh succeeds → retried original hits a transport error.
 // The surfaced error must be the retry/network error, not a stale 401.
+// PORTING:S9
 async function refreshOkButRetryNetworkErrorSurfaces(): Promise<void> {
   let dataAttempt = 0;
   await withServer(

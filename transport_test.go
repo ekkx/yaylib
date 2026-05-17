@@ -48,6 +48,7 @@ func (c *requestCapturer) snapshot() []capturedRequest {
 	return out
 }
 
+// PORTING:S6
 func TestTransport_InjectsRequiredHeaders(t *testing.T) {
 	cap := &requestCapturer{handler: func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -81,6 +82,7 @@ func TestTransport_InjectsRequiredHeaders(t *testing.T) {
 	}
 }
 
+// PORTING:S6
 func TestTransport_OAuthEndpointUsesBasicAuth(t *testing.T) {
 	cap := &requestCapturer{handler: func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -111,6 +113,8 @@ func TestTransport_OAuthEndpointUsesBasicAuth(t *testing.T) {
 // final success and the seeded tokens rotated to the server-issued
 // ones (the Bearer-header progression is a Go-internal mechanic, and
 // §15 says translate the scenario, not the mechanics).
+//
+// PORTING:S7
 func TestTransport_401TriggersRefreshAndRetries(t *testing.T) {
 	c := mockClient(t, "expired-token", WithRetryPolicy(RetryPolicy{}))
 	c.SetTokens("STALE", "REF")
@@ -134,6 +138,8 @@ func TestTransport_401TriggersRefreshAndRetries(t *testing.T) {
 // fail-401-times-2: the data request 401s and the refresh call (same
 // session+scenario counter) also 401s, so the refresh fails and the
 // original 401 surfaces with its body intact (README composition note).
+//
+// PORTING:S8
 func TestTransport_401RefreshFailureSurfaces401(t *testing.T) {
 	c := mockClient(t, "fail-401-times-2", WithRetryPolicy(RetryPolicy{}))
 	c.SetTokens("STALE", "REF")
@@ -153,6 +159,7 @@ func TestTransport_401RefreshFailureSurfaces401(t *testing.T) {
 	}
 }
 
+// PORTING:S9
 func TestTransport_401RefreshSucceedsButRetryNetworkErrorSurfacesError(t *testing.T) {
 	// Server: oauth/token returns fresh tokens. Data path returns 401
 	// once, then closes the connection on the retry to simulate a
@@ -204,6 +211,7 @@ func TestTransport_401RefreshSucceedsButRetryNetworkErrorSurfacesError(t *testin
 	}
 }
 
+// PORTING:S10
 func TestTransport_LazyFetchClientIPPopulatesHeader(t *testing.T) {
 	const fetchedIP = "203.0.113.7"
 	cap := &requestCapturer{handler: func(w http.ResponseWriter, r *http.Request) {

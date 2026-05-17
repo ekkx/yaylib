@@ -67,6 +67,7 @@ function assertEq<T>(name: string, got: T, want: T): void {
 }
 
 // Scenario 1: fresh login (cache miss) issues HTTP + persists session.
+// PORTING:S1
 async function scenarioFreshLogin(): Promise<void> {
   let loginHits = 0;
   await withTempDir(async (dir) => {
@@ -111,6 +112,7 @@ async function scenarioFreshLogin(): Promise<void> {
 }
 
 // Scenario 2: cache hit returns synthesized response without HTTP.
+// PORTING:S2
 async function scenarioCacheHit(): Promise<void> {
   let loginHits = 0;
   await withServer(
@@ -195,6 +197,7 @@ async function scenarioNoCacheBypass(): Promise<void> {
 
 // Scenario 4: persist failure during fresh login wraps the cause in
 // SessionSaveFailedError; the in-memory tokens still get activated.
+// PORTING:S4
 async function scenarioSavePersistFailure(): Promise<void> {
   await withServer(
     (path) => {

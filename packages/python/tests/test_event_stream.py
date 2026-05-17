@@ -32,6 +32,7 @@ def _client(http_url: str) -> Client:
 _DISABLED = EventStreamOptions(reconnect=ReconnectPolicy(disabled=True))
 
 
+# PORTING:S18,S25
 async def test_subscribe_and_receive_event():
     async def on_connect(s):
         await s.send_welcome()
@@ -53,6 +54,7 @@ async def test_subscribe_and_receive_event():
             await client.close()
 
 
+# PORTING:S21
 async def test_rejected_subscription():
     async def on_connect(s):
         await s.send_welcome()
@@ -70,6 +72,7 @@ async def test_rejected_subscription():
             await client.close()
 
 
+# PORTING:S18,S25
 async def test_multiple_channels():
     async def on_connect(s):
         await s.send_welcome()
@@ -104,6 +107,7 @@ async def test_multiple_channels():
             await client.close()
 
 
+# PORTING:S19
 async def test_reconnect_after_server_close_resubscribes():
     attempts = 0
 
@@ -163,6 +167,7 @@ async def test_unsubscribe_closes_events():
             await client.close()
 
 
+# PORTING:S21
 async def test_subscribe_timeout():
     async def on_connect(s):
         await s.send_welcome()
@@ -219,6 +224,7 @@ async def test_err_after_reconnect_exhausted():
             await client.close()
 
 
+# PORTING:S23
 async def test_on_drop_fires_when_buffer_full():
     release = asyncio.Event()
 
@@ -286,6 +292,7 @@ async def test_decorator_handler_idiom():
             await client.close()
 
 
+# PORTING:S20
 async def test_multiple_subs_resubscribe_after_reconnect():
     attempts = 0
     ident_chat = '{"channel":"ChatRoomChannel"}'
@@ -329,6 +336,7 @@ async def test_multiple_subs_resubscribe_after_reconnect():
             await client.close()
 
 
+# PORTING:S24
 async def test_stable_connection_resets_attempt_budget(monkeypatch):
     # Shrink the stability threshold so the test can cross it quickly.
     monkeypatch.setattr(es, "reconnect_stable_threshold", 0.05)
@@ -369,6 +377,7 @@ async def test_stable_connection_resets_attempt_budget(monkeypatch):
             await client.close()
 
 
+# PORTING:S22
 async def test_ws_dial_does_not_leak_bearer():
     captured = {}
 

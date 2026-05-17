@@ -16,6 +16,7 @@ from yaylib.client import Client
 
 
 @pytest.mark.asyncio
+# PORTING:S31
 async def test_activity_feed_routed_to_auxiliary_host():
     primary_hits: list[str] = []
     aux_hits: list[str] = []
@@ -42,6 +43,7 @@ async def test_activity_feed_routed_to_auxiliary_host():
 
 
 @pytest.mark.asyncio
+# PORTING:S31
 async def test_unrouted_request_stays_on_primary_host():
     primary_hits: list[str] = []
     aux_hits: list[str] = []

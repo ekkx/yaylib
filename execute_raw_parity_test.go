@@ -15,6 +15,8 @@ import (
 // production wire that the typed decoder cannot absorb. The contract
 // is server-enforced and identical across the three languages; the
 // test auto-skips when the shared server is not configured.
+//
+// PORTING:S26,S27
 func TestExecuteRaw_AbsorbsTypedDecodeFailure(t *testing.T) {
 	c := mockClient(t, "body-malformed")
 	ctx := context.Background()

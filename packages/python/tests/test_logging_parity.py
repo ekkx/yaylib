@@ -49,6 +49,7 @@ class _FailingStore:
         return None
 
 
+# PORTING:S32
 async def test_refresh_persist_fail_event_and_redaction():
     cap = _Capture()
     log = logging.getLogger("yaylib.test.parity")

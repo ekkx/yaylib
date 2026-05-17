@@ -57,6 +57,7 @@ function assertEq<T>(name: string, got: T, want: T): void {
 }
 
 // Scenario 1: 401 → refresh success → retry succeeds.
+// PORTING:S7
 async function scenarioRefreshSuccess(): Promise<void> {
   let oauthHits = 0;
   let timelineHits = 0;
@@ -120,6 +121,7 @@ async function scenarioRefreshSuccess(): Promise<void> {
 
 // Scenario 2: 401 → refresh fails (server returns 401 on /token) → original
 // 401 surfaces to the caller.
+// PORTING:S8
 async function scenarioRefreshFails(): Promise<void> {
   await withServer(
     (path, _method, _body) => {
@@ -160,6 +162,7 @@ async function scenarioRefreshFails(): Promise<void> {
 
 // Scenario 3: no refresh token (client has only an access token) — refresh
 // is skipped entirely and the original 401 propagates.
+// PORTING:S8
 async function scenarioNoRefreshToken(): Promise<void> {
   let oauthHits = 0;
   await withServer(
@@ -191,6 +194,7 @@ async function scenarioNoRefreshToken(): Promise<void> {
 }
 
 // Scenario 4: concurrent 401s collapse to one refresh.
+// PORTING:S11
 async function scenarioConcurrentRefresh(): Promise<void> {
   let oauthHits = 0;
   let timelineHits = 0;

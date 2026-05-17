@@ -36,6 +36,7 @@ async def test_retries_on_5xx():
         await c.close()
 
 
+# PORTING:S14
 async def test_retries_post_on_429():
     # retry_on_post=False (default): POST 5xx is not retried, but a 429
     # is retried regardless because the server explicitly asked and there
@@ -51,6 +52,7 @@ async def test_retries_post_on_429():
         await c.close()
 
 
+# PORTING:S14
 async def test_no_retry_post_by_default():
     # fail-503-times-1 would succeed on a retry, but POST 5xx is not
     # retried by default, so the single 503 surfaces.
@@ -100,6 +102,7 @@ async def test_disabled_by_zero_policy():
         await c.close()
 
 
+# PORTING:S12
 async def test_honors_retry_in_body():
     c = mock_client_with("retry-after-1", max_attempts=2,
                           base_delay=0.001, max_delay=5.0)
@@ -115,6 +118,7 @@ async def test_honors_retry_in_body():
         await c.close()
 
 
+# PORTING:S13
 async def test_retry_respects_cancellation():
     # Long backoff + a tight outer timeout: the cancellation must
     # propagate out of the retry sleep, not be swallowed.

@@ -15,6 +15,7 @@ from ._server import serve
 FETCHED_IP = "203.0.113.7"
 
 
+# PORTING:S10
 async def test_lazy_fetch_client_ip_populates_header():
     block_ips = []  # X-Client-IP seen on each /v1/users/1/block hit
 

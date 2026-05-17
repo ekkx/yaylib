@@ -192,6 +192,7 @@ func TestEventStream_ErrAfterReconnectExhausted(t *testing.T) {
 	}
 }
 
+// PORTING:S23
 func TestEventStream_OnDropFiresWhenBufferFull(t *testing.T) {
 	const ident = `{"channel":"ChatRoomChannel"}`
 	send := make(chan struct{})
@@ -241,6 +242,7 @@ func TestEventStream_OnDropFiresWhenBufferFull(t *testing.T) {
 	}
 }
 
+// PORTING:S24
 func TestEventStream_StableConnectionResetsAttemptBudget(t *testing.T) {
 	// Shrink the threshold so a tightly-timed test can still cross it.
 	old := reconnectStableThreshold

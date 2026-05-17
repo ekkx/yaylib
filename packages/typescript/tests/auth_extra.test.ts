@@ -51,6 +51,7 @@ async function withServer(
 
 // #3 — a store whose load() throws a non-"not found" error. The login
 // must reject and never touch the network.
+// PORTING:S3
 async function loadErrorReturnsErrorWithoutHTTP(): Promise<void> {
   await withServer(
     () => ({ status: 500, body: '{"error_code":-1}' }),
@@ -100,6 +101,7 @@ async function loadErrorReturnsErrorWithoutHTTP(): Promise<void> {
 // #5 — the login endpoint returns the server's error envelope with the
 // 2FA code; codeOf(err) resolves it to the exported ErrCodeRequired2FA
 // constant (value sourced from the SDK, not hardcoded here).
+// PORTING:S5,S30
 async function twoFARequiredSurfacesErrorCode(): Promise<void> {
   await withServer(
     (path) => {

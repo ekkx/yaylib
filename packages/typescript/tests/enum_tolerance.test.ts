@@ -17,6 +17,7 @@ function assert(name: string, cond: boolean, detail = ""): void {
   }
 }
 
+// PORTING:S28
 function unknownEnumDoesNotThrow(): void {
   let threw = false;
   let decoded: unknown;
@@ -33,6 +34,7 @@ function unknownEnumDoesNotThrow(): void {
   );
 }
 
+// PORTING:S28
 function knownEnumDecodesToConstant(): void {
   const post = PostFromJSON({ post_type: "image" });
   assert(

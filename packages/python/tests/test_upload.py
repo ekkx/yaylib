@@ -134,6 +134,7 @@ def test_make_jpeg_thumbnail_no_upscale():
         assert im.size == (20, 10)  # unchanged, no upscale
 
 
+# PORTING:S17
 def test_make_gif_thumbnail_stays_animated_gif():
     th = _image.make_thumbnail_for(_gif(120, 60, frames=4), ".gif", 40, 40)
     assert th.ext == ".gif" and th.content_type == "image/gif"

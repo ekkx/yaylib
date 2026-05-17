@@ -88,6 +88,7 @@ async def test_post_5xx_retries_when_opted_in():
             await client.close()
 
 
+# PORTING:S14
 async def test_429_retries_on_post_even_without_opt_in():
     hits = 0
 
@@ -112,6 +113,7 @@ async def test_429_retries_on_post_even_without_opt_in():
             await client.close()
 
 
+# PORTING:S12
 async def test_retry_in_body_honored():
     hits = 0
     first_at = 0.0

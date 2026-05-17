@@ -18,6 +18,7 @@ from yaylib.session_file import FileSessionStore, new_session_store
 from ._server import serve
 
 
+# PORTING:S1
 async def test_fresh_login_persists(tmp_path):
     login_hits = 0
 
@@ -64,6 +65,7 @@ async def test_fresh_login_persists(tmp_path):
             await client.close()
 
 
+# PORTING:S2
 async def test_cache_hit_no_http():
     login_hits = 0
 
@@ -159,6 +161,7 @@ class _FailingStore(MemorySessionStore):
         raise RuntimeError("disk full")
 
 
+# PORTING:S4
 async def test_save_failure_wraps_but_keeps_tokens():
     def handler(path, method, body):
         if path == "/v3/users/login_with_email":

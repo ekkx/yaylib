@@ -13,6 +13,7 @@ from yaylib.errors import APIError
 from ._server import serve
 
 
+# PORTING:S7
 async def test_refresh_success():
     oauth_hits = 0
     timeline_hits = 0
@@ -59,6 +60,7 @@ async def test_refresh_success():
             await client.close()
 
 
+# PORTING:S8
 async def test_refresh_fails_surfaces_original_401():
     def handler(path, method, body):
         if path == "/api/v1/oauth/token":
@@ -79,6 +81,7 @@ async def test_refresh_fails_surfaces_original_401():
             await client.close()
 
 
+# PORTING:S8
 async def test_no_refresh_token_skips_refresh():
     oauth_hits = 0
 
@@ -103,6 +106,7 @@ async def test_no_refresh_token_skips_refresh():
             await client.close()
 
 
+# PORTING:S11
 async def test_concurrent_401s_collapse_to_one_refresh():
     oauth_hits = 0
     timeline_hits = 0

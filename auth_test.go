@@ -57,6 +57,7 @@ func (s *errorStore) Save(sess *Session) error {
 
 func (s *errorStore) Delete(string) error { return nil }
 
+// PORTING:S1
 func TestLoginWithEmail_FreshLoginPersistsSession(t *testing.T) {
 	srv := fakeLoginServer(t, "ACC", "REF", 4242)
 	defer srv.Close()
@@ -91,6 +92,7 @@ func TestLoginWithEmail_FreshLoginPersistsSession(t *testing.T) {
 	}
 }
 
+// PORTING:S2
 func TestLoginWithEmail_RestoresFromStoreWithoutHTTP(t *testing.T) {
 	var hits int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -157,6 +159,7 @@ func TestLoginWithEmail_NoCacheBypassesStore(t *testing.T) {
 	}
 }
 
+// PORTING:S3
 func TestLoginWithEmail_LoadErrorReturnsErrorWithoutHTTP(t *testing.T) {
 	var hits int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -180,6 +183,7 @@ func TestLoginWithEmail_LoadErrorReturnsErrorWithoutHTTP(t *testing.T) {
 	}
 }
 
+// PORTING:S4
 func TestLoginWithEmail_SaveFailureWrapsErrSessionSaveFailed(t *testing.T) {
 	srv := fakeLoginServer(t, "AT", "RT", 42)
 	defer srv.Close()
@@ -199,6 +203,7 @@ func TestLoginWithEmail_SaveFailureWrapsErrSessionSaveFailed(t *testing.T) {
 	}
 }
 
+// PORTING:S5
 func TestLoginWithEmail_TwoFARequiredSurfacesErrorCode(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasSuffix(r.URL.Path, "/login_with_email") {

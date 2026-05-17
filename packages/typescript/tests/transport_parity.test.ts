@@ -17,6 +17,7 @@ const noRetry = { maxAttempts: 0, baseDelay: 1, maxDelay: 1, retryOnPOST: false 
 // expired-token: protected requests 401 (error_code -3) until the token
 // endpoint is hit (a simulated refresh), then the happy path. This is the
 // 401 → refresh → retry chain.
+// PORTING:S7
 async function refreshAndRetriesOn401(): Promise<void> {
   const c = mockClient("expired-token", { retryPolicy: noRetry });
   c.setTokens("STALE", "REF");
@@ -43,6 +44,7 @@ async function refreshAndRetriesOn401(): Promise<void> {
 // fail-401-times-2: the data request 401s and the refresh call (same
 // session+scenario counter) also 401s, so refresh fails and the original
 // 401 surfaces with its body intact.
+// PORTING:S8
 async function refreshFailureSurfaces401(): Promise<void> {
   const c = mockClient("fail-401-times-2", { retryPolicy: noRetry });
   c.setTokens("STALE", "REF");

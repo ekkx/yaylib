@@ -45,6 +45,7 @@ func contains(ss []string, want string) bool {
 	return false
 }
 
+// PORTING:S31
 func TestTransport_RoutesActivityFeedToAuxiliaryHost(t *testing.T) {
 	primary := &hitRecorder{}
 	aux := &hitRecorder{}
@@ -69,6 +70,7 @@ func TestTransport_RoutesActivityFeedToAuxiliaryHost(t *testing.T) {
 	}
 }
 
+// PORTING:S31
 func TestTransport_LeavesUnroutedRequestsOnPrimaryHost(t *testing.T) {
 	primary := &hitRecorder{}
 	aux := &hitRecorder{}

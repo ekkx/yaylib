@@ -51,6 +51,7 @@ const failingStore: SessionStore = {
   delete: async (): Promise<void> => {},
 };
 
+// PORTING:S32
 async function refreshPersistFailEventAndRedaction(): Promise<void> {
   const h = new CaptureLogger();
   const c = mockClient("expired-token", {
