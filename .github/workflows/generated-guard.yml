@@ -1,0 +1,90 @@
+name: generated-guard
+
+# Machine-generated sources are produced from the API schema and
+# regenerated wholesale, so hand edits to them are overwritten and
+# cannot be merged. This check fails a PR that touches those paths and
+# points the contributor at CONTRIBUTING.md (open an Issue describing the
+# API behaviour, or send the change against the hand-written layer).
+#
+# It is skipped for the maintainer (whose regeneration commits
+# legitimately update these files) and can be overridden with the
+# "generated-ok" label.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.pull_request.user.login != github.repository_owner &&
+      !contains(github.event.pull_request.labels.*.name, 'generated-ok')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for edits to machine-generated files
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          # Paths that are generated from the API schema (see the
+          # `Code generated; DO NOT EDIT.` header on each).
+          patterns='
+          ^aliases\.go$
+          ^error_codes\.go$
+          ^host_routes\.go$
+          ^gen/
+          ^packages/typescript/src/gen/
+          ^packages/python/yaylib/models/
+          ^packages/python/yaylib/api/
+          ^packages/python/yaylib/__init__\.py$
+          ^packages/python/yaylib/_host_routes\.py$
+          ^packages/python/yaylib/api_client\.py$
+          ^packages/python/yaylib/configuration\.py$
+          ^packages/python/yaylib/exceptions\.py$
+          ^packages/python/yaylib/rest\.py$
+          '
+
+          changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+          hits=""
+          while IFS= read -r pat; do
+            [ -z "$pat" ] && continue
+            while IFS= read -r f; do
+              [ -z "$f" ] && continue
+              if printf '%s\n' "$f" | grep -qE "$pat"; then
+                hits="${hits}${f}"$'\n'
+              fi
+            done <<< "$changed"
+          done <<< "$patterns"
+
+          hits="$(printf '%s' "$hits" | sort -u | sed '/^$/d')"
+
+          if [ -n "$hits" ]; then
+            {
+              echo "## Machine-generated files were modified"
+              echo
+              echo "These files are generated from the API schema and are"
+              echo "machine-managed; edits are overwritten on the next"
+              echo "regeneration and cannot be merged:"
+              echo
+              echo '```'
+              echo "$hits"
+              echo '```'
+              echo
+              echo "If you found incorrect or missing API behaviour, please"
+              echo "open an Issue describing what the server actually returns."
+              echo "Otherwise, please send your change against the"
+              echo "hand-written layer. See CONTRIBUTING.md."
+            } | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          echo "No machine-generated files modified."
