@@ -1,0 +1,67 @@
+name: 🐛 バグ報告
+description: 不具合を報告する
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ご報告ありがとうございます。再現に必要な情報をできるだけ埋めてください。
+
+        ⚠️ **アクセストークン・リフレッシュトークン・パスワード・API キーなどの秘匿情報は、ログや本文に貼らないでください。**
+  - type: dropdown
+    id: language
+    attributes:
+      label: 使用している SDK
+      options:
+        - Go
+        - TypeScript
+        - Python
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: yaylib のバージョン
+      placeholder: 例) v2.0.0
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: どんな不具合かを簡潔に書いてください。
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 再現手順
+      description: できるだけ最小限の再現コードや手順を書いてください。
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待する挙動
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 実際の挙動
+      description: エラーメッセージやスタックトレース（秘匿情報は伏せること）。
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 実行環境
+      placeholder: 例) Go 1.22 / macOS 14 ・ Node 20 / Linux ・ Python 3.11
+    validations:
+      required: false
