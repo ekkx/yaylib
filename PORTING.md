@@ -247,6 +247,18 @@ Other invariants:
 - The server rotates BOTH `access_token` and `refresh_token` on each refresh — the SDK MUST persist the new refresh token.
 - Concurrent 401s MUST collapse to a single refresh call (mutex / promise / asyncio lock); the others wait and retry with the new token. Parallel refreshes invalidate each other.
 
+> **Re-issue with the UNWRAPPED HTTP client.** Both the 401-refresh
+> retry (§6.1) and the transient-failure retry (§13) re-send the
+> original request. That re-send MUST go through the raw / unwrapped
+> HTTP layer (the bare `fetch` / `http.Client` / `aiohttp` call), NOT
+> the middleware-or-interceptor-wrapped client that owns the retry &
+> refresh logic. Re-entering the wrapped client recursively re-runs
+> the same retry/refresh hook, so a permanently-failing endpoint
+> recurses without bound and OOMs. (The TS port hit exactly this: the
+> generated `ResponseContext.fetch` is the middleware-wrapped fetch,
+> not the raw one.) On re-issue, also refresh per-request headers that
+> go stale — at minimum `X-Timestamp`.
+
 ---
 
 ## 7. Signing helpers
