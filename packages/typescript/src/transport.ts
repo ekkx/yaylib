@@ -10,6 +10,7 @@ import type {
   ResponseContext,
   FetchParams,
 } from "./gen/runtime";
+import { hostRoutes } from "./gen/hostRoutes";
 
 export interface TransportContext {
   userAgent: string;
@@ -42,6 +43,57 @@ const OAUTH_TOKEN_PATH = "/api/v1/oauth/token";
 
 function isOAuthTokenPath(url: string): boolean {
   return url.includes(OAUTH_TOKEN_PATH);
+}
+
+// HostRoutingContext supplies the configurable auxiliary base URLs the
+// host-routing middleware resolves symbolic hosts to.
+export interface HostRoutingContext {
+  cassandraBaseURL: string;
+}
+
+function resolveAuxHost(alias: string, ctx: HostRoutingContext): string | undefined {
+  switch (alias) {
+    case "cassandra":
+      return ctx.cassandraBaseURL;
+    default:
+      // Unrecognized alias from the generated table: keep the request
+      // on the primary host rather than stranding it.
+      return undefined;
+  }
+}
+
+// buildHostRoutingMiddleware rewrites the request's origin when its
+// operation is served from an auxiliary host (see gen/hostRoutes).
+// Match is by exact "METHOD path" — the host-routed operations are all
+// parameter-free, so the request pathname equals the OpenAPI path
+// template. It must run before every other middleware so headers /
+// auth / retry all observe the final URL (mirrors the Go transport's
+// routeHost running first in RoundTrip).
+export function buildHostRoutingMiddleware(ctx: HostRoutingContext): Middleware {
+  return {
+    pre: async (req: RequestContext): Promise<FetchParams | void> => {
+      let url: URL;
+      try {
+        url = new URL(req.url);
+      } catch {
+        return; // non-absolute URL — nothing to rewrite
+      }
+      const method = (req.init.method ?? "GET").toUpperCase();
+      const alias = hostRoutes[`${method} ${url.pathname}`];
+      if (!alias) return;
+      const base = resolveAuxHost(alias, ctx);
+      if (!base) return;
+      let target: URL;
+      try {
+        target = new URL(base);
+      } catch {
+        return;
+      }
+      url.protocol = target.protocol;
+      url.host = target.host;
+      return { url: url.toString(), init: req.init };
+    },
+  };
 }
 
 function setIfAbsent(headers: Record<string, string>, key: string, value: string) {

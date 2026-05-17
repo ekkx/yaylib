@@ -52,11 +52,17 @@ import (
 // Default values baked in for the public Yay! production environment.
 // Override any of them via the With* options on NewClient.
 const (
-	DefaultBaseURL        = "https://api.yay.space"
-	DefaultAPIKey         = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
-	DefaultAPIVersionKey  = "34c8c1cdf29b46a492e8ec58e6db37ec" // HS256 signing key for X-Jwt
-	DefaultAPIVersionName = "4.26"
-	DefaultAppVersion     = "4.26.1"
+	DefaultBaseURL = "https://api.yay.space"
+	// DefaultCassandraBaseURL is the auxiliary host that a few
+	// activity-feed endpoints are served from. Requests for those
+	// operations are routed here instead of the primary BaseURL;
+	// override with WithCassandraBaseURL (e.g. to point at a test
+	// server).
+	DefaultCassandraBaseURL = "https://cas.yay.space"
+	DefaultAPIKey           = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
+	DefaultAPIVersionKey    = "34c8c1cdf29b46a492e8ec58e6db37ec" // HS256 signing key for X-Jwt
+	DefaultAPIVersionName   = "4.26"
+	DefaultAppVersion       = "4.26.1"
 
 	DefaultDeviceType    = "android"
 	DefaultDeviceOS      = "11"
@@ -132,6 +138,11 @@ type Client struct {
 	// different environment, construct a new Client with WithBaseURL
 	// instead.
 	BaseURL string
+
+	// CassandraBaseURL is the auxiliary host for activity-feed
+	// operations (see genHostRoutes). Captured at NewClient like
+	// BaseURL; mutating it afterwards has no effect.
+	CassandraBaseURL string
 
 	// EventStreamURL is the wss:// endpoint used by OpenEventStream.
 	// Defaults to wss://cable.yay.space.
@@ -260,6 +271,13 @@ func WithAppVersion(v string) Option { return func(c *Client) { c.AppVersion = v
 // WithBaseURL overrides the API base URL (default: https://api.yay.space).
 func WithBaseURL(u string) Option { return func(c *Client) { c.BaseURL = u } }
 
+// WithCassandraBaseURL overrides the auxiliary host used for
+// activity-feed operations (default: https://cas.yay.space). Point this
+// at a test server to exercise host-routed endpoints offline.
+func WithCassandraBaseURL(u string) Option {
+	return func(c *Client) { c.CassandraBaseURL = u }
+}
+
 // WithUserID pre-populates Client.UserID. Use this only when
 // authenticating via SetTokens (no LoginWithEmail call); the login
 // wrappers fill UserID automatically.
@@ -339,22 +357,23 @@ func NewClient(opts ...Option) *Client {
 
 	lifecycleCtx, lifecycleCancel := context.WithCancel(context.Background())
 	c := &Client{
-		lifecycleCtx:    lifecycleCtx,
-		lifecycleCancel: lifecycleCancel,
-		APIKey:          DefaultAPIKey,
-		APIVersionKey:   DefaultAPIVersionKey,
-		APIVersionName:  DefaultAPIVersionName,
-		AppVersion:      DefaultAppVersion,
-		UserAgent:       userAgent,
-		DeviceInfo:      deviceInfo,
-		DeviceUUID:      NewUUIDv4(),
-		BaseURL:         DefaultBaseURL,
-		EventStreamURL:  DefaultEventStreamURL,
-		ConnectionType:  DefaultConnectionType,
-		ConnectionSpeed: DefaultConnectionSpeed,
-		AcceptLanguage:  DefaultAcceptLanguage,
-		tokens:          &Tokens{},
-		RetryPolicy:     DefaultRetryPolicy(),
+		lifecycleCtx:     lifecycleCtx,
+		lifecycleCancel:  lifecycleCancel,
+		APIKey:           DefaultAPIKey,
+		APIVersionKey:    DefaultAPIVersionKey,
+		APIVersionName:   DefaultAPIVersionName,
+		AppVersion:       DefaultAppVersion,
+		UserAgent:        userAgent,
+		DeviceInfo:       deviceInfo,
+		DeviceUUID:       NewUUIDv4(),
+		BaseURL:          DefaultBaseURL,
+		CassandraBaseURL: DefaultCassandraBaseURL,
+		EventStreamURL:   DefaultEventStreamURL,
+		ConnectionType:   DefaultConnectionType,
+		ConnectionSpeed:  DefaultConnectionSpeed,
+		AcceptLanguage:   DefaultAcceptLanguage,
+		tokens:           &Tokens{},
+		RetryPolicy:      DefaultRetryPolicy(),
 	}
 
 	for _, opt := range opts {

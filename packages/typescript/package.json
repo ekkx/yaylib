@@ -26,7 +26,7 @@
   "scripts": {
     "build": "tsc && tsc -p tsconfig.esm.json",
     "typecheck": "tsc --noEmit",
-    "test": "tsx tests/signing.test.ts && tsx tests/auth_refresh.test.ts && tsx tests/session_file.test.ts && tsx tests/auth.test.ts && tsx tests/retry.test.ts && tsx tests/upload.test.ts && tsx tests/event_stream.test.ts && tsx tests/execute_raw.test.ts && tsx tests/cursor_tolerance.test.ts && tsx tests/realm_list.test.ts",
+    "test": "tsx tests/signing.test.ts && tsx tests/auth_refresh.test.ts && tsx tests/session_file.test.ts && tsx tests/auth.test.ts && tsx tests/retry.test.ts && tsx tests/upload.test.ts && tsx tests/event_stream.test.ts && tsx tests/execute_raw.test.ts && tsx tests/cursor_tolerance.test.ts && tsx tests/realm_list.test.ts && tsx tests/host_routes.test.ts",
     "prepare": "npm run build"
   },
   "engines": {

@@ -70,6 +70,7 @@ import {
   DEFAULT_API_VERSION_NAME,
   DEFAULT_APP_VERSION,
   DEFAULT_BASE_URL,
+  DEFAULT_CASSANDRA_BASE_URL,
   DEFAULT_CONNECTION_SPEED,
   DEFAULT_CONNECTION_TYPE,
   DEFAULT_DEVICE_DENSITY,
@@ -88,10 +89,15 @@ import { emptyTokens } from "./tokens";
 import {
   buildAuthRefreshMiddleware,
   buildHeadersMiddleware,
+  buildHostRoutingMiddleware,
 } from "./transport";
 
 export interface ClientOptions {
   baseURL?: string;
+  // Auxiliary host for activity-feed operations (see gen/hostRoutes).
+  // Defaults to https://cas.yay.space; point at a test server to
+  // exercise host-routed endpoints offline.
+  cassandraBaseURL?: string;
   eventStreamURL?: string;
   apiKey?: string;
   apiVersionKey?: string;
@@ -131,6 +137,7 @@ function newUUIDv4(): string {
 export class Client {
   // Configuration constants — public for inspection / override at runtime.
   readonly baseURL: string;
+  readonly cassandraBaseURL: string;
   readonly eventStreamURL: string;
   readonly apiKey: string;
   readonly apiVersionKey: string;
@@ -188,6 +195,7 @@ export class Client {
 
   constructor(opts: ClientOptions = {}) {
     this.baseURL = opts.baseURL ?? DEFAULT_BASE_URL;
+    this.cassandraBaseURL = opts.cassandraBaseURL ?? DEFAULT_CASSANDRA_BASE_URL;
     this.eventStreamURL = opts.eventStreamURL ?? DEFAULT_EVENT_STREAM_URL;
     this.apiKey = opts.apiKey ?? DEFAULT_API_KEY;
     this.apiVersionKey = opts.apiVersionKey ?? DEFAULT_API_VERSION_KEY;
@@ -213,16 +221,22 @@ export class Client {
     this.retryPolicy = opts.retryPolicy ?? DEFAULT_RETRY_POLICY;
 
     // Middleware order is significant:
-    //   1. headers — every other middleware sees the canonical request
+    //   1. host-routing — rewrites the origin for the few operations
+    //      served from an auxiliary host, so every later middleware
+    //      observes the final URL.
+    //   2. headers — every other middleware sees the canonical request
     //      shape the server expects.
-    //   2. auth-refresh — must run before retry so a 401 triggers a
+    //   3. auth-refresh — must run before retry so a 401 triggers a
     //      refresh + replay rather than counting toward the retry budget.
-    //   3. retry — handles 429 / 5xx / transport errors on the response
+    //   4. retry — handles 429 / 5xx / transport errors on the response
     //      that auth-refresh either left intact or already retried.
     const config = new Configuration({
       basePath: this.baseURL,
       fetchApi: opts.fetchApi,
       middleware: [
+        buildHostRoutingMiddleware({
+          cassandraBaseURL: this.cassandraBaseURL,
+        }),
         buildHeadersMiddleware({
           userAgent: this.userAgent,
           appVersion: this.apiVersionName,

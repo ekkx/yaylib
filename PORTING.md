@@ -671,6 +671,41 @@ spurious header confuses some intermediaries. Same rule for the
 WebSocket dial: token goes in the query string, no `Authorization`
 header.
 
+### 12.1 Host routing
+
+Most operations go to the primary API host, but a few are served from
+a separate auxiliary host. A request for one of those sent to the
+primary host comes back as a router-level 404 (`{"status":404,"error":
+"Not Found"}`) — it is NOT removed, just elsewhere. The transport MUST
+rewrite the request origin for those operations.
+
+Invariants every port keeps:
+
+- The operation→host map is **generated, not hand-written** — it ships
+  as a data table in the generated layer (Go `genHostRoutes`, TS
+  `gen/hostRoutes`, Python `_host_routes.HOST_ROUTES`), keyed by the
+  upper-cased `"METHOD path"`. Never hard-code the endpoint list in the
+  transport; consume the table.
+- Host names are **symbolic** (`cassandra`), resolved to a base URL the
+  client config exposes and lets the caller override
+  (`WithCassandraBaseURL` / `cassandraBaseURL` / `cassandra_base_url`,
+  default `https://cas.yay.space`). The override is what makes the
+  routing testable offline and against the mock server.
+- The rewrite runs **first**, before header injection / auth-refresh /
+  retry, so every later stage observes the final URL (and the post-401
+  replay re-sends to the same host).
+- Matching is exact `"METHOD path"`. The currently-routed operations
+  are all parameter-free, so the request path equals the OpenAPI path
+  template; a port does NOT need a path-template matcher until a
+  parameterized path joins the table (revisit then).
+- An unrecognized symbolic host in the table resolves to "primary host"
+  rather than an error — a spec change can't strand a request.
+
+This is the same source-of-truth discipline as the rest of the
+pipeline: the host assignment lives in the spec overlay and propagates
+to every language through the generated table; a port that special-
+cases it in transport code will drift. See §15 for the parity scenario.
+
 ---
 
 ## 13. Retry policy
@@ -757,6 +792,10 @@ scenarios, not the Go API mechanics):
 - Unknown enum value in a server response is accepted (typed field
   set to the unknown string, no error). IsValid() reports false on
   it; the typed constants stay usable.
+- Host routing (§12.1): a host-routed operation goes to the
+  configured auxiliary base URL; a non-routed operation stays on the
+  primary base URL. Two stand-in servers, assert which one each call
+  reached.
 
 ---
 

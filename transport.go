@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -34,6 +35,12 @@ type Transport struct {
 
 func (t *Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 	r = r.Clone(r.Context())
+
+	// A few operations are served from an auxiliary host. The gen
+	// client builds every request against the primary BaseURL, so
+	// rewrite the host here before anything else (header injection,
+	// retries, 401 refresh-and-replay all inherit the rewritten URL).
+	t.routeHost(r)
 
 	// Buffer the request body once so retries (401 refresh + 5xx/429) can
 	// re-send the same payload. Yay! request bodies are small so the
@@ -224,6 +231,43 @@ func (c *Client) maybeFetchClientIP() {
 		}
 		c.clientIPMu.Unlock()
 	}()
+}
+
+// routeHost rewrites the request's scheme/host when its operation is
+// served from an auxiliary host (see genHostRoutes). Match is by exact
+// "METHOD path" — the host-routed operations are all parameter-free so
+// the request path equals the OpenAPI path template. Unlisted requests
+// are left on the primary host.
+func (t *Transport) routeHost(r *http.Request) {
+	base, ok := t.client.hostBaseURLFor(r.Method, r.URL.Path)
+	if !ok || base == "" {
+		return
+	}
+	u, err := url.Parse(base)
+	if err != nil || u.Host == "" {
+		return
+	}
+	r.URL.Scheme = u.Scheme
+	r.URL.Host = u.Host
+	r.Host = u.Host
+}
+
+// hostBaseURLFor resolves the auxiliary base URL for a host-routed
+// operation, or ok=false when the request should stay on the primary
+// BaseURL. An unrecognized alias in the generated table is treated as
+// "primary host" rather than an error so a spec change can't strand a
+// request.
+func (c *Client) hostBaseURLFor(method, path string) (string, bool) {
+	alias, ok := genHostRoutes[strings.ToUpper(method)+" "+path]
+	if !ok {
+		return "", false
+	}
+	switch alias {
+	case "cassandra":
+		return c.CassandraBaseURL, true
+	default:
+		return "", false
+	}
 }
 
 func basicCredentials(apiKey string) string {

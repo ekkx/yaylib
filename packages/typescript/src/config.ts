@@ -26,6 +26,13 @@ export const DEFAULT_CONNECTION_SPEED = "0 kbps";
 export const DEFAULT_ACCEPT_LANGUAGE = "ja";
 
 export const DEFAULT_BASE_URL = "https://api.yay.space";
+
+// Auxiliary host a few activity-feed operations are served from
+// (see gen/hostRoutes). Requests for those operations are routed here
+// instead of DEFAULT_BASE_URL; override via ClientOptions.cassandraBaseURL
+// (e.g. to point at a test server).
+export const DEFAULT_CASSANDRA_BASE_URL = "https://cas.yay.space";
+
 export const DEFAULT_EVENT_STREAM_URL = "wss://cable.yay.space";
 export const MEDIA_CDN_BASE = "https://cdn.yay.space/uploads";
 

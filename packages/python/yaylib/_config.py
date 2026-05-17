@@ -32,6 +32,13 @@ DEFAULT_CONNECTION_SPEED = "0 kbps"
 DEFAULT_ACCEPT_LANGUAGE = "ja"
 
 DEFAULT_BASE_URL = "https://api.yay.space"
+
+# Auxiliary host a few activity-feed operations are served from
+# (see yaylib._host_routes). Requests for those operations are routed
+# here instead of DEFAULT_BASE_URL; override via the
+# ``cassandra_base_url`` Client option (e.g. to point at a test server).
+DEFAULT_CASSANDRA_BASE_URL = "https://cas.yay.space"
+
 DEFAULT_EVENT_STREAM_URL = "wss://cable.yay.space"
 MEDIA_CDN_BASE = "https://cdn.yay.space/uploads"
 

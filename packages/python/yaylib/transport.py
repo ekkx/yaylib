@@ -19,9 +19,12 @@ import time
 from dataclasses import dataclass
 from typing import Awaitable, Callable, Optional
 
+from urllib.parse import urlsplit, urlunsplit
+
 import aiohttp
 from multidict import CIMultiDict
 
+from yaylib._host_routes import HOST_ROUTES
 from yaylib.exceptions import ApiException, ApiValueError
 from yaylib.retry import (
     RetryPolicy,
@@ -45,6 +48,36 @@ def _is_timestamp_path(url: str) -> bool:
     return path.endswith(_TIMESTAMP_PATH)
 
 
+def _resolve_aux_host(alias: str, ctx: "TransportContext") -> str:
+    # Unrecognized alias from the generated table: keep the request on
+    # the primary host rather than stranding it.
+    if alias == "cassandra":
+        return ctx.cassandra_base_url
+    return ""
+
+
+def _route_host(method: str, url: str, ctx: "TransportContext") -> str:
+    """Rewrite the request origin when the operation is served from an
+    auxiliary host (see HOST_ROUTES). Match is by exact "METHOD path" —
+    the host-routed operations are all parameter-free, so the request
+    path equals the OpenAPI path template. Unlisted requests are
+    returned unchanged.
+    """
+    parts = urlsplit(url)
+    alias = HOST_ROUTES.get(f"{method.upper()} {parts.path}")
+    if not alias:
+        return url
+    base = _resolve_aux_host(alias, ctx)
+    if not base:
+        return url
+    target = urlsplit(base)
+    if not target.netloc:
+        return url
+    return urlunsplit(
+        (target.scheme, target.netloc, parts.path, parts.query, parts.fragment)
+    )
+
+
 @dataclass
 class TransportContext:
     user_agent: str
@@ -57,6 +90,11 @@ class TransportContext:
     api_key: str
     client_ip: Callable[[], str]
     access_token: Callable[[], str]
+    # Auxiliary host for activity-feed operations (see
+    # yaylib._host_routes). The transport rewrites the request origin to
+    # this for host-routed operations; everything else stays on the
+    # primary host.
+    cassandra_base_url: str = ""
 
 
 # RefreshFn attempts a one-shot refresh of the access token using the
@@ -282,6 +320,10 @@ class Transport:
         _request_timeout=None,
     ) -> BufferedResponse:
         method = method.upper()
+        # A few operations are served from an auxiliary host. Rewrite the
+        # origin before anything else so header injection, the 401
+        # refresh-and-replay, and retries all act on the final URL.
+        url = _route_host(method, url, self._ctx)
         base_headers = dict(headers or {})
         data = self._serialize_body(base_headers, body, post_params)
         timeout = _timeout(_request_timeout)

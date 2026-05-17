@@ -49,6 +49,7 @@ from yaylib._config import (
     DEFAULT_API_VERSION_NAME,
     DEFAULT_APP_VERSION,
     DEFAULT_BASE_URL,
+    DEFAULT_CASSANDRA_BASE_URL,
     DEFAULT_CONNECTION_SPEED,
     DEFAULT_CONNECTION_TYPE,
     DEFAULT_DEVICE_DENSITY,
@@ -100,6 +101,7 @@ class Client:
         self,
         *,
         base_url: Optional[str] = None,
+        cassandra_base_url: Optional[str] = None,
         event_stream_url: Optional[str] = None,
         api_key: Optional[str] = None,
         api_version_key: Optional[str] = None,
@@ -115,6 +117,7 @@ class Client:
         retry_policy: Optional[RetryPolicy] = None,
     ) -> None:
         self.base_url = base_url or DEFAULT_BASE_URL
+        self.cassandra_base_url = cassandra_base_url or DEFAULT_CASSANDRA_BASE_URL
         self.event_stream_url = event_stream_url or DEFAULT_EVENT_STREAM_URL
         self.api_key = api_key or DEFAULT_API_KEY
         self.api_version_key = api_version_key or DEFAULT_API_VERSION_KEY
@@ -158,6 +161,7 @@ class Client:
                 api_key=self.api_key,
                 client_ip=lambda: self._client_ip,
                 access_token=lambda: self._tokens.access,
+                cassandra_base_url=self.cassandra_base_url,
             ),
             refresh=self._try_refresh,
             policy=self.retry_policy,
