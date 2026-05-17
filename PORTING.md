@@ -706,6 +706,61 @@ pipeline: the host assignment lives in the spec overlay and propagates
 to every language through the generated table; a port that special-
 cases it in transport code will drift. See §15 for the parity scenario.
 
+### 12.2 Logging
+
+Logging is **optional, injected, and silent by default**. The SDK is a
+library: with no logger configured it MUST produce zero output (no
+stderr, no stdout, no native-logger side effects). A logger is supplied
+once at construction (`WithLogger` / `logger=` / the `logger` option)
+and from then on the SDK emits structured records to it.
+
+Logger shape (idiomatic per language, same four levels):
+
+- Go: a `*slog.Logger`. Default is a logger over a discard handler.
+- TypeScript: a `Logger` interface — `debug/info/warn/error(message,
+  fields?)`. Default is a no-op object.
+- Python: a stdlib `logging.Logger` (or anything duck-compatible).
+  Default is a module logger with a `NullHandler` and propagation off.
+
+Levels: `Debug`, `Info`, `Warn`, `Error`. `Info` is reserved (no call
+sites yet). Construction MUST NOT do work when the level is disabled —
+in particular the no-op default path must be allocation-cheap, so
+`Debug` field assembly is only reached when a logger is present.
+
+Every record carries a stable **`event`** key whose value is a
+snake_case identifier. **The `event` value is the cross-language
+contract** — the human-readable message text MAY differ slightly per
+language, but the `event` value and the documented field keys MUST be
+identical across ports. Adding or renaming an `event` is a contract
+change: update this list in the same change.
+
+Canonical events:
+
+| level | `event` | fields | when |
+|---|---|---|---|
+| WARN  | `token_persist_fail` | `user_id` | refresh succeeded but persisting the rotated tokens to the session store failed (non-fatal; §6.1) |
+| WARN  | `session_load_fail` | `err` | session store load raised on the login path; the SDK falls back to a network login (§5) |
+| DEBUG | `http_request` | `method`, `path`, `host` | a request is about to be sent (after host-routing / header injection) |
+| DEBUG | `http_retry` | `method`, `path`, `attempt`, `status`/`error`, `delay_ms` | a transient failure is being retried (§13) |
+| DEBUG | `token_refresh` | `outcome` (`ok`/`failed`/`no_token`) | the 401 auto-refresh chain ran (§6.1) |
+| DEBUG | `host_route_rewrite` | `op`, `host` | a request origin was rewritten to an auxiliary host (§12.1) |
+| DEBUG | `ws_reconnect` | `attempt`, `delay_ms` | the event stream is reconnecting (§10) |
+| ERROR | — | — | reserved; no call sites (every fatal currently returns to the caller) |
+
+Redaction is a **hard contract, not a guideline**. The SDK MUST NEVER
+pass to a logger: access or refresh tokens, password, API key,
+`signed_info` / `signed_version`, the `X-Jwt` value, the
+`Authorization` header, or any request/response body. `http_request`
+logs method + path + host only — never the query string, headers, or
+body. `email` and `user_id` MAY appear (they are useful and the caller
+already holds them). A port that logs a banned value is a defect even
+if the value is "only at debug level".
+
+This mirrors the rest of the SDK's discipline: the contract lives here,
+each language's `*_test.go` / `*.test.ts` / `test_*.py` translates the
+same parity scenario (§15), and a port that diverges on event names or
+redaction drifts silently. See §15.
+
 ---
 
 ## 13. Retry policy
@@ -796,6 +851,12 @@ scenarios, not the Go API mechanics):
   configured auxiliary base URL; a non-routed operation stays on the
   primary base URL. Two stand-in servers, assert which one each call
   reached.
+- Logging (§12.2): with no logger, an operation that hits the
+  `token_persist_fail` path produces zero output. With a capturing
+  logger injected, the same path emits one WARN record carrying
+  `event=token_persist_fail`; assert no captured record (any level,
+  any field) contains the access token, refresh token, password, or
+  API key.
 
 ---
 

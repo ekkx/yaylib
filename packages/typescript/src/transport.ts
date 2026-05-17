@@ -11,8 +11,10 @@ import type {
   FetchParams,
 } from "./gen/runtime";
 import { hostRoutes } from "./gen/hostRoutes";
+import type { Logger } from "./logger";
 
 export interface TransportContext {
+  logger: Logger;
   userAgent: string;
   appVersion: string; // used as X-App-Version
   deviceInfo: string;
@@ -49,6 +51,7 @@ function isOAuthTokenPath(url: string): boolean {
 // host-routing middleware resolves symbolic hosts to.
 export interface HostRoutingContext {
   cassandraBaseURL: string;
+  logger: Logger;
 }
 
 function resolveAuxHost(alias: string, ctx: HostRoutingContext): string | undefined {
@@ -91,6 +94,11 @@ export function buildHostRoutingMiddleware(ctx: HostRoutingContext): Middleware 
       }
       url.protocol = target.protocol;
       url.host = target.host;
+      ctx.logger.debug("rewrote request host", {
+        event: "host_route_rewrite",
+        op: `${method} ${url.pathname}`,
+        host: url.host,
+      });
       return { url: url.toString(), init: req.init };
     },
   };
@@ -156,6 +164,19 @@ export function buildHeadersMiddleware(ctx: TransportContext): Middleware {
           if (access) headers["Authorization"] = `Bearer ${access}`;
         }
       }
+
+      let reqURL: URL | undefined;
+      try {
+        reqURL = new URL(req.url);
+      } catch {
+        /* non-absolute — host/path unknown, still log method */
+      }
+      ctx.logger.debug("sending request", {
+        event: "http_request",
+        method: (init.method ?? "GET").toUpperCase(),
+        path: reqURL?.pathname ?? req.url,
+        host: reqURL?.host ?? "",
+      });
 
       return {
         url: req.url,

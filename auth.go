@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 	"net/http"
 
 	"github.com/ekkx/yaylib/v2/gen"
@@ -211,6 +210,8 @@ func (c *Client) refreshTokens(ctx context.Context, staleToken string) error {
 	}
 	currentRefresh := snap.Refresh
 	if currentRefresh == "" {
+		c.Logger.Debug("token refresh skipped",
+			"event", "token_refresh", "outcome", "no_token")
 		return nil
 	}
 
@@ -219,10 +220,14 @@ func (c *Client) refreshTokens(ctx context.Context, staleToken string) error {
 		RefreshToken(currentRefresh).
 		Execute()
 	if err != nil {
+		c.Logger.Debug("token refresh failed",
+			"event", "token_refresh", "outcome", "failed")
 		return err
 	}
 
 	c.SetTokens(resp.GetAccessToken(), resp.GetRefreshToken())
+	c.Logger.Debug("token refresh ok",
+		"event", "token_refresh", "outcome", "ok")
 
 	if email := c.currentEmailSnapshot(); c.sessionStore != nil && email != "" {
 		if err := c.SaveSession(&Session{
@@ -234,12 +239,13 @@ func (c *Client) refreshTokens(ctx context.Context, staleToken string) error {
 			// The transport path can't bubble this error to the
 			// user — the refreshed tokens are already active in
 			// memory and the retried request is what they care
-			// about. Surface persist failure via slog so it stays
-			// observable; on next process start the cached refresh
-			// token will be the now-stale one and a fresh login
-			// will be needed.
-			slog.Warn("yaylib: persist refreshed tokens failed",
-				"email", email, "err", err)
+			// about. Surface persist failure via the logger so it
+			// stays observable; on next process start the cached
+			// refresh token will be the now-stale one and a fresh
+			// login will be needed.
+			c.Logger.Warn("persist refreshed tokens failed",
+				"event", "token_persist_fail",
+				"user_id", resp.GetId(), "err", err.Error())
 		}
 	}
 	return nil

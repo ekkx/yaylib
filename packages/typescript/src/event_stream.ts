@@ -12,6 +12,7 @@
 
 import { type Channel } from "./channels";
 import { type Event, decodeEvent } from "./events";
+import { type Logger } from "./logger";
 
 export * from "./channels";
 export * from "./events";
@@ -62,6 +63,7 @@ export interface EventStreamOptions {
 export interface EventStreamDeps {
   eventStreamURL: string;
   apiVersionName: string;
+  logger: Logger;
   // Fetches the short-lived ws token (GET /v1/users/ws_token via the
   // wrapped client, so an unauthenticated client surfaces the 401 here).
   getWebSocketToken(): Promise<string>;
@@ -463,7 +465,13 @@ export class EventStream {
         this._finalize(e);
         return;
       }
-      const ok = await this._sleep(this._backoff(this._attempt));
+      const delayMs = this._backoff(this._attempt);
+      this._deps.logger.debug("reconnecting event stream", {
+        event: "ws_reconnect",
+        attempt: this._attempt,
+        delay_ms: delayMs,
+      });
+      const ok = await this._sleep(delayMs);
       if (!ok) {
         this._finalize(this._finalErr);
         return;

@@ -82,6 +82,7 @@ import {
   buildDeviceInfo,
   buildUserAgent,
 } from "./config";
+import { type Logger, noopLogger } from "./logger";
 import { DEFAULT_RETRY_POLICY, type RetryPolicy, buildRetryMiddleware } from "./retry";
 import type { Session, SessionStore } from "./session";
 import type { Tokens } from "./tokens";
@@ -112,6 +113,9 @@ export interface ClientOptions {
   sessionStore?: SessionStore;
   fetchApi?: typeof fetch;
   retryPolicy?: RetryPolicy;
+  // Structured logger. Omitted = silent (the SDK is a library and
+  // writes nothing by default). See PORTING.md §12.2.
+  logger?: Logger;
   // Injectable WebSocket constructor for openEventStream. Defaults to the
   // platform global. Tests supply an in-memory pair so the event-stream
   // suite stays hermetic and dependency-free.
@@ -149,6 +153,7 @@ export class Client {
   readonly connectionSpeed: string;
   readonly acceptLanguage: string;
   readonly retryPolicy: RetryPolicy;
+  readonly logger: Logger;
 
   // Per-instance mutable state. tokens / userID / currentEmail / clientIP
   // are written by login / refresh / loadSession; everything else is
@@ -219,6 +224,7 @@ export class Client {
     this._fetchApi = opts.fetchApi;
     this._webSocketFactory = opts.webSocketFactory;
     this.retryPolicy = opts.retryPolicy ?? DEFAULT_RETRY_POLICY;
+    this.logger = opts.logger ?? noopLogger;
 
     // Middleware order is significant:
     //   1. host-routing — rewrites the origin for the few operations
@@ -236,8 +242,10 @@ export class Client {
       middleware: [
         buildHostRoutingMiddleware({
           cassandraBaseURL: this.cassandraBaseURL,
+          logger: this.logger,
         }),
         buildHeadersMiddleware({
+          logger: this.logger,
           userAgent: this.userAgent,
           appVersion: this.apiVersionName,
           deviceInfo: this.deviceInfo,
@@ -256,6 +264,7 @@ export class Client {
         }),
         buildRetryMiddleware({
           policy: this.retryPolicy,
+          logger: this.logger,
           fetchApi: opts.fetchApi,
         }),
       ],
@@ -473,6 +482,7 @@ export class Client {
       {
         eventStreamURL: this.eventStreamURL,
         apiVersionName: this.apiVersionName,
+        logger: this.logger,
         getWebSocketToken: async () => {
           const resp = await this.usersAPI.getWebSocketToken();
           return resp.token ?? "";
@@ -545,7 +555,13 @@ export class Client {
     // queued. Skip the OAuth round-trip and let the caller retry with
     // the current Bearer.
     if (this._tokens.access !== staleAccess) return true;
-    if (!this._tokens.refresh) return false;
+    if (!this._tokens.refresh) {
+      this.logger.debug("token refresh skipped", {
+        event: "token_refresh",
+        outcome: "no_token",
+      });
+      return false;
+    }
 
     const form = new URLSearchParams({
       grant_type: "refresh_token",
@@ -564,6 +580,10 @@ export class Client {
         body: form.toString(),
       });
     } catch {
+      this.logger.debug("token refresh failed", {
+        event: "token_refresh",
+        outcome: "failed",
+      });
       return false;
     }
 
@@ -573,6 +593,10 @@ export class Client {
       } catch {
         /* ignore */
       }
+      this.logger.debug("token refresh failed", {
+        event: "token_refresh",
+        outcome: "failed",
+      });
       return false;
     }
 
@@ -583,14 +607,28 @@ export class Client {
         refresh_token?: string;
       };
     } catch {
+      this.logger.debug("token refresh failed", {
+        event: "token_refresh",
+        outcome: "failed",
+      });
       return false;
     }
-    if (!parsed.access_token || !parsed.refresh_token) return false;
+    if (!parsed.access_token || !parsed.refresh_token) {
+      this.logger.debug("token refresh failed", {
+        event: "token_refresh",
+        outcome: "failed",
+      });
+      return false;
+    }
 
     this._tokens = {
       access: parsed.access_token,
       refresh: parsed.refresh_token,
     };
+    this.logger.debug("token refresh ok", {
+      event: "token_refresh",
+      outcome: "ok",
+    });
 
     // Persist the rotated session so subsequent restarts don't re-login.
     // PORTING.md §5: persist failure during the 401 auto-refresh path is
@@ -607,11 +645,11 @@ export class Client {
       try {
         await this.sessionStore.save(session);
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          "yaylib: failed to persist refreshed session:",
-          err instanceof Error ? err.message : err,
-        );
+        this.logger.warn("persist refreshed tokens failed", {
+          event: "token_persist_fail",
+          user_id: this._userID,
+          err: err instanceof Error ? err.message : String(err),
+        });
       }
     }
 

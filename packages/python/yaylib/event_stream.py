@@ -489,6 +489,16 @@ class EventStream:
                     return
 
                 delay = self._backoff(attempt)
+                _lg = getattr(self._client, "_logger", None)
+                if _lg is not None:
+                    _lg.debug(
+                        "reconnecting event stream",
+                        extra={
+                            "event": "ws_reconnect",
+                            "attempt": attempt,
+                            "delay_ms": int(delay * 1000),
+                        },
+                    )
                 try:
                     await asyncio.sleep(delay)
                 except asyncio.CancelledError:

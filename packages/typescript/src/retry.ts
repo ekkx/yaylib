@@ -12,6 +12,7 @@
 //   - The zero value (`{ maxAttempts: 0 }`) disables retry entirely.
 
 import type { Middleware, ResponseContext } from "./gen/runtime";
+import { type Logger, noopLogger } from "./logger";
 
 export interface RetryPolicy {
   // Total attempt cap (initial attempt + retries). 0 disables retry.
@@ -114,6 +115,7 @@ export function sleep(ms: number): Promise<void> {
 
 export interface RetryDeps {
   policy: RetryPolicy;
+  logger?: Logger;
   random?: () => number;
   sleepFn?: (ms: number) => Promise<void>;
   // Raw fetch used for retry attempts. MUST be the unwrapped fetch
@@ -138,8 +140,17 @@ export interface RetryDeps {
 // also separates the two loops.
 export function buildRetryMiddleware(deps: RetryDeps): Middleware {
   const policy = deps.policy;
+  const logger = deps.logger ?? noopLogger;
   const random = deps.random ?? Math.random;
   const sleepFn = deps.sleepFn ?? sleep;
+
+  const pathOf = (u: string): string => {
+    try {
+      return new URL(u).pathname;
+    } catch {
+      return u;
+    }
+  };
   const rawFetch = deps.fetchApi ?? globalThis.fetch;
 
   // Re-issue the original request with a freshened X-Timestamp (the
@@ -182,6 +193,14 @@ export function buildRetryMiddleware(deps: RetryDeps): Middleware {
           bodyWait !== null
             ? bodyWait
             : fullJitterDelay(attempt, policy, random);
+        logger.debug("retrying request", {
+          event: "http_retry",
+          method,
+          path: pathOf(rc.url),
+          attempt,
+          status: response.status,
+          delay_ms: delay,
+        });
         await sleepFn(delay);
 
         let next: Response;
@@ -207,8 +226,16 @@ export function buildRetryMiddleware(deps: RetryDeps): Middleware {
 
       let attempt = 1;
       while (attempt < policy.maxAttempts) {
-        const delay = fullJitterDelay(attempt, policy, random);
-        await sleepFn(Math.min(delay, policy.maxDelay));
+        const delay = Math.min(fullJitterDelay(attempt, policy, random), policy.maxDelay);
+        logger.debug("retrying request", {
+          event: "http_retry",
+          method,
+          path: pathOf(ec.url),
+          attempt,
+          error: "transport",
+          delay_ms: delay,
+        });
+        await sleepFn(delay);
         attempt++;
         try {
           // Returning a Response (any status, including 5xx) hands

@@ -63,6 +63,17 @@ func (t *Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
 		if attempt > 1 {
 			wait := nextDelay(resp, attempt, policy)
+			args := []any{
+				"event", "http_retry",
+				"method", r.Method, "path", r.URL.Path,
+				"attempt", attempt, "delay_ms", wait.Milliseconds(),
+			}
+			if resp != nil {
+				args = append(args, "status", resp.StatusCode)
+			} else if err != nil {
+				args = append(args, "error", err.Error())
+			}
+			t.client.Logger.Debug("retrying request", args...)
 			drainAndClose(resp)
 			if !sleepWithCtx(r.Context(), wait) {
 				return nil, r.Context().Err()
@@ -89,6 +100,10 @@ func (t *Transport) attemptOnce(r *http.Request, bodyBytes []byte) (*http.Respon
 	sentAccess := t.client.Tokens().Access
 
 	t.setHeaders(r, sentAccess)
+
+	t.client.Logger.Debug("sending request",
+		"event", "http_request",
+		"method", r.Method, "path", r.URL.Path, "host", r.URL.Host)
 
 	resp, err := t.Base.RoundTrip(r)
 	if err != nil {
@@ -250,6 +265,9 @@ func (t *Transport) routeHost(r *http.Request) {
 	r.URL.Scheme = u.Scheme
 	r.URL.Host = u.Host
 	r.Host = u.Host
+	t.client.Logger.Debug("rewrote request host",
+		"event", "host_route_rewrite",
+		"op", r.Method+" "+r.URL.Path, "host", u.Host)
 }
 
 // hostBaseURLFor resolves the auxiliary base URL for a host-routed

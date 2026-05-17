@@ -14,6 +14,7 @@ from __future__ import annotations
 import asyncio
 import base64
 import json
+import logging
 import re
 import time
 from dataclasses import dataclass
@@ -73,6 +74,15 @@ def _route_host(method: str, url: str, ctx: "TransportContext") -> str:
     target = urlsplit(base)
     if not target.netloc:
         return url
+    if ctx.logger is not None:
+        ctx.logger.debug(
+            "rewrote request host",
+            extra={
+                "event": "host_route_rewrite",
+                "op": f"{method.upper()} {parts.path}",
+                "host": target.netloc,
+            },
+        )
     return urlunsplit(
         (target.scheme, target.netloc, parts.path, parts.query, parts.fragment)
     )
@@ -95,6 +105,9 @@ class TransportContext:
     # this for host-routed operations; everything else stays on the
     # primary host.
     cassandra_base_url: str = ""
+    # Structured logger (PORTING.md §12.2). None means the caller did
+    # not wire one; the transport then skips emitting records.
+    logger: Optional[logging.Logger] = None
 
 
 # RefreshFn attempts a one-shot refresh of the access token using the
@@ -343,6 +356,18 @@ class Transport:
                 else ""
             )
 
+            if self._ctx.logger is not None:
+                _p = urlsplit(url)
+                self._ctx.logger.debug(
+                    "sending request",
+                    extra={
+                        "event": "http_request",
+                        "method": method,
+                        "path": _p.path,
+                        "host": _p.netloc,
+                    },
+                )
+
             try:
                 resp = await self._raw(
                     method, url, send_headers, data, timeout
@@ -358,6 +383,18 @@ class Transport:
                     delay = min(
                         full_jitter_delay(attempt, policy), policy.max_delay
                     )
+                    if self._ctx.logger is not None:
+                        self._ctx.logger.debug(
+                            "retrying request",
+                            extra={
+                                "event": "http_retry",
+                                "method": method,
+                                "path": urlsplit(url).path,
+                                "attempt": attempt,
+                                "error": "transport",
+                                "delay_ms": int(delay * 1000),
+                            },
+                        )
                     await asyncio.sleep(delay)
                     attempt += 1
                     continue
@@ -390,6 +427,18 @@ class Transport:
                     if body_wait is not None
                     else full_jitter_delay(attempt, policy)
                 )
+                if self._ctx.logger is not None:
+                    self._ctx.logger.debug(
+                        "retrying request",
+                        extra={
+                            "event": "http_retry",
+                            "method": method,
+                            "path": urlsplit(url).path,
+                            "attempt": attempt,
+                            "status": resp.status,
+                            "delay_ms": int(delay * 1000),
+                        },
+                    )
                 await asyncio.sleep(delay)
                 attempt += 1
                 continue

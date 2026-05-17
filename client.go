@@ -42,6 +42,7 @@ package yaylib
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"sync"
 	"time"
@@ -147,6 +148,13 @@ type Client struct {
 	// EventStreamURL is the wss:// endpoint used by OpenEventStream.
 	// Defaults to wss://cable.yay.space.
 	EventStreamURL string
+
+	// Logger receives the SDK's structured records. The default is
+	// silent (a logger over a discard handler) — the SDK is a library
+	// and writes nothing unless WithLogger opts in. Records carry a
+	// stable "event" key; see PORTING.md §12.2 for the contract,
+	// including the values that MUST NEVER be logged.
+	Logger *slog.Logger
 
 	// Per-request metadata.
 	ConnectionType  string
@@ -289,6 +297,17 @@ func WithEventStreamURL(u string) Option {
 	return func(c *Client) { c.EventStreamURL = u }
 }
 
+// WithLogger directs the SDK's structured records to l. Without this
+// the SDK is silent (library default). Passing nil keeps the silent
+// default rather than panicking later. See PORTING.md §12.2.
+func WithLogger(l *slog.Logger) Option {
+	return func(c *Client) {
+		if l != nil {
+			c.Logger = l
+		}
+	}
+}
+
 // WithDeviceUUID sets a specific device UUID instead of generating a fresh
 // one. Use this to keep device identity stable across runs.
 func WithDeviceUUID(u string) Option { return func(c *Client) { c.DeviceUUID = u } }
@@ -369,6 +388,7 @@ func NewClient(opts ...Option) *Client {
 		BaseURL:          DefaultBaseURL,
 		CassandraBaseURL: DefaultCassandraBaseURL,
 		EventStreamURL:   DefaultEventStreamURL,
+		Logger:           newDiscardLogger(),
 		ConnectionType:   DefaultConnectionType,
 		ConnectionSpeed:  DefaultConnectionSpeed,
 		AcceptLanguage:   DefaultAcceptLanguage,

@@ -7,6 +7,7 @@ import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 
 import { Client } from "../src/client";
+import { noopLogger } from "../src/logger";
 import {
   type EventStream,
   type WebSocketLike,
@@ -134,6 +135,7 @@ function streamDeps(hub: Hub, token = "test-token") {
   return {
     eventStreamURL: "ws://cable.test",
     apiVersionName: "4.26",
+    logger: noopLogger,
     getWebSocketToken: async () => token,
     webSocketFactory: hub.factory,
   };

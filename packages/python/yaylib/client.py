@@ -66,7 +66,17 @@ from yaylib.session import Session, SessionStore
 from yaylib.tokens import Tokens, empty_tokens
 from yaylib.transport import Transport, TransportContext
 
-_logger = logging.getLogger("yaylib")
+def _default_logger() -> logging.Logger:
+    """The silent default. PORTING.md §12.2: the SDK is a library — with
+    no logger configured it produces zero output. A NullHandler discards
+    every record and propagation is off so nothing reaches the root
+    logger. Callers opt in by passing ``logger=`` to Client.
+    """
+    lg = logging.getLogger("yaylib")
+    if not any(isinstance(h, logging.NullHandler) for h in lg.handlers):
+        lg.addHandler(logging.NullHandler())
+    lg.propagate = False
+    return lg
 
 
 def new_uuid_v4() -> str:
@@ -115,6 +125,7 @@ class Client:
         accept_language: Optional[str] = None,
         session_store: Optional[SessionStore] = None,
         retry_policy: Optional[RetryPolicy] = None,
+        logger: Optional[logging.Logger] = None,
     ) -> None:
         self.base_url = base_url or DEFAULT_BASE_URL
         self.cassandra_base_url = cassandra_base_url or DEFAULT_CASSANDRA_BASE_URL
@@ -139,6 +150,7 @@ class Client:
         self.accept_language = accept_language or DEFAULT_ACCEPT_LANGUAGE
         self.session_store = session_store
         self.retry_policy = retry_policy or DEFAULT_RETRY_POLICY
+        self._logger = logger if logger is not None else _default_logger()
 
         self._tokens: Tokens = empty_tokens()
         self._user_id = 0
@@ -162,6 +174,7 @@ class Client:
                 client_ip=lambda: self._client_ip,
                 access_token=lambda: self._tokens.access,
                 cassandra_base_url=self.cassandra_base_url,
+                logger=self._logger,
             ),
             refresh=self._try_refresh,
             policy=self.retry_policy,
@@ -345,6 +358,10 @@ class Client:
         if self._tokens.access != stale_access:
             return True
         if not self._tokens.refresh:
+            self._logger.debug(
+                "token refresh skipped",
+                extra={"event": "token_refresh", "outcome": "no_token"},
+            )
             return False
 
         url = f"{self.base_url}/api/v1/oauth/token"
@@ -368,21 +385,41 @@ class Client:
                 form,
             )
         except Exception:  # noqa: BLE001
+            self._logger.debug(
+                "token refresh failed",
+                extra={"event": "token_refresh", "outcome": "failed"},
+            )
             return False
 
         if not (200 <= res.status <= 299):
+            self._logger.debug(
+                "token refresh failed",
+                extra={"event": "token_refresh", "outcome": "failed"},
+            )
             return False
         try:
             parsed = json.loads(res.data)
         except (ValueError, TypeError):
+            self._logger.debug(
+                "token refresh failed",
+                extra={"event": "token_refresh", "outcome": "failed"},
+            )
             return False
         access = parsed.get("access_token")
         refresh = parsed.get("refresh_token")
         if not access or not refresh:
+            self._logger.debug(
+                "token refresh failed",
+                extra={"event": "token_refresh", "outcome": "failed"},
+            )
             return False
 
         # The server rotates BOTH tokens; persist the new refresh token.
         self._tokens = Tokens(access=access, refresh=refresh)
+        self._logger.debug(
+            "token refresh ok",
+            extra={"event": "token_refresh", "outcome": "ok"},
+        )
 
         if self.session_store is not None and self._current_email:
             session = Session(
@@ -396,11 +433,16 @@ class Client:
             try:
                 await self.session_store.save(session)
             except Exception as exc:  # noqa: BLE001
-                # PORTING.md §5: persist failure on the refresh path is
-                # non-fatal — the rotated tokens are still active. Keep
-                # it observable via stdlib logging.
-                _logger.warning(
-                    "yaylib: failed to persist refreshed session: %s", exc
+                # PORTING.md §5/§12.2: persist failure on the refresh
+                # path is non-fatal — the rotated tokens are still
+                # active. Surface it via the injected logger.
+                self._logger.warning(
+                    "persist refreshed tokens failed",
+                    extra={
+                        "event": "token_persist_fail",
+                        "user_id": self._user_id,
+                        "err": str(exc),
+                    },
                 )
 
         return True

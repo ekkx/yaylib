@@ -94,3 +94,4 @@ export {
 } from "./event_stream";
 
 export { type WebSocketFactory } from "./client";
+export { type Logger, type LogFields, noopLogger } from "./logger";

@@ -429,6 +429,9 @@ func (conn *EventStream) runLoop() {
 		}
 
 		delay := conn.backoff(attempt)
+		conn.client.Logger.Debug("reconnecting event stream",
+			"event", "ws_reconnect",
+			"attempt", attempt, "delay_ms", delay.Milliseconds())
 		if !sleepWithCtx(conn.ctx, delay) {
 			conn.setFinalErr(conn.ctx.Err())
 			conn.terminateAllSubs(conn.ctx.Err())
