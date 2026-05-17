@@ -31,10 +31,18 @@ from yaylib.retry import (
 )
 
 _OAUTH_TOKEN_PATH = "/api/v1/oauth/token"
+_TIMESTAMP_PATH = "/v2/users/timestamp"
 
 
 def _is_oauth_token_path(url: str) -> bool:
     return _OAUTH_TOKEN_PATH in url
+
+
+def _is_timestamp_path(url: str) -> bool:
+    # The endpoint used to look up the caller's IP for X-Client-IP. The
+    # lazy fetch must not re-trigger itself when calling it.
+    path = url.split("?", 1)[0]
+    return path.endswith(_TIMESTAMP_PATH)
 
 
 @dataclass
@@ -119,10 +127,14 @@ class Transport:
         ctx: TransportContext,
         refresh: RefreshFn,
         policy: RetryPolicy,
+        on_response: Optional[Callable[[], None]] = None,
     ) -> None:
         self._ctx = ctx
         self._refresh = refresh
         self._policy = policy
+        # Fired after any non-timestamp request gets a response — drives
+        # the Client's lazy X-Client-IP fetch (PORTING.md §12).
+        self._on_response = on_response
         self._session: Optional[aiohttp.ClientSession] = None
 
     def _ensure_session(self) -> aiohttp.ClientSession:
@@ -308,6 +320,13 @@ class Transport:
                     attempt += 1
                     continue
                 raise ApiException(status=0, reason=str(exc)) from exc
+
+            # Kick the lazy X-Client-IP fetch on the first non-timestamp
+            # request (PORTING.md §12). Skip the fetch endpoint itself to
+            # avoid recursion; the Client side single-flights / no-ops
+            # when the IP is already known.
+            if self._on_response is not None and not _is_timestamp_path(url):
+                self._on_response()
 
             # 401 auto-refresh (PORTING.md §6.1). The replay after a
             # successful refresh is OUTSIDE the retry budget — it mirrors

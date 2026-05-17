@@ -8,19 +8,28 @@ lingering keep-alive socket can't hang the test process.
 from __future__ import annotations
 
 import contextlib
-from typing import Awaitable, Callable, Tuple
+import inspect
+from typing import Callable, Tuple
 
 from aiohttp import web
 
-# handler(path, method, body) -> (status, body, headers)
-Handler = Callable[[str, str, str], Tuple[int, str, dict]]
+# handler(path, method, body[, headers]) -> (status, body[, headers]).
+# A 4-arg handler additionally receives the request headers (CIMultiDict).
+Handler = Callable[..., Tuple]
 
 
 @contextlib.asynccontextmanager
 async def serve(handler: Handler):
+    wants_headers = len(inspect.signature(handler).parameters) >= 4
+
     async def _dispatch(request: web.Request) -> web.Response:
         body = await request.text()
-        result = handler(request.path_qs, request.method, body)
+        if wants_headers:
+            result = handler(
+                request.path_qs, request.method, body, request.headers
+            )
+        else:
+            result = handler(request.path_qs, request.method, body)
         if len(result) == 3:
             status, out_body, extra = result
         else:

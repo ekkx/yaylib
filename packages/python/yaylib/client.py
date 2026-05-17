@@ -140,6 +140,8 @@ class Client:
         self._user_id = 0
         self._current_email = ""
         self._client_ip = ""
+        self._client_ip_fetching = False
+        self._bg_tasks: "set[asyncio.Task]" = set()
         self._refresh_inflight: Optional["asyncio.Future[bool]"] = None
 
         transport = Transport(
@@ -157,6 +159,7 @@ class Client:
             ),
             refresh=self._try_refresh,
             policy=self.retry_policy,
+            on_response=self._maybe_fetch_client_ip,
         )
         self._transport = transport
         config = Configuration(host=self.base_url)
@@ -234,7 +237,48 @@ class Client:
         await self.close()
 
     async def close(self) -> None:
+        # PORTING.md §3: cancel background work owned by the Client (the
+        # lazy X-Client-IP fetch; open event streams land here later).
+        tasks = list(self._bg_tasks)
+        for task in tasks:
+            task.cancel()
+        for task in tasks:
+            try:
+                await task
+            except (asyncio.CancelledError, Exception):  # noqa: BLE001
+                pass
+        self._bg_tasks.clear()
         await self._transport.close()
+
+    # ---- lazy X-Client-IP (PORTING.md §12) ----
+
+    def _maybe_fetch_client_ip(self) -> None:
+        """Single-flight: no-op when the IP is already known or a fetch
+        is in flight; otherwise spawn a background fetch. On failure the
+        field is left empty and the next request retries.
+        """
+        if self._client_ip or self._client_ip_fetching:
+            return
+        self._client_ip_fetching = True
+        task = asyncio.ensure_future(self._fetch_client_ip())
+        self._bg_tasks.add(task)
+        task.add_done_callback(self._bg_tasks.discard)
+
+    async def _fetch_client_ip(self) -> None:
+        try:
+            resp = await asyncio.wait_for(
+                self.users_api.get_user_timestamp(), timeout=30
+            )
+            ip = getattr(resp, "ip_address", "") or ""
+            if ip:
+                self._client_ip = ip
+        except asyncio.CancelledError:
+            raise
+        except Exception:  # noqa: BLE001
+            # Leave the field empty; the next request retries the fetch.
+            pass
+        finally:
+            self._client_ip_fetching = False
 
     # ---- auth wrapper (PORTING.md §6) ----
 

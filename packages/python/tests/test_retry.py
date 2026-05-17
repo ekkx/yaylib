@@ -45,6 +45,9 @@ async def test_post_5xx_not_retried_by_default():
 
     def handler(path, method, body):
         nonlocal hits
+        if path.endswith("/v2/users/timestamp"):
+            # Lazy X-Client-IP fetch (PORTING.md §12) — benign, uncounted.
+            return 200, '{"time":0,"ip_address":"1.2.3.4"}', {}
         hits += 1
         return 503, '{"error":"transient"}', {}
 
@@ -63,6 +66,8 @@ async def test_post_5xx_retries_when_opted_in():
 
     def handler(path, method, body):
         nonlocal hits
+        if path.endswith("/v2/users/timestamp"):
+            return 200, '{"time":0,"ip_address":"1.2.3.4"}', {}
         hits += 1
         if hits < 2:
             return 503, '{"error":"transient"}', {}
@@ -88,6 +93,8 @@ async def test_429_retries_on_post_even_without_opt_in():
 
     def handler(path, method, body):
         nonlocal hits
+        if path.endswith("/v2/users/timestamp"):
+            return 200, '{"time":0,"ip_address":"1.2.3.4"}', {}
         hits += 1
         if hits < 2:
             return 429, '{"error":"rate_limited"}', {}
