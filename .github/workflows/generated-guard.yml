@@ -1,0 +1,99 @@
+name: generated-guard
+
+# Machine-generated sources are produced from the API schema and
+# regenerated wholesale, so hand edits to them are overwritten and
+# cannot be merged. This check fails a PR that touches those paths and
+# points the contributor at CONTRIBUTING.md (open an Issue describing the
+# API behaviour, or send the change against the hand-written layer).
+#
+# The path set is derived from .gitattributes (every glob marked
+# `linguist-generated=true`), so this workflow is language-agnostic:
+# adding another generated language only adds its globs there.
+#
+# Skipped for the maintainer (whose regeneration commits legitimately
+# update these files) and overridable with the "generated-ok" label.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.pull_request.user.login != github.repository_owner &&
+      !contains(github.event.pull_request.labels.*.name, 'generated-ok')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Flag edits to machine-generated files
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          # Build the match set from .gitattributes: each line marked
+          # linguist-generated=true contributes one regex. "<dir>/**"
+          # becomes a "starts with <dir>/" match; a plain path is exact.
+          regexes=""
+          while IFS= read -r line || [ -n "$line" ]; do
+            case "$line" in ''|\#*) continue ;; esac
+            printf '%s\n' "$line" | grep -q 'linguist-generated=true' || continue
+            pat="${line%% *}"
+            esc() { printf '%s' "$1" | sed 's/[.[\*^$()+?{}|\\]/\\&/g'; }
+            if [ "${pat%/\*\*}" != "$pat" ]; then
+              regexes="${regexes}^$(esc "${pat%/\*\*}")/"$'\n'
+            else
+              regexes="${regexes}^$(esc "$pat")\$"$'\n'
+            fi
+          done < .gitattributes
+
+          if [ -z "$regexes" ]; then
+            echo "no linguist-generated globs in .gitattributes; nothing to guard"
+            exit 0
+          fi
+
+          changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+          hits=""
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            while IFS= read -r re; do
+              [ -z "$re" ] && continue
+              if printf '%s\n' "$f" | grep -qE "$re"; then
+                hits="${hits}${f}"$'\n'
+                break
+              fi
+            done <<< "$regexes"
+          done <<< "$changed"
+
+          hits="$(printf '%s' "$hits" | sed '/^$/d' | sort -u)"
+
+          if [ -n "$hits" ]; then
+            {
+              echo "## Machine-generated files were modified"
+              echo
+              echo "These files are generated from the API schema and are"
+              echo "machine-managed (they carry a \`Code generated; DO NOT"
+              echo "EDIT.\` header and are marked \`linguist-generated\` in"
+              echo ".gitattributes). Edits are overwritten on the next"
+              echo "regeneration and cannot be merged:"
+              echo
+              echo '```'
+              echo "$hits"
+              echo '```'
+              echo
+              echo "If you found incorrect or missing API behaviour, please"
+              echo "open an Issue describing what the server actually returns."
+              echo "Otherwise, please send your change against the"
+              echo "hand-written layer. See CONTRIBUTING.md."
+            } | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          echo "No machine-generated files modified."

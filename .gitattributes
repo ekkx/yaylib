@@ -1,0 +1,21 @@
+# Machine-generated from the API schema. Marking these `linguist-generated`
+# makes GitHub collapse their diffs AND gives the contribution guard a
+# single place to derive its path set from — so adding another language
+# only adds its globs here; CONTRIBUTING.md and the guard workflow stay
+# language-agnostic and need no edits.
+
+gen/** linguist-generated=true
+aliases.go linguist-generated=true
+error_codes.go linguist-generated=true
+host_routes.go linguist-generated=true
+
+packages/typescript/src/gen/** linguist-generated=true
+
+packages/python/yaylib/models/** linguist-generated=true
+packages/python/yaylib/api/** linguist-generated=true
+packages/python/yaylib/__init__.py linguist-generated=true
+packages/python/yaylib/api_client.py linguist-generated=true
+packages/python/yaylib/configuration.py linguist-generated=true
+packages/python/yaylib/exceptions.py linguist-generated=true
+packages/python/yaylib/rest.py linguist-generated=true
+packages/python/yaylib/_host_routes.py linguist-generated=true
