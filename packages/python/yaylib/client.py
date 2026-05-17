@@ -44,6 +44,7 @@ from yaylib.api.users_api import UsersApi
 from yaylib.api_client import ApiClient
 from yaylib.configuration import Configuration
 from yaylib.exceptions import ApiException
+from yaylib._facade import GeneratedFacade
 
 from yaylib._config import (
     DEFAULT_ACCEPT_LANGUAGE,
@@ -109,7 +110,12 @@ class _WrappedApiClient(ApiClient):
         self.client_side_validation = configuration.client_side_validation
 
 
-class Client:
+class Client(GeneratedFacade):
+    # GeneratedFacade (PORTING.md §2) makes every operation reachable
+    # as client.<op>, delegating to the per-service attribute. Client's
+    # own hand-written methods below override the mixin via MRO (the
+    # embed-shadowing rule); ops of the same name are also omitted from
+    # the mixin at generation time.
     def __init__(
         self,
         *,

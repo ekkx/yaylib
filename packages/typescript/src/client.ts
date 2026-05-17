@@ -86,6 +86,7 @@ import { DEFAULT_RETRY_POLICY, type RetryPolicy, buildRetryMiddleware } from "./
 import type { Session, SessionStore } from "./session";
 import type { Tokens } from "./tokens";
 import { emptyTokens } from "./tokens";
+import { type GeneratedFacade, installGeneratedFacade } from "./gen/facade";
 import {
   buildAuthRefreshMiddleware,
   buildClientIPMiddleware,
@@ -300,6 +301,11 @@ export class Client {
     this.surveysAPI = new SurveysApi(config);
     this.threadsAPI = new ThreadsApi(config);
     this.usersAPI = new UsersApi(config);
+
+    // Flat operation facade (PORTING.md §2): install client.<op>
+    // delegates for every generated op not already a hand-written
+    // method. Last so the hand-written wrappers above always win.
+    installGeneratedFacade(this);
   }
 
   // Tokens snapshot — mutating the returned value does not affect the
@@ -687,3 +693,10 @@ export class Client {
     return true;
   }
 }
+
+// Declaration merging: the flat op signatures (exact per-service op
+// types) become part of Client's type. The runtime delegates are
+// installed by installGeneratedFacade() in the constructor; a
+// hand-written method of the same name is excluded from
+// GeneratedFacade at generation time (the embed-shadowing rule).
+export interface Client extends GeneratedFacade {}

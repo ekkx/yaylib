@@ -956,6 +956,15 @@ Transport / observability:
   `X-Jwt` value, the `Authorization` header, or any request/response
   body.
 
+Client surface (§2):
+
+- **S33** Flat facade: every operation is reachable as `client.<op>`
+  with no service prefix; a hand-written wrapper of the same name
+  shadows the generated op (e.g. `client.loginWithEmail` /
+  `login_with_email` is the cached wrapper — calling it with empty
+  credentials fails fast with the wrapper's validation error, not an
+  HTTP attempt).
+
 **Scope notes (deliberate boundaries, not gaps):**
 
 - Uploads: the shared hermetic parity exercises the representative
