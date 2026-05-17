@@ -56,3 +56,41 @@ export {
   type RetryPolicy,
   DEFAULT_RETRY_POLICY,
 } from "./retry";
+
+export {
+  type Upload,
+  type UploadCategory,
+  type VideoBody,
+  MAX_IMAGES_PER_UPLOAD,
+  MAX_REPORT_IMAGES_PER_UPLOAD,
+} from "./upload";
+
+export {
+  type Channel,
+  chatRoomChannel,
+  messagesChannel,
+  groupUpdatesChannel,
+  groupPostsChannel,
+} from "./channels";
+
+export type {
+  Event,
+  NewMessageEvent,
+  VideoProcessedEvent,
+  ChatDeletedEvent,
+  TotalChatRequestEvent,
+  UnsubscribedEvent,
+  GroupUpdatedEvent,
+  CallFinishedEvent,
+  RawEvent,
+} from "./events";
+
+export {
+  EventStream,
+  Subscription,
+  type EventStreamOptions,
+  type ReconnectPolicy,
+  type WebSocketLike,
+} from "./event_stream";
+
+export { type WebSocketFactory } from "./client";

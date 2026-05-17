@@ -36,7 +36,32 @@ import {
   ThreadsApi,
   UsersApi,
 } from "./gen/apis";
-import { Configuration } from "./gen/runtime";
+import { Configuration, ResponseError, type ApiResponse } from "./gen/runtime";
+
+import { APIError, asAPIError } from "./errors";
+import {
+  type Upload,
+  type UploadCategory,
+  type UploadDeps,
+  type VideoBody,
+  chatBackgroundUpload,
+  chatMessageUpload,
+  groupCoverUpload,
+  groupCreationCoverUpload,
+  groupCreationIconUpload,
+  groupIconUpload,
+  reportUpload,
+  signupAvatarUpload,
+  threadIconUpload,
+  uploadImages,
+  uploadSingleImage,
+  uploadVideo,
+  userAvatarUpload,
+  userCoverUpload,
+  userPostUpload,
+  videoCallSnapshotUpload,
+} from "./upload";
+import { EventStream, type EventStreamOptions, openEventStream } from "./event_stream";
 
 import {
   DEFAULT_ACCEPT_LANGUAGE,
@@ -81,7 +106,16 @@ export interface ClientOptions {
   sessionStore?: SessionStore;
   fetchApi?: typeof fetch;
   retryPolicy?: RetryPolicy;
+  // Injectable WebSocket constructor for openEventStream. Defaults to the
+  // platform global. Tests supply an in-memory pair so the event-stream
+  // suite stays hermetic and dependency-free.
+  webSocketFactory?: WebSocketFactory;
 }
+
+// WebSocketFactory builds a connection for the event stream. The shape is
+// the standard WebSocket constructor; only the slice event_stream.ts uses
+// is required (see WebSocketLike there).
+export type WebSocketFactory = (url: string) => import("./event_stream").WebSocketLike;
 
 // Stub UUIDv4 generator. PORTING.md §14 requires crypto-grade randomness
 // and a failure-MUST-throw contract; a fuller implementation lands when
@@ -121,6 +155,8 @@ export class Client {
   // OAuth /token round-trip (PORTING.md §6.1).
   private _refreshInFlight: Promise<boolean> | null = null;
   private readonly _fetchApi?: typeof fetch;
+  private readonly _webSocketFactory?: WebSocketFactory;
+  private readonly _openStreams = new Set<EventStream>();
   readonly sessionStore?: SessionStore;
 
   // Per-tag API instances. The flat operation surface (PORTING.md §2)
@@ -173,6 +209,7 @@ export class Client {
     this.acceptLanguage = opts.acceptLanguage ?? DEFAULT_ACCEPT_LANGUAGE;
     this.sessionStore = opts.sessionStore;
     this._fetchApi = opts.fetchApi;
+    this._webSocketFactory = opts.webSocketFactory;
     this.retryPolicy = opts.retryPolicy ?? DEFAULT_RETRY_POLICY;
 
     // Middleware order is significant:
@@ -276,7 +313,9 @@ export class Client {
   // tracking) land alongside the auth flow in a later commit. For now
   // close is a no-op so callers can wire it up unconditionally.
   async close(): Promise<void> {
-    /* TODO: cancel lazy fetches and open event streams. */
+    const streams = [...this._openStreams];
+    this._openStreams.clear();
+    await Promise.all(streams.map((s) => s.close().catch(() => undefined)));
   }
 
   /**
@@ -297,6 +336,184 @@ export class Client {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { loginWithEmail } = require("./auth") as typeof import("./auth");
     return loginWithEmail(this);
+  }
+
+  // rawFetch is the unwrapped fetch — no generated middleware, so no
+  // Yay! headers and no `Authorization: Bearer …`. Used for the S3
+  // presigned PUT (whose own signature would clash) and the WebSocket
+  // handshake (which authenticates via the `token` query param).
+  // PORTING.md §6.1: re-issuing through the middleware-wrapped fetch
+  // recurses infinitely — always use this for out-of-band requests.
+  private get _rawFetch(): typeof fetch {
+    const f = this._fetchApi ?? globalThis.fetch;
+    return (input: any, init?: any) => f(input, init);
+  }
+
+  private _uploadDeps(): UploadDeps {
+    return {
+      userID: () => this._userID,
+      getPresignedURLs: async (fileNames: string[]) => {
+        const resp = await this.bucketsAPI.getBucketPresignedUrls({ fileNames });
+        return (resp.presignedUrls ?? []).map((p) => ({
+          filename: p.filename ?? "",
+          url: p.url ?? "",
+        }));
+      },
+      getVideoPresignedURL: async (videoFileName: string) => {
+        const resp = await this.usersAPI.getUserPresignedUrl({ videoFileName });
+        return resp.presignedUrl ?? "";
+      },
+      rawFetch: (url, init) => this._rawFetch(url, init),
+    };
+  }
+
+  // ---- Uploads (PORTING.md §8) ---------------------------------------
+  // Self-user methods read this.userID and reject with a clear "not
+  // logged in" error when it is zero; room/group methods take the ID as
+  // the first argument. Each returns the server-canonical (s3/-prefixed)
+  // filename callers pass back to editUser / createPost / etc.
+
+  uploadAvatarImage(file: Upload): Promise<string> {
+    return uploadSingleImage(this._uploadDeps(), userAvatarUpload(this._requireUserID()), file);
+  }
+
+  uploadCoverImage(file: Upload): Promise<string> {
+    return uploadSingleImage(this._uploadDeps(), userCoverUpload(this._requireUserID()), file);
+  }
+
+  uploadPostImages(files: Upload[]): Promise<string[]> {
+    return uploadImages(this._uploadDeps(), userPostUpload(this._requireUserID()), files);
+  }
+
+  uploadChatMessageImages(roomID: number, files: Upload[]): Promise<string[]> {
+    return uploadImages(
+      this._uploadDeps(),
+      chatMessageUpload(roomID, this._requireUserID()),
+      files,
+    );
+  }
+
+  uploadChatBackgroundImage(roomID: number, file: Upload): Promise<string> {
+    return uploadSingleImage(this._uploadDeps(), chatBackgroundUpload(roomID), file);
+  }
+
+  uploadGroupIconImage(groupID: number, file: Upload): Promise<string> {
+    return uploadSingleImage(this._uploadDeps(), groupIconUpload(groupID), file);
+  }
+
+  uploadGroupCoverImage(groupID: number, file: Upload): Promise<string> {
+    return uploadSingleImage(this._uploadDeps(), groupCoverUpload(groupID), file);
+  }
+
+  uploadThreadIconImage(groupID: number, file: Upload): Promise<string> {
+    return uploadSingleImage(this._uploadDeps(), threadIconUpload(groupID), file);
+  }
+
+  uploadSignupAvatarImage(file: Upload): Promise<string> {
+    return uploadSingleImage(this._uploadDeps(), signupAvatarUpload(), file);
+  }
+
+  uploadGroupCreationIconImage(file: Upload): Promise<string> {
+    return uploadSingleImage(this._uploadDeps(), groupCreationIconUpload(), file);
+  }
+
+  uploadGroupCreationCoverImage(file: Upload): Promise<string> {
+    return uploadSingleImage(this._uploadDeps(), groupCreationCoverUpload(), file);
+  }
+
+  uploadReportImages(files: Upload[]): Promise<string[]> {
+    return uploadImages(this._uploadDeps(), reportUpload(), files);
+  }
+
+  uploadVideoCallSnapshotImage(file: Upload): Promise<string> {
+    return uploadSingleImage(this._uploadDeps(), videoCallSnapshotUpload(), file);
+  }
+
+  uploadVideo(body: VideoBody): Promise<string> {
+    return uploadVideo(this._uploadDeps(), body);
+  }
+
+  /** Lower-level upload entry point for callers that already hold a category. */
+  uploadCategoryImages(category: UploadCategory, files: Upload[]): Promise<string[]> {
+    return uploadImages(this._uploadDeps(), category, files);
+  }
+
+  private _requireUserID(): number {
+    if (!this._userID) {
+      throw new Error("yaylib: not logged in (call loginWithEmail before user-bound uploads)");
+    }
+    return this._userID;
+  }
+
+  // ---- Event stream (PORTING.md §10) ---------------------------------
+
+  /**
+   * Open a multiplexed real-time event channel. The per-connection token
+   * is fetched via getWebSocketToken using the client's current
+   * Authorization, so set the access token first (loginWithEmail /
+   * setTokens / a restored session) — an unauthenticated client surfaces
+   * the underlying 401 as the open error.
+   */
+  async openEventStream(opts: EventStreamOptions = {}): Promise<EventStream> {
+    const stream = await openEventStream(
+      {
+        eventStreamURL: this.eventStreamURL,
+        apiVersionName: this.apiVersionName,
+        getWebSocketToken: async () => {
+          const resp = await this.usersAPI.getWebSocketToken();
+          return resp.token ?? "";
+        },
+        webSocketFactory: this._webSocketFactory,
+      },
+      opts,
+    );
+    this._openStreams.add(stream);
+    void stream.done().finally(() => this._openStreams.delete(stream));
+    return stream;
+  }
+
+  // ---- Raw escape hatch (PORTING.md §11.3) ----------------------------
+
+  /**
+   * executeRaw runs a generated `*Raw` operation and returns the raw
+   * response bytes alongside the HTTP response, bypassing the typed JSON
+   * decode entirely. Contract (PORTING.md §11.3):
+   *
+   *   - HTTP success      → { body, httpResponse, error: undefined }
+   *   - HTTP error (4xx/5xx) → { body, httpResponse, error: APIError }
+   *     so codeOf(error) still works
+   *   - transport failure → { body: undefined, httpResponse: undefined,
+   *     error: APIError }
+   *
+   * Typed JSON-decode failures never propagate — the raw bytes are read
+   * straight off the response.
+   *
+   *   const { body, httpResponse } =
+   *     await client.executeRaw(() => client.usersAPI.getUserTimestampRaw());
+   */
+  async executeRaw<T>(
+    call: () => Promise<ApiResponse<T>>,
+  ): Promise<{ body?: Uint8Array; httpResponse?: Response; error?: APIError }> {
+    try {
+      const api = await call();
+      const body = new Uint8Array(await api.raw.arrayBuffer());
+      return { body, httpResponse: api.raw, error: undefined };
+    } catch (err) {
+      if (err instanceof ResponseError) {
+        const body = err.response
+          ? new Uint8Array(await err.response.arrayBuffer())
+          : new Uint8Array();
+        const error = new APIError({
+          message: err.message || err.response?.statusText || "API error",
+          response: err.response,
+          body,
+          cause: err,
+        });
+        return { body, httpResponse: err.response, error };
+      }
+      // Transport failure (FetchError or anything non-HTTP).
+      return { error: await asAPIError(err) };
+    }
   }
 
   /** Internal — invoked by the auth-refresh middleware (transport.ts). */
