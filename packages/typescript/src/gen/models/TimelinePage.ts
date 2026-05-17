@@ -33,10 +33,10 @@ export interface TimelinePage {
     items?: Array<object> | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof TimelinePage
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {Array<object>}

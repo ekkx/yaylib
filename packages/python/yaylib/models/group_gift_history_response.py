@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.group_gift_history import GroupGiftHistory
 from typing import Optional, Set
@@ -28,7 +28,7 @@ class GroupGiftHistoryResponse(BaseModel):
     GroupGiftHistoryResponse
     """ # noqa: E501
     gift_history: Optional[List[GroupGiftHistory]] = None
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = ["gift_history", "next_page_value"]
 
     model_config = ConfigDict(

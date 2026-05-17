@@ -33,10 +33,10 @@ export interface Page {
     items?: Array<object> | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof Page
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {Array<object>}

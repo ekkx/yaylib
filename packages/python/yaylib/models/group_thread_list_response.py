@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.thread_info import ThreadInfo
 from typing import Optional, Set
@@ -27,7 +27,7 @@ class GroupThreadListResponse(BaseModel):
     """
     GroupThreadListResponse
     """ # noqa: E501
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[StrictStr] = None
     threads: Optional[List[ThreadInfo]] = None
     __properties: ClassVar[List[str]] = ["next_page_value", "threads"]
 

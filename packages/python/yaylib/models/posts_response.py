@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictBool, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictBool, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.post import Post
 from typing import Optional, Set
@@ -28,7 +28,7 @@ class PostsResponse(BaseModel):
     PostsResponse
     """ # noqa: E501
     has_more_hot_posts: Optional[StrictBool] = None
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[StrictStr] = None
     pinned_posts: Optional[List[Post]] = None
     posts: Optional[List[Post]] = None
     __properties: ClassVar[List[str]] = ["has_more_hot_posts", "next_page_value", "pinned_posts", "posts"]

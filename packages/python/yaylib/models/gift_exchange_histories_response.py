@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.gift_exchange_history import GiftExchangeHistory
 from typing import Optional, Set
@@ -28,7 +28,7 @@ class GiftExchangeHistoriesResponse(BaseModel):
     GiftExchangeHistoriesResponse
     """ # noqa: E501
     gift_exchange_histories: Optional[List[GiftExchangeHistory]] = None
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = ["gift_exchange_histories", "next_page_value"]
 
     model_config = ConfigDict(

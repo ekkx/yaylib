@@ -41,10 +41,10 @@ export interface HiddenResponse {
     limit?: number | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof HiddenResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {number}

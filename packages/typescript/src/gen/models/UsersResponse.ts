@@ -29,10 +29,10 @@ import {
 export interface UsersResponse {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof UsersResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {Array<RealmUser>}

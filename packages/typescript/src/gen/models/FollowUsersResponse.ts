@@ -29,10 +29,10 @@ import {
 export interface FollowUsersResponse {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof FollowUsersResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {Array<RealmUser>}

@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.realm_gift import RealmGift
 from typing import Optional, Set
@@ -28,7 +28,7 @@ class GiftsResponse(BaseModel):
     GiftsResponse
     """ # noqa: E501
     gifts: Optional[List[RealmGift]] = None
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[StrictStr] = None
     total_count: Optional[StrictInt] = None
     __properties: ClassVar[List[str]] = ["gifts", "next_page_value", "total_count"]
 

@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.footprint_dto import FootprintDTO
 from typing import Optional, Set
@@ -28,7 +28,7 @@ class FootprintsResponse(BaseModel):
     FootprintsResponse
     """ # noqa: E501
     footprints: Optional[List[FootprintDTO]] = None
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = ["footprints", "next_page_value"]
 
     model_config = ConfigDict(

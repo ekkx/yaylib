@@ -29,10 +29,10 @@ import {
 export interface GiftReceivedResponse {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof GiftReceivedResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {Array<ReceivedGift>}

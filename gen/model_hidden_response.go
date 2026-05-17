@@ -14,7 +14,7 @@ var _ MappedNullable = &HiddenResponse{}
 type HiddenResponse struct {
 	HiddenUsers []RealmUser `json:"hidden_users,omitempty"`
 	Limit NullableInt32 `json:"limit,omitempty"`
-	NextPageValue NullableInt64 `json:"next_page_value,omitempty"`
+	NextPageValue NullableString `json:"next_page_value,omitempty"`
 	TotalCount NullableInt32 `json:"total_count,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -114,9 +114,9 @@ func (o *HiddenResponse) UnsetLimit() {
 }
 
 // GetNextPageValue returns the NextPageValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *HiddenResponse) GetNextPageValue() int64 {
+func (o *HiddenResponse) GetNextPageValue() string {
 	if o == nil || IsNil(o.NextPageValue.Get()) {
-		var ret int64
+		var ret string
 		return ret
 	}
 	return *o.NextPageValue.Get()
@@ -125,7 +125,7 @@ func (o *HiddenResponse) GetNextPageValue() int64 {
 // GetNextPageValueOk returns a tuple with the NextPageValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *HiddenResponse) GetNextPageValueOk() (*int64, bool) {
+func (o *HiddenResponse) GetNextPageValueOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -141,8 +141,8 @@ func (o *HiddenResponse) HasNextPageValue() bool {
 	return false
 }
 
-// SetNextPageValue gets a reference to the given NullableInt64 and assigns it to the NextPageValue field.
-func (o *HiddenResponse) SetNextPageValue(v int64) {
+// SetNextPageValue gets a reference to the given NullableString and assigns it to the NextPageValue field.
+func (o *HiddenResponse) SetNextPageValue(v string) {
 	o.NextPageValue.Set(&v)
 }
 // SetNextPageValueNil sets the value for NextPageValue to be an explicit nil

@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.realm_genre import RealmGenre
 from typing import Optional, Set
@@ -28,7 +28,7 @@ class GenresResponse(BaseModel):
     GenresResponse
     """ # noqa: E501
     genres: Optional[List[RealmGenre]] = None
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = ["genres", "next_page_value"]
 
     model_config = ConfigDict(

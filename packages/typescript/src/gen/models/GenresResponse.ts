@@ -35,10 +35,10 @@ export interface GenresResponse {
     genres?: Array<RealmGenre> | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof GenresResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
 }
 
 /**

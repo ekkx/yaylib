@@ -29,10 +29,10 @@ import {
 export interface CallGiftHistoryResponse {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof CallGiftHistoryResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {Array<GiftHistory>}

@@ -35,10 +35,10 @@ export interface GroupsRelatedResponse {
     groups?: Array<Group> | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof GroupsRelatedResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
 }
 
 /**

@@ -35,10 +35,10 @@ export interface PostsResponse {
     hasMoreHotPosts?: boolean | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof PostsResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {Array<Post>}

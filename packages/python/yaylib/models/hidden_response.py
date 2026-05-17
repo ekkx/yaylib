@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.realm_user import RealmUser
 from typing import Optional, Set
@@ -29,7 +29,7 @@ class HiddenResponse(BaseModel):
     """ # noqa: E501
     hidden_users: Optional[List[RealmUser]] = None
     limit: Optional[StrictInt] = None
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[StrictStr] = None
     total_count: Optional[StrictInt] = None
     __properties: ClassVar[List[str]] = ["hidden_users", "limit", "next_page_value", "total_count"]
 

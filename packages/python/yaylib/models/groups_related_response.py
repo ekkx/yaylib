@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.group import Group
 from typing import Optional, Set
@@ -28,7 +28,7 @@ class GroupsRelatedResponse(BaseModel):
     GroupsRelatedResponse
     """ # noqa: E501
     groups: Optional[List[Group]] = None
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = ["groups", "next_page_value"]
 
     model_config = ConfigDict(

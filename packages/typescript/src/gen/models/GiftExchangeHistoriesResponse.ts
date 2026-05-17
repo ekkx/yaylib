@@ -35,10 +35,10 @@ export interface GiftExchangeHistoriesResponse {
     giftExchangeHistories?: Array<GiftExchangeHistory> | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof GiftExchangeHistoriesResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
 }
 
 /**

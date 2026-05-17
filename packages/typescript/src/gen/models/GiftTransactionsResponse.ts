@@ -35,10 +35,10 @@ export interface GiftTransactionsResponse {
     hideGiftsReceived?: boolean | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof GiftTransactionsResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {Array<GiftHistory>}

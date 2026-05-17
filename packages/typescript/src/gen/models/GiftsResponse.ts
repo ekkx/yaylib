@@ -35,10 +35,10 @@ export interface GiftsResponse {
     gifts?: Array<RealmGift> | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof GiftsResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {number}

@@ -29,10 +29,10 @@ import {
 export interface GroupThreadListResponse {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof GroupThreadListResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
     /**
      * 
      * @type {Array<ThreadInfo>}

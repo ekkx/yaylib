@@ -14,7 +14,7 @@ var _ MappedNullable = &TimelinePage{}
 type TimelinePage struct {
 	Id NullableInt64 `json:"id,omitempty"`
 	Items []map[string]interface{} `json:"items,omitempty"`
-	NextPageValue NullableInt64 `json:"next_page_value,omitempty"`
+	NextPageValue NullableString `json:"next_page_value,omitempty"`
 	PinnedItems []map[string]interface{} `json:"pinned_items,omitempty"`
 	ShowMoreHotPostsButton NullableBool `json:"show_more_hot_posts_button,omitempty"`
 	TotalItemCount NullableInt32 `json:"total_item_count,omitempty"`
@@ -117,9 +117,9 @@ func (o *TimelinePage) SetItems(v []map[string]interface{}) {
 }
 
 // GetNextPageValue returns the NextPageValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *TimelinePage) GetNextPageValue() int64 {
+func (o *TimelinePage) GetNextPageValue() string {
 	if o == nil || IsNil(o.NextPageValue.Get()) {
-		var ret int64
+		var ret string
 		return ret
 	}
 	return *o.NextPageValue.Get()
@@ -128,7 +128,7 @@ func (o *TimelinePage) GetNextPageValue() int64 {
 // GetNextPageValueOk returns a tuple with the NextPageValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TimelinePage) GetNextPageValueOk() (*int64, bool) {
+func (o *TimelinePage) GetNextPageValueOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -144,8 +144,8 @@ func (o *TimelinePage) HasNextPageValue() bool {
 	return false
 }
 
-// SetNextPageValue gets a reference to the given NullableInt64 and assigns it to the NextPageValue field.
-func (o *TimelinePage) SetNextPageValue(v int64) {
+// SetNextPageValue gets a reference to the given NullableString and assigns it to the NextPageValue field.
+func (o *TimelinePage) SetNextPageValue(v string) {
 	o.NextPageValue.Set(&v)
 }
 // SetNextPageValueNil sets the value for NextPageValue to be an explicit nil

@@ -17,7 +17,7 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
@@ -28,7 +28,7 @@ class Page(BaseModel):
     """ # noqa: E501
     id: Optional[StrictInt] = None
     items: Optional[List[Dict[str, Any]]] = None
-    next_page_value: Optional[StrictInt] = None
+    next_page_value: Optional[StrictStr] = None
     pinned_items: Optional[List[Dict[str, Any]]] = None
     total_item_count: Optional[StrictInt] = None
     total_item_limit: Optional[StrictInt] = None

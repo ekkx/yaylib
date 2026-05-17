@@ -35,10 +35,10 @@ export interface FootprintsResponse {
     footprints?: Array<FootprintDTO> | null;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof FootprintsResponse
      */
-    nextPageValue?: number | null;
+    nextPageValue?: string | null;
 }
 
 /**
