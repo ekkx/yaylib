@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { Sticker } from './Sticker';
+import {
+    StickerFromJSON,
+    StickerFromJSONTyped,
+    StickerToJSON,
+    StickerToJSONTyped,
+} from './Sticker';
+
 /**
  * 
  * @export
@@ -51,10 +59,10 @@ export interface StickerPack {
     order?: number | null;
     /**
      * 
-     * @type {object}
+     * @type {Array<Sticker>}
      * @memberof StickerPack
      */
-    stickers?: object | null;
+    stickers?: Array<Sticker> | null;
 }
 
 /**
@@ -79,7 +87,7 @@ export function StickerPackFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'id': json['id'] == null ? undefined : json['id'],
         'name': json['name'] == null ? undefined : json['name'],
         'order': json['order'] == null ? undefined : json['order'],
-        'stickers': json['stickers'] == null ? undefined : json['stickers'],
+        'stickers': json['stickers'] == null ? undefined : ((json['stickers'] as Array<any>).map(StickerFromJSON)),
     };
 }
 
@@ -99,7 +107,7 @@ export function StickerPackToJSONTyped(value?: StickerPack | null, ignoreDiscrim
         'id': value['id'],
         'name': value['name'],
         'order': value['order'],
-        'stickers': value['stickers'],
+        'stickers': value['stickers'] == null ? undefined : ((value['stickers'] as Array<any>).map(StickerToJSON)),
     };
 }
 

@@ -12,7 +12,7 @@ var _ MappedNullable = &GifImageCategory{}
 
 // GifImageCategory struct for GifImageCategory
 type GifImageCategory struct {
-	Gifs map[string]interface{} `json:"gifs,omitempty"`
+	Gifs []GifImage `json:"gifs,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
 	Language NullableString `json:"language,omitempty"`
 	Name NullableString `json:"name,omitempty"`
@@ -39,9 +39,9 @@ func NewGifImageCategoryWithDefaults() *GifImageCategory {
 }
 
 // GetGifs returns the Gifs field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GifImageCategory) GetGifs() map[string]interface{} {
+func (o *GifImageCategory) GetGifs() []GifImage {
 	if o == nil {
-		var ret map[string]interface{}
+		var ret []GifImage
 		return ret
 	}
 	return o.Gifs
@@ -50,9 +50,9 @@ func (o *GifImageCategory) GetGifs() map[string]interface{} {
 // GetGifsOk returns a tuple with the Gifs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GifImageCategory) GetGifsOk() (map[string]interface{}, bool) {
+func (o *GifImageCategory) GetGifsOk() ([]GifImage, bool) {
 	if o == nil || IsNil(o.Gifs) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.Gifs, true
 }
@@ -66,8 +66,8 @@ func (o *GifImageCategory) HasGifs() bool {
 	return false
 }
 
-// SetGifs gets a reference to the given map[string]interface{} and assigns it to the Gifs field.
-func (o *GifImageCategory) SetGifs(v map[string]interface{}) {
+// SetGifs gets a reference to the given []GifImage and assigns it to the Gifs field.
+func (o *GifImageCategory) SetGifs(v []GifImage) {
 	o.Gifs = v
 }
 

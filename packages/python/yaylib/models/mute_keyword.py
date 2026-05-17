@@ -26,7 +26,7 @@ class MuteKeyword(BaseModel):
     """
     MuteKeyword
     """ # noqa: E501
-    context: Optional[Dict[str, Any]] = None
+    context: Optional[List[StrictStr]] = None
     id: Optional[StrictInt] = None
     word: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = ["context", "id", "word"]

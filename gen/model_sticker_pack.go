@@ -17,7 +17,7 @@ type StickerPack struct {
 	Id NullableInt64 `json:"id,omitempty"`
 	Name NullableString `json:"name,omitempty"`
 	Order NullableInt32 `json:"order,omitempty"`
-	Stickers map[string]interface{} `json:"stickers,omitempty"`
+	Stickers []Sticker `json:"stickers,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -251,9 +251,9 @@ func (o *StickerPack) UnsetOrder() {
 }
 
 // GetStickers returns the Stickers field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *StickerPack) GetStickers() map[string]interface{} {
+func (o *StickerPack) GetStickers() []Sticker {
 	if o == nil {
-		var ret map[string]interface{}
+		var ret []Sticker
 		return ret
 	}
 	return o.Stickers
@@ -262,9 +262,9 @@ func (o *StickerPack) GetStickers() map[string]interface{} {
 // GetStickersOk returns a tuple with the Stickers field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *StickerPack) GetStickersOk() (map[string]interface{}, bool) {
+func (o *StickerPack) GetStickersOk() ([]Sticker, bool) {
 	if o == nil || IsNil(o.Stickers) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.Stickers, true
 }
@@ -278,8 +278,8 @@ func (o *StickerPack) HasStickers() bool {
 	return false
 }
 
-// SetStickers gets a reference to the given map[string]interface{} and assigns it to the Stickers field.
-func (o *StickerPack) SetStickers(v map[string]interface{}) {
+// SetStickers gets a reference to the given []Sticker and assigns it to the Stickers field.
+func (o *StickerPack) SetStickers(v []Sticker) {
 	o.Stickers = v
 }
 

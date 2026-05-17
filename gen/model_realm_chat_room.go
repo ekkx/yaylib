@@ -17,7 +17,7 @@ type RealmChatRoom struct {
 	IsGroup NullableBool `json:"is_group,omitempty"`
 	IsRequest NullableBool `json:"is_request,omitempty"`
 	LastMessage NullableChatRoomLastMessage `json:"last_message,omitempty"`
-	Members map[string]interface{} `json:"members,omitempty"`
+	Members []RealmUser `json:"members,omitempty"`
 	Name NullableString `json:"name,omitempty"`
 	Owner NullableRealmUser `json:"owner,omitempty"`
 	UnreadCount NullableInt32 `json:"unread_count,omitempty"`
@@ -256,9 +256,9 @@ func (o *RealmChatRoom) UnsetLastMessage() {
 }
 
 // GetMembers returns the Members field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RealmChatRoom) GetMembers() map[string]interface{} {
+func (o *RealmChatRoom) GetMembers() []RealmUser {
 	if o == nil {
-		var ret map[string]interface{}
+		var ret []RealmUser
 		return ret
 	}
 	return o.Members
@@ -267,9 +267,9 @@ func (o *RealmChatRoom) GetMembers() map[string]interface{} {
 // GetMembersOk returns a tuple with the Members field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RealmChatRoom) GetMembersOk() (map[string]interface{}, bool) {
+func (o *RealmChatRoom) GetMembersOk() ([]RealmUser, bool) {
 	if o == nil || IsNil(o.Members) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.Members, true
 }
@@ -283,8 +283,8 @@ func (o *RealmChatRoom) HasMembers() bool {
 	return false
 }
 
-// SetMembers gets a reference to the given map[string]interface{} and assigns it to the Members field.
-func (o *RealmChatRoom) SetMembers(v map[string]interface{}) {
+// SetMembers gets a reference to the given []RealmUser and assigns it to the Members field.
+func (o *RealmChatRoom) SetMembers(v []RealmUser) {
 	o.Members = v
 }
 

@@ -19,6 +19,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from yaylib.models.gif_image import GifImage
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -26,7 +27,7 @@ class GifImageCategory(BaseModel):
     """
     GifImageCategory
     """ # noqa: E501
-    gifs: Optional[Dict[str, Any]] = None
+    gifs: Optional[List[GifImage]] = None
     id: Optional[StrictInt] = None
     language: Optional[StrictStr] = None
     name: Optional[StrictStr] = None
@@ -71,6 +72,13 @@ class GifImageCategory(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in gifs (list)
+        _items = []
+        if self.gifs:
+            for _item_gifs in self.gifs:
+                if _item_gifs:
+                    _items.append(_item_gifs.to_dict())
+            _dict['gifs'] = _items
         # set to None if gifs (nullable) is None
         # and model_fields_set contains the field
         if self.gifs is None and "gifs" in self.model_fields_set:
@@ -103,7 +111,7 @@ class GifImageCategory(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "gifs": obj.get("gifs"),
+            "gifs": [GifImage.from_dict(_item) for _item in obj["gifs"]] if obj.get("gifs") is not None else None,
             "id": obj.get("id"),
             "language": obj.get("language"),
             "name": obj.get("name")

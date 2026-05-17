@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { GifImage } from './GifImage';
+import {
+    GifImageFromJSON,
+    GifImageFromJSONTyped,
+    GifImageToJSON,
+    GifImageToJSONTyped,
+} from './GifImage';
+
 /**
  * 
  * @export
@@ -21,10 +29,10 @@ import { mapValues } from '../runtime';
 export interface GifImageCategory {
     /**
      * 
-     * @type {object}
+     * @type {Array<GifImage>}
      * @memberof GifImageCategory
      */
-    gifs?: object | null;
+    gifs?: Array<GifImage> | null;
     /**
      * 
      * @type {number}
@@ -62,7 +70,7 @@ export function GifImageCategoryFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'gifs': json['gifs'] == null ? undefined : json['gifs'],
+        'gifs': json['gifs'] == null ? undefined : ((json['gifs'] as Array<any>).map(GifImageFromJSON)),
         'id': json['id'] == null ? undefined : json['id'],
         'language': json['language'] == null ? undefined : json['language'],
         'name': json['name'] == null ? undefined : json['name'],
@@ -80,7 +88,7 @@ export function GifImageCategoryToJSONTyped(value?: GifImageCategory | null, ign
 
     return {
         
-        'gifs': value['gifs'],
+        'gifs': value['gifs'] == null ? undefined : ((value['gifs'] as Array<any>).map(GifImageToJSON)),
         'id': value['id'],
         'language': value['language'],
         'name': value['name'],

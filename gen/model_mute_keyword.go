@@ -12,7 +12,7 @@ var _ MappedNullable = &MuteKeyword{}
 
 // MuteKeyword struct for MuteKeyword
 type MuteKeyword struct {
-	Context map[string]interface{} `json:"context,omitempty"`
+	Context []string `json:"context,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
 	Word NullableString `json:"word,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -38,9 +38,9 @@ func NewMuteKeywordWithDefaults() *MuteKeyword {
 }
 
 // GetContext returns the Context field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *MuteKeyword) GetContext() map[string]interface{} {
+func (o *MuteKeyword) GetContext() []string {
 	if o == nil {
-		var ret map[string]interface{}
+		var ret []string
 		return ret
 	}
 	return o.Context
@@ -49,9 +49,9 @@ func (o *MuteKeyword) GetContext() map[string]interface{} {
 // GetContextOk returns a tuple with the Context field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *MuteKeyword) GetContextOk() (map[string]interface{}, bool) {
+func (o *MuteKeyword) GetContextOk() ([]string, bool) {
 	if o == nil || IsNil(o.Context) {
-		return map[string]interface{}{}, false
+		return nil, false
 	}
 	return o.Context, true
 }
@@ -65,8 +65,8 @@ func (o *MuteKeyword) HasContext() bool {
 	return false
 }
 
-// SetContext gets a reference to the given map[string]interface{} and assigns it to the Context field.
-func (o *MuteKeyword) SetContext(v map[string]interface{}) {
+// SetContext gets a reference to the given []string and assigns it to the Context field.
+func (o *MuteKeyword) SetContext(v []string) {
 	o.Context = v
 }
 

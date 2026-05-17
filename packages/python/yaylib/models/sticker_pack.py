@@ -19,6 +19,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from yaylib.models.sticker import Sticker
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -31,7 +32,7 @@ class StickerPack(BaseModel):
     id: Optional[StrictInt] = None
     name: Optional[StrictStr] = None
     order: Optional[StrictInt] = None
-    stickers: Optional[Dict[str, Any]] = None
+    stickers: Optional[List[Sticker]] = None
     __properties: ClassVar[List[str]] = ["cover", "description", "id", "name", "order", "stickers"]
 
     model_config = ConfigDict(
@@ -73,6 +74,13 @@ class StickerPack(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in stickers (list)
+        _items = []
+        if self.stickers:
+            for _item_stickers in self.stickers:
+                if _item_stickers:
+                    _items.append(_item_stickers.to_dict())
+            _dict['stickers'] = _items
         # set to None if cover (nullable) is None
         # and model_fields_set contains the field
         if self.cover is None and "cover" in self.model_fields_set:
@@ -120,7 +128,7 @@ class StickerPack(BaseModel):
             "id": obj.get("id"),
             "name": obj.get("name"),
             "order": obj.get("order"),
-            "stickers": obj.get("stickers")
+            "stickers": [Sticker.from_dict(_item) for _item in obj["stickers"]] if obj.get("stickers") is not None else None
         })
         return _obj
 

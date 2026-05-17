@@ -21,10 +21,10 @@ import { mapValues } from '../runtime';
 export interface MuteKeyword {
     /**
      * 
-     * @type {object}
+     * @type {Array<string>}
      * @memberof MuteKeyword
      */
-    context?: object | null;
+    context?: Array<string> | null;
     /**
      * 
      * @type {number}

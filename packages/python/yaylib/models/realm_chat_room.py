@@ -34,7 +34,7 @@ class RealmChatRoom(BaseModel):
     is_group: Optional[StrictBool] = None
     is_request: Optional[StrictBool] = None
     last_message: Optional[ChatRoomLastMessage] = None
-    members: Optional[Dict[str, Any]] = None
+    members: Optional[List[RealmUser]] = None
     name: Optional[StrictStr] = None
     owner: Optional[RealmUser] = None
     unread_count: Optional[StrictInt] = None
@@ -84,6 +84,13 @@ class RealmChatRoom(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of last_message
         if self.last_message:
             _dict['last_message'] = self.last_message.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in members (list)
+        _items = []
+        if self.members:
+            for _item_members in self.members:
+                if _item_members:
+                    _items.append(_item_members.to_dict())
+            _dict['members'] = _items
         # override the default output from pydantic by calling `to_dict()` of owner
         if self.owner:
             _dict['owner'] = self.owner.to_dict()
@@ -162,7 +169,7 @@ class RealmChatRoom(BaseModel):
             "is_group": obj.get("is_group"),
             "is_request": obj.get("is_request"),
             "last_message": ChatRoomLastMessage.from_dict(obj["last_message"]) if obj.get("last_message") is not None else None,
-            "members": obj.get("members"),
+            "members": [RealmUser.from_dict(_item) for _item in obj["members"]] if obj.get("members") is not None else None,
             "name": obj.get("name"),
             "owner": RealmUser.from_dict(obj["owner"]) if obj.get("owner") is not None else None,
             "unread_count": obj.get("unread_count"),

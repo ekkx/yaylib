@@ -73,10 +73,10 @@ export interface RealmChatRoom {
     lastMessage?: ChatRoomLastMessage | null;
     /**
      * 
-     * @type {object}
+     * @type {Array<RealmUser>}
      * @memberof RealmChatRoom
      */
-    members?: object | null;
+    members?: Array<RealmUser> | null;
     /**
      * 
      * @type {string}
@@ -131,7 +131,7 @@ export function RealmChatRoomFromJSONTyped(json: any, ignoreDiscriminator: boole
         'isGroup': json['is_group'] == null ? undefined : json['is_group'],
         'isRequest': json['is_request'] == null ? undefined : json['is_request'],
         'lastMessage': json['last_message'] == null ? undefined : ChatRoomLastMessageFromJSON(json['last_message']),
-        'members': json['members'] == null ? undefined : json['members'],
+        'members': json['members'] == null ? undefined : ((json['members'] as Array<any>).map(RealmUserFromJSON)),
         'name': json['name'] == null ? undefined : json['name'],
         'owner': json['owner'] == null ? undefined : RealmUserFromJSON(json['owner']),
         'unreadCount': json['unread_count'] == null ? undefined : json['unread_count'],
@@ -156,7 +156,7 @@ export function RealmChatRoomToJSONTyped(value?: RealmChatRoom | null, ignoreDis
         'is_group': value['isGroup'],
         'is_request': value['isRequest'],
         'last_message': ChatRoomLastMessageToJSON(value['lastMessage']),
-        'members': value['members'],
+        'members': value['members'] == null ? undefined : ((value['members'] as Array<any>).map(RealmUserToJSON)),
         'name': value['name'],
         'owner': RealmUserToJSON(value['owner']),
         'unread_count': value['unreadCount'],
