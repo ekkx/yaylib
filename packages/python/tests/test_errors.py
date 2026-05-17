@@ -38,11 +38,8 @@ async def test_2fa_required_surfaces_typed_code():
         client = Client(base_url=base_url)
         try:
             with pytest.raises(APIError) as ei:
-                await (
-                    client.login_with_email()
-                    .email("u@example.com")
-                    .password("pw")
-                    .execute()
+                await client.login_with_email(
+                    email="u@example.com", password="pw"
                 )
             err = ei.value
             assert code_of(err) == ERR_CODE_REQUIRED_2FA
@@ -76,11 +73,8 @@ async def test_login_store_load_error_returns_without_http():
         )
         try:
             with pytest.raises(RuntimeError, match="corrupt JSON"):
-                await (
-                    client.login_with_email()
-                    .email("foo@example.com")
-                    .password("pw")
-                    .execute()
+                await client.login_with_email(
+                    email="foo@example.com", password="pw"
                 )
             # A non-NoSessionError load failure must NOT fall through to
             # an HTTP login (rate-limit protection, PORTING.md §15).

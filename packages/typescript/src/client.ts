@@ -353,19 +353,20 @@ export class Client {
    *
    * If a SessionStore is configured, a hit returns the persisted session
    * synthesized into a LoginUserResponse without issuing any HTTP. A miss
-   * (or `.noCache()`) issues the OAuth login, persists the session, and
+   * (or `noCache: true`) issues the OAuth login, persists the session, and
    * activates tokens / userID / email on the client.
    *
-   *   await client.loginWithEmail()
-   *     .email("...").password("...").execute();
+   *   await client.loginWithEmail({ email: "...", password: "..." });
    *
-   * For 2FA-required accounts, chain `.twoFACode("...")` on the retry.
+   * For 2FA-required accounts, pass `twoFACode` on the retry.
    */
-  loginWithEmail(): import("./auth").LoginWithEmailBuilder {
+  loginWithEmail(
+    params: import("./auth").LoginWithEmailParams,
+  ): Promise<import("./gen/models/LoginUserResponse").LoginUserResponse> {
     // Lazy import to avoid a circular module load at construction time.
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { loginWithEmail } = require("./auth") as typeof import("./auth");
-    return loginWithEmail(this);
+    return loginWithEmail(this, params);
   }
 
   // rawFetch is the unwrapped fetch — no generated middleware, so no

@@ -38,18 +38,32 @@ differs but the underlying name does not).
 
 ## 2. Client surface contract
 
+**Symmetry principle (applies to this whole document).** The
+*concepts and names* are identical across languages; the *call shape*
+follows each language's own idiom — never imports another language's
+shape. (This is the same rule the event stream already follows: one
+concept, consumed as `for range` in Go, `onXxx` in TS, a decorator in
+Python.) The test of "is this idiomatic" is **intra-language
+consistency**: a wrapped call should look like every other operation
+*in that language*, not like its counterpart in another.
+
 Every operation MUST be reachable as a top-level method on the
 client, with no service-name prefix. The Go SDK gets this for free
-through embed promotion; TS / Python SHOULD attach all operations to
-the `Client` instance directly so callers write
-`client.getRecommendedTimeline(...)` without a `client.posts.` step.
+through embed promotion; TS / Python MUST attach every operation to
+the `Client` instance directly (a generated delegating facade) so
+callers write `client.getRecommendedTimeline(...)` /
+`client.get_recommended_timeline(...)` with no `client.postsAPI.`
+step. operationIds are globally unique, so the flat surface is
+collision-free; a hand-written wrapper of the same name takes
+precedence over the generated delegate (the Go embed-shadowing rule).
 
 An escape hatch to the raw generated layer MUST exist for cases where
 the SDK-side wrapper is in the way (e.g. cache bypass, new-field
-catch-up). In Go this is `client.<Service>APIService.<Op>(ctx)...`.
-Each port chooses its own form (a `client.raw` namespace, an
-`@unwrapped` decorator, etc.) but the access path MUST stay
-documented and stable.
+catch-up). In Go this is `client.<Service>APIService.<Op>(ctx)...`;
+in TS / Python it is the per-service accessor that the flat facade
+delegates to — `client.postsAPI.<op>(...)` /
+`client.posts_api.<op>(...)` — which stays public, documented and
+stable alongside the flat surface.
 
 ---
 
@@ -208,15 +222,38 @@ crashed write never leaves a half-truncated session file behind.
 
 ## 6. LoginWithEmail is the only auth wrapper
 
-LoginWithEmail has a fluent builder + transparent session caching.
-This wrapper exists because LoginWithEmail is the cache boundary —
-"log in or use the cached session" is one call:
+LoginWithEmail has transparent session caching. This wrapper exists
+because LoginWithEmail is the cache boundary — "log in or use the
+cached session" is one call. The wrapper *semantics* are identical
+across languages (cache lookup → on miss HTTP login → activate tokens
+→ persist; `apiKey`/`uuid` auto-filled from the client; a cache-bypass
+switch). The *shape* follows each language's operation idiom (§2): Go
+keeps the builder + `Execute()` because **every** Go generated
+operation is a builder + `Execute()`, so login is consistent there;
+TS takes a single options object and Python keyword arguments, because
+that is how **every** generated operation is called in those
+languages — a builder there would make login the odd one out.
 
 ```go
+// Go — builder + Execute(), like every Go operation
 resp, _, err := client.LoginWithEmail(ctx).
     Email(email).Password(password).
     Execute()
 // .NoCache() forces a fresh HTTP login.
+```
+
+```ts
+// TS — options object, like every TS operation
+const resp = await client.loginWithEmail({ email, password });
+// { noCache: true } forces a fresh HTTP login;
+// apiKey / uuid / twoFACode are optional overrides.
+```
+
+```python
+# Python — keyword arguments, like every Python operation
+resp = await client.login_with_email(email=email, password=password)
+# no_cache=True forces a fresh HTTP login;
+# api_key / uuid / two_fa_code are optional overrides.
 ```
 
 Other auth-flow body endpoints (`CreateUser`, `EditUser`,

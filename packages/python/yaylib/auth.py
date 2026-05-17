@@ -15,55 +15,32 @@ from yaylib.models.login_user_response import LoginUserResponse
 from yaylib.session import NoSessionError, Session, SessionSaveFailed
 
 
-class LoginWithEmailBuilder:
-    """Chain-setter form mirroring the Go reference. The generated layer
-    accepts only a single ``login_email_user_request`` body; this builder
-    lets callers set each field and auto-fills api_key / uuid from the
-    client.
+async def login_with_email(
+    client,
+    *,
+    email: str,
+    password: str,
+    api_key: Optional[str] = None,
+    uuid: Optional[str] = None,
+    two_fa_code: Optional[str] = None,
+    no_cache: bool = False,
+) -> LoginUserResponse:
+    """Wrapped login with transparent session caching, called with
+    keyword arguments — the same call shape as every other generated
+    Python operation, not a builder. The generated layer accepts only a
+    single ``login_email_user_request`` body; this wrapper takes the
+    fields directly and auto-fills api_key / uuid from the client.
+    ``no_cache=True`` forces a fresh HTTP login.
     """
-
-    def __init__(self, client) -> None:
-        self._client = client
-        self._email: Optional[str] = None
-        self._password: Optional[str] = None
-        self._api_key: Optional[str] = None
-        self._uuid: Optional[str] = None
-        self._two_fa_code: Optional[str] = None
-        self._bypass_cache = False
-
-    def email(self, v: str) -> "LoginWithEmailBuilder":
-        self._email = v
-        return self
-
-    def password(self, v: str) -> "LoginWithEmailBuilder":
-        self._password = v
-        return self
-
-    def api_key(self, v: str) -> "LoginWithEmailBuilder":
-        """Override the API key for this single login call."""
-        self._api_key = v
-        return self
-
-    def uuid(self, v: str) -> "LoginWithEmailBuilder":
-        """Override the device UUID for this single login call."""
-        self._uuid = v
-        return self
-
-    def two_fa_code(self, v: str) -> "LoginWithEmailBuilder":
-        self._two_fa_code = v
-        return self
-
-    def no_cache(self) -> "LoginWithEmailBuilder":
-        """Force a fresh HTTP login, bypassing any cached session."""
-        self._bypass_cache = True
-        return self
-
-    async def execute(self) -> LoginUserResponse:
-        return await _execute_login(self)
-
-
-def login_with_email(client) -> LoginWithEmailBuilder:
-    return LoginWithEmailBuilder(client)
+    return await _execute_login(
+        client,
+        email=email,
+        password=password,
+        api_key=api_key,
+        uuid=uuid,
+        two_fa_code=two_fa_code,
+        bypass_cache=no_cache,
+    )
 
 
 def _synthesize_login_response(session: Session) -> LoginUserResponse:
@@ -83,18 +60,26 @@ def _activate_cached_session(client, session: Session) -> None:
     client.set_login_identity(session.email, session.user_id)
 
 
-async def _execute_login(b: LoginWithEmailBuilder) -> LoginUserResponse:
-    client = b._client
-    if not b._email or not b._password:
+async def _execute_login(
+    client,
+    *,
+    email: str,
+    password: str,
+    api_key: Optional[str],
+    uuid: Optional[str],
+    two_fa_code: Optional[str],
+    bypass_cache: bool,
+) -> LoginUserResponse:
+    if not email or not password:
         raise ValueError(
             "yaylib: login_with_email requires email and password"
         )
 
     # Cache lookup — only with a session store configured and no
-    # .no_cache() opt-out.
-    if client.session_store is not None and not b._bypass_cache:
+    # no_cache opt-out.
+    if client.session_store is not None and not bypass_cache:
         try:
-            cached = await client.session_store.load(b._email)
+            cached = await client.session_store.load(email)
         except NoSessionError:
             cached = None  # cache miss → fall through to HTTP login
         # Any other error (rate-limit, disk failure) propagates: the
@@ -104,11 +89,11 @@ async def _execute_login(b: LoginWithEmailBuilder) -> LoginUserResponse:
             return _synthesize_login_response(cached)
 
     body = LoginEmailUserRequest(
-        api_key=b._api_key or client.api_key,
-        email=b._email,
-        password=b._password,
-        uuid=b._uuid or client.device_uuid,
-        two_f_a_code=b._two_fa_code,
+        api_key=api_key or client.api_key,
+        email=email,
+        password=password,
+        uuid=uuid or client.device_uuid,
+        two_f_a_code=two_fa_code,
     )
 
     try:
@@ -122,11 +107,11 @@ async def _execute_login(b: LoginWithEmailBuilder) -> LoginUserResponse:
     refresh = resp.refresh_token or ""
     user_id = resp.user_id or 0
     client.set_tokens(access, refresh)
-    client.set_login_identity(b._email, user_id)
+    client.set_login_identity(email, user_id)
 
     if client.session_store is not None:
         session = Session(
-            email=b._email,
+            email=email,
             user_id=user_id,
             access_token=access,
             refresh_token=refresh,

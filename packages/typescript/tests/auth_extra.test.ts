@@ -69,11 +69,7 @@ async function loadErrorReturnsErrorWithoutHTTP(): Promise<void> {
 
       let caught: unknown = null;
       try {
-        await c
-          .loginWithEmail()
-          .email("foo@example.com")
-          .password("pw")
-          .execute();
+        await c.loginWithEmail({ email: "foo@example.com", password: "pw" });
       } catch (err) {
         caught = err;
       }
@@ -124,11 +120,7 @@ async function twoFARequiredSurfacesErrorCode(): Promise<void> {
 
       let caught: unknown = null;
       try {
-        await c
-          .loginWithEmail()
-          .email("u@example.com")
-          .password("pw")
-          .execute();
+        await c.loginWithEmail({ email: "u@example.com", password: "pw" });
       } catch (err) {
         caught = err;
       }

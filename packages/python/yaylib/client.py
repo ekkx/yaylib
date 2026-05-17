@@ -460,15 +460,33 @@ class Client:
 
     # ---- auth wrapper (PORTING.md §6) ----
 
-    def login_with_email(self):
-        """LoginWithEmail with transparent session caching. A hit returns
-        the persisted session synthesized into a LoginUserResponse with
-        no HTTP; a miss (or ``.no_cache()``) issues the OAuth login,
+    async def login_with_email(
+        self,
+        *,
+        email: str,
+        password: str,
+        api_key: Optional[str] = None,
+        uuid: Optional[str] = None,
+        two_fa_code: Optional[str] = None,
+        no_cache: bool = False,
+    ):
+        """LoginWithEmail with transparent session caching, called with
+        keyword arguments like every other operation. A hit returns the
+        persisted session synthesized into a LoginUserResponse with no
+        HTTP; a miss (or ``no_cache=True``) issues the OAuth login,
         persists the session, and activates tokens / user id / email.
         """
         from yaylib.auth import login_with_email
 
-        return login_with_email(self)
+        return await login_with_email(
+            self,
+            email=email,
+            password=password,
+            api_key=api_key,
+            uuid=uuid,
+            two_fa_code=two_fa_code,
+            no_cache=no_cache,
+        )
 
     # ---- 401 auto-refresh (PORTING.md §6.1) ----
 

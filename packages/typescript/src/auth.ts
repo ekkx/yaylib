@@ -10,22 +10,21 @@ import type { Client } from "./client";
 import { APIError, asAPIError } from "./errors";
 import { type Session, SessionSaveFailedError } from "./session";
 
-// LoginWithEmailBuilder is the chain-setter form that mirrors the Go
-// reference. The generated layer accepts only a single body parameter
-// (`loginEmailUserRequest`); the wrapper lets callers populate each
-// field individually and auto-fills APIKey / Uuid from the client
-// before issuing the request.
-export interface LoginWithEmailBuilder {
-  email(v: string): LoginWithEmailBuilder;
-  password(v: string): LoginWithEmailBuilder;
-  /** Override the API key on this single login call. Defaults to client.apiKey. */
-  apiKey(v: string): LoginWithEmailBuilder;
-  /** Override the device UUID on this single login call. Defaults to client.deviceUUID. */
-  uuid(v: string): LoginWithEmailBuilder;
-  twoFACode(v: string): LoginWithEmailBuilder;
+// LoginWithEmailParams is the options object — the same call shape as
+// every other generated TS operation (a single params object), not a
+// builder. The generated layer accepts only one body parameter
+// (`loginEmailUserRequest`); the wrapper lets callers pass each field
+// directly and auto-fills apiKey / uuid from the client.
+export interface LoginWithEmailParams {
+  email: string;
+  password: string;
+  /** Override the API key for this single login call. Defaults to client.apiKey. */
+  apiKey?: string;
+  /** Override the device UUID for this single login call. Defaults to client.deviceUUID. */
+  uuid?: string;
+  twoFACode?: string;
   /** Force a fresh HTTP login, bypassing any cached session. */
-  noCache(): LoginWithEmailBuilder;
-  execute(): Promise<LoginUserResponse>;
+  noCache?: boolean;
 }
 
 interface LoginParams {
@@ -37,40 +36,20 @@ interface LoginParams {
   bypassCache?: boolean;
 }
 
-// loginWithEmail returns the builder. The wrapper is exposed on Client
-// as `client.loginWithEmail()`; see client.ts.
-export function loginWithEmail(client: Client): LoginWithEmailBuilder {
-  const params: LoginParams = {};
-  const builder: LoginWithEmailBuilder = {
-    email: (v) => {
-      params.email = v;
-      return builder;
-    },
-    password: (v) => {
-      params.password = v;
-      return builder;
-    },
-    apiKey: (v) => {
-      params.apiKey = v;
-      return builder;
-    },
-    uuid: (v) => {
-      params.uuid = v;
-      return builder;
-    },
-    twoFACode: (v) => {
-      params.twoFACode = v;
-      return builder;
-    },
-    noCache: () => {
-      params.bypassCache = true;
-      return builder;
-    },
-    execute: async () => {
-      return await executeLogin(client, params);
-    },
-  };
-  return builder;
+// loginWithEmail performs the wrapped login. Exposed on Client as
+// `await client.loginWithEmail({ email, password })`; see client.ts.
+export async function loginWithEmail(
+  client: Client,
+  params: LoginWithEmailParams,
+): Promise<LoginUserResponse> {
+  return executeLogin(client, {
+    email: params.email,
+    password: params.password,
+    apiKey: params.apiKey,
+    uuid: params.uuid,
+    twoFACode: params.twoFACode,
+    bypassCache: params.noCache,
+  });
 }
 
 async function executeLogin(
@@ -78,7 +57,7 @@ async function executeLogin(
   params: LoginParams,
 ): Promise<LoginUserResponse> {
   if (!params.email || !params.password) {
-    throw new Error("yaylib: LoginWithEmail requires email and password");
+    throw new Error("yaylib: loginWithEmail requires email and password");
   }
 
   // Cache lookup — only when a session store is configured and the
