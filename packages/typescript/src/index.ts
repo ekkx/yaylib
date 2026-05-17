@@ -51,3 +51,8 @@ export {
 } from "./signing";
 
 export { type LoginWithEmailBuilder, loginWithEmail } from "./auth";
+
+export {
+  type RetryPolicy,
+  DEFAULT_RETRY_POLICY,
+} from "./retry";

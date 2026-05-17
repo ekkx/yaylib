@@ -56,6 +56,7 @@ import {
   buildDeviceInfo,
   buildUserAgent,
 } from "./config";
+import { DEFAULT_RETRY_POLICY, type RetryPolicy, buildRetryMiddleware } from "./retry";
 import type { Session, SessionStore } from "./session";
 import type { Tokens } from "./tokens";
 import { emptyTokens } from "./tokens";
@@ -79,6 +80,7 @@ export interface ClientOptions {
   acceptLanguage?: string;
   sessionStore?: SessionStore;
   fetchApi?: typeof fetch;
+  retryPolicy?: RetryPolicy;
 }
 
 // Stub UUIDv4 generator. PORTING.md §14 requires crypto-grade randomness
@@ -105,6 +107,7 @@ export class Client {
   readonly connectionType: string;
   readonly connectionSpeed: string;
   readonly acceptLanguage: string;
+  readonly retryPolicy: RetryPolicy;
 
   // Per-instance mutable state. tokens / userID / currentEmail / clientIP
   // are written by login / refresh / loadSession; everything else is
@@ -170,7 +173,15 @@ export class Client {
     this.acceptLanguage = opts.acceptLanguage ?? DEFAULT_ACCEPT_LANGUAGE;
     this.sessionStore = opts.sessionStore;
     this._fetchApi = opts.fetchApi;
+    this.retryPolicy = opts.retryPolicy ?? DEFAULT_RETRY_POLICY;
 
+    // Middleware order is significant:
+    //   1. headers — every other middleware sees the canonical request
+    //      shape the server expects.
+    //   2. auth-refresh — must run before retry so a 401 triggers a
+    //      refresh + replay rather than counting toward the retry budget.
+    //   3. retry — handles 429 / 5xx / transport errors on the response
+    //      that auth-refresh either left intact or already retried.
     const config = new Configuration({
       basePath: this.baseURL,
       fetchApi: opts.fetchApi,
@@ -190,6 +201,10 @@ export class Client {
         buildAuthRefreshMiddleware({
           refresh: (stale) => this._tryRefresh(stale),
           accessToken: () => this._tokens.access,
+          fetchApi: opts.fetchApi,
+        }),
+        buildRetryMiddleware({
+          policy: this.retryPolicy,
           fetchApi: opts.fetchApi,
         }),
       ],
