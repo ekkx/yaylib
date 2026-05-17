@@ -104,6 +104,32 @@ export function buildHostRoutingMiddleware(ctx: HostRoutingContext): Middleware 
   };
 }
 
+const TIMESTAMP_PATH = "/v2/users/timestamp";
+
+function isTimestampPath(url: string): boolean {
+  return url.includes(TIMESTAMP_PATH);
+}
+
+// buildClientIPMiddleware triggers a one-shot, best-effort lookup of the
+// caller's outbound IP after the first request that isn't the lookup
+// endpoint itself (which would recurse). The lookup runs in the
+// background: the request that triggered it goes out without
+// X-Client-IP, and the value is learned from the lookup response so
+// subsequent requests carry the X-Client-IP header. A failed lookup
+// leaves the value empty and the next request tries again.
+export function buildClientIPMiddleware(ctx: {
+  maybeFetchClientIP(): void;
+}): Middleware {
+  return {
+    post: async (rc: ResponseContext): Promise<Response | void> => {
+      if (!isTimestampPath(rc.url)) {
+        ctx.maybeFetchClientIP();
+      }
+      return undefined;
+    },
+  };
+}
+
 function setIfAbsent(headers: Record<string, string>, key: string, value: string) {
   // Header keys in fetch's Record<string,string> form are case-sensitive in
   // practice; the runtime canonicalizes on send. We mirror the Go transport

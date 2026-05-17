@@ -134,6 +134,15 @@ class BufferedResponse:
     async def read(self) -> bytes:
         return self.data
 
+    @property
+    def response(self):
+        # The generated ``*_without_preload_content`` raw sibling returns
+        # ``response_data.response``. This wrapper already *is* the
+        # buffered, RESTResponse-compatible object (``read`` / ``status``
+        # / ``getheaders``), so hand back self instead of an unbuffered
+        # connection object the buffered transport never keeps.
+        return self
+
     def getheaders(self) -> "CIMultiDict[str]":
         return self._headers
 

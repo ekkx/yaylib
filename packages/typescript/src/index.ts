@@ -32,6 +32,8 @@ export {
   asAPIError,
 } from "./errors";
 
+export * from "./error_codes";
+
 export {
   DEFAULT_API_KEY,
   DEFAULT_API_VERSION_KEY,

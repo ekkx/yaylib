@@ -43,6 +43,7 @@ from yaylib.api.threads_api import ThreadsApi
 from yaylib.api.users_api import UsersApi
 from yaylib.api_client import ApiClient
 from yaylib.configuration import Configuration
+from yaylib.exceptions import ApiException
 
 from yaylib._config import (
     DEFAULT_ACCEPT_LANGUAGE,
@@ -290,6 +291,43 @@ class Client:
                 pass
         self._bg_tasks.clear()
         await self._transport.close()
+
+    # ---- raw escape hatch (PORTING.md §11.3) ----
+
+    async def execute_raw(self, raw_call):
+        """Run a generated ``*_without_preload_content`` operation and
+        return ``(body: bytes, response)`` with the typed JSON decode
+        bypassed entirely (PORTING.md §11.3 / §15). A typed-decode
+        failure can never occur here — the bytes are read straight off
+        the response. An HTTP error still surfaces as an ``APIError``
+        carrying the raw body (so ``code_of(err)`` keeps working); a
+        transport failure surfaces as an ``APIError`` too.
+
+        Python's generated client is method-based (no request builder),
+        so the sibling raw call is passed in explicitly::
+
+            body, resp = await client.execute_raw(
+                client.buckets_api.get_bucket_presigned_urls_without_preload_content(
+                    file_names=["x"]
+                )
+            )
+        """
+        from yaylib.errors import as_api_error
+
+        try:
+            resp = await raw_call
+            body = await resp.read()
+        except ApiException:
+            raise
+        except Exception as err:  # noqa: BLE001 — transport failure
+            raise as_api_error(err)
+        if not 200 <= resp.status <= 299:
+            raise ApiException.from_response(
+                http_resp=resp,
+                body=body.decode("utf-8", "replace"),
+                data=None,
+            )
+        return body, resp
 
     # ---- uploads (PORTING.md §8) ----
 

@@ -3,6 +3,7 @@
 // dispatch.
 
 import { ResponseError, FetchError } from "./gen/runtime";
+import { type ErrorCode, ErrCodeUnknown } from "./error_codes";
 
 // APIError carries the raw HTTP body and status. typescript-fetch already
 // throws `ResponseError` (a non-2xx HTTP response) and `FetchError` (a
@@ -61,13 +62,13 @@ export function errorResponseOf(err: unknown): ErrorResponse | null {
   }
 }
 
-// codeOf surfaces the server's error_code for switch dispatch. Returns 0
-// (ErrCodeUnknown placeholder) when the error is not an APIError or carries
-// no recognizable code. The typed ErrorCode constants are generated —
-// until that lands the port returns numeric codes only.
-export function codeOf(err: unknown): number {
+// codeOf surfaces the server's error_code for switch dispatch. Returns
+// ErrCodeUnknown (0) when the error is not an APIError or carries no
+// recognizable code. Compare the result against the ErrorCode constants
+// (e.g. `codeOf(err) === ErrCodeRequired2FA`).
+export function codeOf(err: unknown): ErrorCode {
   const r = errorResponseOf(err);
-  return r?.errorCode ?? 0;
+  return (r?.errorCode ?? ErrCodeUnknown) as ErrorCode;
 }
 
 // asAPIError converts a typescript-fetch thrown error (ResponseError or
