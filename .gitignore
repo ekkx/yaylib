@@ -10,6 +10,14 @@ packages/**/node_modules
 packages/**/dist
 packages/**/*.tgz
 
+# Python
+packages/**/.venv
+packages/**/__pycache__
+packages/**/*.pyc
+packages/**/.pytest_cache
+packages/**/.tox
+packages/**/*.egg-info
+
 # Editors
 .idea/
 .vscode/
