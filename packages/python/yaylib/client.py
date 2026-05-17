@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import logging
 import uuid as _uuid
@@ -142,6 +143,7 @@ class Client:
         self._client_ip = ""
         self._client_ip_fetching = False
         self._bg_tasks: "set[asyncio.Task]" = set()
+        self._event_streams: set = set()
         self._refresh_inflight: Optional["asyncio.Future[bool]"] = None
 
         transport = Transport(
@@ -236,9 +238,29 @@ class Client:
     async def __aexit__(self, exc_type, exc, tb) -> None:
         await self.close()
 
+    def open_event_stream(self, opts=None):
+        """Open a multiplexed real-time event stream (PORTING.md §10).
+
+        Usable both as an async context manager and as a coroutine::
+
+            async with client.open_event_stream() as stream:
+                sub = await stream.subscribe(chat_room_channel())
+
+            stream = await client.open_event_stream(opts)
+            ...
+            await stream.close()
+        """
+        from yaylib.event_stream import _OpenEventStreamCM
+
+        return _OpenEventStreamCM(self, opts)
+
     async def close(self) -> None:
-        # PORTING.md §3: cancel background work owned by the Client (the
-        # lazy X-Client-IP fetch; open event streams land here later).
+        # PORTING.md §3: cancel background work owned by the Client — the
+        # lazy X-Client-IP fetch and every open event stream.
+        for stream in list(self._event_streams):
+            with contextlib.suppress(Exception):
+                await stream.close()
+        self._event_streams.clear()
         tasks = list(self._bg_tasks)
         for task in tasks:
             task.cancel()
