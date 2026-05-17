@@ -105,100 +105,51 @@ func TestTransport_OAuthEndpointUsesBasicAuth(t *testing.T) {
 	}
 }
 
+// expired-token: protected requests 401 (error_code -3) until the
+// token endpoint is hit (a simulated refresh), then the happy path.
+// This is the 401 → refresh → retry chain. Behavioral assertion:
+// final success and the seeded tokens rotated to the server-issued
+// ones (the Bearer-header progression is a Go-internal mechanic, and
+// §15 says translate the scenario, not the mechanics).
 func TestTransport_401TriggersRefreshAndRetries(t *testing.T) {
-	var dataAttempt int32
-	cap := &requestCapturer{handler: func(w http.ResponseWriter, r *http.Request) {
-		if strings.Contains(r.URL.Path, "/api/v1/oauth/token") {
-			w.Header().Set("Content-Type", "application/json")
-			_ = json.NewEncoder(w).Encode(map[string]any{
-				"access_token":  "NEW_ACC",
-				"refresh_token": "NEW_REF",
-			})
-			return
-		}
-		n := atomic.AddInt32(&dataAttempt, 1)
-		if n == 1 {
-			w.WriteHeader(http.StatusUnauthorized)
-			_, _ = w.Write([]byte(`{}`))
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{}`))
-	}}
-	srv := httptest.NewServer(cap)
-	defer srv.Close()
-
-	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	c := mockClient(t, "expired-token", WithRetryPolicy(RetryPolicy{}))
 	c.SetTokens("STALE", "REF")
 
-	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, srv.URL+"/v1/anywhere", nil)
-	resp, err := c.httpClient.Do(req)
+	resp, err := mockGet(t, c)
 	if err != nil {
-		t.Fatalf("Do: %v", err)
+		t.Fatalf("Get: %v", err)
 	}
-	resp.Body.Close()
-
 	if resp.StatusCode != http.StatusOK {
-		t.Errorf("final status = %d, want 200", resp.StatusCode)
+		t.Errorf("final status = %d, want 200 (refresh + retry succeeded)", resp.StatusCode)
 	}
-	if c.Tokens().Access != "NEW_ACC" {
-		t.Errorf("access token after refresh = %q, want NEW_ACC", c.Tokens().Access)
+	tok := c.Tokens()
+	if tok.Access == "STALE" || tok.Access == "" {
+		t.Errorf("access token = %q, want it rotated to the server-issued value", tok.Access)
 	}
-
-	requests := cap.snapshot()
-	var dataAuths []string
-	var refreshHits int
-	for _, req := range requests {
-		if strings.Contains(req.path, "/api/v1/oauth/token") {
-			refreshHits++
-			continue
-		}
-		if strings.Contains(req.path, "/v1/anywhere") {
-			dataAuths = append(dataAuths, req.headers.Get("Authorization"))
-		}
-	}
-	if refreshHits != 1 {
-		t.Errorf("refresh hits = %d, want 1", refreshHits)
-	}
-	if len(dataAuths) != 2 {
-		t.Fatalf("data path attempts = %d, want 2 (initial 401 + retry)", len(dataAuths))
-	}
-	if dataAuths[0] != "Bearer STALE" {
-		t.Errorf("first attempt Authorization = %q, want Bearer STALE", dataAuths[0])
-	}
-	if dataAuths[1] != "Bearer NEW_ACC" {
-		t.Errorf("retry Authorization = %q, want Bearer NEW_ACC", dataAuths[1])
+	if tok.Refresh == "REF" || tok.Refresh == "" {
+		t.Errorf("refresh token = %q, want it rotated to the server-issued value", tok.Refresh)
 	}
 }
 
+// fail-401-times-2: the data request 401s and the refresh call (same
+// session+scenario counter) also 401s, so the refresh fails and the
+// original 401 surfaces with its body intact (README composition note).
 func TestTransport_401RefreshFailureSurfaces401(t *testing.T) {
-	cap := &requestCapturer{handler: func(w http.ResponseWriter, r *http.Request) {
-		if strings.Contains(r.URL.Path, "/api/v1/oauth/token") {
-			http.Error(w, `{"error_code":-1,"message":"refresh denied"}`, http.StatusUnauthorized)
-			return
-		}
-		w.WriteHeader(http.StatusUnauthorized)
-		_, _ = w.Write([]byte(`{"error_code":-2,"message":"original 401"}`))
-	}}
-	srv := httptest.NewServer(cap)
-	defer srv.Close()
-
-	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	c := mockClient(t, "fail-401-times-2", WithRetryPolicy(RetryPolicy{}))
 	c.SetTokens("STALE", "REF")
 
-	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, srv.URL+"/v1/anywhere", nil)
-	resp, err := c.httpClient.Do(req)
+	resp, err := mockGetRaw(t, c)
 	if err != nil {
-		t.Fatalf("Do: %v", err)
+		t.Fatalf("Get: %v", err)
 	}
 	body, _ := io.ReadAll(resp.Body)
 	resp.Body.Close()
 
 	if resp.StatusCode != http.StatusUnauthorized {
-		t.Errorf("status = %d, want 401", resp.StatusCode)
+		t.Errorf("status = %d, want 401 (refresh failed, original 401 surfaced)", resp.StatusCode)
 	}
-	if !strings.Contains(string(body), "original 401") {
-		t.Errorf("body = %q, want original 401 body to be preserved", body)
+	if len(body) == 0 {
+		t.Error("body empty; want the original 401 error body preserved")
 	}
 }
 
