@@ -336,7 +336,21 @@ class ApiClient:
                     match = re.search(r"charset=([a-zA-Z\-\d]+)[\s;]?", content_type)
                 encoding = match.group(1) if match else "utf-8"
                 response_text = response_data.data.decode(encoding)
-                return_data = self.deserialize(response_text, response_type, content_type)
+                try:
+                    return_data = self.deserialize(response_text, response_type, content_type)
+                except Exception:
+                    # A 2xx body that does not match the typed model
+                    # must surface as an APIError carrying the raw body
+                    # (so the caller can inspect it or use the raw
+                    # escape hatch), the same as the other language
+                    # clients -- not a bare validation error with no body.
+                    if 200 <= response_data.status <= 299:
+                        raise ApiException.from_response(
+                            http_resp=response_data,
+                            body=response_text,
+                            data=None,
+                        )
+                    raise
         finally:
             if not 200 <= response_data.status <= 299:
                 raise ApiException.from_response(

@@ -10,6 +10,7 @@ error_codes.go linguist-generated=true
 host_routes.go linguist-generated=true
 
 packages/typescript/src/gen/** linguist-generated=true
+packages/typescript/src/error_codes.ts linguist-generated=true
 
 packages/python/yaylib/models/** linguist-generated=true
 packages/python/yaylib/api/** linguist-generated=true
@@ -19,3 +20,4 @@ packages/python/yaylib/configuration.py linguist-generated=true
 packages/python/yaylib/exceptions.py linguist-generated=true
 packages/python/yaylib/rest.py linguist-generated=true
 packages/python/yaylib/_host_routes.py linguist-generated=true
+packages/python/yaylib/_error_codes.py linguist-generated=true

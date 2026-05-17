@@ -16,6 +16,8 @@ from dataclasses import dataclass
 from typing import Optional
 
 from yaylib.exceptions import ApiException as APIError
+from yaylib import _error_codes
+from yaylib._error_codes import *  # noqa: F401,F403 — generated ErrCode* constants
 
 __all__ = [
     "APIError",
@@ -23,7 +25,7 @@ __all__ = [
     "error_response_of",
     "code_of",
     "as_api_error",
-]
+] + list(_error_codes.__all__)
 
 
 @dataclass

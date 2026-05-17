@@ -88,6 +88,7 @@ import type { Tokens } from "./tokens";
 import { emptyTokens } from "./tokens";
 import {
   buildAuthRefreshMiddleware,
+  buildClientIPMiddleware,
   buildHeadersMiddleware,
   buildHostRoutingMiddleware,
 } from "./transport";
@@ -162,6 +163,7 @@ export class Client {
   private _userID = 0;
   private _currentEmail = "";
   private _clientIP = "";
+  private _clientIPFetching = false;
   // Single-flight refresh tracking — concurrent 401s collapse onto one
   // OAuth /token round-trip (PORTING.md §6.1).
   private _refreshInFlight: Promise<boolean> | null = null;
@@ -265,6 +267,12 @@ export class Client {
           policy: this.retryPolicy,
           logger: this.logger,
           fetchApi: opts.fetchApi,
+        }),
+        // Observes responses to lazily learn the caller's outbound IP
+        // for the X-Client-IP header. Post-only, so its placement after
+        // retry is irrelevant to the request shape.
+        buildClientIPMiddleware({
+          maybeFetchClientIP: () => this._maybeFetchClientIP(),
         }),
       ],
     });
@@ -537,6 +545,29 @@ export class Client {
       // Transport failure (FetchError or anything non-HTTP).
       return { error: await asAPIError(err) };
     }
+  }
+
+  // Internal — invoked by the client-IP middleware (transport.ts) after
+  // the first non-lookup response. Best-effort: a single background
+  // lookup of the caller's outbound IP via getUserTimestamp, cached into
+  // _clientIP so later requests carry X-Client-IP. A lookup already in
+  // flight, or an IP already known, makes this a no-op; a failed lookup
+  // leaves the value empty so a later request retries.
+  private _maybeFetchClientIP(): void {
+    if (this._clientIP !== "" || this._clientIPFetching) return;
+    this._clientIPFetching = true;
+    void (async () => {
+      let ip = "";
+      try {
+        const resp = await this.usersAPI.getUserTimestamp();
+        ip = resp.ipAddress ?? "";
+      } catch {
+        /* leave empty; a later request retries */
+      } finally {
+        this._clientIPFetching = false;
+        if (ip !== "") this._clientIP = ip;
+      }
+    })();
   }
 
   /** Internal — invoked by the auth-refresh middleware (transport.ts). */
