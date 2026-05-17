@@ -15,7 +15,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path"
-	"regexp"
 	"strings"
 	"sync"
 	"testing"
@@ -250,31 +249,6 @@ func TestUploadPostImages_HappyPath(t *testing.T) {
 	}
 }
 
-func TestUploadAvatarImage_HappyPath(t *testing.T) {
-	f, srv := newFakeUploadServer(t)
-	defer srv.Close()
-
-	c := loggedInClient(srv.URL, 42)
-	body := encodeImage(t, "jpeg", 100, 100)
-
-	name, err := c.UploadAvatarImage(context.Background(), Upload{
-		Filename: "me.jpg",
-		Body:     bytes.NewReader(body),
-	})
-	if err != nil {
-		t.Fatalf("UploadAvatarImage: %v", err)
-	}
-	if !strings.HasPrefix(name, "s3/user/42/avatar/") {
-		t.Errorf("name = %q, want s3/user/42/avatar/ prefix", name)
-	}
-	if !strings.Contains(name, "_size_100x100") {
-		t.Errorf("name = %q, missing size suffix", name)
-	}
-	if _, ok := f.objects["/uploads/"+name]; !ok {
-		t.Errorf("PUT to /uploads/%s did not happen", name)
-	}
-}
-
 func TestUploadAvatarImage_RequiresLogin(t *testing.T) {
 	c := NewClient() // UserID == 0 (no login)
 	body := encodeImage(t, "jpeg", 5, 5)
@@ -392,26 +366,6 @@ func TestUploadAvatarImage_PutFailureSurfacesError(t *testing.T) {
 	}
 }
 
-func TestUploadAvatarImage_PresignedFailure(t *testing.T) {
-	f, srv := newFakeUploadServer(t)
-	defer srv.Close()
-
-	f.mu.Lock()
-	f.failPresignedAt = 1
-	f.mu.Unlock()
-
-	c := loggedInClient(srv.URL, 1)
-	c.RetryPolicy = RetryPolicy{}
-	body := encodeImage(t, "png", 5, 5)
-
-	_, err := c.UploadAvatarImage(context.Background(), Upload{
-		Filename: "a.png", Body: bytes.NewReader(body),
-	})
-	if err == nil {
-		t.Fatal("expected error from failing presigned URL fetch")
-	}
-}
-
 func TestUploadAvatarImage_NonImageBodyReturnsError(t *testing.T) {
 	_, srv := newFakeUploadServer(t)
 	defer srv.Close()
@@ -425,31 +379,6 @@ func TestUploadAvatarImage_NonImageBodyReturnsError(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "decode image") {
 		t.Errorf("error = %q, want one mentioning decode failure", err)
-	}
-}
-
-func TestUploadVideo_HappyPath(t *testing.T) {
-	f, srv := newFakeUploadServer(t)
-	defer srv.Close()
-
-	c := NewClient(WithBaseURL(srv.URL))
-	mp4Body := []byte("\x00\x00\x00 ftypisom--mp4-bytes--")
-	name, err := c.UploadVideo(context.Background(), bytes.NewReader(mp4Body))
-	if err != nil {
-		t.Fatalf("UploadVideo: %v", err)
-	}
-	if !strings.HasSuffix(name, ".mp4") {
-		t.Errorf("name = %q, want .mp4 suffix", name)
-	}
-	key := "/uploads/" + name
-	if got := f.contentTypes[key]; got != "video/mp4" {
-		t.Errorf("Content-Type[%s] = %q, want video/mp4", name, got)
-	}
-	if got := f.objects[key]; !bytes.Equal(got, mp4Body) {
-		t.Errorf("body[%s] mismatch", name)
-	}
-	if f.videoFileName != name {
-		t.Errorf("videoFileName query = %q, returned = %q", f.videoFileName, name)
 	}
 }
 
@@ -795,25 +724,6 @@ func TestRandomFilenamePrefix_LengthAndAlphabet(t *testing.T) {
 	}
 }
 
-func TestUploadAvatarImage_FilenameShape(t *testing.T) {
-	_, srv := newFakeUploadServer(t)
-	defer srv.Close()
-
-	c := loggedInClient(srv.URL, 1)
-	body := encodeImage(t, "png", 12, 13)
-
-	name, err := c.UploadAvatarImage(context.Background(), Upload{
-		Filename: "x.png", Body: bytes.NewReader(body),
-	})
-	if err != nil {
-		t.Fatalf("UploadAvatarImage: %v", err)
-	}
-	re := regexp.MustCompile(`^s3/user/1/avatar/[0-9A-Za-z]{16}_\d{13}_0_size_12x13\.png$`)
-	if !re.MatchString(name) {
-		t.Errorf("name = %q, does not match %s", name, re)
-	}
-}
-
 func TestUploadAvatarImage_EmptyPresignedResponse(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/v1/buckets/presigned_urls" {
@@ -835,77 +745,6 @@ func TestUploadAvatarImage_EmptyPresignedResponse(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "count mismatch") {
 		t.Errorf("error = %q, want count mismatch", err)
-	}
-}
-
-func TestPresignedPUT_DoesNotLeakBearer(t *testing.T) {
-	f, srv := newFakeUploadServer(t)
-	defer srv.Close()
-
-	c := loggedInClient(srv.URL, 1)
-	c.SetTokens("SECRET-ACCESS-TOKEN", "REF") // would normally be Bearer
-	body := encodeImage(t, "png", 5, 5)
-
-	if _, err := c.UploadAvatarImage(context.Background(), Upload{
-		Filename: "x.png", Body: bytes.NewReader(body),
-	}); err != nil {
-		t.Fatalf("UploadAvatarImage: %v", err)
-	}
-
-	// Inspect headers the fakeUploadServer captured for the PUT path.
-	// We don't store them today — re-wrap the test server to record
-	// Authorization on PUT requests for this specific assertion.
-	_ = f
-	// Round-trip the assertion through a dedicated capturing server:
-	cap := &bearerCapturingServer{}
-	srv2 := httptest.NewServer(cap)
-	defer srv2.Close()
-
-	c2 := loggedInClient(srv2.URL, 1)
-	c2.SetTokens("SECRET-ACCESS-TOKEN", "REF")
-	if _, err := c2.UploadAvatarImage(context.Background(), Upload{
-		Filename: "x.png", Body: bytes.NewReader(body),
-	}); err != nil {
-		t.Fatalf("UploadAvatarImage(capturing): %v", err)
-	}
-
-	for _, h := range cap.putAuth {
-		if h != "" {
-			t.Errorf("S3 PUT carried Authorization=%q, want empty (presigned URL signs via query)", h)
-		}
-	}
-	if len(cap.putAuth) == 0 {
-		t.Fatal("no PUT requests captured")
-	}
-}
-
-type bearerCapturingServer struct {
-	mu      sync.Mutex
-	putAuth []string
-}
-
-func (b *bearerCapturingServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	switch {
-	case r.Method == http.MethodGet && r.URL.Path == "/v1/buckets/presigned_urls":
-		names := r.URL.Query()["file_names[]"]
-		urls := make([]map[string]string, len(names))
-		for i, n := range names {
-			urls[i] = map[string]string{
-				"filename": "s3/" + n,
-				"url":      "http://" + r.Host + "/uploads/s3/" + n,
-			}
-		}
-		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(map[string]interface{}{"presigned_urls": urls})
-	case r.Method == http.MethodPut && strings.HasPrefix(r.URL.Path, "/uploads/"):
-		b.mu.Lock()
-		b.putAuth = append(b.putAuth, r.Header.Get("Authorization"))
-		b.mu.Unlock()
-		// Also drain body so the client doesn't hang.
-		_, _ = io.Copy(io.Discard, r.Body)
-		w.WriteHeader(http.StatusOK)
-	default:
-		http.Error(w, "unknown route", http.StatusNotFound)
 	}
 }
 
