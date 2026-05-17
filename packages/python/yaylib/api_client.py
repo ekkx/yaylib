@@ -304,6 +304,23 @@ class ApiClient:
             # if not found, look for '1XX', '2XX', etc.
             response_type = response_types_map.get(str(response_data.status)[0] + "XX", None)
 
+        # The server uses 2xx codes the schema did not enumerate
+        # (e.g. 201 on a successful login); fall back to the single
+        # documented success type instead of discarding the body, the
+        # same way the other language clients accept any 2xx.
+        if (
+            not response_type
+            and isinstance(response_data.status, int)
+            and 200 <= response_data.status <= 299
+            and response_types_map
+        ):
+            _success = {
+                v for k, v in response_types_map.items()
+                if v is not None and k[:1] == "2"
+            }
+            if len(_success) == 1:
+                response_type = next(iter(_success))
+
         # deserialize response data
         response_text = None
         return_data = None
