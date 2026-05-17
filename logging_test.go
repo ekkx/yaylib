@@ -2,15 +2,12 @@ package yaylib
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
-	"net/http/httptest"
 	"strings"
 	"sync"
-	"sync/atomic"
 	"testing"
 )
 
@@ -72,32 +69,12 @@ func TestLogging_DefaultIsSilent(t *testing.T) {
 
 // With a logger injected, the 401 → refresh → persist-failure path
 // emits the contracted events and never leaks a token / password / API
-// key into any record (PORTING.md §12.2 + §15).
+// key into any record (PORTING.md §12.2 + §15). The expired-token
+// scenario serves 401 until the token endpoint is hit, then a fresh
+// TokenResponse, then the happy path — exactly the refresh chain.
 func TestLogging_RefreshPersistFailEventAndRedaction(t *testing.T) {
-	var dataAttempt int32
-	cap := &requestCapturer{handler: func(w http.ResponseWriter, r *http.Request) {
-		if strings.Contains(r.URL.Path, "/api/v1/oauth/token") {
-			w.Header().Set("Content-Type", "application/json")
-			_ = json.NewEncoder(w).Encode(map[string]any{
-				"access_token":  "NEW_ACC",
-				"refresh_token": "NEW_REF",
-			})
-			return
-		}
-		if atomic.AddInt32(&dataAttempt, 1) == 1 {
-			w.WriteHeader(http.StatusUnauthorized)
-			_, _ = w.Write([]byte(`{}`))
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{}`))
-	}}
-	srv := httptest.NewServer(cap)
-	defer srv.Close()
-
 	h := &captureHandler{}
-	c := NewClient(
-		WithBaseURL(srv.URL),
+	c := mockClient(t, "expired-token",
 		WithRetryPolicy(RetryPolicy{}),
 		WithSessionStore(&errorStore{saveErr: errors.New("disk full")}),
 		WithLogger(slog.New(h)),
@@ -105,7 +82,7 @@ func TestLogging_RefreshPersistFailEventAndRedaction(t *testing.T) {
 	c.SetTokens("STALE", "REF")
 	c.currentEmail = "foo@example.com" // enable the persist branch
 
-	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, srv.URL+"/v1/anywhere", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, mockBaseURL()+parityGETPath, nil)
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		t.Fatalf("Do: %v", err)
@@ -125,8 +102,11 @@ func TestLogging_RefreshPersistFailEventAndRedaction(t *testing.T) {
 		t.Error("no http_request debug record emitted")
 	}
 
-	// Redaction: no record (message or any attr) carries a secret.
-	banned := []string{"STALE", "REF", "NEW_ACC", "NEW_REF", c.APIKey}
+	// Redaction: no record (message or any attr) carries a secret —
+	// neither the stale tokens we seeded nor the fresh ones the server
+	// issued on refresh, nor the API key.
+	fresh := c.Tokens()
+	banned := []string{"STALE", "REF", fresh.Access, fresh.Refresh, c.APIKey}
 	for _, r := range h.snapshot() {
 		hay := r.msg
 		for k, v := range r.attrs {
