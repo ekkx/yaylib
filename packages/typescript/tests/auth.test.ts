@@ -94,11 +94,7 @@ async function scenarioFreshLogin(): Promise<void> {
       async (baseURL) => {
         const store = await newSessionStore(join(dir, "sessions.json"));
         const client = new Client({ baseURL, sessionStore: store });
-        const res = await client
-          .loginWithEmail()
-          .email("alice@example.com")
-          .password("p4ss")
-          .execute();
+        const res = await client.loginWithEmail({ email: "alice@example.com", password: "p4ss" });
         assertEq("fresh: server hit exactly once", loginHits, 1);
         assertEq("fresh: response carries access_token", res.accessToken, "ACC");
         assertEq("fresh: tokens activated on client", client.tokens().access, "ACC");
@@ -131,11 +127,7 @@ async function scenarioCacheHit(): Promise<void> {
         updatedAt: new Date().toISOString(),
       });
       const client = new Client({ baseURL, sessionStore: store });
-      const res = await client
-        .loginWithEmail()
-        .email("bob@example.com")
-        .password("ignored")
-        .execute();
+      const res = await client.loginWithEmail({ email: "bob@example.com", password: "ignored" });
       assertEq("cache hit: no server traffic", loginHits, 0);
       assertEq("cache hit: tokens applied", client.tokens().access, "cached-acc");
       assertEq("cache hit: userID applied", client.userID, 99);
@@ -179,12 +171,7 @@ async function scenarioNoCacheBypass(): Promise<void> {
         updatedAt: new Date().toISOString(),
       });
       const client = new Client({ baseURL, sessionStore: store });
-      const res = await client
-        .loginWithEmail()
-        .email("carol@example.com")
-        .password("p4ss")
-        .noCache()
-        .execute();
+      const res = await client.loginWithEmail({ email: "carol@example.com", password: "p4ss", noCache: true });
       assertEq("noCache: server hit once", loginHits, 1);
       assertEq("noCache: fresh tokens activated", client.tokens().access, "FRESH");
       assertEq("noCache: response from server", res.accessToken, "FRESH");
@@ -229,11 +216,7 @@ async function scenarioSavePersistFailure(): Promise<void> {
       const client = new Client({ baseURL, sessionStore: failingStore });
       let caught: unknown = null;
       try {
-        await client
-          .loginWithEmail()
-          .email("dave@example.com")
-          .password("p4ss")
-          .execute();
+        await client.loginWithEmail({ email: "dave@example.com", password: "p4ss" });
       } catch (err) {
         caught = err;
       }
@@ -272,22 +255,14 @@ async function scenarioFileStoreRoundTrip(): Promise<void> {
         const path = join(dir, "sessions.json");
         const store1 = new FileSessionStore(path);
         const client1 = new Client({ baseURL, sessionStore: store1 });
-        await client1
-          .loginWithEmail()
-          .email("eve@example.com")
-          .password("p4ss")
-          .execute();
+        await client1.loginWithEmail({ email: "eve@example.com", password: "p4ss" });
         assertEq("file store: first login hits server", loginHits, 1);
 
         // Fresh client + fresh store backed by the same file should
         // see the cached session.
         const store2 = new FileSessionStore(path);
         const client2 = new Client({ baseURL, sessionStore: store2 });
-        await client2
-          .loginWithEmail()
-          .email("eve@example.com")
-          .password("p4ss")
-          .execute();
+        await client2.loginWithEmail({ email: "eve@example.com", password: "p4ss" });
         assertEq("file store: second login is a cache hit", loginHits, 1);
         assertEq("file store: tokens restored", client2.tokens().access, "T");
         assertEq("file store: userID restored", client2.userID, 11);

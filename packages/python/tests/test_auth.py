@@ -49,11 +49,8 @@ async def test_fresh_login_persists(tmp_path):
         store = await new_session_store(str(tmp_path / "sessions.json"))
         client = Client(base_url=base_url, session_store=store)
         try:
-            res = await (
-                client.login_with_email()
-                .email("alice@example.com")
-                .password("p4ss")
-                .execute()
+            res = await client.login_with_email(
+                email="alice@example.com", password="p4ss"
             )
             assert login_hits == 1
             assert res.access_token == "ACC"
@@ -88,11 +85,8 @@ async def test_cache_hit_no_http():
         )
         client = Client(base_url=base_url, session_store=store)
         try:
-            res = await (
-                client.login_with_email()
-                .email("bob@example.com")
-                .password("ignored")
-                .execute()
+            res = await client.login_with_email(
+                email="bob@example.com", password="ignored"
             )
             assert login_hits == 0
             assert client.tokens.access == "cached-acc"
@@ -137,12 +131,8 @@ async def test_no_cache_bypass():
         )
         client = Client(base_url=base_url, session_store=store)
         try:
-            res = await (
-                client.login_with_email()
-                .email("carol@example.com")
-                .password("p4ss")
-                .no_cache()
-                .execute()
+            res = await client.login_with_email(
+                email="carol@example.com", password="p4ss", no_cache=True
             )
             assert login_hits == 1
             assert client.tokens.access == "FRESH"
@@ -178,11 +168,8 @@ async def test_save_failure_wraps_but_keeps_tokens():
         client = Client(base_url=base_url, session_store=_FailingStore())
         try:
             with pytest.raises(SessionSaveFailed):
-                await (
-                    client.login_with_email()
-                    .email("dave@example.com")
-                    .password("p4ss")
-                    .execute()
+                await client.login_with_email(
+                    email="dave@example.com", password="p4ss"
                 )
             assert client.tokens.access == "A"
             assert client.user_id == 5
@@ -210,11 +197,8 @@ async def test_file_store_round_trip(tmp_path):
         path = str(tmp_path / "sessions.json")
         client1 = Client(base_url=base_url, session_store=FileSessionStore(path))
         try:
-            await (
-                client1.login_with_email()
-                .email("eve@example.com")
-                .password("p4ss")
-                .execute()
+            await client1.login_with_email(
+                email="eve@example.com", password="p4ss"
             )
             assert login_hits == 1
         finally:
@@ -222,11 +206,8 @@ async def test_file_store_round_trip(tmp_path):
 
         client2 = Client(base_url=base_url, session_store=FileSessionStore(path))
         try:
-            await (
-                client2.login_with_email()
-                .email("eve@example.com")
-                .password("p4ss")
-                .execute()
+            await client2.login_with_email(
+                email="eve@example.com", password="p4ss"
             )
             assert login_hits == 1  # cache hit, no second HTTP login
             assert client2.tokens.access == "T"

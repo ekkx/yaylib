@@ -44,6 +44,7 @@ from yaylib.api.users_api import UsersApi
 from yaylib.api_client import ApiClient
 from yaylib.configuration import Configuration
 from yaylib.exceptions import ApiException
+from yaylib._facade import GeneratedFacade
 
 from yaylib._config import (
     DEFAULT_ACCEPT_LANGUAGE,
@@ -109,7 +110,12 @@ class _WrappedApiClient(ApiClient):
         self.client_side_validation = configuration.client_side_validation
 
 
-class Client:
+class Client(GeneratedFacade):
+    # GeneratedFacade (PORTING.md §2) makes every operation reachable
+    # as client.<op>, delegating to the per-service attribute. Client's
+    # own hand-written methods below override the mixin via MRO (the
+    # embed-shadowing rule); ops of the same name are also omitted from
+    # the mixin at generation time.
     def __init__(
         self,
         *,
@@ -460,15 +466,33 @@ class Client:
 
     # ---- auth wrapper (PORTING.md §6) ----
 
-    def login_with_email(self):
-        """LoginWithEmail with transparent session caching. A hit returns
-        the persisted session synthesized into a LoginUserResponse with
-        no HTTP; a miss (or ``.no_cache()``) issues the OAuth login,
+    async def login_with_email(
+        self,
+        *,
+        email: str,
+        password: str,
+        api_key: Optional[str] = None,
+        uuid: Optional[str] = None,
+        two_fa_code: Optional[str] = None,
+        no_cache: bool = False,
+    ):
+        """LoginWithEmail with transparent session caching, called with
+        keyword arguments like every other operation. A hit returns the
+        persisted session synthesized into a LoginUserResponse with no
+        HTTP; a miss (or ``no_cache=True``) issues the OAuth login,
         persists the session, and activates tokens / user id / email.
         """
         from yaylib.auth import login_with_email
 
-        return login_with_email(self)
+        return await login_with_email(
+            self,
+            email=email,
+            password=password,
+            api_key=api_key,
+            uuid=uuid,
+            two_fa_code=two_fa_code,
+            no_cache=no_cache,
+        )
 
     # ---- 401 auto-refresh (PORTING.md §6.1) ----
 

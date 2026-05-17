@@ -86,6 +86,7 @@ import { DEFAULT_RETRY_POLICY, type RetryPolicy, buildRetryMiddleware } from "./
 import type { Session, SessionStore } from "./session";
 import type { Tokens } from "./tokens";
 import { emptyTokens } from "./tokens";
+import { type GeneratedFacade, installGeneratedFacade } from "./gen/facade";
 import {
   buildAuthRefreshMiddleware,
   buildClientIPMiddleware,
@@ -300,6 +301,11 @@ export class Client {
     this.surveysAPI = new SurveysApi(config);
     this.threadsAPI = new ThreadsApi(config);
     this.usersAPI = new UsersApi(config);
+
+    // Flat operation facade (PORTING.md §2): install client.<op>
+    // delegates for every generated op not already a hand-written
+    // method. Last so the hand-written wrappers above always win.
+    installGeneratedFacade(this);
   }
 
   // Tokens snapshot — mutating the returned value does not affect the
@@ -353,19 +359,20 @@ export class Client {
    *
    * If a SessionStore is configured, a hit returns the persisted session
    * synthesized into a LoginUserResponse without issuing any HTTP. A miss
-   * (or `.noCache()`) issues the OAuth login, persists the session, and
+   * (or `noCache: true`) issues the OAuth login, persists the session, and
    * activates tokens / userID / email on the client.
    *
-   *   await client.loginWithEmail()
-   *     .email("...").password("...").execute();
+   *   await client.loginWithEmail({ email: "...", password: "..." });
    *
-   * For 2FA-required accounts, chain `.twoFACode("...")` on the retry.
+   * For 2FA-required accounts, pass `twoFACode` on the retry.
    */
-  loginWithEmail(): import("./auth").LoginWithEmailBuilder {
+  loginWithEmail(
+    params: import("./auth").LoginWithEmailParams,
+  ): Promise<import("./gen/models/LoginUserResponse").LoginUserResponse> {
     // Lazy import to avoid a circular module load at construction time.
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { loginWithEmail } = require("./auth") as typeof import("./auth");
-    return loginWithEmail(this);
+    return loginWithEmail(this, params);
   }
 
   // rawFetch is the unwrapped fetch — no generated middleware, so no
@@ -686,3 +693,10 @@ export class Client {
     return true;
   }
 }
+
+// Declaration merging: the flat op signatures (exact per-service op
+// types) become part of Client's type. The runtime delegates are
+// installed by installGeneratedFacade() in the constructor; a
+// hand-written method of the same name is excluded from
+// GeneratedFacade at generation time (the embed-shadowing rule).
+export interface Client extends GeneratedFacade {}

@@ -52,7 +52,7 @@ export {
   generateXJwt,
 } from "./signing";
 
-export { type LoginWithEmailBuilder, loginWithEmail } from "./auth";
+export { type LoginWithEmailParams, loginWithEmail } from "./auth";
 
 export {
   type RetryPolicy,
