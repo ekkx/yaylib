@@ -1,28 +1,28 @@
 name: release
 
-# Push a version tag (e.g. v2.0.0-rc.1) to publish:
-#   - npm        (TypeScript package)
-#   - PyPI       (Python package)
-#   - a GitHub Release
-# Go needs nothing beyond the tag itself — the module is the repo.
+# Per-language tags so the three packages version independently
+# (majors are aligned by human discipline; minor/patch drift freely):
 #
-# A tag containing a hyphen (v2.0.0-rc.1) is treated as a pre-release:
-# npm is published under the `next` dist-tag and the GitHub Release is
-# marked pre-release, so `npm install yaylib` / `pip install yaylib`
-# keep resolving the last stable.
+#   ts-vX.Y.Z   -> npm  (TypeScript), guard checks packages/typescript/package.json
+#   py-vX.Y.Z   -> PyPI (Python),     guard checks packages/python/pyproject.toml
+#   vX.Y.Z      -> Go module version (a plain semver tag is what
+#                  `go get .../v2@vX.Y.Z` resolves; Go tooling cannot
+#                  use a prefixed tag) — publishes only a GitHub Release.
 #
-# npm uses OIDC trusted publishing — no token. Configure a Trusted
-# Publisher on the npm package (Settings -> Trusted Publisher):
-#   repository: ekkx/yaylib   workflow: release.yml
-# The package must already exist; bootstrap the very first publish with
-# a one-off token or `npm publish` locally, then add the publisher.
+# Every tag also gets a GitHub Release. A hyphen in the version part
+# (ts-v2.1.0-rc.1) marks a pre-release: npm goes to the `next` dist-tag
+# and the Release is flagged pre-release, so `npm install` / `pip
+# install` keep resolving the last stable.
+#
+# npm uses OIDC trusted publishing — no token. Trusted Publisher on the
+# npm package: repository ekkx/yaylib, workflow release.yml.
 #
 # Required repository secrets:
 #   PYPI_API_TOKEN    PyPI API token (scoped to the project)
 
 on:
   push:
-    tags: ["v*"]
+    tags: ["v*", "ts-v*", "py-v*"]
 
 permissions:
   contents: read
@@ -31,32 +31,44 @@ jobs:
   guard:
     runs-on: ubuntu-latest
     outputs:
+      lang: ${{ steps.v.outputs.lang }}
       version: ${{ steps.v.outputs.version }}
       prerelease: ${{ steps.v.outputs.prerelease }}
     steps:
       - uses: actions/checkout@v4
       - id: v
-        name: Tag must match the package versions
+        name: Resolve language + version from the tag
         run: |
           set -euo pipefail
-          tag="${GITHUB_REF_NAME#v}"
-          echo "tag version: $tag"
-          npm_v="$(node -p "require('./packages/typescript/package.json').version")"
-          py_v="$(grep -E '^version = ' packages/python/pyproject.toml | head -1 | sed -E 's/.*"([^"]+)".*/\1/')"
-          if [ "$npm_v" != "$tag" ]; then
-            echo "::error::package.json version ($npm_v) != tag ($tag)"; exit 1
+          ref="$GITHUB_REF_NAME"
+          case "$ref" in
+            ts-v*) lang=ts; ver="${ref#ts-v}" ;;
+            py-v*) lang=py; ver="${ref#py-v}" ;;
+            v*)    lang=go; ver="${ref#v}" ;;
+            *) echo "::error::unrecognized tag $ref"; exit 1 ;;
+          esac
+          echo "tag=$ref lang=$lang version=$ver"
+          if [ "$lang" = ts ]; then
+            npm_v="$(node -p "require('./packages/typescript/package.json').version")"
+            if [ "$npm_v" != "$ver" ]; then
+              echo "::error::package.json version ($npm_v) != tag ($ver)"; exit 1
+            fi
+          elif [ "$lang" = py ]; then
+            py_v="$(grep -E '^version = ' packages/python/pyproject.toml | head -1 | sed -E 's/.*"([^"]+)".*/\1/')"
+            if [ "$py_v" != "$ver" ]; then
+              echo "::error::pyproject version ($py_v) != tag ($ver)"; exit 1
+            fi
           fi
-          if [ "$py_v" != "$tag" ]; then
-            echo "::error::pyproject version ($py_v) != tag ($tag)"; exit 1
-          fi
-          case "$tag" in
+          case "$ver" in
             *-*) echo "prerelease=true"  >> "$GITHUB_OUTPUT" ;;
             *)   echo "prerelease=false" >> "$GITHUB_OUTPUT" ;;
           esac
-          echo "version=$tag" >> "$GITHUB_OUTPUT"
+          echo "lang=$lang" >> "$GITHUB_OUTPUT"
+          echo "version=$ver" >> "$GITHUB_OUTPUT"
 
   npm:
     needs: guard
+    if: needs.guard.outputs.lang == 'ts'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -86,6 +98,7 @@ jobs:
 
   pypi:
     needs: guard
+    if: needs.guard.outputs.lang == 'py'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -105,6 +118,9 @@ jobs:
 
   github-release:
     needs: [guard, npm, pypi]
+    # npm / pypi are skipped for the other languages; only a real
+    # failure of the relevant one should block the Release.
+    if: ${{ always() && needs.guard.result == 'success' && needs.npm.result != 'failure' && needs.pypi.result != 'failure' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -118,9 +134,12 @@ jobs:
           if [ "${{ needs.guard.outputs.prerelease }}" = "true" ]; then
             flag="--prerelease"
           fi
+          # CHANGELOG sections are keyed by plain version (## vX.Y.Z),
+          # shared by the ts-/py- tags for the same version.
+          notes_tag="v${{ needs.guard.outputs.version }}"
           notes="--generate-notes"
           if [ -f CHANGELOG.md ]; then
-            awk -v ver="$GITHUB_REF_NAME" \
+            awk -v ver="$notes_tag" \
               '$0=="## "ver{f=1;next} f&&/^## /{exit} f{print}' \
               CHANGELOG.md > /tmp/relnotes.md
             if [ -s /tmp/relnotes.md ]; then
