@@ -1,0 +1,6 @@
+# Test dependencies (mirror of [tool.poetry.dev-dependencies]).
+# The test suite is async; pytest.ini sets asyncio_mode = auto, so
+# pytest-asyncio is required to collect the `async def` tests.
+pytest >= 7.2.1
+pytest-asyncio >= 0.21
+pytest-cov >= 2.8.1
