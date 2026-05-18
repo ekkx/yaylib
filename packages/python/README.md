@@ -73,7 +73,7 @@ async with client.open_event_stream() as stream:
 
 ### サンプル
 
-実行できるサンプルを [`examples/`](https://github.com/ekkx/yaylib/tree/master/examples) に用意しています（全言語共通）。
+実行できるサンプルを [`examples/`](https://github.com/ekkx/yaylib/tree/master/examples/python) に用意しています（全言語共通）。
 
 - 認証 + タイムライン取得
 - テキスト投稿

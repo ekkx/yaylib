@@ -76,7 +76,7 @@ for ev := range sub.Events() {
 
 ### サンプル
 
-実行できるサンプルを [`examples/`](https://github.com/ekkx/yaylib/tree/master/examples) に用意しています（全言語共通）。
+実行できるサンプルを [`examples/`](https://github.com/ekkx/yaylib/tree/master/examples/go) に用意しています（全言語共通）。
 
 - 認証 + タイムライン取得
 - テキスト投稿
