@@ -1,0 +1,110 @@
+name: release
+
+# Push a version tag (e.g. v2.0.0-rc.1) to publish:
+#   - npm        (TypeScript package)
+#   - PyPI       (Python package)
+#   - a GitHub Release
+# Go needs nothing beyond the tag itself — the module is the repo.
+#
+# A tag containing a hyphen (v2.0.0-rc.1) is treated as a pre-release:
+# npm is published under the `next` dist-tag and the GitHub Release is
+# marked pre-release, so `npm install yaylib` / `pip install yaylib`
+# keep resolving the last stable.
+#
+# Required repository secrets:
+#   NPM_TOKEN         npm automation token with publish rights
+#   PYPI_API_TOKEN    PyPI API token (scoped to the project)
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      prerelease: ${{ steps.v.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        name: Tag must match the package versions
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#v}"
+          echo "tag version: $tag"
+          npm_v="$(node -p "require('./packages/typescript/package.json').version")"
+          py_v="$(grep -E '^version = ' packages/python/pyproject.toml | head -1 | sed -E 's/.*"([^"]+)".*/\1/')"
+          if [ "$npm_v" != "$tag" ]; then
+            echo "::error::package.json version ($npm_v) != tag ($tag)"; exit 1
+          fi
+          if [ "$py_v" != "$tag" ]; then
+            echo "::error::pyproject version ($py_v) != tag ($tag)"; exit 1
+          fi
+          case "$tag" in
+            *-*) echo "prerelease=true"  >> "$GITHUB_OUTPUT" ;;
+            *)   echo "prerelease=false" >> "$GITHUB_OUTPUT" ;;
+          esac
+          echo "version=$tag" >> "$GITHUB_OUTPUT"
+
+  npm:
+    needs: guard
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/typescript
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: "https://registry.npmjs.org"
+      - run: npm ci
+      - run: npm run build
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ "${{ needs.guard.outputs.prerelease }}" = "true" ]; then
+            npm publish --access public --tag next
+          else
+            npm publish --access public
+          fi
+
+  pypi:
+    needs: guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build
+        run: |
+          python -m pip install --upgrade build
+          python -m build packages/python --outdir dist
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: dist
+
+  github-release:
+    needs: [guard, npm, pypi]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          flag=""
+          if [ "${{ needs.guard.outputs.prerelease }}" = "true" ]; then
+            flag="--prerelease"
+          fi
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes $flag
