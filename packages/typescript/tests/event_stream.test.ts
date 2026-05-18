@@ -8,6 +8,7 @@ import type { AddressInfo } from "node:net";
 
 import { Client } from "../src/client";
 import { noopLogger } from "../src/logger";
+import type { Event } from "../src/events";
 import {
   type EventStream,
   type WebSocketLike,
@@ -167,6 +168,56 @@ async function subscribeAndReceiveEvent(): Promise<void> {
   await conn.close();
 }
 
+// PORTING:S34
+// An event whose wire name the SDK does not model must still reach the
+// caller through the primary subscription API as a RawEvent — onRaw and
+// the catch-all onEvent both fire, carrying the unrecognized name + data
+// verbatim so new server signals are observable before the SDK is taught
+// about them.
+async function unmodelledEventDeliveredAsRaw(): Promise<void> {
+  const hub = new Hub((s) => {
+    s.welcome();
+    void (async () => {
+      const msg = await s.next();
+      s.confirm(msg.identifier as string);
+      s.pushEvent(msg.identifier as string, "__unknown_evt__", {
+        foo: "bar",
+        n: 7,
+      });
+    })();
+  });
+  const conn = await openEventStream(streamDeps(hub), { reconnect: { disabled: true } });
+  const sub = await conn.subscribe(chatRoomChannel());
+  let raw: Event | undefined;
+  let any: Event | undefined;
+  sub.onRaw((ev) => {
+    raw = ev;
+  });
+  sub.onEvent((ev) => {
+    any = ev;
+  });
+  await waitUntil(() => raw !== undefined && any !== undefined);
+  assert("raw event: onRaw fired", raw !== undefined);
+  assert("raw event: onEvent fired", any !== undefined);
+  assert(
+    "raw event: delivered as RawEvent type",
+    raw?.type === "RawEvent" && any?.type === "RawEvent",
+    `raw=${raw?.type} any=${any?.type}`,
+  );
+  assert(
+    "raw event: carries the unmodelled wire name",
+    raw?.type === "RawEvent" && raw.name === "__unknown_evt__",
+    `name=${raw?.type === "RawEvent" ? raw.name : "n/a"}`,
+  );
+  assert(
+    "raw event: carries the original data payload",
+    raw?.type === "RawEvent" &&
+      JSON.stringify(raw.data) === JSON.stringify({ foo: "bar", n: 7 }),
+    `data=${raw?.type === "RawEvent" ? JSON.stringify(raw.data) : "n/a"}`,
+  );
+  await conn.close();
+}
+
 // PORTING:S21
 async function rejectedSubscription(): Promise<void> {
   const hub = new Hub((s) => {
@@ -299,6 +350,7 @@ async function doneAndErrOnCleanClose(): Promise<void> {
   assert("clean close: err() undefined after caller close", conn.err() === undefined);
 }
 
+// PORTING:S35
 async function errAfterReconnectExhausted(): Promise<void> {
   const hub = new Hub((s) => {
     s.welcome();
@@ -519,6 +571,7 @@ async function clientUnauthenticated401(): Promise<void> {
 
 (async () => {
   await subscribeAndReceiveEvent();
+  await unmodelledEventDeliveredAsRaw();
   await rejectedSubscription();
   await multipleChannels();
   await reconnectAfterServerClose();

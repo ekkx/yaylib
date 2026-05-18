@@ -54,6 +54,49 @@ async def test_subscribe_and_receive_event():
             await client.close()
 
 
+# PORTING:S34
+async def test_unknown_event_observable_via_on_raw_and_on_event():
+    # An unmodelled wire event must still surface through the primary
+    # subscription API as a RawEvent carrying its raw name and data.
+    async def on_connect(s):
+        await s.send_welcome()
+        msg = await s.received.get()
+        await s.confirm(msg["identifier"])
+        await s.push_event(
+            msg["identifier"],
+            "__unknown_evt__",
+            {"foo": "bar", "n": 7},
+        )
+        await s.idle()
+
+    async with serve_ws(on_connect) as base_url:
+        client = _client(base_url)
+        try:
+            async with client.open_event_stream(_DISABLED) as stream:
+                sub = await stream.subscribe(chat_room_channel())
+
+                raw_seen = asyncio.Queue()
+                any_seen = asyncio.Queue()
+
+                @sub.on_raw
+                def _r(ev):
+                    raw_seen.put_nowait(ev)
+
+                @sub.on_event
+                def _a(ev):
+                    any_seen.put_nowait(ev)
+
+                raw_ev = await asyncio.wait_for(raw_seen.get(), timeout=2)
+                any_ev = await asyncio.wait_for(any_seen.get(), timeout=2)
+
+                for ev in (raw_ev, any_ev):
+                    assert isinstance(ev, es.RawEvent)
+                    assert ev.name == "__unknown_evt__"
+                    assert ev.data == {"foo": "bar", "n": 7}
+        finally:
+            await client.close()
+
+
 # PORTING:S21
 async def test_rejected_subscription():
     async def on_connect(s):
@@ -204,6 +247,7 @@ async def test_done_and_err_on_clean_close():
             await client.close()
 
 
+# PORTING:S35
 async def test_err_after_reconnect_exhausted():
     async def on_connect(s):
         await s.send_welcome()
