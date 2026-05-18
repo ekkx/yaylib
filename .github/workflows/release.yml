@@ -68,11 +68,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Node 24 bundles npm 11.x, which supports OIDC trusted
+          # publishing (>= 11.5.1) without an in-place npm self-upgrade
+          # (that upgrade is flaky and corrupts the global npm).
+          node-version: 24
           registry-url: "https://registry.npmjs.org"
-      # OIDC trusted publishing needs a recent npm; Node 22 ships an
-      # older one.
-      - run: npm install -g npm@latest
+      - run: npm --version
       - run: npm ci
       - run: npm run build
       - name: Publish
@@ -100,6 +101,7 @@ jobs:
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
           packages-dir: dist
+          skip-existing: true
 
   github-release:
     needs: [guard, npm, pypi]
