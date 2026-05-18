@@ -32,24 +32,24 @@ import yaylib
 
 
 async def main():
-    client = yaylib.Client()
+    # `async with` で接続が自動的にクローズされます
+    async with yaylib.Client() as client:
+        # ログイン（セッションは透過的にキャッシュされます）
+        await client.login_with_email(email="...", password="...")
 
-    # ログイン（セッションは透過的にキャッシュされます）
-    await client.login_with_email(email="...", password="...")
+        # タイムラインを取得
+        timeline = await client.get_timeline(
+            noreply_mode=yaylib.NoreplyMode.EMPTY, number=20
+        )
+        for post in timeline.posts:
+            print(post.id, post.text)
 
-    # タイムラインを取得
-    timeline = await client.get_timeline(
-        noreply_mode=yaylib.NoreplyMode.EMPTY, number=20
-    )
-    for post in timeline.posts:
-        print(post.id, post.text)
-
-    # 投稿する
-    await client.create_post(
-        x_jwt=client.generate_x_jwt(),
-        post_type="text",
-        text="hello from yaylib",
-    )
+        # 投稿する
+        await client.create_post(
+            x_jwt=client.generate_x_jwt(),
+            post_type="text",
+            text="hello from yaylib",
+        )
 
 
 asyncio.run(main())
