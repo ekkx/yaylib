@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { CampaignDTO } from './CampaignDTO';
+import { mapValues } from '../runtime.js';
+import type { CampaignDTO } from './CampaignDTO.js';
 import {
     CampaignDTOFromJSON,
     CampaignDTOFromJSONTyped,
     CampaignDTOToJSON,
     CampaignDTOToJSONTyped,
-} from './CampaignDTO';
+} from './CampaignDTO.js';
 
 /**
  * 

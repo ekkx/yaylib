@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RealmGenre } from './RealmGenre';
+import { mapValues } from '../runtime.js';
+import type { RealmGenre } from './RealmGenre.js';
 import {
     RealmGenreFromJSON,
     RealmGenreFromJSONTyped,
     RealmGenreToJSON,
     RealmGenreToJSONTyped,
-} from './RealmGenre';
+} from './RealmGenre.js';
 
 /**
  * 

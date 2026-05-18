@@ -12,35 +12,35 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3WalletTransactionHistoryAssetInfo } from './Web3WalletTransactionHistoryAssetInfo';
+import { mapValues } from '../runtime.js';
+import type { Web3WalletTransactionHistoryAssetInfo } from './Web3WalletTransactionHistoryAssetInfo.js';
 import {
     Web3WalletTransactionHistoryAssetInfoFromJSON,
     Web3WalletTransactionHistoryAssetInfoFromJSONTyped,
     Web3WalletTransactionHistoryAssetInfoToJSON,
     Web3WalletTransactionHistoryAssetInfoToJSONTyped,
-} from './Web3WalletTransactionHistoryAssetInfo';
-import type { AssetType } from './AssetType';
+} from './Web3WalletTransactionHistoryAssetInfo.js';
+import type { AssetType } from './AssetType.js';
 import {
     AssetTypeFromJSON,
     AssetTypeFromJSONTyped,
     AssetTypeToJSON,
     AssetTypeToJSONTyped,
-} from './AssetType';
-import type { EmplDetails } from './EmplDetails';
+} from './AssetType.js';
+import type { EmplDetails } from './EmplDetails.js';
 import {
     EmplDetailsFromJSON,
     EmplDetailsFromJSONTyped,
     EmplDetailsToJSON,
     EmplDetailsToJSONTyped,
-} from './EmplDetails';
-import type { GiftTransactionDetail } from './GiftTransactionDetail';
+} from './EmplDetails.js';
+import type { GiftTransactionDetail } from './GiftTransactionDetail.js';
 import {
     GiftTransactionDetailFromJSON,
     GiftTransactionDetailFromJSONTyped,
     GiftTransactionDetailToJSON,
     GiftTransactionDetailToJSONTyped,
-} from './GiftTransactionDetail';
+} from './GiftTransactionDetail.js';
 
 /**
  * 

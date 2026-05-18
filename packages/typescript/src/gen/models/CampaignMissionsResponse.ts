@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { MissionDTO } from './MissionDTO';
+import { mapValues } from '../runtime.js';
+import type { MissionDTO } from './MissionDTO.js';
 import {
     MissionDTOFromJSON,
     MissionDTOFromJSONTyped,
     MissionDTOToJSON,
     MissionDTOToJSONTyped,
-} from './MissionDTO';
+} from './MissionDTO.js';
 
 /**
  * 

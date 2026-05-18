@@ -5,29 +5,29 @@
 // hand-written wrapper of the same name takes precedence
 // (it is already a method, so install() skips it).
 
-import type { ActivitiesApi } from "./apis/ActivitiesApi";
-import type { AppsApi } from "./apis/AppsApi";
-import type { AuthApi } from "./apis/AuthApi";
-import type { BucketsApi } from "./apis/BucketsApi";
-import type { CallsApi } from "./apis/CallsApi";
-import type { ChatRoomsApi } from "./apis/ChatRoomsApi";
-import type { ConversationsApi } from "./apis/ConversationsApi";
-import type { EmailVerificationUrlsApi } from "./apis/EmailVerificationUrlsApi";
-import type { GamesApi } from "./apis/GamesApi";
-import type { GenresApi } from "./apis/GenresApi";
-import type { GiftsApi } from "./apis/GiftsApi";
-import type { GroupMuteApi } from "./apis/GroupMuteApi";
-import type { GroupsApi } from "./apis/GroupsApi";
-import type { HiddenApi } from "./apis/HiddenApi";
-import type { ModerationApi } from "./apis/ModerationApi";
-import type { NotificationSettingsApi } from "./apis/NotificationSettingsApi";
-import type { PinnedApi } from "./apis/PinnedApi";
-import type { PostsApi } from "./apis/PostsApi";
-import type { ReceivedGiftsApi } from "./apis/ReceivedGiftsApi";
-import type { StickerPacksApi } from "./apis/StickerPacksApi";
-import type { SurveysApi } from "./apis/SurveysApi";
-import type { ThreadsApi } from "./apis/ThreadsApi";
-import type { UsersApi } from "./apis/UsersApi";
+import type { ActivitiesApi } from "./apis/ActivitiesApi.js";
+import type { AppsApi } from "./apis/AppsApi.js";
+import type { AuthApi } from "./apis/AuthApi.js";
+import type { BucketsApi } from "./apis/BucketsApi.js";
+import type { CallsApi } from "./apis/CallsApi.js";
+import type { ChatRoomsApi } from "./apis/ChatRoomsApi.js";
+import type { ConversationsApi } from "./apis/ConversationsApi.js";
+import type { EmailVerificationUrlsApi } from "./apis/EmailVerificationUrlsApi.js";
+import type { GamesApi } from "./apis/GamesApi.js";
+import type { GenresApi } from "./apis/GenresApi.js";
+import type { GiftsApi } from "./apis/GiftsApi.js";
+import type { GroupMuteApi } from "./apis/GroupMuteApi.js";
+import type { GroupsApi } from "./apis/GroupsApi.js";
+import type { HiddenApi } from "./apis/HiddenApi.js";
+import type { ModerationApi } from "./apis/ModerationApi.js";
+import type { NotificationSettingsApi } from "./apis/NotificationSettingsApi.js";
+import type { PinnedApi } from "./apis/PinnedApi.js";
+import type { PostsApi } from "./apis/PostsApi.js";
+import type { ReceivedGiftsApi } from "./apis/ReceivedGiftsApi.js";
+import type { StickerPacksApi } from "./apis/StickerPacksApi.js";
+import type { SurveysApi } from "./apis/SurveysApi.js";
+import type { ThreadsApi } from "./apis/ThreadsApi.js";
+import type { UsersApi } from "./apis/UsersApi.js";
 
 // Type side: the flat method signatures, exactly the per-service
 // op signatures (indexed-access types — no hand-derived params).

@@ -12,42 +12,42 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { BumpParams } from './BumpParams';
+import { mapValues } from '../runtime.js';
+import type { BumpParams } from './BumpParams.js';
 import {
     BumpParamsFromJSON,
     BumpParamsFromJSONTyped,
     BumpParamsToJSON,
     BumpParamsToJSONTyped,
-} from './BumpParams';
-import type { Game } from './Game';
+} from './BumpParams.js';
+import type { Game } from './Game.js';
 import {
     GameFromJSON,
     GameFromJSONTyped,
     GameToJSON,
     GameToJSONTyped,
-} from './Game';
-import type { User } from './User';
+} from './Game.js';
+import type { User } from './User.js';
 import {
     UserFromJSON,
     UserFromJSONTyped,
     UserToJSON,
     UserToJSONTyped,
-} from './User';
-import type { Genre } from './Genre';
+} from './User.js';
+import type { Genre } from './Genre.js';
 import {
     GenreFromJSON,
     GenreFromJSONTyped,
     GenreToJSON,
     GenreToJSONTyped,
-} from './Genre';
-import type { ModelConferenceCallUserRole } from './ModelConferenceCallUserRole';
+} from './Genre.js';
+import type { ModelConferenceCallUserRole } from './ModelConferenceCallUserRole.js';
 import {
     ModelConferenceCallUserRoleFromJSON,
     ModelConferenceCallUserRoleFromJSONTyped,
     ModelConferenceCallUserRoleToJSON,
     ModelConferenceCallUserRoleToJSONTyped,
-} from './ModelConferenceCallUserRole';
+} from './ModelConferenceCallUserRole.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Interest } from './Interest';
+import { mapValues } from '../runtime.js';
+import type { Interest } from './Interest.js';
 import {
     InterestFromJSON,
     InterestFromJSONTyped,
     InterestToJSON,
     InterestToJSONTyped,
-} from './Interest';
+} from './Interest.js';
 
 /**
  * 

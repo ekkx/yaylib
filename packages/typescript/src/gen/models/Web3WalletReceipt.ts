@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Log } from './Log';
+import { mapValues } from '../runtime.js';
+import type { Log } from './Log.js';
 import {
     LogFromJSON,
     LogFromJSONTyped,
     LogToJSON,
     LogToJSONTyped,
-} from './Log';
+} from './Log.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { UserSearchScope } from './UserSearchScope';
+import { mapValues } from '../runtime.js';
+import type { UserSearchScope } from './UserSearchScope.js';
 import {
     UserSearchScopeFromJSON,
     UserSearchScopeFromJSONTyped,
     UserSearchScopeToJSON,
     UserSearchScopeToJSONTyped,
-} from './UserSearchScope';
+} from './UserSearchScope.js';
 
 /**
  * 

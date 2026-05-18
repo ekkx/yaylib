@@ -14,7 +14,7 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 
 export interface PinGroupRequest {
     id?: number;

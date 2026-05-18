@@ -14,12 +14,12 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   GiftReceivedResponse,
   GiftReceivedTransactionResponse,
   GiftSendersResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     GiftReceivedResponseFromJSON,
     GiftReceivedResponseToJSON,
@@ -27,7 +27,7 @@ import {
     GiftReceivedTransactionResponseToJSON,
     GiftSendersResponseFromJSON,
     GiftSendersResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface GetReceivedGiftSendersRequest {
     giftId: number;

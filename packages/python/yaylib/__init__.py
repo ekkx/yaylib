@@ -534,3 +534,73 @@ from yaylib.models.web_socket_interactor import WebSocketInteractor
 from yaylib.models.web_socket_token_response import WebSocketTokenResponse
 from yaylib.models.withdraw import Withdraw
 from yaylib.models.yay_points import YayPoints
+
+# ---------------------------------------------------------------------------
+# Public surface (hand-written client layer). Re-exported at the package
+# top level so `import yaylib; yaylib.Client(...)` works, matching the
+# TypeScript entry point and the Go root package.
+# ---------------------------------------------------------------------------
+from yaylib.client import Client
+from yaylib.auth import login_with_email
+from yaylib.tokens import Tokens, empty_tokens
+from yaylib.session import (
+    Session,
+    SessionStore,
+    MemorySessionStore,
+    NoSessionError,
+    SessionSaveFailed,
+    new_memory_store,
+)
+from yaylib.session_file import FileSessionStore
+from yaylib.errors import (
+    APIError,
+    ErrorResponse,
+    error_response_of,
+    code_of,
+    as_api_error,
+)
+from yaylib._error_codes import *  # noqa: F401,F403
+from yaylib._config import (
+    DEFAULT_API_KEY,
+    DEFAULT_API_VERSION_KEY,
+    DEFAULT_API_VERSION_NAME,
+    DEFAULT_APP_VERSION,
+    DEFAULT_BASE_URL,
+    DEFAULT_CASSANDRA_BASE_URL,
+    DEFAULT_EVENT_STREAM_URL,
+    MEDIA_CDN_BASE,
+    media_url,
+)
+from yaylib.signing import (
+    SignedInfo,
+    generate_signed_info_at,
+    generate_signed_version,
+    generate_x_jwt,
+)
+from yaylib.retry import RetryPolicy, DEFAULT_RETRY_POLICY
+from yaylib.upload import (
+    Upload,
+    UploadCategory,
+    MAX_IMAGES_PER_UPLOAD,
+    MAX_REPORT_IMAGES_PER_UPLOAD,
+)
+from yaylib.event_stream import (
+    Event,
+    NewMessageEvent,
+    VideoProcessedEvent,
+    ChatDeletedEvent,
+    TotalChatRequestEvent,
+    UnsubscribedEvent,
+    GroupUpdatedEvent,
+    CallFinishedEvent,
+    RawEvent,
+    Channel,
+    chat_room_channel,
+    messages_channel,
+    group_updates_channel,
+    group_posts_channel,
+    ReconnectPolicy,
+    EventStreamOptions,
+    Subscription,
+    EventStream,
+)

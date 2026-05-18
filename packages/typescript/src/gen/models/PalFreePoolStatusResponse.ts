@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PalFreePoolStatus } from './PalFreePoolStatus';
+import { mapValues } from '../runtime.js';
+import type { PalFreePoolStatus } from './PalFreePoolStatus.js';
 import {
     PalFreePoolStatusFromJSON,
     PalFreePoolStatusFromJSONTyped,
     PalFreePoolStatusToJSON,
     PalFreePoolStatusToJSONTyped,
-} from './PalFreePoolStatus';
+} from './PalFreePoolStatus.js';
 
 /**
  * 

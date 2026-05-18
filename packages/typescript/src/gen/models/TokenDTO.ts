@@ -12,28 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { BridgeDTO } from './BridgeDTO';
+import { mapValues } from '../runtime.js';
+import type { BridgeDTO } from './BridgeDTO.js';
 import {
     BridgeDTOFromJSON,
     BridgeDTOFromJSONTyped,
     BridgeDTOToJSON,
     BridgeDTOToJSONTyped,
-} from './BridgeDTO';
-import type { PriceDTO } from './PriceDTO';
+} from './BridgeDTO.js';
+import type { PriceDTO } from './PriceDTO.js';
 import {
     PriceDTOFromJSON,
     PriceDTOFromJSONTyped,
     PriceDTOToJSON,
     PriceDTOToJSONTyped,
-} from './PriceDTO';
-import type { SwapDTO } from './SwapDTO';
+} from './PriceDTO.js';
+import type { SwapDTO } from './SwapDTO.js';
 import {
     SwapDTOFromJSON,
     SwapDTOFromJSONTyped,
     SwapDTOToJSON,
     SwapDTOToJSONTyped,
-} from './SwapDTO';
+} from './SwapDTO.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EmplFee } from './EmplFee';
+import { mapValues } from '../runtime.js';
+import type { EmplFee } from './EmplFee.js';
 import {
     EmplFeeFromJSON,
     EmplFeeFromJSONTyped,
     EmplFeeToJSON,
     EmplFeeToJSONTyped,
-} from './EmplFee';
+} from './EmplFee.js';
 
 /**
  * 

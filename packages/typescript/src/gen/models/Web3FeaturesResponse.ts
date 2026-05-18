@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FeaturesResultResponse } from './FeaturesResultResponse';
+import { mapValues } from '../runtime.js';
+import type { FeaturesResultResponse } from './FeaturesResultResponse.js';
 import {
     FeaturesResultResponseFromJSON,
     FeaturesResultResponseFromJSONTyped,
     FeaturesResultResponseToJSON,
     FeaturesResultResponseToJSONTyped,
-} from './FeaturesResultResponse';
+} from './FeaturesResultResponse.js';
 
 /**
  * 

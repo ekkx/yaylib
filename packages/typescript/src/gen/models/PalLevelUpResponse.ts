@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LevelUpDetails } from './LevelUpDetails';
+import { mapValues } from '../runtime.js';
+import type { LevelUpDetails } from './LevelUpDetails.js';
 import {
     LevelUpDetailsFromJSON,
     LevelUpDetailsFromJSONTyped,
     LevelUpDetailsToJSON,
     LevelUpDetailsToJSONTyped,
-} from './LevelUpDetails';
+} from './LevelUpDetails.js';
 
 /**
  * 

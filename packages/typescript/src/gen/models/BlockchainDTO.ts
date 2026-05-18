@@ -12,28 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { AdditionGasPercentDTO } from './AdditionGasPercentDTO';
+import { mapValues } from '../runtime.js';
+import type { AdditionGasPercentDTO } from './AdditionGasPercentDTO.js';
 import {
     AdditionGasPercentDTOFromJSON,
     AdditionGasPercentDTOFromJSONTyped,
     AdditionGasPercentDTOToJSON,
     AdditionGasPercentDTOToJSONTyped,
-} from './AdditionGasPercentDTO';
-import type { TokenDTO } from './TokenDTO';
+} from './AdditionGasPercentDTO.js';
+import type { TokenDTO } from './TokenDTO.js';
 import {
     TokenDTOFromJSON,
     TokenDTOFromJSONTyped,
     TokenDTOToJSON,
     TokenDTOToJSONTyped,
-} from './TokenDTO';
-import type { NftCollectionDTO } from './NftCollectionDTO';
+} from './TokenDTO.js';
+import type { NftCollectionDTO } from './NftCollectionDTO.js';
 import {
     NftCollectionDTOFromJSON,
     NftCollectionDTOFromJSONTyped,
     NftCollectionDTOToJSON,
     NftCollectionDTOToJSONTyped,
-} from './NftCollectionDTO';
+} from './NftCollectionDTO.js';
 
 /**
  * 

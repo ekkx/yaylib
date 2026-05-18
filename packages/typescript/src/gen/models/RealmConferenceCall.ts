@@ -12,42 +12,42 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RealmGenre } from './RealmGenre';
+import { mapValues } from '../runtime.js';
+import type { RealmGenre } from './RealmGenre.js';
 import {
     RealmGenreFromJSON,
     RealmGenreFromJSONTyped,
     RealmGenreToJSON,
     RealmGenreToJSONTyped,
-} from './RealmGenre';
-import type { ConferenceCallBumpParams } from './ConferenceCallBumpParams';
+} from './RealmGenre.js';
+import type { ConferenceCallBumpParams } from './ConferenceCallBumpParams.js';
 import {
     ConferenceCallBumpParamsFromJSON,
     ConferenceCallBumpParamsFromJSONTyped,
     ConferenceCallBumpParamsToJSON,
     ConferenceCallBumpParamsToJSONTyped,
-} from './ConferenceCallBumpParams';
-import type { RealmUser } from './RealmUser';
+} from './ConferenceCallBumpParams.js';
+import type { RealmUser } from './RealmUser.js';
 import {
     RealmUserFromJSON,
     RealmUserFromJSONTyped,
     RealmUserToJSON,
     RealmUserToJSONTyped,
-} from './RealmUser';
-import type { RealmGame } from './RealmGame';
+} from './RealmUser.js';
+import type { RealmGame } from './RealmGame.js';
 import {
     RealmGameFromJSON,
     RealmGameFromJSONTyped,
     RealmGameToJSON,
     RealmGameToJSONTyped,
-} from './RealmGame';
-import type { ConferenceCallUserRole } from './ConferenceCallUserRole';
+} from './RealmGame.js';
+import type { ConferenceCallUserRole } from './ConferenceCallUserRole.js';
 import {
     ConferenceCallUserRoleFromJSON,
     ConferenceCallUserRoleFromJSONTyped,
     ConferenceCallUserRoleToJSON,
     ConferenceCallUserRoleToJSONTyped,
-} from './ConferenceCallUserRole';
+} from './ConferenceCallUserRole.js';
 
 /**
  * 

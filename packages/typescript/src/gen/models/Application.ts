@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Config } from './Config';
+import { mapValues } from '../runtime.js';
+import type { Config } from './Config.js';
 import {
     ConfigFromJSON,
     ConfigFromJSONTyped,
     ConfigToJSON,
     ConfigToJSONTyped,
-} from './Config';
+} from './Config.js';
 
 /**
  * 

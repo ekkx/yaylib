@@ -14,7 +14,7 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   BgmsResponse,
   CallActionSignatureResponse,
@@ -23,7 +23,7 @@ import type {
   ConferenceCallResponse,
   RtmTokenResponse,
   UsersByTimestampResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     BgmsResponseFromJSON,
     BgmsResponseToJSON,
@@ -39,7 +39,7 @@ import {
     RtmTokenResponseToJSON,
     UsersByTimestampResponseFromJSON,
     UsersByTimestampResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface BulkInviteToCallRequest {
     callId: number;

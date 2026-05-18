@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RealmPlatformDetails } from './RealmPlatformDetails';
+import { mapValues } from '../runtime.js';
+import type { RealmPlatformDetails } from './RealmPlatformDetails.js';
 import {
     RealmPlatformDetailsFromJSON,
     RealmPlatformDetailsFromJSONTyped,
     RealmPlatformDetailsToJSON,
     RealmPlatformDetailsToJSONTyped,
-} from './RealmPlatformDetails';
+} from './RealmPlatformDetails.js';
 
 /**
  * 

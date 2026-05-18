@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { NFTMetadataDTO } from './NFTMetadataDTO';
+import { mapValues } from '../runtime.js';
+import type { NFTMetadataDTO } from './NFTMetadataDTO.js';
 import {
     NFTMetadataDTOFromJSON,
     NFTMetadataDTOFromJSONTyped,
     NFTMetadataDTOToJSON,
     NFTMetadataDTOToJSONTyped,
-} from './NFTMetadataDTO';
+} from './NFTMetadataDTO.js';
 
 /**
  * 

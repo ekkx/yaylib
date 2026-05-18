@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RealmGiftingAbility } from './RealmGiftingAbility';
+import { mapValues } from '../runtime.js';
+import type { RealmGiftingAbility } from './RealmGiftingAbility.js';
 import {
     RealmGiftingAbilityFromJSON,
     RealmGiftingAbilityFromJSONTyped,
     RealmGiftingAbilityToJSON,
     RealmGiftingAbilityToJSONTyped,
-} from './RealmGiftingAbility';
+} from './RealmGiftingAbility.js';
 
 /**
  * 

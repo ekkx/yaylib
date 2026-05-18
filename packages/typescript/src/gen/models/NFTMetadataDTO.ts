@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { NFTAttributeDTO } from './NFTAttributeDTO';
+import { mapValues } from '../runtime.js';
+import type { NFTAttributeDTO } from './NFTAttributeDTO.js';
 import {
     NFTAttributeDTOFromJSON,
     NFTAttributeDTOFromJSONTyped,
     NFTAttributeDTOToJSON,
     NFTAttributeDTOToJSONTyped,
-} from './NFTAttributeDTO';
+} from './NFTAttributeDTO.js';
 
 /**
  * 

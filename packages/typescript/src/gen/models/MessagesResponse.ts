@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RealmMessage } from './RealmMessage';
+import { mapValues } from '../runtime.js';
+import type { RealmMessage } from './RealmMessage.js';
 import {
     RealmMessageFromJSON,
     RealmMessageFromJSONTyped,
     RealmMessageToJSON,
     RealmMessageToJSONTyped,
-} from './RealmMessage';
+} from './RealmMessage.js';
 
 /**
  * 

@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LevelUpDetailsPal } from './LevelUpDetailsPal';
+import { mapValues } from '../runtime.js';
+import type { LevelUpDetailsPal } from './LevelUpDetailsPal.js';
 import {
     LevelUpDetailsPalFromJSON,
     LevelUpDetailsPalFromJSONTyped,
     LevelUpDetailsPalToJSON,
     LevelUpDetailsPalToJSONTyped,
-} from './LevelUpDetailsPal';
-import type { StateChanges } from './StateChanges';
+} from './LevelUpDetailsPal.js';
+import type { StateChanges } from './StateChanges.js';
 import {
     StateChangesFromJSON,
     StateChangesFromJSONTyped,
     StateChangesToJSON,
     StateChangesToJSONTyped,
-} from './StateChanges';
+} from './StateChanges.js';
 
 /**
  * 

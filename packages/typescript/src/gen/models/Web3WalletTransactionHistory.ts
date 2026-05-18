@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EmplTokenExchangeDetails } from './EmplTokenExchangeDetails';
+import { mapValues } from '../runtime.js';
+import type { EmplTokenExchangeDetails } from './EmplTokenExchangeDetails.js';
 import {
     EmplTokenExchangeDetailsFromJSON,
     EmplTokenExchangeDetailsFromJSONTyped,
     EmplTokenExchangeDetailsToJSON,
     EmplTokenExchangeDetailsToJSONTyped,
-} from './EmplTokenExchangeDetails';
-import type { AssetInfo } from './AssetInfo';
+} from './EmplTokenExchangeDetails.js';
+import type { AssetInfo } from './AssetInfo.js';
 import {
     AssetInfoFromJSON,
     AssetInfoFromJSONTyped,
     AssetInfoToJSON,
     AssetInfoToJSONTyped,
-} from './AssetInfo';
+} from './AssetInfo.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { UserUserDTO } from './UserUserDTO';
+import { mapValues } from '../runtime.js';
+import type { UserUserDTO } from './UserUserDTO.js';
 import {
     UserUserDTOFromJSON,
     UserUserDTOFromJSONTyped,
     UserUserDTOToJSON,
     UserUserDTOToJSONTyped,
-} from './UserUserDTO';
+} from './UserUserDTO.js';
 
 /**
  * 

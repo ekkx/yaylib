@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Sticker } from './Sticker';
+import { mapValues } from '../runtime.js';
+import type { Sticker } from './Sticker.js';
 import {
     StickerFromJSON,
     StickerFromJSONTyped,
     StickerToJSON,
     StickerToJSONTyped,
-} from './Sticker';
+} from './Sticker.js';
 
 /**
  * 

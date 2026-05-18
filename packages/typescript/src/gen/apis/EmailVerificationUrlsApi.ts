@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   CommonUrlResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     CommonUrlResponseFromJSON,
     CommonUrlResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface RequestEmailVerificationRequest {
     deviceUuid?: string;

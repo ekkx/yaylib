@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { BagDTO } from './BagDTO';
+import { mapValues } from '../runtime.js';
+import type { BagDTO } from './BagDTO.js';
 import {
     BagDTOFromJSON,
     BagDTOFromJSONTyped,
     BagDTOToJSON,
     BagDTOToJSONTyped,
-} from './BagDTO';
+} from './BagDTO.js';
 
 /**
  * 

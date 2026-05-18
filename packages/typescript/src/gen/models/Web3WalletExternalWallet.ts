@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Balance } from './Balance';
+import { mapValues } from '../runtime.js';
+import type { Balance } from './Balance.js';
 import {
     BalanceFromJSON,
     BalanceFromJSONTyped,
     BalanceToJSON,
     BalanceToJSONTyped,
-} from './Balance';
+} from './Balance.js';
 
 /**
  * 

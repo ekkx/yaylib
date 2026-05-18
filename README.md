@@ -15,3 +15,73 @@
 <a href="https://discord.gg/MEuBfNtqRN">Discord に参加</a>
 
 </div>
+
+Yay! の API を [Go](https://github.com/ekkx/yaylib) / [TypeScript](https://github.com/ekkx/yaylib/tree/master/packages/typescript) / [Python](https://github.com/ekkx/yaylib/tree/master/packages/python) から扱うための非公式 SDK です。
+
+### インストール
+
+```sh
+go get github.com/ekkx/yaylib/v2   # Go
+npm install yaylib                 # TypeScript
+pip install yaylib                 # Python
+```
+
+### クイックスタート (Go)
+
+```go
+package main
+
+import (
+	"context"
+
+	"github.com/ekkx/yaylib/v2"
+)
+
+func main() {
+	ctx := context.Background()
+	client := yaylib.NewClient()
+
+	// ログイン（セッションは透過的にキャッシュされます）
+	client.LoginWithEmail(ctx).Email("...").Password("...").Execute()
+
+	// おすすめタイムラインを取得
+	tl, _, _ := client.GetRecommendedTimeline(ctx).Number(20).Execute()
+	_ = tl
+
+	// 投稿する
+	client.CreatePost(ctx).
+		XJwt(client.GenerateXJwt()).
+		PostType("text").
+		Text("hello from yaylib").
+		Execute()
+}
+```
+
+すべてのオペレーションは `client.<Operation>` として直接呼び出せます。
+
+### イベントストリーム
+
+```go
+stream, _ := client.OpenEventStream(ctx)
+sub, _ := stream.Subscribe(ctx, yaylib.ChatRoomChannel())
+
+for ev := range sub.Events() {
+	switch e := ev.(type) {
+	case *yaylib.NewMessageEvent:
+		// 新着メッセージを受信
+		fmt.Println("new message:", e)
+	}
+}
+```
+
+### ⚖️ ライセンス
+
+<p align="center">
+  <a href="https://github.com/ekkx">
+    <img src="https://github.com/ekkx/yaylib/assets/77382767/5d6aef18-5d98-4c9b-9f54-791308b393af" width="256" height="256">
+  </a>
+</p>
+
+<p align="center">
+  <strong>MIT © <a href="https://github.com/ekkx">ekkx</a></strong>
+</p>

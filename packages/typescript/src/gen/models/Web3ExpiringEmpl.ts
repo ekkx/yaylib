@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3ExpiringEmplExpiredEmpl } from './Web3ExpiringEmplExpiredEmpl';
+import { mapValues } from '../runtime.js';
+import type { Web3ExpiringEmplExpiredEmpl } from './Web3ExpiringEmplExpiredEmpl.js';
 import {
     Web3ExpiringEmplExpiredEmplFromJSON,
     Web3ExpiringEmplExpiredEmplFromJSONTyped,
     Web3ExpiringEmplExpiredEmplToJSON,
     Web3ExpiringEmplExpiredEmplToJSONTyped,
-} from './Web3ExpiringEmplExpiredEmpl';
+} from './Web3ExpiringEmplExpiredEmpl.js';
 
 /**
  * 

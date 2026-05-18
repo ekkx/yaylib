@@ -4,11 +4,11 @@
 // LoginWithSns, OauthToken / refresh) stay as plain calls on the
 // generated client.
 
-import type { LoginUserResponse } from "./gen/models/LoginUserResponse";
+import type { LoginUserResponse } from "./gen/models/LoginUserResponse.js";
 
-import type { Client } from "./client";
-import { APIError, asAPIError } from "./errors";
-import { type Session, SessionSaveFailedError } from "./session";
+import type { Client } from "./client.js";
+import { APIError, asAPIError } from "./errors.js";
+import { type Session, SessionSaveFailedError } from "./session.js";
 
 // LoginWithEmailParams is the options object — the same call shape as
 // every other generated TS operation (a single params object), not a

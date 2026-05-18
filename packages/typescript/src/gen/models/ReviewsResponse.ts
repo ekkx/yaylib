@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Review } from './Review';
+import { mapValues } from '../runtime.js';
+import type { Review } from './Review.js';
 import {
     ReviewFromJSON,
     ReviewFromJSONTyped,
     ReviewToJSON,
     ReviewToJSONTyped,
-} from './Review';
+} from './Review.js';
 
 /**
  * 

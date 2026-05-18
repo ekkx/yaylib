@@ -11,7 +11,7 @@ import {
   type Session,
   type SessionStore,
   NoSessionError,
-} from "./session";
+} from "./session.js";
 
 interface FileStoreData {
   sessions: Record<string, Session>;

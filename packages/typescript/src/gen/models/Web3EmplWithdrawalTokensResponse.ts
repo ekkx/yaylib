@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3EmplWithdrawalTokensDTO } from './Web3EmplWithdrawalTokensDTO';
+import { mapValues } from '../runtime.js';
+import type { Web3EmplWithdrawalTokensDTO } from './Web3EmplWithdrawalTokensDTO.js';
 import {
     Web3EmplWithdrawalTokensDTOFromJSON,
     Web3EmplWithdrawalTokensDTOFromJSONTyped,
     Web3EmplWithdrawalTokensDTOToJSON,
     Web3EmplWithdrawalTokensDTOToJSONTyped,
-} from './Web3EmplWithdrawalTokensDTO';
+} from './Web3EmplWithdrawalTokensDTO.js';
 
 /**
  * 

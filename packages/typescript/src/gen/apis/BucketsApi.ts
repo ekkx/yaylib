@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   PresignedUrlsResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     PresignedUrlsResponseFromJSON,
     PresignedUrlsResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface GetBucketPresignedUrlsRequest {
     fileNames?: Array<string>;

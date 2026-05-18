@@ -11,8 +11,8 @@
 //   - Backoff is exponential with full jitter, clamped to `maxDelay`.
 //   - The zero value (`{ maxAttempts: 0 }`) disables retry entirely.
 
-import type { Middleware, ResponseContext } from "./gen/runtime";
-import { type Logger, noopLogger } from "./logger";
+import type { Middleware, ResponseContext } from "./gen/runtime.js";
+import { type Logger, noopLogger } from "./logger.js";
 
 export interface RetryPolicy {
   // Total attempt cap (initial attempt + retries). 0 disables retry.

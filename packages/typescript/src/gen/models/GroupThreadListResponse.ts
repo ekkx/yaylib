@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ThreadInfo } from './ThreadInfo';
+import { mapValues } from '../runtime.js';
+import type { ThreadInfo } from './ThreadInfo.js';
 import {
     ThreadInfoFromJSON,
     ThreadInfoFromJSONTyped,
     ThreadInfoToJSON,
     ThreadInfoToJSONTyped,
-} from './ThreadInfo';
+} from './ThreadInfo.js';
 
 /**
  * 

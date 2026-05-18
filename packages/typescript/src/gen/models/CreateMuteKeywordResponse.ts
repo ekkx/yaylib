@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { MuteKeyword } from './MuteKeyword';
+import { mapValues } from '../runtime.js';
+import type { MuteKeyword } from './MuteKeyword.js';
 import {
     MuteKeywordFromJSON,
     MuteKeywordFromJSONTyped,
     MuteKeywordToJSON,
     MuteKeywordToJSONTyped,
-} from './MuteKeyword';
+} from './MuteKeyword.js';
 
 /**
  * 

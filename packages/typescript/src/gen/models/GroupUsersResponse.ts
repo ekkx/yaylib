@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GroupUser } from './GroupUser';
+import { mapValues } from '../runtime.js';
+import type { GroupUser } from './GroupUser.js';
 import {
     GroupUserFromJSON,
     GroupUserFromJSONTyped,
     GroupUserToJSON,
     GroupUserToJSONTyped,
-} from './GroupUser';
+} from './GroupUser.js';
 
 /**
  * 

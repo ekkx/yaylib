@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Application } from './Application';
+import { mapValues } from '../runtime.js';
+import type { Application } from './Application.js';
 import {
     ApplicationFromJSON,
     ApplicationFromJSONTyped,
     ApplicationToJSON,
     ApplicationToJSONTyped,
-} from './Application';
+} from './Application.js';
 
 /**
  * 

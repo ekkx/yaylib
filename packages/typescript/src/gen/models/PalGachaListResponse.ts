@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PalGacha } from './PalGacha';
+import { mapValues } from '../runtime.js';
+import type { PalGacha } from './PalGacha.js';
 import {
     PalGachaFromJSON,
     PalGachaFromJSONTyped,
     PalGachaToJSON,
     PalGachaToJSONTyped,
-} from './PalGacha';
+} from './PalGacha.js';
 
 /**
  * 

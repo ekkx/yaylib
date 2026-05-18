@@ -12,28 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GroupUser } from './GroupUser';
+import { mapValues } from '../runtime.js';
+import type { GroupUser } from './GroupUser.js';
 import {
     GroupUserFromJSON,
     GroupUserFromJSONTyped,
     GroupUserToJSON,
     GroupUserToJSONTyped,
-} from './GroupUser';
-import type { OnlineStatusEnum } from './OnlineStatusEnum';
+} from './GroupUser.js';
+import type { OnlineStatusEnum } from './OnlineStatusEnum.js';
 import {
     OnlineStatusEnumFromJSON,
     OnlineStatusEnumFromJSONTyped,
     OnlineStatusEnumToJSON,
     OnlineStatusEnumToJSONTyped,
-} from './OnlineStatusEnum';
-import type { RealmGiftingAbility } from './RealmGiftingAbility';
+} from './OnlineStatusEnum.js';
+import type { RealmGiftingAbility } from './RealmGiftingAbility.js';
 import {
     RealmGiftingAbilityFromJSON,
     RealmGiftingAbilityFromJSONTyped,
     RealmGiftingAbilityToJSON,
     RealmGiftingAbilityToJSONTyped,
-} from './RealmGiftingAbility';
+} from './RealmGiftingAbility.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3NftInfoDTO } from './Web3NftInfoDTO';
+import { mapValues } from '../runtime.js';
+import type { Web3NftInfoDTO } from './Web3NftInfoDTO.js';
 import {
     Web3NftInfoDTOFromJSON,
     Web3NftInfoDTOFromJSONTyped,
     Web3NftInfoDTOToJSON,
     Web3NftInfoDTOToJSONTyped,
-} from './Web3NftInfoDTO';
+} from './Web3NftInfoDTO.js';
 
 /**
  * 

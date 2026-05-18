@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Bgm } from './Bgm';
+import { mapValues } from '../runtime.js';
+import type { Bgm } from './Bgm.js';
 import {
     BgmFromJSON,
     BgmFromJSONTyped,
     BgmToJSON,
     BgmToJSONTyped,
-} from './Bgm';
+} from './Bgm.js';
 
 /**
  * 

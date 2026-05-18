@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ModelPost } from './ModelPost';
+import { mapValues } from '../runtime.js';
+import type { ModelPost } from './ModelPost.js';
 import {
     ModelPostFromJSON,
     ModelPostFromJSONTyped,
     ModelPostToJSON,
     ModelPostToJSONTyped,
-} from './ModelPost';
+} from './ModelPost.js';
 
 /**
  * 

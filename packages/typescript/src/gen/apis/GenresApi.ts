@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   GenresResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     GenresResponseFromJSON,
     GenresResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface ListGenresRequest {
     number?: number;

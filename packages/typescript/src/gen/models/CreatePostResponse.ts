@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RealmConferenceCall } from './RealmConferenceCall';
+import { mapValues } from '../runtime.js';
+import type { RealmConferenceCall } from './RealmConferenceCall.js';
 import {
     RealmConferenceCallFromJSON,
     RealmConferenceCallFromJSONTyped,
     RealmConferenceCallToJSON,
     RealmConferenceCallToJSONTyped,
-} from './RealmConferenceCall';
-import type { Post } from './Post';
+} from './RealmConferenceCall.js';
+import type { Post } from './Post.js';
 import {
     PostFromJSON,
     PostFromJSONTyped,
     PostToJSON,
     PostToJSONTyped,
-} from './Post';
+} from './Post.js';
 
 /**
  * 

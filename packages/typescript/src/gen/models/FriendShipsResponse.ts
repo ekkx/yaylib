@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Relationship } from './Relationship';
+import { mapValues } from '../runtime.js';
+import type { Relationship } from './Relationship.js';
 import {
     RelationshipFromJSON,
     RelationshipFromJSONTyped,
     RelationshipToJSON,
     RelationshipToJSONTyped,
-} from './Relationship';
+} from './Relationship.js';
 
 /**
  * 

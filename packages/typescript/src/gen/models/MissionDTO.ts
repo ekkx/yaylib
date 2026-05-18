@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ProgressDTO } from './ProgressDTO';
+import { mapValues } from '../runtime.js';
+import type { ProgressDTO } from './ProgressDTO.js';
 import {
     ProgressDTOFromJSON,
     ProgressDTOFromJSONTyped,
     ProgressDTOToJSON,
     ProgressDTOToJSONTyped,
-} from './ProgressDTO';
-import type { MissionType } from './MissionType';
+} from './ProgressDTO.js';
+import type { MissionType } from './MissionType.js';
 import {
     MissionTypeFromJSON,
     MissionTypeFromJSONTyped,
     MissionTypeToJSON,
     MissionTypeToJSONTyped,
-} from './MissionType';
+} from './MissionType.js';
 
 /**
  * 

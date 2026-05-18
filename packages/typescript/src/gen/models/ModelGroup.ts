@@ -12,35 +12,35 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Generation } from './Generation';
+import { mapValues } from '../runtime.js';
+import type { Generation } from './Generation.js';
 import {
     GenerationFromJSON,
     GenerationFromJSONTyped,
     GenerationToJSON,
     GenerationToJSONTyped,
-} from './Generation';
-import type { User } from './User';
+} from './Generation.js';
+import type { User } from './User.js';
 import {
     UserFromJSON,
     UserFromJSONTyped,
     UserToJSON,
     UserToJSONTyped,
-} from './User';
-import type { GroupRole } from './GroupRole';
+} from './User.js';
+import type { GroupRole } from './GroupRole.js';
 import {
     GroupRoleFromJSON,
     GroupRoleFromJSONTyped,
     GroupRoleToJSON,
     GroupRoleToJSONTyped,
-} from './GroupRole';
-import type { Gender } from './Gender';
+} from './GroupRole.js';
+import type { Gender } from './Gender.js';
 import {
     GenderFromJSON,
     GenderFromJSONTyped,
     GenderToJSON,
     GenderToJSONTyped,
-} from './Gender';
+} from './Gender.js';
 
 /**
  * 

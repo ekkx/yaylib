@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { SurveyChoice } from './SurveyChoice';
+import { mapValues } from '../runtime.js';
+import type { SurveyChoice } from './SurveyChoice.js';
 import {
     SurveyChoiceFromJSON,
     SurveyChoiceFromJSONTyped,
     SurveyChoiceToJSON,
     SurveyChoiceToJSONTyped,
-} from './SurveyChoice';
+} from './SurveyChoice.js';
 
 /**
  * 

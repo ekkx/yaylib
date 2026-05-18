@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PostSearchScope } from './PostSearchScope';
+import { mapValues } from '../runtime.js';
+import type { PostSearchScope } from './PostSearchScope.js';
 import {
     PostSearchScopeFromJSON,
     PostSearchScopeFromJSONTyped,
     PostSearchScopeToJSON,
     PostSearchScopeToJSONTyped,
-} from './PostSearchScope';
+} from './PostSearchScope.js';
 
 /**
  * 

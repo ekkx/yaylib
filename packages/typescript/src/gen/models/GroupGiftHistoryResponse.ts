@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GroupGiftHistory } from './GroupGiftHistory';
+import { mapValues } from '../runtime.js';
+import type { GroupGiftHistory } from './GroupGiftHistory.js';
 import {
     GroupGiftHistoryFromJSON,
     GroupGiftHistoryFromJSONTyped,
     GroupGiftHistoryToJSON,
     GroupGiftHistoryToJSONTyped,
-} from './GroupGiftHistory';
+} from './GroupGiftHistory.js';
 
 /**
  * 

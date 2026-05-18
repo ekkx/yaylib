@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RealmUser } from './RealmUser';
+import { mapValues } from '../runtime.js';
+import type { RealmUser } from './RealmUser.js';
 import {
     RealmUserFromJSON,
     RealmUserFromJSONTyped,
     RealmUserToJSON,
     RealmUserToJSONTyped,
-} from './RealmUser';
-import type { PostTag } from './PostTag';
+} from './RealmUser.js';
+import type { PostTag } from './PostTag.js';
 import {
     PostTagFromJSON,
     PostTagFromJSONTyped,
     PostTagToJSON,
     PostTagToJSONTyped,
-} from './PostTag';
+} from './PostTag.js';
 
 /**
  * 

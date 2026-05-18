@@ -12,42 +12,42 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ReviewRestriction } from './ReviewRestriction';
+import { mapValues } from '../runtime.js';
+import type { ReviewRestriction } from './ReviewRestriction.js';
 import {
     ReviewRestrictionFromJSON,
     ReviewRestrictionFromJSONTyped,
     ReviewRestrictionToJSON,
     ReviewRestrictionToJSONTyped,
-} from './ReviewRestriction';
-import type { OnlineStatus } from './OnlineStatus';
+} from './ReviewRestriction.js';
+import type { OnlineStatus } from './OnlineStatus.js';
 import {
     OnlineStatusFromJSON,
     OnlineStatusFromJSONTyped,
     OnlineStatusToJSON,
     OnlineStatusToJSONTyped,
-} from './OnlineStatus';
-import type { Title } from './Title';
+} from './OnlineStatus.js';
+import type { Title } from './Title.js';
 import {
     TitleFromJSON,
     TitleFromJSONTyped,
     TitleToJSON,
     TitleToJSONTyped,
-} from './Title';
-import type { Gender } from './Gender';
+} from './Title.js';
+import type { Gender } from './Gender.js';
 import {
     GenderFromJSON,
     GenderFromJSONTyped,
     GenderToJSON,
     GenderToJSONTyped,
-} from './Gender';
-import type { GiftingAbility } from './GiftingAbility';
+} from './Gender.js';
+import type { GiftingAbility } from './GiftingAbility.js';
 import {
     GiftingAbilityFromJSON,
     GiftingAbilityFromJSONTyped,
     GiftingAbilityToJSON,
     GiftingAbilityToJSONTyped,
-} from './GiftingAbility';
+} from './GiftingAbility.js';
 
 /**
  * 

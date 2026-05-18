@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { SearchCriteria } from './SearchCriteria';
+import { mapValues } from '../runtime.js';
+import type { SearchCriteria } from './SearchCriteria.js';
 import {
     SearchCriteriaFromJSON,
     SearchCriteriaFromJSONTyped,
     SearchCriteriaToJSON,
     SearchCriteriaToJSONTyped,
-} from './SearchCriteria';
+} from './SearchCriteria.js';
 
 /**
  * 

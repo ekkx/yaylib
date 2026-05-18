@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { StickerPack } from './StickerPack';
+import { mapValues } from '../runtime.js';
+import type { StickerPack } from './StickerPack.js';
 import {
     StickerPackFromJSON,
     StickerPackFromJSONTyped,
     StickerPackToJSON,
     StickerPackToJSONTyped,
-} from './StickerPack';
+} from './StickerPack.js';
 
 /**
  * 

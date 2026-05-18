@@ -14,7 +14,7 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   CreateGroupResponse,
   CreateQuotaResponse,
@@ -31,7 +31,7 @@ import type {
   UnreadStatusResponse,
   UsersByTimestampResponse,
   UsersResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     CreateGroupResponseFromJSON,
     CreateGroupResponseToJSON,
@@ -63,7 +63,7 @@ import {
     UsersByTimestampResponseToJSON,
     UsersResponseFromJSON,
     UsersResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface AcceptGroupJoinRequestRequest {
     id: number;

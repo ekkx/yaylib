@@ -14,12 +14,12 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   AdditionalSettingsResponse,
   GroupNotificationSettingsResponse,
   NotificationSettingResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     AdditionalSettingsResponseFromJSON,
     AdditionalSettingsResponseToJSON,
@@ -27,7 +27,7 @@ import {
     GroupNotificationSettingsResponseToJSON,
     NotificationSettingResponseFromJSON,
     NotificationSettingResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface GetGroupNotificationSettingsRequest {
     id: number;

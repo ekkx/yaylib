@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Activity } from './Activity';
+import { mapValues } from '../runtime.js';
+import type { Activity } from './Activity.js';
 import {
     ActivityFromJSON,
     ActivityFromJSONTyped,
     ActivityToJSON,
     ActivityToJSONTyped,
-} from './Activity';
+} from './Activity.js';
 
 /**
  * 

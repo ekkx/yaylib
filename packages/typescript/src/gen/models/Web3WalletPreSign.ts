@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { BCNetworkData } from './BCNetworkData';
+import { mapValues } from '../runtime.js';
+import type { BCNetworkData } from './BCNetworkData.js';
 import {
     BCNetworkDataFromJSON,
     BCNetworkDataFromJSONTyped,
     BCNetworkDataToJSON,
     BCNetworkDataToJSONTyped,
-} from './BCNetworkData';
-import type { TXNLogData } from './TXNLogData';
+} from './BCNetworkData.js';
+import type { TXNLogData } from './TXNLogData.js';
 import {
     TXNLogDataFromJSON,
     TXNLogDataFromJSONTyped,
     TXNLogDataToJSON,
     TXNLogDataToJSONTyped,
-} from './TXNLogData';
+} from './TXNLogData.js';
 
 /**
  * 

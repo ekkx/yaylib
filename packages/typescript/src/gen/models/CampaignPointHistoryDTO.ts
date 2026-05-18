@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Breakdown } from './Breakdown';
+import { mapValues } from '../runtime.js';
+import type { Breakdown } from './Breakdown.js';
 import {
     BreakdownFromJSON,
     BreakdownFromJSONTyped,
     BreakdownToJSON,
     BreakdownToJSONTyped,
-} from './Breakdown';
-import type { Mission } from './Mission';
+} from './Breakdown.js';
+import type { Mission } from './Mission.js';
 import {
     MissionFromJSON,
     MissionFromJSONTyped,
     MissionToJSON,
     MissionToJSONTyped,
-} from './Mission';
+} from './Mission.js';
 
 /**
  * 

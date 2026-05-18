@@ -12,28 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GifImage } from './GifImage';
+import { mapValues } from '../runtime.js';
+import type { GifImage } from './GifImage.js';
 import {
     GifImageFromJSON,
     GifImageFromJSONTyped,
     GifImageToJSON,
     GifImageToJSONTyped,
-} from './GifImage';
-import type { Sticker } from './Sticker';
+} from './GifImage.js';
+import type { Sticker } from './Sticker.js';
 import {
     StickerFromJSON,
     StickerFromJSONTyped,
     StickerToJSON,
     StickerToJSONTyped,
-} from './Sticker';
-import type { MessageType } from './MessageType';
+} from './Sticker.js';
+import type { MessageType } from './MessageType.js';
 import {
     MessageTypeFromJSON,
     MessageTypeFromJSONTyped,
     MessageTypeToJSON,
     MessageTypeToJSONTyped,
-} from './MessageType';
+} from './MessageType.js';
 
 /**
  * 

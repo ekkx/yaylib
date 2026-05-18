@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3WalletEmplExpiring } from './Web3WalletEmplExpiring';
+import { mapValues } from '../runtime.js';
+import type { Web3WalletEmplExpiring } from './Web3WalletEmplExpiring.js';
 import {
     Web3WalletEmplExpiringFromJSON,
     Web3WalletEmplExpiringFromJSONTyped,
     Web3WalletEmplExpiringToJSON,
     Web3WalletEmplExpiringToJSONTyped,
-} from './Web3WalletEmplExpiring';
+} from './Web3WalletEmplExpiring.js';
 
 /**
  * 

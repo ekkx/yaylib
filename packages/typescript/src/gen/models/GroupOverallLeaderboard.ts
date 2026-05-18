@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GroupRanking } from './GroupRanking';
+import { mapValues } from '../runtime.js';
+import type { GroupRanking } from './GroupRanking.js';
 import {
     GroupRankingFromJSON,
     GroupRankingFromJSONTyped,
     GroupRankingToJSON,
     GroupRankingToJSONTyped,
-} from './GroupRanking';
+} from './GroupRanking.js';
 
 /**
  * 

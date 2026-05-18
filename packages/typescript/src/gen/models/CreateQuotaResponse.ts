@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { CreateGroupQuota } from './CreateGroupQuota';
+import { mapValues } from '../runtime.js';
+import type { CreateGroupQuota } from './CreateGroupQuota.js';
 import {
     CreateGroupQuotaFromJSON,
     CreateGroupQuotaFromJSONTyped,
     CreateGroupQuotaToJSON,
     CreateGroupQuotaToJSONTyped,
-} from './CreateGroupQuota';
+} from './CreateGroupQuota.js';
 
 /**
  * 

@@ -14,7 +14,7 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   CreatePostResponse,
   GiftTransactionsResponse,
@@ -29,7 +29,7 @@ import type {
   SharedUrl,
   ThreadInfo,
   ValidationPostResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     CreatePostResponseFromJSON,
     CreatePostResponseToJSON,
@@ -57,7 +57,7 @@ import {
     ThreadInfoToJSON,
     ValidationPostResponseFromJSON,
     ValidationPostResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface CreateConferenceCallPostRequest {
     apiKey?: string;

@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   ApplicationConfigResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     ApplicationConfigResponseFromJSON,
     ApplicationConfigResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface GetAppConfigRequest {
     app: string;

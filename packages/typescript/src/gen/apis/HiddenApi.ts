@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   ChatRoomsResponse,
   CreateMuteKeywordResponse,
   HiddenResponse,
   MuteKeywordRequest,
   MuteKeywordResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     ChatRoomsResponseFromJSON,
     ChatRoomsResponseToJSON,
@@ -33,7 +33,7 @@ import {
     MuteKeywordRequestToJSON,
     MuteKeywordResponseFromJSON,
     MuteKeywordResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface CreateMuteKeywordRequest {
     muteKeywordRequest: MuteKeywordRequest;

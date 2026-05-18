@@ -12,28 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Gift } from './Gift';
+import { mapValues } from '../runtime.js';
+import type { Gift } from './Gift.js';
 import {
     GiftFromJSON,
     GiftFromJSONTyped,
     GiftToJSON,
     GiftToJSONTyped,
-} from './Gift';
-import type { User } from './User';
+} from './Gift.js';
+import type { User } from './User.js';
 import {
     UserFromJSON,
     UserFromJSONTyped,
     UserToJSON,
     UserToJSONTyped,
-} from './User';
-import type { ReceivedGift } from './ReceivedGift';
+} from './User.js';
+import type { ReceivedGift } from './ReceivedGift.js';
 import {
     ReceivedGiftFromJSON,
     ReceivedGiftFromJSONTyped,
     ReceivedGiftToJSON,
     ReceivedGiftToJSONTyped,
-} from './ReceivedGift';
+} from './ReceivedGift.js';
 
 /**
  * 

@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   GiftsResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     GiftsResponseFromJSON,
     GiftsResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface ListGiftsRequest {
     currency?: string | null;

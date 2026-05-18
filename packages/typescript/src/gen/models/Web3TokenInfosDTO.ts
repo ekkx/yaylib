@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3TokenInfoDTO } from './Web3TokenInfoDTO';
+import { mapValues } from '../runtime.js';
+import type { Web3TokenInfoDTO } from './Web3TokenInfoDTO.js';
 import {
     Web3TokenInfoDTOFromJSON,
     Web3TokenInfoDTOFromJSONTyped,
     Web3TokenInfoDTOToJSON,
     Web3TokenInfoDTOToJSONTyped,
-} from './Web3TokenInfoDTO';
+} from './Web3TokenInfoDTO.js';
 
 /**
  * 

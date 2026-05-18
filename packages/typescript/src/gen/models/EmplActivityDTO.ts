@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EmplDTO } from './EmplDTO';
+import { mapValues } from '../runtime.js';
+import type { EmplDTO } from './EmplDTO.js';
 import {
     EmplDTOFromJSON,
     EmplDTOFromJSONTyped,
     EmplDTOToJSON,
     EmplDTOToJSONTyped,
-} from './EmplDTO';
-import type { PalDetailsDTO } from './PalDetailsDTO';
+} from './EmplDTO.js';
+import type { PalDetailsDTO } from './PalDetailsDTO.js';
 import {
     PalDetailsDTOFromJSON,
     PalDetailsDTOFromJSONTyped,
     PalDetailsDTOToJSON,
     PalDetailsDTOToJSONTyped,
-} from './PalDetailsDTO';
+} from './PalDetailsDTO.js';
 
 /**
  * 

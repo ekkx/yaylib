@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { TimelineSettings } from './TimelineSettings';
+import { mapValues } from '../runtime.js';
+import type { TimelineSettings } from './TimelineSettings.js';
 import {
     TimelineSettingsFromJSON,
     TimelineSettingsFromJSONTyped,
     TimelineSettingsToJSON,
     TimelineSettingsToJSONTyped,
-} from './TimelineSettings';
+} from './TimelineSettings.js';
 
 /**
  * 

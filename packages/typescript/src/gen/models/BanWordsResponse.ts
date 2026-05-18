@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { BanWord } from './BanWord';
+import { mapValues } from '../runtime.js';
+import type { BanWord } from './BanWord.js';
 import {
     BanWordFromJSON,
     BanWordFromJSONTyped,
     BanWordToJSON,
     BanWordToJSONTyped,
-} from './BanWord';
+} from './BanWord.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { MultiplierBreakdown } from './MultiplierBreakdown';
+import { mapValues } from '../runtime.js';
+import type { MultiplierBreakdown } from './MultiplierBreakdown.js';
 import {
     MultiplierBreakdownFromJSON,
     MultiplierBreakdownFromJSONTyped,
     MultiplierBreakdownToJSON,
     MultiplierBreakdownToJSONTyped,
-} from './MultiplierBreakdown';
+} from './MultiplierBreakdown.js';
 
 /**
  * 

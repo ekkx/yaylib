@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Promotion } from './Promotion';
+import { mapValues } from '../runtime.js';
+import type { Promotion } from './Promotion.js';
 import {
     PromotionFromJSON,
     PromotionFromJSONTyped,
     PromotionToJSON,
     PromotionToJSONTyped,
-} from './Promotion';
+} from './Promotion.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ProfileImage } from './ProfileImage';
+import { mapValues } from '../runtime.js';
+import type { ProfileImage } from './ProfileImage.js';
 import {
     ProfileImageFromJSON,
     ProfileImageFromJSONTyped,
     ProfileImageToJSON,
     ProfileImageToJSONTyped,
-} from './ProfileImage';
+} from './ProfileImage.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ExpiredEmpl } from './ExpiredEmpl';
+import { mapValues } from '../runtime.js';
+import type { ExpiredEmpl } from './ExpiredEmpl.js';
 import {
     ExpiredEmplFromJSON,
     ExpiredEmplFromJSONTyped,
     ExpiredEmplToJSON,
     ExpiredEmplToJSONTyped,
-} from './ExpiredEmpl';
+} from './ExpiredEmpl.js';
 
 /**
  * 

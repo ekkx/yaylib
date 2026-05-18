@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3WalletTransactionHistory } from './Web3WalletTransactionHistory';
+import { mapValues } from '../runtime.js';
+import type { Web3WalletTransactionHistory } from './Web3WalletTransactionHistory.js';
 import {
     Web3WalletTransactionHistoryFromJSON,
     Web3WalletTransactionHistoryFromJSONTyped,
     Web3WalletTransactionHistoryToJSON,
     Web3WalletTransactionHistoryToJSONTyped,
-} from './Web3WalletTransactionHistory';
+} from './Web3WalletTransactionHistory.js';
 
 /**
  * 

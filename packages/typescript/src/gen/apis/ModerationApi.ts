@@ -14,17 +14,17 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   BanWordsResponse,
   PopularWordsResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     BanWordsResponseFromJSON,
     BanWordsResponseToJSON,
     PopularWordsResponseFromJSON,
     PopularWordsResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface GetBannedWordsRequest {
     countryApiValue: string;

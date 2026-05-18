@@ -12,49 +12,49 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GifImage } from './GifImage';
+import { mapValues } from '../runtime.js';
+import type { GifImage } from './GifImage.js';
 import {
     GifImageFromJSON,
     GifImageFromJSONTyped,
     GifImageToJSON,
     GifImageToJSONTyped,
-} from './GifImage';
-import type { Sticker } from './Sticker';
+} from './GifImage.js';
+import type { Sticker } from './Sticker.js';
 import {
     StickerFromJSON,
     StickerFromJSONTyped,
     StickerToJSON,
     StickerToJSONTyped,
-} from './Sticker';
-import type { RealmConferenceCall } from './RealmConferenceCall';
+} from './Sticker.js';
+import type { RealmConferenceCall } from './RealmConferenceCall.js';
 import {
     RealmConferenceCallFromJSON,
     RealmConferenceCallFromJSONTyped,
     RealmConferenceCallToJSON,
     RealmConferenceCallToJSONTyped,
-} from './RealmConferenceCall';
-import type { ChatInvitation } from './ChatInvitation';
+} from './RealmConferenceCall.js';
+import type { ChatInvitation } from './ChatInvitation.js';
 import {
     ChatInvitationFromJSON,
     ChatInvitationFromJSONTyped,
     ChatInvitationToJSON,
     ChatInvitationToJSONTyped,
-} from './ChatInvitation';
-import type { ParentMessage } from './ParentMessage';
+} from './ChatInvitation.js';
+import type { ParentMessage } from './ParentMessage.js';
 import {
     ParentMessageFromJSON,
     ParentMessageFromJSONTyped,
     ParentMessageToJSON,
     ParentMessageToJSONTyped,
-} from './ParentMessage';
-import type { MessageType } from './MessageType';
+} from './ParentMessage.js';
+import type { MessageType } from './MessageType.js';
 import {
     MessageTypeFromJSON,
     MessageTypeFromJSONTyped,
     MessageTypeToJSON,
     MessageTypeToJSONTyped,
-} from './MessageType';
+} from './MessageType.js';
 
 /**
  * 

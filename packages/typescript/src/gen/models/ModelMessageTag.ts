@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { MessageTagType } from './MessageTagType';
+import { mapValues } from '../runtime.js';
+import type { MessageTagType } from './MessageTagType.js';
 import {
     MessageTagTypeFromJSON,
     MessageTagTypeFromJSONTyped,
     MessageTagTypeToJSON,
     MessageTagTypeToJSONTyped,
-} from './MessageTagType';
+} from './MessageTagType.js';
 
 /**
  * 

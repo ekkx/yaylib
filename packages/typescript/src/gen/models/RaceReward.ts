@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Reward } from './Reward';
+import { mapValues } from '../runtime.js';
+import type { Reward } from './Reward.js';
 import {
     RewardFromJSON,
     RewardFromJSONTyped,
     RewardToJSON,
     RewardToJSONTyped,
-} from './Reward';
+} from './Reward.js';
 
 /**
  * 
