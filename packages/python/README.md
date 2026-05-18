@@ -46,7 +46,7 @@ async def main():
 
         # 投稿する
         await client.create_post(
-            x_jwt=client.generate_x_jwt(),
+            x_jwt=yaylib.generate_x_jwt(api_version_key=client.api_version_key),
             post_type="text",
             text="hello from yaylib",
         )
@@ -69,6 +69,19 @@ async with client.open_event_stream() as stream:
         print("new message:", event)
 
     await sub.wait_closed()
+```
+
+### サンプル
+
+実行できるサンプルを [`examples/`](https://github.com/ekkx/yaylib/tree/master/packages/python/examples) に用意しています。
+
+- `01_timeline.py` — 認証 + タイムライン取得
+- `02_post.py` — テキスト投稿
+- `03_event_stream.py` — イベントストリームの簡単なボット
+- `04_session_and_errors.py` — セッション永続化とエラー処理
+
+```bash
+YAY_EMAIL=... YAY_PASSWORD=... python examples/01_timeline.py
 ```
 
 ### ⚖️ ライセンス
