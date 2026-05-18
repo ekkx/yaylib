@@ -22,3 +22,5 @@ packages/python/yaylib/rest.py linguist-generated=true
 packages/python/yaylib/_host_routes.py linguist-generated=true
 packages/python/yaylib/_error_codes.py linguist-generated=true
 packages/python/yaylib/_facade.py linguist-generated=true
+
+mockd/internal/oas/** linguist-generated=true
