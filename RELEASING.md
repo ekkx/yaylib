@@ -38,9 +38,19 @@ A tag without a hyphen (`v2.0.0`) publishes to the default `latest`.
 
 ## One-time setup
 
-Add these repository secrets:
+**npm — OIDC trusted publishing (no token).** On the npm package page →
+Settings → Trusted Publisher, add a GitHub Actions publisher:
+
+- Repository: `ekkx/yaylib`
+- Workflow filename: `release.yml`
+
+A trusted publisher can only be added to an existing package, so the
+very first publish must bootstrap the package: publish once with
+`npm publish` locally (or a one-off automation token), then add the
+trusted publisher — every release after that is tokenless.
+
+**PyPI — API token.** Add this repository secret:
 
 | secret | what |
 |---|---|
-| `NPM_TOKEN` | npm automation token with publish rights for `yaylib` |
 | `PYPI_API_TOKEN` | PyPI API token scoped to the `yaylib` project |
