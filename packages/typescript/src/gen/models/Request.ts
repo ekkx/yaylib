@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RequestMethod } from './RequestMethod';
+import { mapValues } from '../runtime.js';
+import type { RequestMethod } from './RequestMethod.js';
 import {
     RequestMethodFromJSON,
     RequestMethodFromJSONTyped,
     RequestMethodToJSON,
     RequestMethodToJSONTyped,
-} from './RequestMethod';
+} from './RequestMethod.js';
 
 /**
  * 

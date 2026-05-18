@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3EmplTokenExchangeConversionAndFeeDTO } from './Web3EmplTokenExchangeConversionAndFeeDTO';
+import { mapValues } from '../runtime.js';
+import type { Web3EmplTokenExchangeConversionAndFeeDTO } from './Web3EmplTokenExchangeConversionAndFeeDTO.js';
 import {
     Web3EmplTokenExchangeConversionAndFeeDTOFromJSON,
     Web3EmplTokenExchangeConversionAndFeeDTOFromJSONTyped,
     Web3EmplTokenExchangeConversionAndFeeDTOToJSON,
     Web3EmplTokenExchangeConversionAndFeeDTOToJSONTyped,
-} from './Web3EmplTokenExchangeConversionAndFeeDTO';
+} from './Web3EmplTokenExchangeConversionAndFeeDTO.js';
 
 /**
  * 

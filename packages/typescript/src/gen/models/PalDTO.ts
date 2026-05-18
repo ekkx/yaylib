@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Attribute } from './Attribute';
+import { mapValues } from '../runtime.js';
+import type { Attribute } from './Attribute.js';
 import {
     AttributeFromJSON,
     AttributeFromJSONTyped,
     AttributeToJSON,
     AttributeToJSONTyped,
-} from './Attribute';
-import type { MaxAttribute } from './MaxAttribute';
+} from './Attribute.js';
+import type { MaxAttribute } from './MaxAttribute.js';
 import {
     MaxAttributeFromJSON,
     MaxAttributeFromJSONTyped,
     MaxAttributeToJSON,
     MaxAttributeToJSONTyped,
-} from './MaxAttribute';
+} from './MaxAttribute.js';
 
 /**
  * 

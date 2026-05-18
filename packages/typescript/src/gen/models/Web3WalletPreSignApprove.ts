@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { TXNData } from './TXNData';
+import { mapValues } from '../runtime.js';
+import type { TXNData } from './TXNData.js';
 import {
     TXNDataFromJSON,
     TXNDataFromJSONTyped,
     TXNDataToJSON,
     TXNDataToJSONTyped,
-} from './TXNData';
-import type { Web3WalletPreSignApproveBCNetworkData } from './Web3WalletPreSignApproveBCNetworkData';
+} from './TXNData.js';
+import type { Web3WalletPreSignApproveBCNetworkData } from './Web3WalletPreSignApproveBCNetworkData.js';
 import {
     Web3WalletPreSignApproveBCNetworkDataFromJSON,
     Web3WalletPreSignApproveBCNetworkDataFromJSONTyped,
     Web3WalletPreSignApproveBCNetworkDataToJSON,
     Web3WalletPreSignApproveBCNetworkDataToJSONTyped,
-} from './Web3WalletPreSignApproveBCNetworkData';
+} from './Web3WalletPreSignApproveBCNetworkData.js';
 
 /**
  * 

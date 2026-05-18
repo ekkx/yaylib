@@ -12,28 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ChatRoomLastMessage } from './ChatRoomLastMessage';
+import { mapValues } from '../runtime.js';
+import type { ChatRoomLastMessage } from './ChatRoomLastMessage.js';
 import {
     ChatRoomLastMessageFromJSON,
     ChatRoomLastMessageFromJSONTyped,
     ChatRoomLastMessageToJSON,
     ChatRoomLastMessageToJSONTyped,
-} from './ChatRoomLastMessage';
-import type { RealmUser } from './RealmUser';
+} from './ChatRoomLastMessage.js';
+import type { RealmUser } from './RealmUser.js';
 import {
     RealmUserFromJSON,
     RealmUserFromJSONTyped,
     RealmUserToJSON,
     RealmUserToJSONTyped,
-} from './RealmUser';
-import type { UserSetting } from './UserSetting';
+} from './RealmUser.js';
+import type { UserSetting } from './UserSetting.js';
 import {
     UserSettingFromJSON,
     UserSettingFromJSONTyped,
     UserSettingToJSON,
     UserSettingToJSONTyped,
-} from './UserSetting';
+} from './UserSetting.js';
 
 /**
  * 

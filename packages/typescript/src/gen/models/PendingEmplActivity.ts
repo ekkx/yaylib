@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PendingEmplActivityDetails } from './PendingEmplActivityDetails';
+import { mapValues } from '../runtime.js';
+import type { PendingEmplActivityDetails } from './PendingEmplActivityDetails.js';
 import {
     PendingEmplActivityDetailsFromJSON,
     PendingEmplActivityDetailsFromJSONTyped,
     PendingEmplActivityDetailsToJSON,
     PendingEmplActivityDetailsToJSONTyped,
-} from './PendingEmplActivityDetails';
+} from './PendingEmplActivityDetails.js';
 
 /**
  * 

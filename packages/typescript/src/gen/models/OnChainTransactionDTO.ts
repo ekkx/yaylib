@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { AssetInfoDTO } from './AssetInfoDTO';
+import { mapValues } from '../runtime.js';
+import type { AssetInfoDTO } from './AssetInfoDTO.js';
 import {
     AssetInfoDTOFromJSON,
     AssetInfoDTOFromJSONTyped,
     AssetInfoDTOToJSON,
     AssetInfoDTOToJSONTyped,
-} from './AssetInfoDTO';
+} from './AssetInfoDTO.js';
 
 /**
  * 

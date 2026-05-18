@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { SignaturePayload } from './SignaturePayload';
+import { mapValues } from '../runtime.js';
+import type { SignaturePayload } from './SignaturePayload.js';
 import {
     SignaturePayloadFromJSON,
     SignaturePayloadFromJSONTyped,
     SignaturePayloadToJSON,
     SignaturePayloadToJSONTyped,
-} from './SignaturePayload';
+} from './SignaturePayload.js';
 
 /**
  * 

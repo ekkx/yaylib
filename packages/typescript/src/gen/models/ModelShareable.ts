@@ -12,28 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ModelGroup } from './ModelGroup';
+import { mapValues } from '../runtime.js';
+import type { ModelGroup } from './ModelGroup.js';
 import {
     ModelGroupFromJSON,
     ModelGroupFromJSONTyped,
     ModelGroupToJSON,
     ModelGroupToJSONTyped,
-} from './ModelGroup';
-import type { ModelPost } from './ModelPost';
+} from './ModelGroup.js';
+import type { ModelPost } from './ModelPost.js';
 import {
     ModelPostFromJSON,
     ModelPostFromJSONTyped,
     ModelPostToJSON,
     ModelPostToJSONTyped,
-} from './ModelPost';
-import type { ModelThreadInfo } from './ModelThreadInfo';
+} from './ModelPost.js';
+import type { ModelThreadInfo } from './ModelThreadInfo.js';
 import {
     ModelThreadInfoFromJSON,
     ModelThreadInfoFromJSONTyped,
     ModelThreadInfoToJSON,
     ModelThreadInfoToJSONTyped,
-} from './ModelThreadInfo';
+} from './ModelThreadInfo.js';
 
 /**
  * 

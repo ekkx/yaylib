@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GroupLeaderboard } from './GroupLeaderboard';
+import { mapValues } from '../runtime.js';
+import type { GroupLeaderboard } from './GroupLeaderboard.js';
 import {
     GroupLeaderboardFromJSON,
     GroupLeaderboardFromJSONTyped,
     GroupLeaderboardToJSON,
     GroupLeaderboardToJSONTyped,
-} from './GroupLeaderboard';
+} from './GroupLeaderboard.js';
 
 /**
  * 

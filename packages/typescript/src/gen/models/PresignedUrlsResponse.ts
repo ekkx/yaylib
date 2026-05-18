@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PresignedUrl } from './PresignedUrl';
+import { mapValues } from '../runtime.js';
+import type { PresignedUrl } from './PresignedUrl.js';
 import {
     PresignedUrlFromJSON,
     PresignedUrlFromJSONTyped,
     PresignedUrlToJSON,
     PresignedUrlToJSONTyped,
-} from './PresignedUrl';
+} from './PresignedUrl.js';
 
 /**
  * 

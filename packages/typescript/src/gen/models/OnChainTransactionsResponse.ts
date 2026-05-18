@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { OnChainTransactionDTO } from './OnChainTransactionDTO';
+import { mapValues } from '../runtime.js';
+import type { OnChainTransactionDTO } from './OnChainTransactionDTO.js';
 import {
     OnChainTransactionDTOFromJSON,
     OnChainTransactionDTOFromJSONTyped,
     OnChainTransactionDTOToJSON,
     OnChainTransactionDTOToJSONTyped,
-} from './OnChainTransactionDTO';
+} from './OnChainTransactionDTO.js';
 
 /**
  * 

@@ -10,12 +10,12 @@
 // stability threshold, jittered backoff and OnDrop backpressure hook
 // mirror event_stream.go exactly.
 
-import { type Channel } from "./channels";
-import { type Event, decodeEvent } from "./events";
-import { type Logger } from "./logger";
+import { type Channel } from "./channels.js";
+import { type Event, decodeEvent } from "./events.js";
+import { type Logger } from "./logger.js";
 
-export * from "./channels";
-export * from "./events";
+export * from "./channels.js";
+export * from "./events.js";
 
 // WebSocketLike is the slice of the standard WebSocket the stream needs.
 // The platform global satisfies it; tests inject an in-memory pair so the

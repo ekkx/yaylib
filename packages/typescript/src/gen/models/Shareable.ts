@@ -12,28 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Group } from './Group';
+import { mapValues } from '../runtime.js';
+import type { Group } from './Group.js';
 import {
     GroupFromJSON,
     GroupFromJSONTyped,
     GroupToJSON,
     GroupToJSONTyped,
-} from './Group';
-import type { ThreadInfo } from './ThreadInfo';
+} from './Group.js';
+import type { ThreadInfo } from './ThreadInfo.js';
 import {
     ThreadInfoFromJSON,
     ThreadInfoFromJSONTyped,
     ThreadInfoToJSON,
     ThreadInfoToJSONTyped,
-} from './ThreadInfo';
-import type { Post } from './Post';
+} from './ThreadInfo.js';
+import type { Post } from './Post.js';
 import {
     PostFromJSON,
     PostFromJSONTyped,
     PostToJSON,
     PostToJSONTyped,
-} from './Post';
+} from './Post.js';
 
 /**
  * 

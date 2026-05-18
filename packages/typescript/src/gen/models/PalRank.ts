@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pal } from './Pal';
+import { mapValues } from '../runtime.js';
+import type { Pal } from './Pal.js';
 import {
     PalFromJSON,
     PalFromJSONTyped,
     PalToJSON,
     PalToJSONTyped,
-} from './Pal';
+} from './Pal.js';
 
 /**
  * 

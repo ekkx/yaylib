@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PostTag } from './PostTag';
+import { mapValues } from '../runtime.js';
+import type { PostTag } from './PostTag.js';
 import {
     PostTagFromJSON,
     PostTagFromJSONTyped,
     PostTagToJSON,
     PostTagToJSONTyped,
-} from './PostTag';
+} from './PostTag.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { SnsInfo } from './SnsInfo';
+import { mapValues } from '../runtime.js';
+import type { SnsInfo } from './SnsInfo.js';
 import {
     SnsInfoFromJSON,
     SnsInfoFromJSONTyped,
     SnsInfoToJSON,
     SnsInfoToJSONTyped,
-} from './SnsInfo';
+} from './SnsInfo.js';
 
 /**
  * 

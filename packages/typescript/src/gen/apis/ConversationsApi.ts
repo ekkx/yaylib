@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   PostsResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     PostsResponseFromJSON,
     PostsResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface GetConversationRequest {
     id: number;

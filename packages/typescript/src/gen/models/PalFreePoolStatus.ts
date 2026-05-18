@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Qualification } from './Qualification';
+import { mapValues } from '../runtime.js';
+import type { Qualification } from './Qualification.js';
 import {
     QualificationFromJSON,
     QualificationFromJSONTyped,
     QualificationToJSON,
     QualificationToJSONTyped,
-} from './Qualification';
-import type { Cooldown } from './Cooldown';
+} from './Qualification.js';
+import type { Cooldown } from './Cooldown.js';
 import {
     CooldownFromJSON,
     CooldownFromJSONTyped,
     CooldownToJSON,
     CooldownToJSONTyped,
-} from './Cooldown';
+} from './Cooldown.js';
 
 /**
  * 

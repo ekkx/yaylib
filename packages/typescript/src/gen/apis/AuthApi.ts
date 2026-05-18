@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   TokenResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     TokenResponseFromJSON,
     TokenResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface OauthTokenRequest {
     email?: string | null;

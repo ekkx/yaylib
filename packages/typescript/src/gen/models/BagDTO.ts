@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EmplDTO } from './EmplDTO';
+import { mapValues } from '../runtime.js';
+import type { EmplDTO } from './EmplDTO.js';
 import {
     EmplDTOFromJSON,
     EmplDTOFromJSONTyped,
     EmplDTOToJSON,
     EmplDTOToJSONTyped,
-} from './EmplDTO';
+} from './EmplDTO.js';
 
 /**
  * 

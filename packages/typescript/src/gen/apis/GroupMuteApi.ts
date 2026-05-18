@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   GroupMuteUsersResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     GroupMuteUsersResponseFromJSON,
     GroupMuteUsersResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface ListMutedGroupUsersRequest {
     id: number;

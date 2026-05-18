@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EmplExpiringResponse } from './EmplExpiringResponse';
+import { mapValues } from '../runtime.js';
+import type { EmplExpiringResponse } from './EmplExpiringResponse.js';
 import {
     EmplExpiringResponseFromJSON,
     EmplExpiringResponseFromJSONTyped,
     EmplExpiringResponseToJSON,
     EmplExpiringResponseToJSONTyped,
-} from './EmplExpiringResponse';
+} from './EmplExpiringResponse.js';
 
 /**
  * 

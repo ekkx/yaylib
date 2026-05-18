@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Target } from './Target';
+import { mapValues } from '../runtime.js';
+import type { Target } from './Target.js';
 import {
     TargetFromJSON,
     TargetFromJSONTyped,
     TargetToJSON,
     TargetToJSONTyped,
-} from './Target';
+} from './Target.js';
 
 /**
  * 

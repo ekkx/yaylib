@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { AssetType } from './AssetType';
+import { mapValues } from '../runtime.js';
+import type { AssetType } from './AssetType.js';
 import {
     AssetTypeFromJSON,
     AssetTypeFromJSONTyped,
     AssetTypeToJSON,
     AssetTypeToJSONTyped,
-} from './AssetType';
+} from './AssetType.js';
 
 /**
  * 

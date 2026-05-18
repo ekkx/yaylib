@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorType } from './ErrorType';
+import { mapValues } from '../runtime.js';
+import type { ErrorType } from './ErrorType.js';
 import {
     ErrorTypeFromJSON,
     ErrorTypeFromJSONTyped,
     ErrorTypeToJSON,
     ErrorTypeToJSONTyped,
-} from './ErrorType';
+} from './ErrorType.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GifImageCategory } from './GifImageCategory';
+import { mapValues } from '../runtime.js';
+import type { GifImageCategory } from './GifImageCategory.js';
 import {
     GifImageCategoryFromJSON,
     GifImageCategoryFromJSONTyped,
     GifImageCategoryToJSON,
     GifImageCategoryToJSONTyped,
-} from './GifImageCategory';
+} from './GifImageCategory.js';
 
 /**
  * 

@@ -12,42 +12,42 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Group } from './Group';
+import { mapValues } from '../runtime.js';
+import type { Group } from './Group.js';
 import {
     GroupFromJSON,
     GroupFromJSONTyped,
     GroupToJSON,
     GroupToJSONTyped,
-} from './Group';
-import type { RealmGift } from './RealmGift';
+} from './Group.js';
+import type { RealmGift } from './RealmGift.js';
 import {
     RealmGiftFromJSON,
     RealmGiftFromJSONTyped,
     RealmGiftToJSON,
     RealmGiftToJSONTyped,
-} from './RealmGift';
-import type { Post } from './Post';
+} from './RealmGift.js';
+import type { Post } from './Post.js';
 import {
     PostFromJSON,
     PostFromJSONTyped,
     PostToJSON,
     PostToJSONTyped,
-} from './Post';
-import type { Metadata } from './Metadata';
+} from './Post.js';
+import type { Metadata } from './Metadata.js';
 import {
     MetadataFromJSON,
     MetadataFromJSONTyped,
     MetadataToJSON,
     MetadataToJSONTyped,
-} from './Metadata';
-import type { RealmUser } from './RealmUser';
+} from './Metadata.js';
+import type { RealmUser } from './RealmUser.js';
 import {
     RealmUserFromJSON,
     RealmUserFromJSONTyped,
     RealmUserToJSON,
     RealmUserToJSONTyped,
-} from './RealmUser';
+} from './RealmUser.js';
 
 /**
  * 

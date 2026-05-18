@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { TrustScore } from './TrustScore';
+import { mapValues } from '../runtime.js';
+import type { TrustScore } from './TrustScore.js';
 import {
     TrustScoreFromJSON,
     TrustScoreFromJSONTyped,
     TrustScoreToJSON,
     TrustScoreToJSONTyped,
-} from './TrustScore';
-import type { ActivityScore } from './ActivityScore';
+} from './TrustScore.js';
+import type { ActivityScore } from './ActivityScore.js';
 import {
     ActivityScoreFromJSON,
     ActivityScoreFromJSONTyped,
     ActivityScoreToJSON,
     ActivityScoreToJSONTyped,
-} from './ActivityScore';
+} from './ActivityScore.js';
 
 /**
  * 

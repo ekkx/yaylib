@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { SectionNavigation } from './SectionNavigation';
+import { mapValues } from '../runtime.js';
+import type { SectionNavigation } from './SectionNavigation.js';
 import {
     SectionNavigationFromJSON,
     SectionNavigationFromJSONTyped,
     SectionNavigationToJSON,
     SectionNavigationToJSONTyped,
-} from './SectionNavigation';
+} from './SectionNavigation.js';
 
 /**
  * 

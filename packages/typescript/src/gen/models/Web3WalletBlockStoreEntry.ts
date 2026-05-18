@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3WalletBlockStoreItem } from './Web3WalletBlockStoreItem';
+import { mapValues } from '../runtime.js';
+import type { Web3WalletBlockStoreItem } from './Web3WalletBlockStoreItem.js';
 import {
     Web3WalletBlockStoreItemFromJSON,
     Web3WalletBlockStoreItemFromJSONTyped,
     Web3WalletBlockStoreItemToJSON,
     Web3WalletBlockStoreItemToJSONTyped,
-} from './Web3WalletBlockStoreItem';
+} from './Web3WalletBlockStoreItem.js';
 
 /**
  * 

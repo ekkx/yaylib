@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RecentSearch } from './RecentSearch';
+import { mapValues } from '../runtime.js';
+import type { RecentSearch } from './RecentSearch.js';
 import {
     RecentSearchFromJSON,
     RecentSearchFromJSONTyped,
     RecentSearchToJSON,
     RecentSearchToJSONTyped,
-} from './RecentSearch';
+} from './RecentSearch.js';
 
 /**
  * 

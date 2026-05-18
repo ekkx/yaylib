@@ -14,7 +14,7 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   ActiveFollowingsResponse,
   AdditionalSettingsResponse,
@@ -47,7 +47,7 @@ import type {
   UsersByTimestampResponse,
   UsersResponse,
   WebSocketTokenResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     ActiveFollowingsResponseFromJSON,
     ActiveFollowingsResponseToJSON,
@@ -111,7 +111,7 @@ import {
     UsersResponseToJSON,
     WebSocketTokenResponseFromJSON,
     WebSocketTokenResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface AgreePolicyRequest {
     type: string;

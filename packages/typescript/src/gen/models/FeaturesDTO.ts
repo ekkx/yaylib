@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FeaturesPalDTO } from './FeaturesPalDTO';
+import { mapValues } from '../runtime.js';
+import type { FeaturesPalDTO } from './FeaturesPalDTO.js';
 import {
     FeaturesPalDTOFromJSON,
     FeaturesPalDTOFromJSONTyped,
     FeaturesPalDTOToJSON,
     FeaturesPalDTOToJSONTyped,
-} from './FeaturesPalDTO';
+} from './FeaturesPalDTO.js';
 
 /**
  * 

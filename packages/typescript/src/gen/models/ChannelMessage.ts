@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EventMessage } from './EventMessage';
+import { mapValues } from '../runtime.js';
+import type { EventMessage } from './EventMessage.js';
 import {
     EventMessageFromJSON,
     EventMessageFromJSONTyped,
     EventMessageToJSON,
     EventMessageToJSONTyped,
-} from './EventMessage';
+} from './EventMessage.js';
 
 /**
  * 

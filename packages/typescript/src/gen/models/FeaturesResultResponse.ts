@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FeaturesDTO } from './FeaturesDTO';
+import { mapValues } from '../runtime.js';
+import type { FeaturesDTO } from './FeaturesDTO.js';
 import {
     FeaturesDTOFromJSON,
     FeaturesDTOFromJSONTyped,
     FeaturesDTOToJSON,
     FeaturesDTOToJSONTyped,
-} from './FeaturesDTO';
+} from './FeaturesDTO.js';
 
 /**
  * 

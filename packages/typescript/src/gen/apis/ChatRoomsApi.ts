@@ -14,7 +14,7 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   ChatRoomResponse,
   ChatRoomsResponse,
@@ -25,7 +25,7 @@ import type {
   ReadAttachmentRequest,
   TotalChatRequestResponse,
   UnreadStatusResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     ChatRoomResponseFromJSON,
     ChatRoomResponseToJSON,
@@ -45,7 +45,7 @@ import {
     TotalChatRequestResponseToJSON,
     UnreadStatusResponseFromJSON,
     UnreadStatusResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface AcceptChatRequestRequest {
     chatRoomIds?: Array<number>;

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RealmChatRoom } from './RealmChatRoom';
+import { mapValues } from '../runtime.js';
+import type { RealmChatRoom } from './RealmChatRoom.js';
 import {
     RealmChatRoomFromJSON,
     RealmChatRoomFromJSONTyped,
     RealmChatRoomToJSON,
     RealmChatRoomToJSONTyped,
-} from './RealmChatRoom';
+} from './RealmChatRoom.js';
 
 /**
  * 

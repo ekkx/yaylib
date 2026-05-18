@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RealmConferenceCall } from './RealmConferenceCall';
+import { mapValues } from '../runtime.js';
+import type { RealmConferenceCall } from './RealmConferenceCall.js';
 import {
     RealmConferenceCallFromJSON,
     RealmConferenceCallFromJSONTyped,
     RealmConferenceCallToJSON,
     RealmConferenceCallToJSONTyped,
-} from './RealmConferenceCall';
+} from './RealmConferenceCall.js';
 
 /**
  * 

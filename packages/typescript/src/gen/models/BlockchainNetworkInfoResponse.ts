@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { BlockchainDTO } from './BlockchainDTO';
+import { mapValues } from '../runtime.js';
+import type { BlockchainDTO } from './BlockchainDTO.js';
 import {
     BlockchainDTOFromJSON,
     BlockchainDTOFromJSONTyped,
     BlockchainDTOToJSON,
     BlockchainDTOToJSONTyped,
-} from './BlockchainDTO';
+} from './BlockchainDTO.js';
 
 /**
  * 

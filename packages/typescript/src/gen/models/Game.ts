@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PlatformDetails } from './PlatformDetails';
+import { mapValues } from '../runtime.js';
+import type { PlatformDetails } from './PlatformDetails.js';
 import {
     PlatformDetailsFromJSON,
     PlatformDetailsFromJSONTyped,
     PlatformDetailsToJSON,
     PlatformDetailsToJSONTyped,
-} from './PlatformDetails';
+} from './PlatformDetails.js';
 
 /**
  * 

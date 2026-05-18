@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GiftCount } from './GiftCount';
+import { mapValues } from '../runtime.js';
+import type { GiftCount } from './GiftCount.js';
 import {
     GiftCountFromJSON,
     GiftCountFromJSONTyped,
     GiftCountToJSON,
     GiftCountToJSONTyped,
-} from './GiftCount';
-import type { RealmUser } from './RealmUser';
+} from './GiftCount.js';
+import type { RealmUser } from './RealmUser.js';
 import {
     RealmUserFromJSON,
     RealmUserFromJSONTyped,
     RealmUserToJSON,
     RealmUserToJSONTyped,
-} from './RealmUser';
+} from './RealmUser.js';
 
 /**
  * 

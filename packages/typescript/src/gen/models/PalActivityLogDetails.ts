@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PalGrade } from './PalGrade';
+import { mapValues } from '../runtime.js';
+import type { PalGrade } from './PalGrade.js';
 import {
     PalGradeFromJSON,
     PalGradeFromJSONTyped,
     PalGradeToJSON,
     PalGradeToJSONTyped,
-} from './PalGrade';
+} from './PalGrade.js';
 
 /**
  * 

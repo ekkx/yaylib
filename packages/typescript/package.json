@@ -1,21 +1,25 @@
 {
   "name": "yaylib",
-  "version": "2.0.0-pre.1",
+  "version": "2.0.0-rc.1",
   "description": "Yay! API client SDK",
   "author": "ekkx",
   "license": "MIT",
+  "keywords": ["Yay!", "yay-api", "Yay! API", "sdk", "client"],
+  "homepage": "https://github.com/ekkx/yaylib#readme",
+  "bugs": {
+    "url": "https://github.com/ekkx/yaylib/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ekkx/yaylib.git"
   },
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "module": "./dist/esm/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -24,7 +28,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc && tsc -p tsconfig.esm.json",
+    "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "tsx tests/signing.test.ts && tsx tests/auth_refresh.test.ts && tsx tests/session_file.test.ts && tsx tests/auth.test.ts && tsx tests/retry.test.ts && tsx tests/upload.test.ts && tsx tests/event_stream.test.ts && tsx tests/execute_raw.test.ts && tsx tests/cursor_tolerance.test.ts && tsx tests/realm_list.test.ts && tsx tests/host_routes.test.ts && tsx tests/logging.test.ts && tsx tests/transport.test.ts && tsx tests/auth_extra.test.ts && tsx tests/enum_tolerance.test.ts && tsx tests/facade.test.ts && tsx tests/retry_parity.test.ts && tsx tests/transport_parity.test.ts && tsx tests/logging_parity.test.ts && tsx tests/event_stream_parity.test.ts && tsx tests/upload_parity.test.ts && tsx tests/section15_extra.test.ts",
     "prepare": "npm run build"

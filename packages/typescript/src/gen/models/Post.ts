@@ -12,84 +12,84 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Group } from './Group';
+import { mapValues } from '../runtime.js';
+import type { Group } from './Group.js';
 import {
     GroupFromJSON,
     GroupFromJSONTyped,
     GroupToJSON,
     GroupToJSONTyped,
-} from './Group';
-import type { Shareable } from './Shareable';
+} from './Group.js';
+import type { Shareable } from './Shareable.js';
 import {
     ShareableFromJSON,
     ShareableFromJSONTyped,
     ShareableToJSON,
     ShareableToJSONTyped,
-} from './Shareable';
-import type { Survey } from './Survey';
+} from './Shareable.js';
+import type { Survey } from './Survey.js';
 import {
     SurveyFromJSON,
     SurveyFromJSONTyped,
     SurveyToJSON,
     SurveyToJSONTyped,
-} from './Survey';
-import type { PostType } from './PostType';
+} from './Survey.js';
+import type { PostType } from './PostType.js';
 import {
     PostTypeFromJSON,
     PostTypeFromJSONTyped,
     PostTypeToJSON,
     PostTypeToJSONTyped,
-} from './PostType';
-import type { RealmConferenceCall } from './RealmConferenceCall';
+} from './PostType.js';
+import type { RealmConferenceCall } from './RealmConferenceCall.js';
 import {
     RealmConferenceCallFromJSON,
     RealmConferenceCallFromJSONTyped,
     RealmConferenceCallToJSON,
     RealmConferenceCallToJSONTyped,
-} from './RealmConferenceCall';
-import type { ThreadInfo } from './ThreadInfo';
+} from './RealmConferenceCall.js';
+import type { ThreadInfo } from './ThreadInfo.js';
 import {
     ThreadInfoFromJSON,
     ThreadInfoFromJSONTyped,
     ThreadInfoToJSON,
     ThreadInfoToJSONTyped,
-} from './ThreadInfo';
-import type { Video } from './Video';
+} from './ThreadInfo.js';
+import type { Video } from './Video.js';
 import {
     VideoFromJSON,
     VideoFromJSONTyped,
     VideoToJSON,
     VideoToJSONTyped,
-} from './Video';
-import type { GiftCount } from './GiftCount';
+} from './Video.js';
+import type { GiftCount } from './GiftCount.js';
 import {
     GiftCountFromJSON,
     GiftCountFromJSONTyped,
     GiftCountToJSON,
     GiftCountToJSONTyped,
-} from './GiftCount';
-import type { SharedUrl } from './SharedUrl';
+} from './GiftCount.js';
+import type { SharedUrl } from './SharedUrl.js';
 import {
     SharedUrlFromJSON,
     SharedUrlFromJSONTyped,
     SharedUrlToJSON,
     SharedUrlToJSONTyped,
-} from './SharedUrl';
-import type { MessageTag } from './MessageTag';
+} from './SharedUrl.js';
+import type { MessageTag } from './MessageTag.js';
 import {
     MessageTagFromJSON,
     MessageTagFromJSONTyped,
     MessageTagToJSON,
     MessageTagToJSONTyped,
-} from './MessageTag';
-import type { RealmUser } from './RealmUser';
+} from './MessageTag.js';
+import type { RealmUser } from './RealmUser.js';
 import {
     RealmUserFromJSON,
     RealmUserFromJSONTyped,
     RealmUserToJSON,
     RealmUserToJSONTyped,
-} from './RealmUser';
+} from './RealmUser.js';
 
 /**
  * 

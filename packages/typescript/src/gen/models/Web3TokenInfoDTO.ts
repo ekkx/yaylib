@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LocalizedStringDTO } from './LocalizedStringDTO';
+import { mapValues } from '../runtime.js';
+import type { LocalizedStringDTO } from './LocalizedStringDTO.js';
 import {
     LocalizedStringDTOFromJSON,
     LocalizedStringDTOFromJSONTyped,
     LocalizedStringDTOToJSON,
     LocalizedStringDTOToJSONTyped,
-} from './LocalizedStringDTO';
+} from './LocalizedStringDTO.js';
 
 /**
  * 

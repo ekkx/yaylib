@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3WalletPreSignApprove } from './Web3WalletPreSignApprove';
+import { mapValues } from '../runtime.js';
+import type { Web3WalletPreSignApprove } from './Web3WalletPreSignApprove.js';
 import {
     Web3WalletPreSignApproveFromJSON,
     Web3WalletPreSignApproveFromJSONTyped,
     Web3WalletPreSignApproveToJSON,
     Web3WalletPreSignApproveToJSONTyped,
-} from './Web3WalletPreSignApprove';
+} from './Web3WalletPreSignApprove.js';
 
 /**
  * 

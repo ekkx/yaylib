@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Details } from './Details';
+import { mapValues } from '../runtime.js';
+import type { Details } from './Details.js';
 import {
     DetailsFromJSON,
     DetailsFromJSONTyped,
     DetailsToJSON,
     DetailsToJSONTyped,
-} from './Details';
-import type { EmplTransaction } from './EmplTransaction';
+} from './Details.js';
+import type { EmplTransaction } from './EmplTransaction.js';
 import {
     EmplTransactionFromJSON,
     EmplTransactionFromJSONTyped,
     EmplTransactionToJSON,
     EmplTransactionToJSONTyped,
-} from './EmplTransaction';
+} from './EmplTransaction.js';
 
 /**
  * 

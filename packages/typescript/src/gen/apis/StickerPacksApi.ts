@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   StickerPacksResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     StickerPacksResponseFromJSON,
     StickerPacksResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 /**
  * 

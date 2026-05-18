@@ -2,8 +2,8 @@
 // the parsed ErrorResponse body, and the typed ErrorCode for switch /
 // dispatch.
 
-import { ResponseError, FetchError } from "./gen/runtime";
-import { type ErrorCode, ErrCodeUnknown } from "./error_codes";
+import { ResponseError, FetchError } from "./gen/runtime.js";
+import { type ErrorCode, ErrCodeUnknown } from "./error_codes.js";
 
 // APIError carries the raw HTTP body and status. typescript-fetch already
 // throws `ResponseError` (a non-2xx HTTP response) and `FetchError` (a

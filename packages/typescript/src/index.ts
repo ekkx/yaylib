@@ -1,17 +1,17 @@
 // Public surface of yaylib. Re-exports the generated DTO / API layer
 // from ./gen and the hand-written wrappers from the wrapper modules.
 
-export * from "./gen";
+export * from "./gen/index.js";
 
 export {
   Client,
   type ClientOptions,
-} from "./client";
+} from "./client.js";
 
 export {
   type Tokens,
   emptyTokens,
-} from "./tokens";
+} from "./tokens.js";
 
 export {
   type Session,
@@ -20,9 +20,9 @@ export {
   NoSessionError,
   SessionSaveFailedError,
   newMemoryStore,
-} from "./session";
+} from "./session.js";
 
-export { FileSessionStore, newSessionStore } from "./session_file";
+export { FileSessionStore, newSessionStore } from "./session_file.js";
 
 export {
   APIError,
@@ -30,9 +30,9 @@ export {
   errorResponseOf,
   codeOf,
   asAPIError,
-} from "./errors";
+} from "./errors.js";
 
-export * from "./error_codes";
+export * from "./error_codes.js";
 
 export {
   DEFAULT_API_KEY,
@@ -43,21 +43,21 @@ export {
   DEFAULT_EVENT_STREAM_URL,
   MEDIA_CDN_BASE,
   mediaURL,
-} from "./config";
+} from "./config.js";
 
 export {
   type SignedInfo,
   generateSignedInfoAt,
   generateSignedVersion,
   generateXJwt,
-} from "./signing";
+} from "./signing.js";
 
-export { type LoginWithEmailParams, loginWithEmail } from "./auth";
+export { type LoginWithEmailParams, loginWithEmail } from "./auth.js";
 
 export {
   type RetryPolicy,
   DEFAULT_RETRY_POLICY,
-} from "./retry";
+} from "./retry.js";
 
 export {
   type Upload,
@@ -65,7 +65,7 @@ export {
   type VideoBody,
   MAX_IMAGES_PER_UPLOAD,
   MAX_REPORT_IMAGES_PER_UPLOAD,
-} from "./upload";
+} from "./upload.js";
 
 export {
   type Channel,
@@ -73,7 +73,7 @@ export {
   messagesChannel,
   groupUpdatesChannel,
   groupPostsChannel,
-} from "./channels";
+} from "./channels.js";
 
 export type {
   Event,
@@ -85,7 +85,7 @@ export type {
   GroupUpdatedEvent,
   CallFinishedEvent,
   RawEvent,
-} from "./events";
+} from "./events.js";
 
 export {
   EventStream,
@@ -93,7 +93,7 @@ export {
   type EventStreamOptions,
   type ReconnectPolicy,
   type WebSocketLike,
-} from "./event_stream";
+} from "./event_stream.js";
 
-export { type WebSocketFactory } from "./client";
-export { type Logger, type LogFields, noopLogger } from "./logger";
+export { type WebSocketFactory } from "./client.js";
+export { type Logger, type LogFields, noopLogger } from "./logger.js";

@@ -12,77 +12,77 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ModelGroup } from './ModelGroup';
+import { mapValues } from '../runtime.js';
+import type { ModelGroup } from './ModelGroup.js';
 import {
     ModelGroupFromJSON,
     ModelGroupFromJSONTyped,
     ModelGroupToJSON,
     ModelGroupToJSONTyped,
-} from './ModelGroup';
-import type { PostGift } from './PostGift';
+} from './ModelGroup.js';
+import type { PostGift } from './PostGift.js';
 import {
     PostGiftFromJSON,
     PostGiftFromJSONTyped,
     PostGiftToJSON,
     PostGiftToJSONTyped,
-} from './PostGift';
-import type { User } from './User';
+} from './PostGift.js';
+import type { User } from './User.js';
 import {
     UserFromJSON,
     UserFromJSONTyped,
     UserToJSON,
     UserToJSONTyped,
-} from './User';
-import type { ModelThreadInfo } from './ModelThreadInfo';
+} from './User.js';
+import type { ModelThreadInfo } from './ModelThreadInfo.js';
 import {
     ModelThreadInfoFromJSON,
     ModelThreadInfoFromJSONTyped,
     ModelThreadInfoToJSON,
     ModelThreadInfoToJSONTyped,
-} from './ModelThreadInfo';
-import type { ModelVideo } from './ModelVideo';
+} from './ModelThreadInfo.js';
+import type { ModelVideo } from './ModelVideo.js';
 import {
     ModelVideoFromJSON,
     ModelVideoFromJSONTyped,
     ModelVideoToJSON,
     ModelVideoToJSONTyped,
-} from './ModelVideo';
-import type { ModelMessageTag } from './ModelMessageTag';
+} from './ModelVideo.js';
+import type { ModelMessageTag } from './ModelMessageTag.js';
 import {
     ModelMessageTagFromJSON,
     ModelMessageTagFromJSONTyped,
     ModelMessageTagToJSON,
     ModelMessageTagToJSONTyped,
-} from './ModelMessageTag';
-import type { ConferenceCall } from './ConferenceCall';
+} from './ModelMessageTag.js';
+import type { ConferenceCall } from './ConferenceCall.js';
 import {
     ConferenceCallFromJSON,
     ConferenceCallFromJSONTyped,
     ConferenceCallToJSON,
     ConferenceCallToJSONTyped,
-} from './ConferenceCall';
-import type { ModelShareable } from './ModelShareable';
+} from './ConferenceCall.js';
+import type { ModelShareable } from './ModelShareable.js';
 import {
     ModelShareableFromJSON,
     ModelShareableFromJSONTyped,
     ModelShareableToJSON,
     ModelShareableToJSONTyped,
-} from './ModelShareable';
-import type { ModelSharedUrl } from './ModelSharedUrl';
+} from './ModelShareable.js';
+import type { ModelSharedUrl } from './ModelSharedUrl.js';
 import {
     ModelSharedUrlFromJSON,
     ModelSharedUrlFromJSONTyped,
     ModelSharedUrlToJSON,
     ModelSharedUrlToJSONTyped,
-} from './ModelSharedUrl';
-import type { ModelSurvey } from './ModelSurvey';
+} from './ModelSharedUrl.js';
+import type { ModelSurvey } from './ModelSurvey.js';
 import {
     ModelSurveyFromJSON,
     ModelSurveyFromJSONTyped,
     ModelSurveyToJSON,
     ModelSurveyToJSONTyped,
-} from './ModelSurvey';
+} from './ModelSurvey.js';
 
 /**
  * 

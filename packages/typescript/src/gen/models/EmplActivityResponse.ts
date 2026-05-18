@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EmplActivityDTO } from './EmplActivityDTO';
+import { mapValues } from '../runtime.js';
+import type { EmplActivityDTO } from './EmplActivityDTO.js';
 import {
     EmplActivityDTOFromJSON,
     EmplActivityDTOFromJSONTyped,
     EmplActivityDTOToJSON,
     EmplActivityDTOToJSONTyped,
-} from './EmplActivityDTO';
+} from './EmplActivityDTO.js';
 
 /**
  * 

@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   ActivitiesResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     ActivitiesResponseFromJSON,
     ActivitiesResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface GetUserActivitiesRequest {
     fromTimestamp?: number | null;

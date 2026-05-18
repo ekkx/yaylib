@@ -12,28 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Type } from './Type';
+import { mapValues } from '../runtime.js';
+import type { Type } from './Type.js';
 import {
     TypeFromJSON,
     TypeFromJSONTyped,
     TypeToJSON,
     TypeToJSONTyped,
-} from './Type';
-import type { ChatInvitation } from './ChatInvitation';
+} from './Type.js';
+import type { ChatInvitation } from './ChatInvitation.js';
 import {
     ChatInvitationFromJSON,
     ChatInvitationFromJSONTyped,
     ChatInvitationToJSON,
     ChatInvitationToJSONTyped,
-} from './ChatInvitation';
-import type { ConferenceCall } from './ConferenceCall';
+} from './ChatInvitation.js';
+import type { ConferenceCall } from './ConferenceCall.js';
 import {
     ConferenceCallFromJSON,
     ConferenceCallFromJSONTyped,
     ConferenceCallToJSON,
     ConferenceCallToJSONTyped,
-} from './ConferenceCall';
+} from './ConferenceCall.js';
 
 /**
  * 

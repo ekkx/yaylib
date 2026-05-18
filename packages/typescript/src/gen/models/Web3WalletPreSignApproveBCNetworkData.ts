@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Web3WalletGasPercent } from './Web3WalletGasPercent';
+import { mapValues } from '../runtime.js';
+import type { Web3WalletGasPercent } from './Web3WalletGasPercent.js';
 import {
     Web3WalletGasPercentFromJSON,
     Web3WalletGasPercentFromJSONTyped,
     Web3WalletGasPercentToJSON,
     Web3WalletGasPercentToJSONTyped,
-} from './Web3WalletGasPercent';
+} from './Web3WalletGasPercent.js';
 
 /**
  * 

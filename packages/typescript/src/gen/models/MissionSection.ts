@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { MissionItem } from './MissionItem';
+import { mapValues } from '../runtime.js';
+import type { MissionItem } from './MissionItem.js';
 import {
     MissionItemFromJSON,
     MissionItemFromJSONTyped,
     MissionItemToJSON,
     MissionItemToJSONTyped,
-} from './MissionItem';
-import type { MissionSectionHeader } from './MissionSectionHeader';
+} from './MissionItem.js';
+import type { MissionSectionHeader } from './MissionSectionHeader.js';
 import {
     MissionSectionHeaderFromJSON,
     MissionSectionHeaderFromJSONTyped,
     MissionSectionHeaderToJSON,
     MissionSectionHeaderToJSONTyped,
-} from './MissionSectionHeader';
+} from './MissionSectionHeader.js';
 
 /**
  * 

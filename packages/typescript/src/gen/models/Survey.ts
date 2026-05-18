@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Choice } from './Choice';
+import { mapValues } from '../runtime.js';
+import type { Choice } from './Choice.js';
 import {
     ChoiceFromJSON,
     ChoiceFromJSONTyped,
     ChoiceToJSON,
     ChoiceToJSONTyped,
-} from './Choice';
+} from './Choice.js';
 
 /**
  * 

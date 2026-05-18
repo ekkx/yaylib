@@ -11,7 +11,7 @@
 
 import { createHash, createHmac } from "node:crypto";
 
-import { SIGNED_INFO_SHARED_KEY, SIGNED_VERSION_PLATFORM } from "./config";
+import { SIGNED_INFO_SHARED_KEY, SIGNED_VERSION_PLATFORM } from "./config.js";
 
 // SignedInfo bundles the timestamp and MD5 hash a Yay! request needs to
 // pass server-side validation. The two values are bound: changing one

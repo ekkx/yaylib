@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PalRaceItemDTO } from './PalRaceItemDTO';
+import { mapValues } from '../runtime.js';
+import type { PalRaceItemDTO } from './PalRaceItemDTO.js';
 import {
     PalRaceItemDTOFromJSON,
     PalRaceItemDTOFromJSONTyped,
     PalRaceItemDTOToJSON,
     PalRaceItemDTOToJSONTyped,
-} from './PalRaceItemDTO';
+} from './PalRaceItemDTO.js';
 
 /**
  * 

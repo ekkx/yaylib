@@ -24,7 +24,7 @@ import {
   randomFilenamePrefix,
   thumbnailFilename,
   videoFilename,
-} from "./image";
+} from "./image.js";
 
 export { MAX_IMAGES_PER_UPLOAD, MAX_REPORT_IMAGES_PER_UPLOAD };
 

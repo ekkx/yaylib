@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { CodeResponse } from './CodeResponse';
+import { mapValues } from '../runtime.js';
+import type { CodeResponse } from './CodeResponse.js';
 import {
     CodeResponseFromJSON,
     CodeResponseFromJSONTyped,
     CodeResponseToJSON,
     CodeResponseToJSONTyped,
-} from './CodeResponse';
+} from './CodeResponse.js';
 
 /**
  * 

@@ -12,28 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RecentSearchType } from './RecentSearchType';
+import { mapValues } from '../runtime.js';
+import type { RecentSearchType } from './RecentSearchType.js';
 import {
     RecentSearchTypeFromJSON,
     RecentSearchTypeFromJSONTyped,
     RecentSearchTypeToJSON,
     RecentSearchTypeToJSONTyped,
-} from './RecentSearchType';
-import type { User } from './User';
+} from './RecentSearchType.js';
+import type { User } from './User.js';
 import {
     UserFromJSON,
     UserFromJSONTyped,
     UserToJSON,
     UserToJSONTyped,
-} from './User';
-import type { ModelPostTag } from './ModelPostTag';
+} from './User.js';
+import type { ModelPostTag } from './ModelPostTag.js';
 import {
     ModelPostTagFromJSON,
     ModelPostTagFromJSONTyped,
     ModelPostTagToJSON,
     ModelPostTagToJSONTyped,
-} from './ModelPostTag';
+} from './ModelPostTag.js';
 
 /**
  * 

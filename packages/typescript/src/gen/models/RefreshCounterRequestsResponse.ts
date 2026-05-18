@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RefreshCounterRequest } from './RefreshCounterRequest';
+import { mapValues } from '../runtime.js';
+import type { RefreshCounterRequest } from './RefreshCounterRequest.js';
 import {
     RefreshCounterRequestFromJSON,
     RefreshCounterRequestFromJSONTyped,
     RefreshCounterRequestToJSON,
     RefreshCounterRequestToJSONTyped,
-} from './RefreshCounterRequest';
+} from './RefreshCounterRequest.js';
 
 /**
  * 

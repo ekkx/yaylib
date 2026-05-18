@@ -14,14 +14,14 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   VoteSurveyResponse,
-} from '../models/index';
+} from '../models/index.js';
 import {
     VoteSurveyResponseFromJSON,
     VoteSurveyResponseToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface VoteSurveyRequest {
     id: number;

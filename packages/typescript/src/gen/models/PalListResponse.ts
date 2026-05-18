@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PalDTO } from './PalDTO';
+import { mapValues } from '../runtime.js';
+import type { PalDTO } from './PalDTO.js';
 import {
     PalDTOFromJSON,
     PalDTOFromJSONTyped,
     PalDTOToJSON,
     PalDTOToJSONTyped,
-} from './PalDTO';
+} from './PalDTO.js';
 
 /**
  * 

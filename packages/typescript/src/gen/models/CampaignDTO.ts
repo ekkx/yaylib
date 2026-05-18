@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { UserCampaign } from './UserCampaign';
+import { mapValues } from '../runtime.js';
+import type { UserCampaign } from './UserCampaign.js';
 import {
     UserCampaignFromJSON,
     UserCampaignFromJSONTyped,
     UserCampaignToJSON,
     UserCampaignToJSONTyped,
-} from './UserCampaign';
+} from './UserCampaign.js';
 
 /**
  * 

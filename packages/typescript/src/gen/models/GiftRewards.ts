@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Requirement } from './Requirement';
+import { mapValues } from '../runtime.js';
+import type { Requirement } from './Requirement.js';
 import {
     RequirementFromJSON,
     RequirementFromJSONTyped,
     RequirementToJSON,
     RequirementToJSONTyped,
-} from './Requirement';
+} from './Requirement.js';
 
 /**
  * 

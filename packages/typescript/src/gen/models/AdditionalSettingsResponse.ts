@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Settings } from './Settings';
+import { mapValues } from '../runtime.js';
+import type { Settings } from './Settings.js';
 import {
     SettingsFromJSON,
     SettingsFromJSONTyped,
     SettingsToJSON,
     SettingsToJSONTyped,
-} from './Settings';
+} from './Settings.js';
 
 /**
  * 

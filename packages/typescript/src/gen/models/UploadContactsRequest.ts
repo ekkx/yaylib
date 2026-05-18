@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Contact } from './Contact';
+import { mapValues } from '../runtime.js';
+import type { Contact } from './Contact.js';
 import {
     ContactFromJSON,
     ContactFromJSONTyped,
     ContactToJSON,
     ContactToJSONTyped,
-} from './Contact';
+} from './Contact.js';
 
 /**
  * 

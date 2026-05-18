@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GifImage } from './GifImage';
+import { mapValues } from '../runtime.js';
+import type { GifImage } from './GifImage.js';
 import {
     GifImageFromJSON,
     GifImageFromJSONTyped,
     GifImageToJSON,
     GifImageToJSONTyped,
-} from './GifImage';
+} from './GifImage.js';
 
 /**
  * 

@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { TwoFaAuthRequiredDTO } from './TwoFaAuthRequiredDTO';
+import { mapValues } from '../runtime.js';
+import type { TwoFaAuthRequiredDTO } from './TwoFaAuthRequiredDTO.js';
 import {
     TwoFaAuthRequiredDTOFromJSON,
     TwoFaAuthRequiredDTOFromJSONTyped,
     TwoFaAuthRequiredDTOToJSON,
     TwoFaAuthRequiredDTOToJSONTyped,
-} from './TwoFaAuthRequiredDTO';
+} from './TwoFaAuthRequiredDTO.js';
 
 /**
  * 

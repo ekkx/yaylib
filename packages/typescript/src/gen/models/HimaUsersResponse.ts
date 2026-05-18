@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { UserWrapper } from './UserWrapper';
+import { mapValues } from '../runtime.js';
+import type { UserWrapper } from './UserWrapper.js';
 import {
     UserWrapperFromJSON,
     UserWrapperFromJSONTyped,
     UserWrapperToJSON,
     UserWrapperToJSONTyped,
-} from './UserWrapper';
+} from './UserWrapper.js';
 
 /**
  * 

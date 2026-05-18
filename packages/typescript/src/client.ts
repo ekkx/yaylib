@@ -34,10 +34,10 @@ import {
   SurveysApi,
   ThreadsApi,
   UsersApi,
-} from "./gen/apis";
-import { Configuration, ResponseError, type ApiResponse } from "./gen/runtime";
+} from "./gen/apis/index.js";
+import { Configuration, ResponseError, type ApiResponse } from "./gen/runtime.js";
 
-import { APIError, asAPIError } from "./errors";
+import { APIError, asAPIError } from "./errors.js";
 import {
   type Upload,
   type UploadCategory,
@@ -59,8 +59,8 @@ import {
   userCoverUpload,
   userPostUpload,
   videoCallSnapshotUpload,
-} from "./upload";
-import { EventStream, type EventStreamOptions, openEventStream } from "./event_stream";
+} from "./upload.js";
+import { EventStream, type EventStreamOptions, openEventStream } from "./event_stream.js";
 
 import {
   DEFAULT_ACCEPT_LANGUAGE,
@@ -80,19 +80,20 @@ import {
   DEFAULT_EVENT_STREAM_URL,
   buildDeviceInfo,
   buildUserAgent,
-} from "./config";
-import { type Logger, noopLogger } from "./logger";
-import { DEFAULT_RETRY_POLICY, type RetryPolicy, buildRetryMiddleware } from "./retry";
-import type { Session, SessionStore } from "./session";
-import type { Tokens } from "./tokens";
-import { emptyTokens } from "./tokens";
-import { type GeneratedFacade, installGeneratedFacade } from "./gen/facade";
+} from "./config.js";
+import { type Logger, noopLogger } from "./logger.js";
+import { DEFAULT_RETRY_POLICY, type RetryPolicy, buildRetryMiddleware } from "./retry.js";
+import type { Session, SessionStore } from "./session.js";
+import type { Tokens } from "./tokens.js";
+import { emptyTokens } from "./tokens.js";
+import { loginWithEmail as loginWithEmailWrapper } from "./auth.js";
+import { type GeneratedFacade, installGeneratedFacade } from "./gen/facade.js";
 import {
   buildAuthRefreshMiddleware,
   buildClientIPMiddleware,
   buildHeadersMiddleware,
   buildHostRoutingMiddleware,
-} from "./transport";
+} from "./transport.js";
 
 export interface ClientOptions {
   baseURL?: string;
@@ -126,7 +127,7 @@ export interface ClientOptions {
 // WebSocketFactory builds a connection for the event stream. The shape is
 // the standard WebSocket constructor; only the slice event_stream.ts uses
 // is required (see WebSocketLike there).
-export type WebSocketFactory = (url: string) => import("./event_stream").WebSocketLike;
+export type WebSocketFactory = (url: string) => import("./event_stream.js").WebSocketLike;
 
 // Stub UUIDv4 generator. PORTING.md §14 requires crypto-grade randomness
 // and a failure-MUST-throw contract; a fuller implementation lands when
@@ -367,12 +368,9 @@ export class Client {
    * For 2FA-required accounts, pass `twoFACode` on the retry.
    */
   loginWithEmail(
-    params: import("./auth").LoginWithEmailParams,
-  ): Promise<import("./gen/models/LoginUserResponse").LoginUserResponse> {
-    // Lazy import to avoid a circular module load at construction time.
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { loginWithEmail } = require("./auth") as typeof import("./auth");
-    return loginWithEmail(this, params);
+    params: import("./auth.js").LoginWithEmailParams,
+  ): Promise<import("./gen/models/LoginUserResponse.js").LoginUserResponse> {
+    return loginWithEmailWrapper(this, params);
   }
 
   // rawFetch is the unwrapped fetch — no generated middleware, so no

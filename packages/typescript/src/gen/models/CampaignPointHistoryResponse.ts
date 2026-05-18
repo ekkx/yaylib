@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { CampaignPointHistoryDTO } from './CampaignPointHistoryDTO';
+import { mapValues } from '../runtime.js';
+import type { CampaignPointHistoryDTO } from './CampaignPointHistoryDTO.js';
 import {
     CampaignPointHistoryDTOFromJSON,
     CampaignPointHistoryDTOFromJSONTyped,
     CampaignPointHistoryDTOToJSON,
     CampaignPointHistoryDTOToJSONTyped,
-} from './CampaignPointHistoryDTO';
+} from './CampaignPointHistoryDTO.js';
 
 /**
  * 

@@ -1,18 +1,27 @@
 [tool.poetry]
 name = "yaylib"
-version = "0.1.0"
-description = "Yay! API"
-authors = ["Yay! <noreply@example.com>"]
-license = "NoLicense"
+version = "2.0.0-rc.1"
+description = "Yay! API client SDK"
+authors = ["ekkx"]
+license = "MIT"
 readme = "README.md"
-repository = "https://github.com/ekkx/yaylib-py"
+homepage = "https://github.com/ekkx/yaylib"
+repository = "https://github.com/ekkx/yaylib"
 keywords = ["Yay!", "yay-api", "Yay! API"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Typing :: Typed",
+]
 include = ["yaylib/py.typed"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 
-urllib3 = ">= 1.25.3 < 3.0.0"
+urllib3 = ">=1.25.3,<3.0.0"
 python-dateutil = ">= 2.8.2"
 aiohttp = ">= 3.8.4"
 aiohttp-retry = ">= 2.8.3"
@@ -20,7 +29,7 @@ pydantic = ">= 2"
 typing-extensions = ">= 4.7.1"
 pillow = ">= 9.0.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = ">= 7.2.1"
 pytest-asyncio = ">= 0.21"
 pytest-cov = ">= 2.8.1"
@@ -31,8 +40,8 @@ mypy = ">= 1.5"
 
 
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.pylint.'MESSAGES CONTROL']
 extension-pkg-whitelist = "pydantic"

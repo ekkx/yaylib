@@ -14,7 +14,7 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   CreateGroupThreadRequest,
   GroupThreadListResponse,
@@ -22,7 +22,7 @@ import type {
   PostType,
   PostsResponse,
   ThreadInfo,
-} from '../models/index';
+} from '../models/index.js';
 import {
     CreateGroupThreadRequestFromJSON,
     CreateGroupThreadRequestToJSON,
@@ -36,7 +36,7 @@ import {
     PostsResponseToJSON,
     ThreadInfoFromJSON,
     ThreadInfoToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface AddThreadMemberRequest {
     threadId: number;

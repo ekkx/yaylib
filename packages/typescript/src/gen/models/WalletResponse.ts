@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { CoinAmount } from './CoinAmount';
+import { mapValues } from '../runtime.js';
+import type { CoinAmount } from './CoinAmount.js';
 import {
     CoinAmountFromJSON,
     CoinAmountFromJSONTyped,
     CoinAmountToJSON,
     CoinAmountToJSONTyped,
-} from './CoinAmount';
+} from './CoinAmount.js';
 
 /**
  * 

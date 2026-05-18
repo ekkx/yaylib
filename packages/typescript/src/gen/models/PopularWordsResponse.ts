@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PopularWord } from './PopularWord';
+import { mapValues } from '../runtime.js';
+import type { PopularWord } from './PopularWord.js';
 import {
     PopularWordFromJSON,
     PopularWordFromJSONTyped,
     PopularWordToJSON,
     PopularWordToJSONTyped,
-} from './PopularWord';
+} from './PopularWord.js';
 
 /**
  * 

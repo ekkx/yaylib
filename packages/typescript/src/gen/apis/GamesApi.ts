@@ -14,17 +14,17 @@
  */
 
 
-import * as runtime from '../runtime';
+import * as runtime from '../runtime.js';
 import type {
   GamesResponse,
   Walkthrough,
-} from '../models/index';
+} from '../models/index.js';
 import {
     GamesResponseFromJSON,
     GamesResponseToJSON,
     WalkthroughFromJSON,
     WalkthroughToJSON,
-} from '../models/index';
+} from '../models/index.js';
 
 export interface ListGameAppsRequest {
     number?: number;

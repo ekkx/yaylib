@@ -9,9 +9,9 @@ import type {
   RequestContext,
   ResponseContext,
   FetchParams,
-} from "./gen/runtime";
-import { hostRoutes } from "./gen/hostRoutes";
-import type { Logger } from "./logger";
+} from "./gen/runtime.js";
+import { hostRoutes } from "./gen/hostRoutes.js";
+import type { Logger } from "./logger.js";
 
 export interface TransportContext {
   logger: Logger;

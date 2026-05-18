@@ -12,42 +12,42 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RaceReward } from './RaceReward';
+import { mapValues } from '../runtime.js';
+import type { RaceReward } from './RaceReward.js';
 import {
     RaceRewardFromJSON,
     RaceRewardFromJSONTyped,
     RaceRewardToJSON,
     RaceRewardToJSONTyped,
-} from './RaceReward';
-import type { PalRank } from './PalRank';
+} from './RaceReward.js';
+import type { PalRank } from './PalRank.js';
 import {
     PalRankFromJSON,
     PalRankFromJSONTyped,
     PalRankToJSON,
     PalRankToJSONTyped,
-} from './PalRank';
-import type { PalRaceLeagueDTO } from './PalRaceLeagueDTO';
+} from './PalRank.js';
+import type { PalRaceLeagueDTO } from './PalRaceLeagueDTO.js';
 import {
     PalRaceLeagueDTOFromJSON,
     PalRaceLeagueDTOFromJSONTyped,
     PalRaceLeagueDTOToJSON,
     PalRaceLeagueDTOToJSONTyped,
-} from './PalRaceLeagueDTO';
-import type { Pal } from './Pal';
+} from './PalRaceLeagueDTO.js';
+import type { Pal } from './Pal.js';
 import {
     PalFromJSON,
     PalFromJSONTyped,
     PalToJSON,
     PalToJSONTyped,
-} from './Pal';
-import type { Reward } from './Reward';
+} from './Pal.js';
+import type { Reward } from './Reward.js';
 import {
     RewardFromJSON,
     RewardFromJSONTyped,
     RewardToJSON,
     RewardToJSONTyped,
-} from './Reward';
+} from './Reward.js';
 
 /**
  * 

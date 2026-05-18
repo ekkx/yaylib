@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ModelUserRank } from './ModelUserRank';
+import { mapValues } from '../runtime.js';
+import type { ModelUserRank } from './ModelUserRank.js';
 import {
     ModelUserRankFromJSON,
     ModelUserRankFromJSONTyped,
     ModelUserRankToJSON,
     ModelUserRankToJSONTyped,
-} from './ModelUserRank';
+} from './ModelUserRank.js';
 
 /**
  * 

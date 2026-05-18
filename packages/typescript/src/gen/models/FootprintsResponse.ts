@@ -12,14 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FootprintDTO } from './FootprintDTO';
+import { mapValues } from '../runtime.js';
+import type { FootprintDTO } from './FootprintDTO.js';
 import {
     FootprintDTOFromJSON,
     FootprintDTOFromJSONTyped,
     FootprintDTOToJSON,
     FootprintDTOToJSONTyped,
-} from './FootprintDTO';
+} from './FootprintDTO.js';
 
 /**
  * 

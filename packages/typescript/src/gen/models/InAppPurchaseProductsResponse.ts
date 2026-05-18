@@ -12,21 +12,21 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ProductQuota } from './ProductQuota';
+import { mapValues } from '../runtime.js';
+import type { ProductQuota } from './ProductQuota.js';
 import {
     ProductQuotaFromJSON,
     ProductQuotaFromJSONTyped,
     ProductQuotaToJSON,
     ProductQuotaToJSONTyped,
-} from './ProductQuota';
-import type { InAppPurchaseProduct } from './InAppPurchaseProduct';
+} from './ProductQuota.js';
+import type { InAppPurchaseProduct } from './InAppPurchaseProduct.js';
 import {
     InAppPurchaseProductFromJSON,
     InAppPurchaseProductFromJSONTyped,
     InAppPurchaseProductToJSON,
     InAppPurchaseProductToJSONTyped,
-} from './InAppPurchaseProduct';
+} from './InAppPurchaseProduct.js';
 
 /**
  * 
