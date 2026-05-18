@@ -73,15 +73,15 @@ async with client.open_event_stream() as stream:
 
 ### サンプル
 
-実行できるサンプルを [`examples/python/`](https://github.com/ekkx/yaylib/tree/master/examples/python) に用意しています。
+実行できるサンプルを [`examples/`](https://github.com/ekkx/yaylib/tree/master/examples) に用意しています（全言語共通）。
 
-- `01_timeline.py` — 認証 + タイムライン取得
-- `02_post.py` — テキスト投稿
-- `03_event_stream.py` — イベントストリームの簡単なボット
-- `04_session_and_errors.py` — セッション永続化とエラー処理
+- 認証 + タイムライン取得
+- テキスト投稿
+- イベントストリームの簡単なボット
+- セッション永続化とエラー処理
 
 ```bash
-YAY_EMAIL=... YAY_PASSWORD=... python examples/python/01_timeline.py
+YAY_EMAIL=... YAY_PASSWORD=... python examples/python/timeline.py
 ```
 
 ### ⚖️ ライセンス

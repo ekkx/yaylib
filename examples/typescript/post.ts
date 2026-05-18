@@ -1,7 +1,7 @@
 // テキスト投稿の例。投稿系のエンドポイントは X-Jwt を必要とします
 // （client.generateXJwt() で取得し、そのまま渡します）。
 //
-//   YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/typescript/02_post.ts
+//   YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/typescript/post.ts
 import { Client } from "yaylib";
 
 const client = new Client();

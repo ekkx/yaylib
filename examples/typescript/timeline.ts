@@ -1,6 +1,6 @@
 // 認証してタイムラインを取得する最小例。
 //
-//   YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/typescript/01_timeline.ts
+//   YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/typescript/timeline.ts
 import { Client, NoreplyMode } from "yaylib";
 
 const client = new Client();

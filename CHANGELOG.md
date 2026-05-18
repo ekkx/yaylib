@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.0.1
+
+- TypeScript / Python の `Client` に署名・JWT ヘルパーをメソッドとして追加
+  （`generateXJwt` / `generateSignedVersion` / `generateSignedInfoAt` /
+  `generateSignedInfo` / `generateCallActionSignature` /
+  `validateCallActionSignature`）。クライアントが保持している API キーや
+  UUID を呼び出し側で渡す必要がなくなり、Go と同じ使い心地になりました
+  （従来のスタンドアロン関数も引き続き利用できます）。
+- 実行できるサンプルを全言語ぶん追加し、`examples/` に集約しました。
+
+> Go の API に変更はありません（このリリースでの新規追加は TypeScript /
+> Python のみ）。
+
 ## v2.0.0
 
 最初の安定版。Go / TypeScript / Python の 3 言語で同一の API 契約を提供します。

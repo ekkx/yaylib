@@ -5,7 +5,7 @@ FileSessionStore を渡すと、ログイン状態がファイルに保存され
 非 2xx は yaylib.APIError として送出され、code_of / error_response_of
 で中身を判定できます。
 
-    YAY_EMAIL=... YAY_PASSWORD=... python examples/python/04_session_and_errors.py
+    YAY_EMAIL=... YAY_PASSWORD=... python examples/python/session_and_errors.py
 """
 
 import asyncio

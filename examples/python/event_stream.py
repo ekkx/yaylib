@@ -1,7 +1,7 @@
 """イベントストリームで新着チャットメッセージを受信する簡単なボット。
 Ctrl-C で終了します。
 
-    YAY_EMAIL=... YAY_PASSWORD=... python examples/python/03_event_stream.py
+    YAY_EMAIL=... YAY_PASSWORD=... python examples/python/event_stream.py
 """
 
 import asyncio

@@ -2,7 +2,7 @@
 （client.generate_x_jwt() で取得し、そのまま渡します。5 秒で失効するため
 呼び出しごとに再生成してください）。
 
-    YAY_EMAIL=... YAY_PASSWORD=... python examples/python/02_post.py
+    YAY_EMAIL=... YAY_PASSWORD=... python examples/python/post.py
 """
 
 import asyncio

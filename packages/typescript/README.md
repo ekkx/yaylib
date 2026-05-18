@@ -70,15 +70,15 @@ await sub.closed;
 
 ### サンプル
 
-実行できるサンプルを [`examples/typescript/`](https://github.com/ekkx/yaylib/tree/master/examples/typescript) に用意しています。
+実行できるサンプルを [`examples/`](https://github.com/ekkx/yaylib/tree/master/examples) に用意しています（全言語共通）。
 
-- `01_timeline.ts` — 認証 + タイムライン取得
-- `02_post.ts` — テキスト投稿
-- `03_event_stream.ts` — イベントストリームの簡単なボット
-- `04_session_and_errors.ts` — セッション永続化とエラー処理
+- 認証 + タイムライン取得
+- テキスト投稿
+- イベントストリームの簡単なボット
+- セッション永続化とエラー処理
 
 ```bash
-YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/typescript/01_timeline.ts
+YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/typescript/timeline.ts
 ```
 
 ### ⚖️ ライセンス

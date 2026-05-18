@@ -5,7 +5,7 @@
 // 非 2xx は APIError として throw され、codeOf / errorResponseOf で
 // 中身を判定できます。
 //
-//   YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/typescript/04_session_and_errors.ts
+//   YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/typescript/session_and_errors.ts
 import {
   Client,
   NoreplyMode,
