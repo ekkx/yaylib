@@ -30,7 +30,7 @@
     "prepare": "npm run build"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
