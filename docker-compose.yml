@@ -1,0 +1,48 @@
+# Containerized development for the SDK and its bundled mock server.
+#
+#   docker compose run --rm dev go test ./.
+#   docker compose run --rm dev bash scripts/mock-parity.sh
+#   docker compose run --rm dev bash          # interactive shell
+#   docker compose up mockd                   # mock server on :8080
+#
+# Source is bind-mounted; toolchains, caches and node_modules live in
+# named volumes, so nothing is installed on the host.
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/workspace
+      - go-mod:/cache/go/mod
+      - go-build:/cache/go/build
+      - npm-cache:/cache/npm
+      - pip-cache:/cache/pip
+      # Keep node_modules in a volume so the bind mount never writes it
+      # to the host tree.
+      - ts-node-modules:/workspace/packages/typescript/node_modules
+    command: bash
+
+  mockd:
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile
+    working_dir: /workspace/mockd
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/workspace
+      - go-mod:/cache/go/mod
+      - go-build:/cache/go/build
+    command: go run . -addr 0.0.0.0:8080
+
+volumes:
+  go-mod:
+  go-build:
+  npm-cache:
+  pip-cache:
+  ts-node-modules:
