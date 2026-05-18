@@ -305,9 +305,21 @@ class Subscription:
                 item = await self._queue.get()
                 if item is _CLOSED:
                     return
-                wire = _TYPE_TO_WIRE.get(type(item))
-                for cb in self._handlers.get(wire or "", []):
+                # Catch-all sees every event (incl. RawEvent); on_raw
+                # sees unknown/raw events; the typed on_<event> sees its
+                # own. A known event reaches "*" + its typed handler; an
+                # unknown one reaches "*" + on_raw — so RawEvent stays
+                # observable via this primary (push) API, matching the
+                # Go channel and the TS onEvent/onRaw.
+                for cb in self._handlers.get("*", []):
                     self._spawn_handler(cb, item)
+                if isinstance(item, RawEvent):
+                    for cb in self._handlers.get("__raw__", []):
+                        self._spawn_handler(cb, item)
+                wire = _TYPE_TO_WIRE.get(type(item))
+                if wire:
+                    for cb in self._handlers.get(wire, []):
+                        self._spawn_handler(cb, item)
         except asyncio.CancelledError:
             raise
 
@@ -331,6 +343,18 @@ class Subscription:
 
     def on_call_finished(self, fn):
         return self._register("conference_call_finished", fn)
+
+    def on_event(self, fn):
+        """Catch-all: every event, including RawEvent. Mirrors the Go
+        channel and the TS onEvent."""
+        return self._register("*", fn)
+
+    def on_raw(self, fn):
+        """Unknown / unmodelled wire events (RawEvent). Without this an
+        event the SDK doesn't model would be unreachable from the
+        decorator API (PORTING.md §10: the event inventory is fixed and
+        RawEvent must stay observable in every language)."""
+        return self._register("__raw__", fn)
 
     # ---- delivery (read-pump side) ----
 

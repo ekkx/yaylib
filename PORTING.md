@@ -503,16 +503,36 @@ on top.
 
 Common surface (same shape, language-idiomatic API):
 
+The concepts and names are identical; the call shape and the dispatch
+idiom follow each language (§2). Function/constructor casing is
+idiomatic (`ChatRoomChannel()` / `chatRoomChannel()` /
+`chat_room_channel()`), not copied across.
+
 | Concept | Go | TS | Python |
 |---|---|---|---|
 | Open the stream | `client.OpenEventStream(ctx, opts...)` | `await client.openEventStream(opts)` | `async with client.open_event_stream(opts) as stream` |
-| Subscribe | `stream.Subscribe(ctx, ChatRoomChannel())` | `await stream.subscribe(ChatRoomChannel())` | `await stream.subscribe(ChatRoomChannel())` |
-| Receive events | `for ev := range sub.Events() { ... }` | `sub.onNewMessage(ev => ...)` | `@sub.on_new_message` decorator |
+| Subscribe | `stream.Subscribe(ctx, ChatRoomChannel())` | `await stream.subscribe(chatRoomChannel())` | `await stream.subscribe(chat_room_channel())` |
+| Receive (typed) | `for ev := range sub.Events()` + type switch | `sub.onNewMessage(ev => ...)` | `@sub.on_new_message` decorator |
+| Receive (catch-all / unknown) | the same `Events()` channel delivers every event incl. `*RawEvent` | `sub.onEvent(...)` / `sub.onRaw(...)` | `@sub.on_event` / `@sub.on_raw` |
 | Unsubscribe | `sub.Unsubscribe(ctx)` | `await sub.unsubscribe()` | `await sub.unsubscribe()` |
 | Close stream | `stream.Close()` | `await stream.close()` | exit `async with` |
+| Terminal cause / done | `stream.Err()` after `sub.Done()` | `stream.err()` after `await stream.done()` | `stream.err()` after `await stream.wait_done()` |
 
-The dispatch idiom differs by language but the underlying event
-inventory is fixed:
+**RawEvent MUST be observable via each language's *primary*
+subscription API**, not only a lower-level pull: an event the SDK
+doesn't model still reaches the Go channel, TS `onRaw`/`onEvent`, and
+Python `on_raw`/`on_event`. The dispatch idiom differs by language but
+the event inventory below is fixed and fully reachable everywhere.
+
+**Terminal-cause contract.** When the stream ends, the cause MUST be
+recoverable: the stream exposes a terminal-error accessor
+(`Err()` / `err()` / `err()`) that returns the failure that ended it
+(nil/undefined/None for a caller-initiated `close`), available once the
+stream's done signal has fired; a subscription independently exposes a
+closed/done signal (`Done()` / `closed` / `closed`+`wait_done`). A port
+that ends the stream without a recoverable cause is non-conformant.
+
+The underlying event inventory is fixed:
 
 | Wire `event` | SDK type name |
 |---|---|
@@ -964,6 +984,18 @@ Client surface (§2):
   `login_with_email` is the cached wrapper — calling it with empty
   credentials fails fast with the wrapper's validation error, not an
   HTTP attempt).
+
+Event stream (§10):
+
+- **S34** A wire event the SDK does not model is delivered as
+  `RawEvent` and is observable through the language's *primary*
+  subscription API (Go: the `Events()` channel yields `*RawEvent`;
+  TS: `onRaw` / `onEvent` fire; Python: `on_raw` / `on_event` fire) —
+  not only via a lower-level pull.
+- **S35** After the stream ends on its own (e.g. reconnect
+  exhausted), the terminal cause is recoverable from the stream's
+  error accessor (`Err()` / `err()` / `err()`); a caller-initiated
+  `close()` reports no error.
 
 **Scope notes (deliberate boundaries, not gaps):**
 

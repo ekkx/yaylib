@@ -158,6 +158,63 @@ func TestEventStream_Unsubscribe(t *testing.T) {
 	}
 }
 
+// PORTING:S34
+func TestEventStream_UnknownEventDeliveredAsRaw(t *testing.T) {
+	const ident = `{"channel":"ChatRoomChannel"}`
+	fs := newFakeServer(t, func(s *wsSession) {
+		s.sendWelcome()
+		msg := <-s.received
+		s.confirm(msg["identifier"])
+		// Push an event whose wire name the SDK does not model. It must
+		// surface through the primary subscription API, not be dropped.
+		s.pushEvent(ident, "__unknown_evt__", map[string]any{
+			"foo": "bar",
+			"n":   42,
+		})
+		<-s.ctx.Done()
+	})
+
+	c := newStreamTestClient(fs.srv.URL)
+	c.SetTokens("stub", "")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	conn, err := c.OpenEventStream(ctx, EventStreamOptions{Reconnect: ReconnectPolicy{Disabled: true}})
+	if err != nil {
+		t.Fatalf("OpenEventStream: %v", err)
+	}
+	defer conn.Close()
+
+	sub, err := conn.Subscribe(ctx, ChatRoomChannel())
+	if err != nil {
+		t.Fatalf("Subscribe: %v", err)
+	}
+
+	select {
+	case ev := <-sub.Events():
+		raw, ok := ev.(*RawEvent)
+		if !ok {
+			t.Fatalf("event = %T, want *RawEvent", ev)
+		}
+		if raw.Name != "__unknown_evt__" {
+			t.Errorf("RawEvent.Name = %q, want %q", raw.Name, "__unknown_evt__")
+		}
+		var got map[string]any
+		if err := json.Unmarshal(raw.Data, &got); err != nil {
+			t.Fatalf("RawEvent.Data is not decodable JSON: %v", err)
+		}
+		if got["foo"] != "bar" {
+			t.Errorf("RawEvent.Data foo = %v, want \"bar\"", got["foo"])
+		}
+		if n, _ := got["n"].(float64); n != 42 {
+			t.Errorf("RawEvent.Data n = %v, want 42", got["n"])
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("no event received over the primary Events() channel")
+	}
+}
+
+// PORTING:S35
 func TestEventStream_ErrAfterReconnectExhausted(t *testing.T) {
 	fs := newFakeServer(t, func(s *wsSession) {
 		s.sendWelcome()
