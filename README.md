@@ -44,8 +44,8 @@ func main() {
 	// ログイン（セッションは透過的にキャッシュされます）
 	client.LoginWithEmail(ctx).Email("...").Password("...").Execute()
 
-	// おすすめタイムラインを取得
-	tl, _, _ := client.GetRecommendedTimeline(ctx).Number(20).Execute()
+	// タイムラインを取得
+	tl, _, _ := client.GetTimeline(ctx, yaylib.NoreplyModeFalse).Number(20).Execute()
 	_ = tl
 
 	// 投稿する

@@ -37,8 +37,10 @@ async def main():
     # ログイン（セッションは透過的にキャッシュされます）
     await client.login_with_email(email="...", password="...")
 
-    # おすすめタイムラインを取得
-    timeline = await client.get_recommended_timeline(number=20)
+    # タイムラインを取得
+    timeline = await client.get_timeline(
+        noreply_mode=yaylib.NoreplyMode.EMPTY, number=20
+    )
     for post in timeline.posts:
         print(post.id, post.text)
 

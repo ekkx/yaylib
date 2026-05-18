@@ -28,15 +28,18 @@ Node.js 22 以上。
 ### クイックスタート
 
 ```ts
-import { Client, chatRoomChannel } from "yaylib";
+import { Client, NoreplyMode, chatRoomChannel } from "yaylib";
 
 const client = new Client();
 
 // ログイン（セッションは透過的にキャッシュされます）
 await client.loginWithEmail({ email: "...", password: "..." });
 
-// おすすめタイムラインを取得
-const timeline = await client.getRecommendedTimeline({ number: 20 });
+// タイムラインを取得
+const timeline = await client.getTimeline({
+  noreplyMode: NoreplyMode.False,
+  number: 20,
+});
 for (const post of timeline.posts) {
   console.log(post.id, post.text);
 }
