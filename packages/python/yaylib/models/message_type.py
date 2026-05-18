@@ -44,9 +44,23 @@ class MessageType(str, Enum):
     def __get_pydantic_core_schema__(cls, source_type, handler):
         # Accept any string the server sends, not only the values
         # enumerated above, so a value added server-side still
-        # decodes. The typed constants stay usable for comparisons.
+        # decodes. A typed constant passed in stays a member (so
+        # callers and request serializers keep working); an unknown
+        # string passes through unchanged.
         from pydantic_core import core_schema
-        return core_schema.str_schema()
+        def _v(value):
+            if isinstance(value, cls):
+                return value
+            try:
+                return cls(value)
+            except ValueError:
+                return value
+        return core_schema.no_info_plain_validator_function(
+            _v,
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                lambda value: value.value if isinstance(value, cls) else value
+            ),
+        )
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
