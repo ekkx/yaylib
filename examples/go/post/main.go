@@ -1,7 +1,7 @@
 // テキスト投稿の例。投稿系のエンドポイントは X-Jwt を必要とします
 // （client.GenerateXJwt() で取得し、そのまま渡します）。
 //
-//	YAY_EMAIL=... YAY_PASSWORD=... go run ./examples/post
+//	YAY_EMAIL=... YAY_PASSWORD=... go run ./examples/go/post
 package main
 
 import (

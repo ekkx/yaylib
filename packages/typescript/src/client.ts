@@ -61,6 +61,13 @@ import {
   videoCallSnapshotUpload,
 } from "./upload.js";
 import { EventStream, type EventStreamOptions, openEventStream } from "./event_stream.js";
+import {
+  generateXJwt as _generateXJwt,
+  generateSignedVersion as _generateSignedVersion,
+  generateSignedInfoAt as _generateSignedInfoAt,
+  type SignedInfo,
+} from "./signing.js";
+import type { SignaturePayload } from "./gen/models/index.js";
 
 import {
   DEFAULT_ACCEPT_LANGUAGE,
@@ -552,6 +559,79 @@ export class Client {
     }
   }
 
+  // ---- signing / JWT (PORTING.md §7) ----
+  //
+  // These mirror the Go client methods: the client already owns the
+  // api key / uuid / api-version key, so callers never pass them. The
+  // standalone functions in signing.js stay available for tests or a
+  // known-timestamp path.
+
+  // The short-lived HS256 JWT some write endpoints require (most
+  // visibly createPost). Regenerate per request — the window is 5s.
+  generateXJwt(): string {
+    return _generateXJwt({ apiVersionKey: this.apiVersionKey });
+  }
+
+  // The signed_version HMAC token some endpoints require alongside
+  // signed_info.
+  generateSignedVersion(): string {
+    return _generateSignedVersion({
+      apiVersionKey: this.apiVersionKey,
+      apiVersionName: this.apiVersionName,
+    });
+  }
+
+  // signed_info for a timestamp you already trust (tests, batched
+  // requests reusing one ts). No network I/O. Otherwise prefer
+  // generateSignedInfo, which syncs the server clock.
+  generateSignedInfoAt(timestamp: number): SignedInfo {
+    return _generateSignedInfoAt(
+      { apiKey: this.apiKey, deviceUUID: this._deviceUUID },
+      timestamp,
+    );
+  }
+
+  // Fetches the server's current timestamp and returns it bound to the
+  // signed_info hash, eliminating device-clock drift. Send both values
+  // together — the server validates the hash against the timestamp it
+  // sees in the request.
+  async generateSignedInfo(): Promise<SignedInfo> {
+    const resp = await this.usersAPI.getUserTimestamp();
+    return this.generateSignedInfoAt(resp.time ?? 0);
+  }
+
+  // Requests a server-issued signature authorising an action against a
+  // conference call. Pass the result straight to
+  // validateCallActionSignature, or read individual fields.
+  async generateCallActionSignature(
+    conferenceId: number,
+    targetUserUuid: string,
+    action: string,
+  ): Promise<SignaturePayload> {
+    const resp = await this.callsAPI.generateCallActionSignature({
+      conferenceId,
+      targetUserUuid,
+      action,
+    });
+    return resp.signaturePayload ?? {};
+  }
+
+  // Replays a payload from generateCallActionSignature against the
+  // validation endpoint; resolves only when every field still matches
+  // the server's view.
+  async validateCallActionSignature(
+    payload: SignaturePayload,
+  ): Promise<void> {
+    await this.callsAPI.validateCallActionSignature({
+      callId: payload.callId ?? undefined,
+      senderUuid: payload.senderUuid ?? undefined,
+      receiverUuid: payload.receiverUuid ?? undefined,
+      action: payload.action ?? undefined,
+      timestamp: payload.timestamp ?? undefined,
+      signature: payload.signature ?? undefined,
+    });
+  }
+
   // Internal — invoked by the client-IP middleware (transport.ts) after
   // the first non-lookup response. Best-effort: a single background
   // lookup of the caller's outbound IP via getUserTimestamp, cached into
@@ -697,4 +777,12 @@ export class Client {
 // installed by installGeneratedFacade() in the constructor; a
 // hand-written method of the same name is excluded from
 // GeneratedFacade at generation time (the embed-shadowing rule).
-export interface Client extends GeneratedFacade {}
+// generateCallActionSignature / validateCallActionSignature are
+// overridden by the hand-written wrapper above with a friendlier
+// signature (the client owns the rest). The raw generated forms remain
+// reachable via `client.callsAPI.*`, mirroring the Go escape hatch.
+export interface Client
+  extends Omit<
+    GeneratedFacade,
+    "generateCallActionSignature" | "validateCallActionSignature"
+  > {}

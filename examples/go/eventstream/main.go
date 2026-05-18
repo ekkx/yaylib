@@ -1,7 +1,7 @@
 // イベントストリームで新着チャットメッセージを受信する簡単なボット。
 // Ctrl-C で終了します。
 //
-//	YAY_EMAIL=... YAY_PASSWORD=... go run ./examples/eventstream
+//	YAY_EMAIL=... YAY_PASSWORD=... go run ./examples/go/eventstream
 package main
 
 import (

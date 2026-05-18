@@ -1,7 +1,7 @@
 // イベントストリームで新着チャットメッセージを受信する簡単なボット。
 // Ctrl-C で終了します。
 //
-//   YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/03_event_stream.ts
+//   YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/typescript/03_event_stream.ts
 import { Client, chatRoomChannel } from "yaylib";
 
 const client = new Client();

@@ -5,7 +5,7 @@
 // 非 2xx は *yaylib.APIError として返り、CodeOf / ErrorResponseOf で
 // 中身を判定できます。
 //
-//	YAY_EMAIL=... YAY_PASSWORD=... go run ./examples/session_and_errors
+//	YAY_EMAIL=... YAY_PASSWORD=... go run ./examples/go/session_and_errors
 package main
 
 import (

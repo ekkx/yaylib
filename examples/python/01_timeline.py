@@ -1,6 +1,6 @@
 """認証してタイムラインを取得する最小例。
 
-    YAY_EMAIL=... YAY_PASSWORD=... python examples/01_timeline.py
+    YAY_EMAIL=... YAY_PASSWORD=... python examples/python/01_timeline.py
 """
 
 import asyncio

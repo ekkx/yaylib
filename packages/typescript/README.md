@@ -28,7 +28,7 @@ Node.js 22 以上。
 ### クイックスタート
 
 ```ts
-import { Client, NoreplyMode, generateXJwt, chatRoomChannel } from "yaylib";
+import { Client, NoreplyMode, chatRoomChannel } from "yaylib";
 
 const client = new Client();
 
@@ -46,7 +46,7 @@ for (const post of timeline.posts) {
 
 // 投稿する
 await client.createPost({
-  xJwt: generateXJwt({ apiVersionKey: client.apiVersionKey }),
+  xJwt: client.generateXJwt(),
   postType: "text",
   text: "hello from yaylib",
 });
@@ -70,7 +70,7 @@ await sub.closed;
 
 ### サンプル
 
-実行できるサンプルを [`examples/`](https://github.com/ekkx/yaylib/tree/master/packages/typescript/examples) に用意しています。
+実行できるサンプルを [`examples/typescript/`](https://github.com/ekkx/yaylib/tree/master/examples/typescript) に用意しています。
 
 - `01_timeline.ts` — 認証 + タイムライン取得
 - `02_post.ts` — テキスト投稿
@@ -78,7 +78,7 @@ await sub.closed;
 - `04_session_and_errors.ts` — セッション永続化とエラー処理
 
 ```bash
-YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/01_timeline.ts
+YAY_EMAIL=... YAY_PASSWORD=... npx tsx examples/typescript/01_timeline.ts
 ```
 
 ### ⚖️ ライセンス

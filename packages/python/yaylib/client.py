@@ -16,6 +16,8 @@ import uuid as _uuid
 from typing import List, Optional
 
 import yaylib.upload as _upload
+import yaylib.signing as _signing
+from yaylib.models.signature_payload import SignaturePayload
 from urllib.parse import urlencode
 
 from yaylib.api.activities_api import ActivitiesApi
@@ -297,6 +299,78 @@ class Client(GeneratedFacade):
                 pass
         self._bg_tasks.clear()
         await self._transport.close()
+
+    # ---- signing / JWT (PORTING.md §7) ----
+    #
+    # These mirror the Go client methods: the client already owns the
+    # api key / uuid / api-version key, so callers never pass them. The
+    # standalone functions in yaylib.signing stay available for tests or
+    # a known-timestamp path.
+
+    def generate_x_jwt(self) -> str:
+        """The short-lived HS256 JWT some write endpoints require (most
+        visibly create_post). Regenerate per request — the window is 5s.
+        """
+        return _signing.generate_x_jwt(api_version_key=self.api_version_key)
+
+    def generate_signed_version(self) -> str:
+        """The signed_version HMAC token some endpoints require
+        alongside signed_info.
+        """
+        return _signing.generate_signed_version(
+            api_version_key=self.api_version_key,
+            api_version_name=self.api_version_name,
+        )
+
+    def generate_signed_info_at(self, timestamp: int) -> _signing.SignedInfo:
+        """signed_info for a timestamp you already trust (tests, batched
+        requests reusing one ts). No network I/O. Otherwise prefer
+        generate_signed_info, which syncs the server clock.
+        """
+        return _signing.generate_signed_info_at(
+            api_key=self.api_key,
+            device_uuid=self._device_uuid,
+            timestamp=timestamp,
+        )
+
+    async def generate_signed_info(self) -> _signing.SignedInfo:
+        """Fetch the server's current timestamp and return it bound to
+        the signed_info hash, eliminating device-clock drift. Send both
+        values together — the server validates the hash against the
+        timestamp it sees in the request.
+        """
+        resp = await self.get_user_timestamp()
+        return self.generate_signed_info_at(resp.time)
+
+    async def generate_call_action_signature(
+        self, conference_id: int, target_user_uuid: str, action: str
+    ) -> SignaturePayload:
+        """Request a server-issued signature authorising an action
+        against a conference call. Pass the result straight to
+        validate_call_action_signature, or read individual fields.
+        """
+        resp = await self.calls_api.generate_call_action_signature(
+            conference_id=conference_id,
+            target_user_uuid=target_user_uuid,
+            action=action,
+        )
+        return resp.signature_payload
+
+    async def validate_call_action_signature(
+        self, payload: SignaturePayload
+    ) -> None:
+        """Replay a payload from generate_call_action_signature against
+        the validation endpoint; succeeds only when every field still
+        matches the server's view.
+        """
+        await self.calls_api.validate_call_action_signature(
+            call_id=payload.call_id,
+            sender_uuid=payload.sender_uuid,
+            receiver_uuid=payload.receiver_uuid,
+            action=payload.action,
+            timestamp=payload.timestamp,
+            signature=payload.signature,
+        )
 
     # ---- raw escape hatch (PORTING.md §11.3) ----
 

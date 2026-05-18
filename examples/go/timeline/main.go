@@ -1,6 +1,6 @@
 // 認証してタイムラインを取得する最小例。
 //
-//	YAY_EMAIL=... YAY_PASSWORD=... go run ./examples/timeline
+//	YAY_EMAIL=... YAY_PASSWORD=... go run ./examples/go/timeline
 package main
 
 import (

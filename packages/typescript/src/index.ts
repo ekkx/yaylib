@@ -96,4 +96,5 @@ export {
 } from "./event_stream.js";
 
 export { type WebSocketFactory } from "./client.js";
+export type { SignaturePayload } from "./gen/models/index.js";
 export { type Logger, type LogFields, noopLogger } from "./logger.js";

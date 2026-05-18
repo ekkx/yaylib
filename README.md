@@ -78,13 +78,15 @@ for ev := range sub.Events() {
 
 実行できるサンプルを [`examples/`](https://github.com/ekkx/yaylib/tree/master/examples) に用意しています。
 
-- `examples/timeline` — 認証 + タイムライン取得
-- `examples/post` — テキスト投稿
-- `examples/eventstream` — イベントストリームの簡単なボット
-- `examples/session_and_errors` — セッション永続化とエラー処理
+- `examples/go/timeline` — 認証 + タイムライン取得
+- `examples/go/post` — テキスト投稿
+- `examples/go/eventstream` — イベントストリームの簡単なボット
+- `examples/go/session_and_errors` — セッション永続化とエラー処理
+
+他言語のサンプルも [`examples/`](https://github.com/ekkx/yaylib/tree/master/examples) にまとまっています。
 
 ```bash
-YAY_EMAIL=... YAY_PASSWORD=... go run ./examples/timeline
+YAY_EMAIL=... YAY_PASSWORD=... go run ./examples/go/timeline
 ```
 
 ### ⚖️ ライセンス
