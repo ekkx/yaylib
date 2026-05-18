@@ -1,0 +1,95 @@
+name: ci
+
+# Builds and tests every language package. Each suite runs first in its
+# hermetic form (pure-function + typed-decode fixtures, no network), then
+# the behavior-parity job boots the bundled mock server once and drives
+# all three languages against it so they assert one shared contract.
+# The parity-matrix job fails the build if a PORTING.md scenario is not
+# covered in every language.
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Test (hermetic)
+        run: go test ./.
+      - name: Mock server build + test
+        run: |
+          cd mockd
+          go build ./...
+          go test ./...
+
+  ts:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/typescript
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: packages/typescript/package-lock.json
+      - run: npm ci
+      - name: Test (hermetic)
+        run: npm test
+
+  py:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt pytest pytest-cov
+      - name: Test (hermetic)
+        run: PYTHONPATH="$PWD" python -m pytest -q
+
+  parity-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scenario coverage must hold in every language
+        run: bash scripts/parity-matrix.sh --strict
+
+  mock-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: packages/typescript/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare language environments
+        run: |
+          (cd packages/typescript && npm ci)
+          pip install -r packages/python/requirements.txt pytest pytest-cov
+      - name: Behavior parity across Go / TypeScript / Python
+        run: bash scripts/mock-parity.sh
