@@ -118,6 +118,15 @@ jobs:
           if [ "${{ needs.guard.outputs.prerelease }}" = "true" ]; then
             flag="--prerelease"
           fi
+          notes="--generate-notes"
+          if [ -f CHANGELOG.md ]; then
+            awk -v ver="$GITHUB_REF_NAME" \
+              '$0=="## "ver{f=1;next} f&&/^## /{exit} f{print}' \
+              CHANGELOG.md > /tmp/relnotes.md
+            if [ -s /tmp/relnotes.md ]; then
+              notes="--notes-file /tmp/relnotes.md --generate-notes"
+            fi
+          fi
           gh release create "$GITHUB_REF_NAME" \
             --title "$GITHUB_REF_NAME" \
-            --generate-notes $flag
+            $notes $flag
