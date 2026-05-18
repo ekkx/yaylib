@@ -26,11 +26,10 @@ pip install yaylib                   # Python (>=3.10)
 
 ### 破壊的変更（Python `1.x` からの移行）
 
-- パッケージ構成・公開シンボルを再設計（`import yaylib; yaylib.Client()`）
 - クライアントは `async with` での利用を推奨（基盤接続を確実にクローズ）
 - API バージョンは SDK バージョンと分離（`APIVersionName` 定数で別管理）
 - メソッド名を動詞ファーストの統一命名へ変更
 
 ### バージョニング方針
 
-major のみ 3 言語を揃え、minor / patch は言語ごとに独立して上げます（Stripe 方式）。
+major のみ 3 言語を揃え、minor / patch は言語ごとに独立して上げます。
