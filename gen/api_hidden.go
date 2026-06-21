@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"reflect"
 )
 
@@ -985,4 +986,121 @@ func (a *HiddenAPIService) UnhideUsersExecute(r ApiUnhideUsersRequest) (*http.Re
 	}
 
 	return localVarHTTPResponse, nil
+}
+
+type ApiUpdateMuteKeywordRequest struct {
+	ctx context.Context
+	ApiService *HiddenAPIService
+	id int64
+	muteKeywordRequest *MuteKeywordRequest
+}
+
+func (r ApiUpdateMuteKeywordRequest) MuteKeywordRequest(muteKeywordRequest MuteKeywordRequest) ApiUpdateMuteKeywordRequest {
+	r.muteKeywordRequest = &muteKeywordRequest
+	return r
+}
+
+func (r ApiUpdateMuteKeywordRequest) Execute() (*CreateMuteKeywordResponse, *http.Response, error) {
+	return r.ApiService.UpdateMuteKeywordExecute(r)
+}
+
+func (r ApiUpdateMuteKeywordRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
+/*
+UpdateMuteKeyword Method for UpdateMuteKeyword
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param id
+ @return ApiUpdateMuteKeywordRequest
+*/
+func (a *HiddenAPIService) UpdateMuteKeyword(ctx context.Context, id int64) ApiUpdateMuteKeywordRequest {
+	return ApiUpdateMuteKeywordRequest{
+		ApiService: a,
+		ctx: ctx,
+		id: id,
+	}
+}
+
+// Execute executes the request
+//  @return CreateMuteKeywordResponse
+func (a *HiddenAPIService) UpdateMuteKeywordExecute(r ApiUpdateMuteKeywordRequest) (*CreateMuteKeywordResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPut
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *CreateMuteKeywordResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "HiddenAPIService.UpdateMuteKeyword")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/hidden/words/{id}"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterValueToString(r.id, "id")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.muteKeywordRequest == nil {
+		return localVarReturnValue, nil, reportError("muteKeywordRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.muteKeywordRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }

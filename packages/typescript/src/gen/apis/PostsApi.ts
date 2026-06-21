@@ -164,6 +164,13 @@ export interface GetFollowingTimelineRequest {
     customGenerationRange?: boolean | null;
 }
 
+export interface GetGroupCallsRequest {
+    number?: number | null;
+    groupCategoryId?: number | null;
+    fromTimestamp?: number | null;
+    scope?: string | null;
+}
+
 export interface GetGroupTimelineRequest {
     groupId?: number;
     fromPostId?: number | null;
@@ -946,6 +953,46 @@ export class PostsApi extends runtime.BaseAPI {
      */
     async getFollowingTimeline(requestParameters: GetFollowingTimelineRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PostsResponse> {
         const response = await this.getFollowingTimelineRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getGroupCallsRaw(requestParameters: GetGroupCallsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PostsResponse>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['number'] != null) {
+            queryParameters['number'] = requestParameters['number'];
+        }
+
+        if (requestParameters['groupCategoryId'] != null) {
+            queryParameters['group_category_id'] = requestParameters['groupCategoryId'];
+        }
+
+        if (requestParameters['fromTimestamp'] != null) {
+            queryParameters['from_timestamp'] = requestParameters['fromTimestamp'];
+        }
+
+        if (requestParameters['scope'] != null) {
+            queryParameters['scope'] = requestParameters['scope'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/posts/group_calls`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PostsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getGroupCalls(requestParameters: GetGroupCallsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PostsResponse> {
+        const response = await this.getGroupCallsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

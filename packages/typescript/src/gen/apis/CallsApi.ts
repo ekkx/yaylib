@@ -22,6 +22,7 @@ import type {
   CallStatusResponse,
   ConferenceCallResponse,
   RtmTokenResponse,
+  UserResponse,
   UsersByTimestampResponse,
 } from '../models/index.js';
 import {
@@ -37,6 +38,8 @@ import {
     ConferenceCallResponseToJSON,
     RtmTokenResponseFromJSON,
     RtmTokenResponseToJSON,
+    UserResponseFromJSON,
+    UserResponseToJSON,
     UsersByTimestampResponseFromJSON,
     UsersByTimestampResponseToJSON,
 } from '../models/index.js';
@@ -65,6 +68,11 @@ export interface GetCallGiftHistoryRequest {
     callId: number;
     from?: string | null;
     number?: number | null;
+}
+
+export interface GetCallParticipantRequest {
+    callId: number;
+    callUserId: string;
 }
 
 export interface GetConferenceCallRequest {
@@ -352,6 +360,44 @@ export class CallsApi extends runtime.BaseAPI {
      */
     async getCallGiftHistory(requestParameters: GetCallGiftHistoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CallGiftHistoryResponse> {
         const response = await this.getCallGiftHistoryRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getCallParticipantRaw(requestParameters: GetCallParticipantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+        if (requestParameters['callId'] == null) {
+            throw new runtime.RequiredError(
+                'callId',
+                'Required parameter "callId" was null or undefined when calling getCallParticipant().'
+            );
+        }
+
+        if (requestParameters['callUserId'] == null) {
+            throw new runtime.RequiredError(
+                'callUserId',
+                'Required parameter "callUserId" was null or undefined when calling getCallParticipant().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/calls/{callId}/participants/{callUserId}`.replace(`{${"callId"}}`, encodeURIComponent(String(requestParameters['callId']))).replace(`{${"callUserId"}}`, encodeURIComponent(String(requestParameters['callUserId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getCallParticipant(requestParameters: GetCallParticipantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+        const response = await this.getCallParticipantRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

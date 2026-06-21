@@ -88,6 +88,18 @@ func NewConfiguration() *Configuration {
 			},
 		},
 		OperationServers: map[string]ServerConfigurations{
+			"ActivitiesAPIService.GetUserActivities": {
+				{
+					URL: "https://cas.yay.space",
+					Description: "No description provided",
+				},
+			},
+			"ActivitiesAPIService.GetUserActivitiesV1": {
+				{
+					URL: "https://cas.yay.space",
+					Description: "No description provided",
+				},
+			},
 		},
 	}
 	return cfg

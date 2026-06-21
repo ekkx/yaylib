@@ -32,6 +32,10 @@ export interface UnpinGroupRequest {
     id: number;
 }
 
+export interface UnpinPostRequest {
+    id: number;
+}
+
 export interface UnpinReviewRequest {
     id: number;
 }
@@ -195,6 +199,36 @@ export class PinnedApi extends runtime.BaseAPI {
      */
     async unpinGroup(requestParameters: UnpinGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.unpinGroupRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     */
+    async unpinPostRaw(requestParameters: UnpinPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling unpinPost().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/pinned/posts/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async unpinPost(requestParameters: UnpinPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.unpinPostRaw(requestParameters, initOverrides);
     }
 
     /**

@@ -21,7 +21,10 @@ import type {
   GiftSendersResponse,
   GiftTransactionsResponse,
   GroupCategoriesResponse,
+  GroupCommunityCampaignResponse,
   GroupGiftHistoryResponse,
+  GroupInCircleUserLeaderboardResponse,
+  GroupOverallLeaderboardResponse,
   GroupResponse,
   GroupUserResponse,
   GroupUsersResponse,
@@ -43,8 +46,14 @@ import {
     GiftTransactionsResponseToJSON,
     GroupCategoriesResponseFromJSON,
     GroupCategoriesResponseToJSON,
+    GroupCommunityCampaignResponseFromJSON,
+    GroupCommunityCampaignResponseToJSON,
     GroupGiftHistoryResponseFromJSON,
     GroupGiftHistoryResponseToJSON,
+    GroupInCircleUserLeaderboardResponseFromJSON,
+    GroupInCircleUserLeaderboardResponseToJSON,
+    GroupOverallLeaderboardResponseFromJSON,
+    GroupOverallLeaderboardResponseToJSON,
     GroupResponseFromJSON,
     GroupResponseToJSON,
     GroupUserResponseFromJSON,
@@ -132,6 +141,10 @@ export interface DeputizeGroupUsersMassRequest {
 export interface FireGroupUserRequest {
     groupId: number;
     userId: number;
+}
+
+export interface GetCommunityCampaignUserLeaderboardRequest {
+    id: number;
 }
 
 export interface GetGroupRequest {
@@ -806,6 +819,85 @@ export class GroupsApi extends runtime.BaseAPI {
      */
     async fireGroupUser(requestParameters: FireGroupUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.fireGroupUserRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     */
+    async getCommunityCampaignGroupLeaderboardRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupOverallLeaderboardResponse>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/community_campaign/group_leaderboard`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GroupOverallLeaderboardResponseFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getCommunityCampaignGroupLeaderboard(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupOverallLeaderboardResponse> {
+        const response = await this.getCommunityCampaignGroupLeaderboardRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getCommunityCampaignStatusRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupCommunityCampaignResponse>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/community_campaign`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GroupCommunityCampaignResponseFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getCommunityCampaignStatus(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupCommunityCampaignResponse> {
+        const response = await this.getCommunityCampaignStatusRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getCommunityCampaignUserLeaderboardRaw(requestParameters: GetCommunityCampaignUserLeaderboardRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupInCircleUserLeaderboardResponse>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling getCommunityCampaignUserLeaderboard().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/v1/community_campaign/groups/{id}/user_leaderboard`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => GroupInCircleUserLeaderboardResponseFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getCommunityCampaignUserLeaderboard(requestParameters: GetCommunityCampaignUserLeaderboardRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupInCircleUserLeaderboardResponse> {
+        const response = await this.getCommunityCampaignUserLeaderboardRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
