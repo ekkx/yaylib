@@ -69,6 +69,11 @@ export interface UnhideUsersRequest {
     userIds?: Array<number>;
 }
 
+export interface UpdateMuteKeywordRequest {
+    id: number;
+    muteKeywordRequest: MuteKeywordRequest;
+}
+
 /**
  * 
  */
@@ -359,6 +364,47 @@ export class HiddenApi extends runtime.BaseAPI {
      */
     async unhideUsers(requestParameters: UnhideUsersRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.unhideUsersRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     */
+    async updateMuteKeywordRaw(requestParameters: UpdateMuteKeywordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreateMuteKeywordResponse>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling updateMuteKeyword().'
+            );
+        }
+
+        if (requestParameters['muteKeywordRequest'] == null) {
+            throw new runtime.RequiredError(
+                'muteKeywordRequest',
+                'Required parameter "muteKeywordRequest" was null or undefined when calling updateMuteKeyword().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/v1/hidden/words/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: MuteKeywordRequestToJSON(requestParameters['muteKeywordRequest']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CreateMuteKeywordResponseFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async updateMuteKeyword(requestParameters: UpdateMuteKeywordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateMuteKeywordResponse> {
+        const response = await this.updateMuteKeywordRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
 }

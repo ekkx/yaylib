@@ -39,10 +39,10 @@ export interface GeneratedFacade {
   getBucketPresignedUrls: BucketsApi["getBucketPresignedUrls"];
   bulkInviteToCall: CallsApi["bulkInviteToCall"];
   bumpCall: CallsApi["bumpCall"];
-  generateCallActionSignature: CallsApi["generateCallActionSignature"];
   getAgoraRtmToken: CallsApi["getAgoraRtmToken"];
   getCallBgms: CallsApi["getCallBgms"];
   getCallGiftHistory: CallsApi["getCallGiftHistory"];
+  getCallParticipant: CallsApi["getCallParticipant"];
   getConferenceCall: CallsApi["getConferenceCall"];
   getInvitableCallUsers: CallsApi["getInvitableCallUsers"];
   getPhoneStatus: CallsApi["getPhoneStatus"];
@@ -54,7 +54,6 @@ export interface GeneratedFacade {
   startConferenceCall: CallsApi["startConferenceCall"];
   updateCall: CallsApi["updateCall"];
   updateCallUser: CallsApi["updateCallUser"];
-  validateCallActionSignature: CallsApi["validateCallActionSignature"];
   acceptChatRequest: ChatRoomsApi["acceptChatRequest"];
   createChatRoom: ChatRoomsApi["createChatRoom"];
   createChatRoomV1: ChatRoomsApi["createChatRoomV1"];
@@ -97,6 +96,9 @@ export interface GeneratedFacade {
   deputizeGroupUsers: GroupsApi["deputizeGroupUsers"];
   deputizeGroupUsersMass: GroupsApi["deputizeGroupUsersMass"];
   fireGroupUser: GroupsApi["fireGroupUser"];
+  getCommunityCampaignGroupLeaderboard: GroupsApi["getCommunityCampaignGroupLeaderboard"];
+  getCommunityCampaignStatus: GroupsApi["getCommunityCampaignStatus"];
+  getCommunityCampaignUserLeaderboard: GroupsApi["getCommunityCampaignUserLeaderboard"];
   getGroup: GroupsApi["getGroup"];
   getGroupBanList: GroupsApi["getGroupBanList"];
   getGroupCreateQuota: GroupsApi["getGroupCreateQuota"];
@@ -145,6 +147,7 @@ export interface GeneratedFacade {
   listMuteKeywords: HiddenApi["listMuteKeywords"];
   unhideChats: HiddenApi["unhideChats"];
   unhideUsers: HiddenApi["unhideUsers"];
+  updateMuteKeyword: HiddenApi["updateMuteKeyword"];
   getBannedWords: ModerationApi["getBannedWords"];
   getPopularWords: ModerationApi["getPopularWords"];
   getGroupNotificationSettings: NotificationSettingsApi["getGroupNotificationSettings"];
@@ -154,6 +157,7 @@ export interface GeneratedFacade {
   pinPost: PinnedApi["pinPost"];
   pinReview: PinnedApi["pinReview"];
   unpinGroup: PinnedApi["unpinGroup"];
+  unpinPost: PinnedApi["unpinPost"];
   unpinReview: PinnedApi["unpinReview"];
   createConferenceCallPost: PostsApi["createConferenceCallPost"];
   createPost: PostsApi["createPost"];
@@ -164,6 +168,7 @@ export interface GeneratedFacade {
   getCallFollowersTimeline: PostsApi["getCallFollowersTimeline"];
   getCallTimeline: PostsApi["getCallTimeline"];
   getFollowingTimeline: PostsApi["getFollowingTimeline"];
+  getGroupCalls: PostsApi["getGroupCalls"];
   getGroupTimeline: PostsApi["getGroupTimeline"];
   getMyPosts: PostsApi["getMyPosts"];
   getPost: PostsApi["getPost"];
@@ -283,10 +288,10 @@ export function installGeneratedFacade(c: any): void {
   if (typeof c.getBucketPresignedUrls !== "function") c.getBucketPresignedUrls = (...a: any[]) => c.bucketsAPI.getBucketPresignedUrls(...a);
   if (typeof c.bulkInviteToCall !== "function") c.bulkInviteToCall = (...a: any[]) => c.callsAPI.bulkInviteToCall(...a);
   if (typeof c.bumpCall !== "function") c.bumpCall = (...a: any[]) => c.callsAPI.bumpCall(...a);
-  if (typeof c.generateCallActionSignature !== "function") c.generateCallActionSignature = (...a: any[]) => c.callsAPI.generateCallActionSignature(...a);
   if (typeof c.getAgoraRtmToken !== "function") c.getAgoraRtmToken = (...a: any[]) => c.callsAPI.getAgoraRtmToken(...a);
   if (typeof c.getCallBgms !== "function") c.getCallBgms = (...a: any[]) => c.callsAPI.getCallBgms(...a);
   if (typeof c.getCallGiftHistory !== "function") c.getCallGiftHistory = (...a: any[]) => c.callsAPI.getCallGiftHistory(...a);
+  if (typeof c.getCallParticipant !== "function") c.getCallParticipant = (...a: any[]) => c.callsAPI.getCallParticipant(...a);
   if (typeof c.getConferenceCall !== "function") c.getConferenceCall = (...a: any[]) => c.callsAPI.getConferenceCall(...a);
   if (typeof c.getInvitableCallUsers !== "function") c.getInvitableCallUsers = (...a: any[]) => c.callsAPI.getInvitableCallUsers(...a);
   if (typeof c.getPhoneStatus !== "function") c.getPhoneStatus = (...a: any[]) => c.callsAPI.getPhoneStatus(...a);
@@ -298,7 +303,6 @@ export function installGeneratedFacade(c: any): void {
   if (typeof c.startConferenceCall !== "function") c.startConferenceCall = (...a: any[]) => c.callsAPI.startConferenceCall(...a);
   if (typeof c.updateCall !== "function") c.updateCall = (...a: any[]) => c.callsAPI.updateCall(...a);
   if (typeof c.updateCallUser !== "function") c.updateCallUser = (...a: any[]) => c.callsAPI.updateCallUser(...a);
-  if (typeof c.validateCallActionSignature !== "function") c.validateCallActionSignature = (...a: any[]) => c.callsAPI.validateCallActionSignature(...a);
   if (typeof c.acceptChatRequest !== "function") c.acceptChatRequest = (...a: any[]) => c.chatRoomsAPI.acceptChatRequest(...a);
   if (typeof c.createChatRoom !== "function") c.createChatRoom = (...a: any[]) => c.chatRoomsAPI.createChatRoom(...a);
   if (typeof c.createChatRoomV1 !== "function") c.createChatRoomV1 = (...a: any[]) => c.chatRoomsAPI.createChatRoomV1(...a);
@@ -341,6 +345,9 @@ export function installGeneratedFacade(c: any): void {
   if (typeof c.deputizeGroupUsers !== "function") c.deputizeGroupUsers = (...a: any[]) => c.groupsAPI.deputizeGroupUsers(...a);
   if (typeof c.deputizeGroupUsersMass !== "function") c.deputizeGroupUsersMass = (...a: any[]) => c.groupsAPI.deputizeGroupUsersMass(...a);
   if (typeof c.fireGroupUser !== "function") c.fireGroupUser = (...a: any[]) => c.groupsAPI.fireGroupUser(...a);
+  if (typeof c.getCommunityCampaignGroupLeaderboard !== "function") c.getCommunityCampaignGroupLeaderboard = (...a: any[]) => c.groupsAPI.getCommunityCampaignGroupLeaderboard(...a);
+  if (typeof c.getCommunityCampaignStatus !== "function") c.getCommunityCampaignStatus = (...a: any[]) => c.groupsAPI.getCommunityCampaignStatus(...a);
+  if (typeof c.getCommunityCampaignUserLeaderboard !== "function") c.getCommunityCampaignUserLeaderboard = (...a: any[]) => c.groupsAPI.getCommunityCampaignUserLeaderboard(...a);
   if (typeof c.getGroup !== "function") c.getGroup = (...a: any[]) => c.groupsAPI.getGroup(...a);
   if (typeof c.getGroupBanList !== "function") c.getGroupBanList = (...a: any[]) => c.groupsAPI.getGroupBanList(...a);
   if (typeof c.getGroupCreateQuota !== "function") c.getGroupCreateQuota = (...a: any[]) => c.groupsAPI.getGroupCreateQuota(...a);
@@ -389,6 +396,7 @@ export function installGeneratedFacade(c: any): void {
   if (typeof c.listMuteKeywords !== "function") c.listMuteKeywords = (...a: any[]) => c.hiddenAPI.listMuteKeywords(...a);
   if (typeof c.unhideChats !== "function") c.unhideChats = (...a: any[]) => c.hiddenAPI.unhideChats(...a);
   if (typeof c.unhideUsers !== "function") c.unhideUsers = (...a: any[]) => c.hiddenAPI.unhideUsers(...a);
+  if (typeof c.updateMuteKeyword !== "function") c.updateMuteKeyword = (...a: any[]) => c.hiddenAPI.updateMuteKeyword(...a);
   if (typeof c.getBannedWords !== "function") c.getBannedWords = (...a: any[]) => c.moderationAPI.getBannedWords(...a);
   if (typeof c.getPopularWords !== "function") c.getPopularWords = (...a: any[]) => c.moderationAPI.getPopularWords(...a);
   if (typeof c.getGroupNotificationSettings !== "function") c.getGroupNotificationSettings = (...a: any[]) => c.notificationSettingsAPI.getGroupNotificationSettings(...a);
@@ -398,6 +406,7 @@ export function installGeneratedFacade(c: any): void {
   if (typeof c.pinPost !== "function") c.pinPost = (...a: any[]) => c.pinnedAPI.pinPost(...a);
   if (typeof c.pinReview !== "function") c.pinReview = (...a: any[]) => c.pinnedAPI.pinReview(...a);
   if (typeof c.unpinGroup !== "function") c.unpinGroup = (...a: any[]) => c.pinnedAPI.unpinGroup(...a);
+  if (typeof c.unpinPost !== "function") c.unpinPost = (...a: any[]) => c.pinnedAPI.unpinPost(...a);
   if (typeof c.unpinReview !== "function") c.unpinReview = (...a: any[]) => c.pinnedAPI.unpinReview(...a);
   if (typeof c.createConferenceCallPost !== "function") c.createConferenceCallPost = (...a: any[]) => c.postsAPI.createConferenceCallPost(...a);
   if (typeof c.createPost !== "function") c.createPost = (...a: any[]) => c.postsAPI.createPost(...a);
@@ -408,6 +417,7 @@ export function installGeneratedFacade(c: any): void {
   if (typeof c.getCallFollowersTimeline !== "function") c.getCallFollowersTimeline = (...a: any[]) => c.postsAPI.getCallFollowersTimeline(...a);
   if (typeof c.getCallTimeline !== "function") c.getCallTimeline = (...a: any[]) => c.postsAPI.getCallTimeline(...a);
   if (typeof c.getFollowingTimeline !== "function") c.getFollowingTimeline = (...a: any[]) => c.postsAPI.getFollowingTimeline(...a);
+  if (typeof c.getGroupCalls !== "function") c.getGroupCalls = (...a: any[]) => c.postsAPI.getGroupCalls(...a);
   if (typeof c.getGroupTimeline !== "function") c.getGroupTimeline = (...a: any[]) => c.postsAPI.getGroupTimeline(...a);
   if (typeof c.getMyPosts !== "function") c.getMyPosts = (...a: any[]) => c.postsAPI.getMyPosts(...a);
   if (typeof c.getPost !== "function") c.getPost = (...a: any[]) => c.postsAPI.getPost(...a);

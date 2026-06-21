@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.1.0
+
+通話・グループ・投稿まわりのエンドポイントを追加しました（Go / TypeScript / Python 共通）。
+
+- `getCallParticipant` — 通話の参加者 UUID からユーザー情報を取得
+- `getGroupCalls` — グループ通話の投稿一覧を取得
+- `getCommunityCampaignStatus` / `getCommunityCampaignGroupLeaderboard` /
+  `getCommunityCampaignUserLeaderboard` — コミュニティキャンペーン
+  （グループ対抗ランキング）の参加資格・リーダーボードを取得
+- `updateMuteKeyword` — ミュートキーワードの更新
+- `unpinPost` — 投稿のピン留めを解除
+
 ## v2.0.1
 
 - TypeScript / Python の `Client` に署名・JWT ヘルパーをメソッドとして追加

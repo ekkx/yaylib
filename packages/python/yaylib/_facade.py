@@ -30,9 +30,6 @@ class GeneratedFacade:
     def bump_call(self, *args, **kwargs):
         return self.calls_api.bump_call(*args, **kwargs)
 
-    def generate_call_action_signature(self, *args, **kwargs):
-        return self.calls_api.generate_call_action_signature(*args, **kwargs)
-
     def get_agora_rtm_token(self, *args, **kwargs):
         return self.calls_api.get_agora_rtm_token(*args, **kwargs)
 
@@ -41,6 +38,9 @@ class GeneratedFacade:
 
     def get_call_gift_history(self, *args, **kwargs):
         return self.calls_api.get_call_gift_history(*args, **kwargs)
+
+    def get_call_participant(self, *args, **kwargs):
+        return self.calls_api.get_call_participant(*args, **kwargs)
 
     def get_conference_call(self, *args, **kwargs):
         return self.calls_api.get_conference_call(*args, **kwargs)
@@ -74,9 +74,6 @@ class GeneratedFacade:
 
     def update_call_user(self, *args, **kwargs):
         return self.calls_api.update_call_user(*args, **kwargs)
-
-    def validate_call_action_signature(self, *args, **kwargs):
-        return self.calls_api.validate_call_action_signature(*args, **kwargs)
 
     def accept_chat_request(self, *args, **kwargs):
         return self.chat_rooms_api.accept_chat_request(*args, **kwargs)
@@ -203,6 +200,15 @@ class GeneratedFacade:
 
     def fire_group_user(self, *args, **kwargs):
         return self.groups_api.fire_group_user(*args, **kwargs)
+
+    def get_community_campaign_group_leaderboard(self, *args, **kwargs):
+        return self.groups_api.get_community_campaign_group_leaderboard(*args, **kwargs)
+
+    def get_community_campaign_status(self, *args, **kwargs):
+        return self.groups_api.get_community_campaign_status(*args, **kwargs)
+
+    def get_community_campaign_user_leaderboard(self, *args, **kwargs):
+        return self.groups_api.get_community_campaign_user_leaderboard(*args, **kwargs)
 
     def get_group(self, *args, **kwargs):
         return self.groups_api.get_group(*args, **kwargs)
@@ -348,6 +354,9 @@ class GeneratedFacade:
     def unhide_users(self, *args, **kwargs):
         return self.hidden_api.unhide_users(*args, **kwargs)
 
+    def update_mute_keyword(self, *args, **kwargs):
+        return self.hidden_api.update_mute_keyword(*args, **kwargs)
+
     def get_banned_words(self, *args, **kwargs):
         return self.moderation_api.get_banned_words(*args, **kwargs)
 
@@ -374,6 +383,9 @@ class GeneratedFacade:
 
     def unpin_group(self, *args, **kwargs):
         return self.pinned_api.unpin_group(*args, **kwargs)
+
+    def unpin_post(self, *args, **kwargs):
+        return self.pinned_api.unpin_post(*args, **kwargs)
 
     def unpin_review(self, *args, **kwargs):
         return self.pinned_api.unpin_review(*args, **kwargs)
@@ -404,6 +416,9 @@ class GeneratedFacade:
 
     def get_following_timeline(self, *args, **kwargs):
         return self.posts_api.get_following_timeline(*args, **kwargs)
+
+    def get_group_calls(self, *args, **kwargs):
+        return self.posts_api.get_group_calls(*args, **kwargs)
 
     def get_group_timeline(self, *args, **kwargs):
         return self.posts_api.get_group_timeline(*args, **kwargs)

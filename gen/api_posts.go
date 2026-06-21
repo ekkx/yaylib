@@ -1642,6 +1642,144 @@ func (a *PostsAPIService) GetFollowingTimelineExecute(r ApiGetFollowingTimelineR
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiGetGroupCallsRequest struct {
+	ctx context.Context
+	ApiService *PostsAPIService
+	number *int32
+	groupCategoryId *int64
+	fromTimestamp *int64
+	scope *string
+}
+
+func (r ApiGetGroupCallsRequest) Number(number int32) ApiGetGroupCallsRequest {
+	r.number = &number
+	return r
+}
+
+func (r ApiGetGroupCallsRequest) GroupCategoryId(groupCategoryId int64) ApiGetGroupCallsRequest {
+	r.groupCategoryId = &groupCategoryId
+	return r
+}
+
+func (r ApiGetGroupCallsRequest) FromTimestamp(fromTimestamp int64) ApiGetGroupCallsRequest {
+	r.fromTimestamp = &fromTimestamp
+	return r
+}
+
+func (r ApiGetGroupCallsRequest) Scope(scope string) ApiGetGroupCallsRequest {
+	r.scope = &scope
+	return r
+}
+
+func (r ApiGetGroupCallsRequest) Execute() (*PostsResponse, *http.Response, error) {
+	return r.ApiService.GetGroupCallsExecute(r)
+}
+
+func (r ApiGetGroupCallsRequest) ExecuteRaw() ([]byte, *http.Response, error) {
+	_, httpResp, err := r.Execute()
+	return executeRaw(httpResp, err)
+}
+
+/*
+GetGroupCalls Method for GetGroupCalls
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiGetGroupCallsRequest
+*/
+func (a *PostsAPIService) GetGroupCalls(ctx context.Context) ApiGetGroupCallsRequest {
+	return ApiGetGroupCallsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return PostsResponse
+func (a *PostsAPIService) GetGroupCallsExecute(r ApiGetGroupCallsRequest) (*PostsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *PostsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PostsAPIService.GetGroupCalls")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v1/posts/group_calls"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.number != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "number", r.number, "form", "")
+	}
+	if r.groupCategoryId != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "group_category_id", r.groupCategoryId, "form", "")
+	}
+	if r.fromTimestamp != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "from_timestamp", r.fromTimestamp, "form", "")
+	}
+	if r.scope != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "scope", r.scope, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiGetGroupTimelineRequest struct {
 	ctx context.Context
 	ApiService *PostsAPIService
