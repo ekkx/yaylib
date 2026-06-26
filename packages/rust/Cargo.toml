@@ -2,7 +2,7 @@
 name = "yaylib"
 version = "2.0.0"
 edition = "2021"
-rust-version = "1.80"
+rust-version = "1.85"
 description = "Rust client for the Yay! (SNS) API"
 license = "MIT"
 repository = "https://github.com/ekkx/yaylib"
