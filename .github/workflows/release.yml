@@ -5,6 +5,7 @@ name: release
 #
 #   ts-vX.Y.Z   -> npm  (TypeScript), guard checks packages/typescript/package.json
 #   py-vX.Y.Z   -> PyPI (Python),     guard checks packages/python/pyproject.toml
+#   rs-vX.Y.Z   -> crates.io (Rust),  guard checks packages/rust/Cargo.toml
 #   vX.Y.Z      -> Go module version (a plain semver tag is what
 #                  `go get .../v2@vX.Y.Z` resolves; Go tooling cannot
 #                  use a prefixed tag) — publishes only a GitHub Release.
@@ -19,10 +20,11 @@ name: release
 #
 # Required repository secrets:
 #   PYPI_API_TOKEN    PyPI API token (scoped to the project)
+#   CARGO_REGISTRY_TOKEN  crates.io API token (scoped to publish-new + publish-update)
 
 on:
   push:
-    tags: ["v*", "ts-v*", "py-v*"]
+    tags: ["v*", "ts-v*", "py-v*", "rs-v*"]
 
 permissions:
   contents: read
@@ -44,6 +46,7 @@ jobs:
           case "$ref" in
             ts-v*) lang=ts; ver="${ref#ts-v}" ;;
             py-v*) lang=py; ver="${ref#py-v}" ;;
+            rs-v*) lang=rs; ver="${ref#rs-v}" ;;
             v*)    lang=go; ver="${ref#v}" ;;
             *) echo "::error::unrecognized tag $ref"; exit 1 ;;
           esac
@@ -57,6 +60,11 @@ jobs:
             py_v="$(grep -E '^version = ' packages/python/pyproject.toml | head -1 | sed -E 's/.*"([^"]+)".*/\1/')"
             if [ "$py_v" != "$ver" ]; then
               echo "::error::pyproject version ($py_v) != tag ($ver)"; exit 1
+            fi
+          elif [ "$lang" = rs ]; then
+            rs_v="$(grep -E '^version = ' packages/rust/Cargo.toml | head -1 | sed -E 's/.*"([^"]+)".*/\1/')"
+            if [ "$rs_v" != "$ver" ]; then
+              echo "::error::Cargo.toml version ($rs_v) != tag ($ver)"; exit 1
             fi
           fi
           case "$ver" in
@@ -116,11 +124,28 @@ jobs:
           packages-dir: dist
           skip-existing: true
 
+  crates:
+    needs: guard
+    if: needs.guard.outputs.lang == 'rs'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/rust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Test
+        run: cargo test
+      - name: Publish
+        run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
   github-release:
-    needs: [guard, npm, pypi]
-    # npm / pypi are skipped for the other languages; only a real
+    needs: [guard, npm, pypi, crates]
+    # npm / pypi / crates are skipped for the other languages; only a real
     # failure of the relevant one should block the Release.
-    if: ${{ always() && needs.guard.result == 'success' && needs.npm.result != 'failure' && needs.pypi.result != 'failure' }}
+    if: ${{ always() && needs.guard.result == 'success' && needs.npm.result != 'failure' && needs.pypi.result != 'failure' && needs.crates.result != 'failure' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write

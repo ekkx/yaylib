@@ -8,7 +8,8 @@
 
 <a href="https://github.com/ekkx/yaylib"><img src="https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white" alt="Go"></a>&nbsp;
 <a href="https://github.com/ekkx/yaylib/tree/master/packages/typescript"><img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"></a>&nbsp;
-<a href="https://github.com/ekkx/yaylib/tree/master/packages/python"><img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
+<a href="https://github.com/ekkx/yaylib/tree/master/packages/python"><img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>&nbsp;
+<a href="https://github.com/ekkx/yaylib/tree/master/packages/rust"><img src="https://img.shields.io/badge/Rust-000000?style=flat-square&logo=rust&logoColor=white" alt="Rust"></a>
 
 <sub>あらゆる操作の自動化や、ボットの開発が可能です。</sub>
 
@@ -16,7 +17,7 @@
 
 </div>
 
-Yay! の API を [Go](https://github.com/ekkx/yaylib) / [TypeScript](https://github.com/ekkx/yaylib/tree/master/packages/typescript) / [Python](https://github.com/ekkx/yaylib/tree/master/packages/python) から扱うための非公式 SDK です。
+Yay! の API を [Go](https://github.com/ekkx/yaylib) / [TypeScript](https://github.com/ekkx/yaylib/tree/master/packages/typescript) / [Python](https://github.com/ekkx/yaylib/tree/master/packages/python) / [Rust](https://github.com/ekkx/yaylib/tree/master/packages/rust) から扱うための非公式 SDK です。
 
 ### インストール
 
@@ -24,6 +25,7 @@ Yay! の API を [Go](https://github.com/ekkx/yaylib) / [TypeScript](https://git
 go get github.com/ekkx/yaylib/v2   # Go
 npm install yaylib                 # TypeScript
 pip install yaylib                 # Python
+cargo add yaylib                   # Rust
 ```
 
 ### クイックスタート (Go)

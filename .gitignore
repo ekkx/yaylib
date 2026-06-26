@@ -10,6 +10,11 @@ packages/**/node_modules
 packages/**/dist
 packages/**/*.tgz
 
+# Rust
+**/target
+**/Cargo.lock
+sessions*.json
+
 # Python
 packages/**/.venv
 packages/**/__pycache__

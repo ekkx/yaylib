@@ -1,0 +1,13 @@
+[package]
+name = "example-session-and-errors"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "session_and_errors"
+path = "main.rs"
+
+[dependencies]
+yaylib = { path = "../../../packages/rust" }
+tokio = { version = "1", features = ["full"] }

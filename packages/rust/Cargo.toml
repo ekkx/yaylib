@@ -1,0 +1,55 @@
+[package]
+name = "yaylib"
+version = "2.0.0"
+edition = "2021"
+rust-version = "1.80"
+description = "Rust client for the Yay! (SNS) API"
+license = "MIT"
+repository = "https://github.com/ekkx/yaylib"
+homepage = "https://github.com/ekkx/yaylib"
+keywords = ["yay", "sns", "api-client", "social"]
+categories = ["api-bindings", "web-programming::http-client"]
+readme = "README.md"
+authors = ["ekkx"]
+exclude = ["sessions*.json", "target/"]
+
+[dependencies]
+# HTTP
+reqwest = { version = "0.12", default-features = false, features = ["json", "multipart", "rustls-tls", "stream"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_with = { version = "3", default-features = false, features = ["base64", "std", "macros"] }
+serde_repr = "0.1"
+serde_yaml = "0.9"
+
+# Async
+tokio = { version = "1", features = ["full"] }
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+futures-util = "0.3"
+
+# Crypto
+hmac = "0.12"
+sha2 = "0.10"
+md-5 = "0.10"
+base64 = "0.22"
+jsonwebtoken = "9"
+
+# Utilities
+url = "2"
+uuid = { version = "1", features = ["v4"] }
+rand = "0.8"
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "2"
+tracing = "0.1"
+bytes = "1"
+mime_guess = "2"
+async-trait = "0.1"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "gif"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full", "test-util"] }
+wiremock = "0.6"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tempfile = "3"

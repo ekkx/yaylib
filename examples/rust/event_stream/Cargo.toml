@@ -1,0 +1,13 @@
+[package]
+name = "example-event-stream"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "event_stream"
+path = "main.rs"
+
+[dependencies]
+yaylib = { path = "../../../packages/rust" }
+tokio = { version = "1", features = ["full"] }

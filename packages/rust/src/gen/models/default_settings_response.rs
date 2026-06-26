@@ -1,0 +1,19 @@
+// Code generated from the Yay! API schema; DO NOT EDIT.
+
+use crate::gen::models;
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct DefaultSettingsResponse {
+    #[serde(rename = "timeline_settings", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub timeline_settings: Option<Option<models::TimelineSettings>>,
+}
+
+impl DefaultSettingsResponse {
+    pub fn new() -> DefaultSettingsResponse {
+        DefaultSettingsResponse {
+            timeline_settings: None,
+        }
+    }
+}
+

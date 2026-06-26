@@ -1,7 +1,8 @@
 name: ci
 
 # Builds and tests every language package across its full supported
-# version range (Go 1.22+/latest, Node 22/24, Python 3.10-3.13). Each
+# version range (Go 1.22+/latest, Node 22/24, Python 3.10-3.13,
+# Rust 1.80/stable). Each
 # suite runs first in its hermetic form (pure-function + typed-decode
 # fixtures, no network), then the behavior-parity job boots the bundled
 # mock server once and drives all three languages against it so they
@@ -86,6 +87,27 @@ jobs:
       - run: pip install -r requirements.txt -r requirements-dev.txt
       - name: Test (hermetic)
         run: PYTHONPATH="$PWD" python -m pytest -q
+
+  rs:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rust: ["1.80", "stable"]
+    defaults:
+      run:
+        working-directory: packages/rust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+          components: clippy
+      - name: Clippy
+        if: matrix.rust == 'stable'
+        run: cargo clippy --all-targets -- -D warnings
+      - name: Test (hermetic)
+        run: cargo test
 
   parity-matrix:
     runs-on: ubuntu-latest
