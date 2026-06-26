@@ -22,7 +22,7 @@ Yay! の API を Rust から扱うための非公式 SDK です。
 cargo add yaylib
 ```
 
-Rust 1.85 以上。非同期ランタイムは [tokio](https://tokio.rs/) を使用します。
+Rust 1.88 以上。非同期ランタイムは [tokio](https://tokio.rs/) を使用します。
 
 ### クイックスタート
 

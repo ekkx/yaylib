@@ -93,7 +93,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: ["1.85", "stable"]
+        rust: ["1.88", "stable"]
     defaults:
       run:
         working-directory: packages/rust
