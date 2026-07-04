@@ -61,6 +61,12 @@ const (
 	// server).
 	DefaultCassandraBaseURL = "https://cas.yay.space"
 	DefaultAPIKey           = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
+	// DefaultWebAPIKey is the API key the browser client authenticates
+	// with. It is used only for the login fallback: when a primary
+	// email login returns 401, the client retries against the
+	// alternate login endpoint (POST /v2/users/login_with_email), which
+	// validates against this key instead of DefaultAPIKey.
+	DefaultWebAPIKey        = "e9f1ae4c4470f29a92c0168dc42b13637cc332692103f23e626bc2b016f66603"
 	DefaultAPIVersionKey    = "34c8c1cdf29b46a492e8ec58e6db37ec" // HS256 signing key for X-Jwt
 	DefaultAPIVersionName   = "4.26"
 	DefaultAppVersion       = "4.26.1"
@@ -119,6 +125,9 @@ const (
 type Client struct {
 	// Wire configuration.
 	APIKey         string
+	// WebAPIKey is the key used by the email-login fallback (see
+	// DefaultWebAPIKey). Set it to "" to disable the fallback entirely.
+	WebAPIKey      string
 	APIVersionKey  string
 	APIVersionName string
 	AppVersion     string
@@ -267,6 +276,11 @@ type Option func(*Client)
 // WithAPIKey overrides the default Yay! API key.
 func WithAPIKey(k string) Option { return func(c *Client) { c.APIKey = k } }
 
+// WithWebAPIKey overrides the key used by the email-login fallback
+// (see DefaultWebAPIKey). Pass "" to disable the fallback: LoginWithEmail
+// then surfaces a primary 401 unchanged.
+func WithWebAPIKey(k string) Option { return func(c *Client) { c.WebAPIKey = k } }
+
 // WithAPIVersionKey overrides the HS256 key used to sign the X-Jwt header.
 func WithAPIVersionKey(k string) Option { return func(c *Client) { c.APIVersionKey = k } }
 
@@ -379,6 +393,7 @@ func NewClient(opts ...Option) *Client {
 		lifecycleCtx:     lifecycleCtx,
 		lifecycleCancel:  lifecycleCancel,
 		APIKey:           DefaultAPIKey,
+		WebAPIKey:        DefaultWebAPIKey,
 		APIVersionKey:    DefaultAPIVersionKey,
 		APIVersionName:   DefaultAPIVersionName,
 		AppVersion:       DefaultAppVersion,

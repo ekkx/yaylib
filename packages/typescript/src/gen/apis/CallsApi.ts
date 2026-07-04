@@ -21,6 +21,7 @@ import type {
   CallGiftHistoryResponse,
   CallStatusResponse,
   ConferenceCallResponse,
+  JoinableBy,
   RtmTokenResponse,
   UserResponse,
   UsersByTimestampResponse,
@@ -36,6 +37,8 @@ import {
     CallStatusResponseToJSON,
     ConferenceCallResponseFromJSON,
     ConferenceCallResponseToJSON,
+    JoinableByFromJSON,
+    JoinableByToJSON,
     RtmTokenResponseFromJSON,
     RtmTokenResponseToJSON,
     UserResponseFromJSON,
@@ -127,7 +130,7 @@ export interface UpdateCallRequest {
     callId: number;
     categoryId?: string | null;
     gameTitle?: string | null;
-    joinableBy?: string;
+    joinableBy?: JoinableBy;
 }
 
 export interface UpdateCallUserRequest {

@@ -6,6 +6,13 @@
 export const DEFAULT_API_KEY =
   "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6";
 
+// API key used by the browser-login fallback. When the primary email
+// login is rejected with a plain "unauthorized", the client retries
+// against POST /v2/users/login_with_email, which validates against this
+// key instead of DEFAULT_API_KEY. Set webApiKey: "" to disable.
+export const DEFAULT_WEB_API_KEY =
+  "e9f1ae4c4470f29a92c0168dc42b13637cc332692103f23e626bc2b016f66603";
+
 // HS256 key used by signed_version and X-Jwt.
 export const DEFAULT_API_VERSION_KEY = "34c8c1cdf29b46a492e8ec58e6db37ec";
 

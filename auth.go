@@ -1,9 +1,12 @@
 package yaylib
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/ekkx/yaylib/v2/gen"
@@ -114,7 +117,40 @@ func (r LoginWithEmailRequest) Execute() (*gen.LoginUserResponse, *http.Response
 		LoginEmailUserRequest(body).
 		Execute()
 	if err != nil {
-		return resp, httpResp, err
+		// Fallback: when the primary (app) login is rejected with a plain
+		// "unauthorized", retry against the browser login endpoint, which
+		// authenticates with a different key (WebAPIKey). On success the
+		// web response replaces the failed one; if the fallback also fails,
+		// the original error (a proper *APIError) is surfaced unchanged.
+		//
+		// The fallback is gated on ErrCodeUnauthorized specifically, not on
+		// a bare 401 status: other rejections are also 401 but must NOT be
+		// retried — notably ErrCodeRequired2FA (the caller has to supply a
+		// code, not switch keys). It is also skipped when the caller pinned
+		// a specific api_key via .ApiKey(), since the fallback would
+		// otherwise silently authenticate under a different key.
+		callerPinnedKey := body.GetApiKey() != r.client.APIKey
+		if r.client.WebAPIKey != "" && !callerPinnedKey && CodeOf(err) == ErrCodeUnauthorized {
+			if wResp, wHTTP, wErr := r.client.loginWithEmailWeb(r.ctx, body); wErr == nil {
+				r.client.Logger.Debug("web login fallback ok",
+					"event", "login_fallback", "outcome", "ok")
+				resp, httpResp, err = wResp, wHTTP, nil
+			} else {
+				r.client.Logger.Debug("web login fallback failed",
+					"event", "login_fallback", "outcome", "failed")
+				// A 2xx web response we couldn't decode is a genuine
+				// login result, not an auth rejection: surface it (with
+				// its raw body, readable on wHTTP) rather than masking it
+				// behind the primary 401. Non-2xx / transport errors fall
+				// through and the primary error is returned unchanged.
+				if wHTTP != nil && wHTTP.StatusCode >= 200 && wHTTP.StatusCode < 300 {
+					return nil, wHTTP, wErr
+				}
+			}
+		}
+		if err != nil {
+			return resp, httpResp, err
+		}
 	}
 	if perr := r.client.acceptLogin(email, resp); perr != nil {
 		return resp, httpResp, perr
@@ -123,6 +159,87 @@ func (r LoginWithEmailRequest) Execute() (*gen.LoginUserResponse, *http.Response
 }
 
 // ---- internal helpers ----
+
+// bareClient returns an *http.Client that sends requests through the base
+// RoundTripper WITHOUT the app transport's header injection, Authorization,
+// 401 auto-refresh or retry. It inherits the configured client's timeout
+// and, when the app transport is in place, its underlying (caller-supplied
+// or default) RoundTripper — so a custom proxy / TLS config still applies.
+func (c *Client) bareClient() *http.Client {
+	bare := &http.Client{Timeout: c.httpClient.Timeout}
+	if t, ok := c.httpClient.Transport.(*Transport); ok {
+		bare.Transport = t.Base
+	}
+	return bare
+}
+
+// loginWithEmailWeb is the fallback login path invoked when the primary
+// email login returns 401. It posts to /v2/users/login_with_email — the
+// endpoint the browser client uses — authenticating with the client's
+// WebAPIKey instead of APIKey.
+//
+// The request is sent through the UNWRAPPED HTTP layer (the base
+// RoundTripper, bypassing the app transport) for two reasons: it must
+// carry the browser client's minimal header set rather than the app's
+// (X-App-Version / X-Connection-* / X-Device-UUID), and it must not
+// pick up the transport's Authorization injection or 401 auto-refresh —
+// a login must authenticate purely by its body credentials, never by a
+// pre-existing session's Bearer. This mirrors the "re-issue with the
+// unwrapped client" rule the retry/refresh paths follow (PORTING §6.1).
+// A caller-supplied *http.Client / proxy is still honored: the base
+// RoundTripper and timeout are inherited from it. Only the login body's
+// api_key and the endpoint version differ from the app login.
+func (c *Client) loginWithEmailWeb(ctx context.Context, body gen.LoginEmailUserRequest) (*gen.LoginUserResponse, *http.Response, error) {
+	payload := map[string]string{
+		"email":    body.GetEmail(),
+		"password": body.GetPassword(),
+		"api_key":  c.WebAPIKey,
+		"uuid":     body.GetUuid(),
+	}
+	if code := body.GetTwoFACode(); code != "" {
+		payload["two_fa_code"] = code
+	}
+	buf, err := json.Marshal(payload)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
+		c.BaseURL+"/v2/users/login_with_email", bytes.NewReader(buf))
+	if err != nil {
+		return nil, nil, err
+	}
+	req.Header.Set("Content-Type", "application/json;charset=UTF-8")
+	// Present as the browser client. The web version string is not
+	// otherwise known to the SDK, so AppVersion stands in for it.
+	const webUA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
+		"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+	req.Header.Set("User-Agent", webUA)
+	req.Header.Set("Agent", "YayWeb "+c.AppVersion)
+	req.Header.Set("X-Device-Info", fmt.Sprintf("Yay %s Web (%s)", c.AppVersion, webUA))
+
+	httpResp, err := c.bareClient().Do(req)
+	if err != nil {
+		return nil, nil, err
+	}
+	respBody, err := io.ReadAll(httpResp.Body)
+	httpResp.Body.Close()
+	if err != nil {
+		return nil, httpResp, err
+	}
+	// Restore a readable body on the response so callers / middleware that
+	// inspect the returned *http.Response see the same bytes we decoded,
+	// matching the primary login path's semantics.
+	httpResp.Body = io.NopCloser(bytes.NewReader(respBody))
+	if httpResp.StatusCode < 200 || httpResp.StatusCode >= 300 {
+		return nil, httpResp, fmt.Errorf("yaylib: web login failed: status %d", httpResp.StatusCode)
+	}
+	var out gen.LoginUserResponse
+	if err := json.Unmarshal(respBody, &out); err != nil {
+		return nil, httpResp, fmt.Errorf("yaylib: web login decode: %w", err)
+	}
+	return &out, httpResp, nil
+}
 
 // fillEmailLogin populates APIKey and Uuid from the client if they weren't
 // set by the caller, and returns the completed body.

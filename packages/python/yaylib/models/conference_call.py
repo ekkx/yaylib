@@ -20,8 +20,10 @@ import json
 from pydantic import BaseModel, ConfigDict, StrictBool, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from yaylib.models.bump_params import BumpParams
+from yaylib.models.call_type import CallType
 from yaylib.models.game import Game
 from yaylib.models.genre import Genre
+from yaylib.models.joinable_by import JoinableBy
 from yaylib.models.model_conference_call_user_role import ModelConferenceCallUserRole
 from yaylib.models.user import User
 from typing import Optional, Set
@@ -35,7 +37,7 @@ class ConferenceCall(BaseModel):
     agora_token: Optional[StrictStr] = None
     anonymous_call_users_count: Optional[StrictInt] = None
     bump_params: Optional[BumpParams] = None
-    call_type: Optional[StrictStr] = None
+    call_type: Optional[CallType] = None
     conference_call_user_uuid: Optional[StrictStr] = None
     conference_call_users: Optional[List[User]] = None
     conference_call_users_role: Optional[List[ModelConferenceCallUserRole]] = None
@@ -45,7 +47,7 @@ class ConferenceCall(BaseModel):
     group_id: Optional[StrictInt] = None
     id: Optional[StrictInt] = None
     is_active: Optional[StrictBool] = None
-    joinable_by: Optional[StrictStr] = None
+    joinable_by: Optional[JoinableBy] = None
     max_participants: Optional[StrictInt] = None
     post_id: Optional[StrictInt] = None
     __properties: ClassVar[List[str]] = ["agora_channel", "agora_token", "anonymous_call_users_count", "bump_params", "call_type", "conference_call_user_uuid", "conference_call_users", "conference_call_users_role", "duration_seconds", "game", "genre", "group_id", "id", "is_active", "joinable_by", "max_participants", "post_id"]

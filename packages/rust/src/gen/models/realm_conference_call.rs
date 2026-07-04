@@ -16,7 +16,7 @@ pub struct RealmConferenceCall {
     #[serde(rename = "bump_params", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
     pub bump_params: Option<Option<models::ConferenceCallBumpParams>>,
     #[serde(rename = "call_type", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
-    pub call_type: Option<Option<String>>,
+    pub call_type: Option<Option<models::CallType>>,
     #[serde(rename = "conference_call_user_roles", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
     pub conference_call_user_roles: Option<Option<Vec<models::ConferenceCallUserRole>>>,
     #[serde(rename = "conference_call_users", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
@@ -34,7 +34,7 @@ pub struct RealmConferenceCall {
     #[serde(rename = "id", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
     pub id: Option<Option<i64>>,
     #[serde(rename = "joinable_by", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
-    pub joinable_by: Option<Option<String>>,
+    pub joinable_by: Option<Option<models::JoinableBy>>,
     #[serde(rename = "max_participants", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
     pub max_participants: Option<Option<i32>>,
     #[serde(rename = "post_id", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]

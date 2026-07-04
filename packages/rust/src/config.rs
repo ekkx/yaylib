@@ -5,6 +5,12 @@ pub const DEFAULT_CASSANDRA_BASE_URL: &str = "https://cas.yay.space";
 
 pub const DEFAULT_API_KEY: &str =
     "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6";
+/// API key used by the browser-login fallback. When the primary email
+/// login is rejected with a plain "unauthorized", the client retries
+/// against POST /v2/users/login_with_email, which validates against this
+/// key instead of [`DEFAULT_API_KEY`]. Set `web_api_key("")` to disable.
+pub const DEFAULT_WEB_API_KEY: &str =
+    "e9f1ae4c4470f29a92c0168dc42b13637cc332692103f23e626bc2b016f66603";
 pub const DEFAULT_API_VERSION_KEY: &str = "34c8c1cdf29b46a492e8ec58e6db37ec";
 pub const DEFAULT_API_VERSION_NAME: &str = "4.26";
 pub const DEFAULT_APP_VERSION: &str = "4.26.1";

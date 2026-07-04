@@ -17,7 +17,7 @@ type RealmConferenceCall struct {
 	AgoraToken NullableString `json:"agora_token,omitempty"`
 	AnonymousCallUsersCount NullableInt32 `json:"anonymous_call_users_count,omitempty"`
 	BumpParams NullableConferenceCallBumpParams `json:"bump_params,omitempty"`
-	CallType NullableString `json:"call_type,omitempty"`
+	CallType NullableCallType `json:"call_type,omitempty"`
 	ConferenceCallUserRoles []ConferenceCallUserRole `json:"conference_call_user_roles,omitempty"`
 	ConferenceCallUsers []RealmUser `json:"conference_call_users,omitempty"`
 	ConferenceCallUsersCount NullableInt32 `json:"conference_call_users_count,omitempty"`
@@ -26,7 +26,7 @@ type RealmConferenceCall struct {
 	Genre NullableRealmGenre `json:"genre,omitempty"`
 	GroupId NullableInt64 `json:"group_id,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
-	JoinableBy NullableString `json:"joinable_by,omitempty"`
+	JoinableBy NullableJoinableBy `json:"joinable_by,omitempty"`
 	MaxParticipants NullableInt32 `json:"max_participants,omitempty"`
 	PostId NullableInt64 `json:"post_id,omitempty"`
 	Server NullableString `json:"server,omitempty"`
@@ -263,9 +263,9 @@ func (o *RealmConferenceCall) UnsetBumpParams() {
 }
 
 // GetCallType returns the CallType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RealmConferenceCall) GetCallType() string {
+func (o *RealmConferenceCall) GetCallType() CallType {
 	if o == nil || IsNil(o.CallType.Get()) {
-		var ret string
+		var ret CallType
 		return ret
 	}
 	return *o.CallType.Get()
@@ -274,7 +274,7 @@ func (o *RealmConferenceCall) GetCallType() string {
 // GetCallTypeOk returns a tuple with the CallType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RealmConferenceCall) GetCallTypeOk() (*string, bool) {
+func (o *RealmConferenceCall) GetCallTypeOk() (*CallType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -290,8 +290,8 @@ func (o *RealmConferenceCall) HasCallType() bool {
 	return false
 }
 
-// SetCallType gets a reference to the given NullableString and assigns it to the CallType field.
-func (o *RealmConferenceCall) SetCallType(v string) {
+// SetCallType gets a reference to the given NullableCallType and assigns it to the CallType field.
+func (o *RealmConferenceCall) SetCallType(v CallType) {
 	o.CallType.Set(&v)
 }
 // SetCallTypeNil sets the value for CallType to be an explicit nil
@@ -623,9 +623,9 @@ func (o *RealmConferenceCall) UnsetId() {
 }
 
 // GetJoinableBy returns the JoinableBy field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RealmConferenceCall) GetJoinableBy() string {
+func (o *RealmConferenceCall) GetJoinableBy() JoinableBy {
 	if o == nil || IsNil(o.JoinableBy.Get()) {
-		var ret string
+		var ret JoinableBy
 		return ret
 	}
 	return *o.JoinableBy.Get()
@@ -634,7 +634,7 @@ func (o *RealmConferenceCall) GetJoinableBy() string {
 // GetJoinableByOk returns a tuple with the JoinableBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RealmConferenceCall) GetJoinableByOk() (*string, bool) {
+func (o *RealmConferenceCall) GetJoinableByOk() (*JoinableBy, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -650,8 +650,8 @@ func (o *RealmConferenceCall) HasJoinableBy() bool {
 	return false
 }
 
-// SetJoinableBy gets a reference to the given NullableString and assigns it to the JoinableBy field.
-func (o *RealmConferenceCall) SetJoinableBy(v string) {
+// SetJoinableBy gets a reference to the given NullableJoinableBy and assigns it to the JoinableBy field.
+func (o *RealmConferenceCall) SetJoinableBy(v JoinableBy) {
 	o.JoinableBy.Set(&v)
 }
 // SetJoinableByNil sets the value for JoinableBy to be an explicit nil

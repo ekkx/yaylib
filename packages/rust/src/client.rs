@@ -18,6 +18,7 @@ use crate::uuid::new_uuid_v4;
 #[derive(Debug)]
 pub(crate) struct ClientConfig {
     pub(crate) api_key: String,
+    pub(crate) web_api_key: String,
     pub(crate) api_version_key: String,
     pub(crate) api_version_name: String,
     pub(crate) app_version: String,
@@ -53,6 +54,7 @@ pub(crate) struct SharedState {
 #[derive(Default)]
 pub struct ClientBuilder {
     api_key: Option<String>,
+    web_api_key: Option<String>,
     api_version_key: Option<String>,
     api_version_name: Option<String>,
     app_version: Option<String>,
@@ -76,6 +78,14 @@ impl ClientBuilder {
     /// Sets a custom API key (defaults to the built-in key).
     pub fn api_key(mut self, v: impl Into<String>) -> Self {
         self.api_key = Some(v.into());
+        self
+    }
+
+    /// Overrides the key used by the email-login fallback (see
+    /// [`DEFAULT_WEB_API_KEY`]). Pass `""` to disable the fallback: a
+    /// primary 401 then surfaces unchanged.
+    pub fn web_api_key(mut self, v: impl Into<String>) -> Self {
+        self.web_api_key = Some(v.into());
         self
     }
     pub fn api_version_key(mut self, v: impl Into<String>) -> Self {
@@ -164,6 +174,9 @@ impl ClientBuilder {
             api_key: self
                 .api_key
                 .unwrap_or_else(|| DEFAULT_API_KEY.to_string()),
+            web_api_key: self
+                .web_api_key
+                .unwrap_or_else(|| DEFAULT_WEB_API_KEY.to_string()),
             api_version_key: self
                 .api_version_key
                 .unwrap_or_else(|| DEFAULT_API_VERSION_KEY.to_string()),
@@ -293,6 +306,9 @@ impl Client {
 
     pub fn api_key(&self) -> &str {
         &self.config.api_key
+    }
+    pub fn web_api_key(&self) -> &str {
+        &self.config.web_api_key
     }
     pub fn api_version_key(&self) -> &str {
         &self.config.api_version_key
@@ -504,6 +520,74 @@ impl Client {
             access_token: resp.access_token.flatten().unwrap_or_default(),
             refresh_token: resp.refresh_token.flatten().unwrap_or_default(),
         })
+    }
+
+    /// Fallback login against the browser endpoint (POST
+    /// /v2/users/login_with_email) using [`web_api_key`](Client::web_api_key).
+    ///
+    /// Issued directly through the raw `reqwest::Client`, bypassing the
+    /// transport's header injection / Bearer / 401-refresh: a login must
+    /// authenticate purely by its body credentials and the browser
+    /// endpoint expects the browser client's minimal header set (PORTING
+    /// §6.1/§6.2). Only the body's api_key and the endpoint version
+    /// differ from the app login.
+    ///
+    /// Returns `Ok(Some(resp))` on success, `Ok(None)` when the fallback
+    /// is itself rejected (non-2xx) so the caller surfaces the primary
+    /// error, or `Err` carrying the raw body when a 2xx response fails to
+    /// decode (§15) — rather than masking it behind the primary 401.
+    pub(crate) async fn do_login_with_email_web(
+        &self,
+        body: &LoginEmailUserRequestBody,
+    ) -> Result<Option<LoginResponse>, ApiError> {
+        let cfg = &self.config;
+        // Present as the browser client. The web version string is not
+        // otherwise known to the SDK, so app_version stands in for it.
+        const WEB_UA: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) \
+AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+        let mut payload = serde_json::json!({
+            "email": body.email,
+            "password": body.password,
+            "api_key": cfg.web_api_key,
+            "uuid": body.uuid,
+        });
+        if let Some(code) = &body.two_fa_code {
+            payload["two_fa_code"] = serde_json::Value::String(code.clone());
+        }
+
+        let resp = self
+            .transport
+            .http_client
+            .post(format!("{}/v2/users/login_with_email", cfg.base_url))
+            .header("content-type", "application/json;charset=UTF-8")
+            .header("user-agent", WEB_UA)
+            .header("agent", format!("YayWeb {}", cfg.app_version))
+            .header(
+                "x-device-info",
+                format!("Yay {} Web ({})", cfg.app_version, WEB_UA),
+            )
+            .body(payload.to_string())
+            .send()
+            .await
+            .map_err(ApiError::Http)?;
+
+        let status = resp.status();
+        let bytes = resp.bytes().await.map_err(ApiError::Http)?;
+        if !status.is_success() {
+            // Fallback itself rejected: caller surfaces the primary error.
+            return Ok(None);
+        }
+        match serde_json::from_slice::<crate::gen::models::LoginUserResponse>(&bytes) {
+            Ok(r) => Ok(Some(LoginResponse {
+                user_id: r.user_id.flatten().unwrap_or(0),
+                access_token: r.access_token.flatten().unwrap_or_default(),
+                refresh_token: r.refresh_token.flatten().unwrap_or_default(),
+            })),
+            // A 2xx we couldn't decode is a genuine login result: surface
+            // it with the raw body, not the primary 401.
+            Err(_) => Err(ApiError::from_response(status.as_u16(), bytes.to_vec())),
+        }
     }
 }
 

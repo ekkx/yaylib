@@ -34,6 +34,20 @@ import {
     UserToJSON,
     UserToJSONTyped,
 } from './User.js';
+import type { JoinableBy } from './JoinableBy.js';
+import {
+    JoinableByFromJSON,
+    JoinableByFromJSONTyped,
+    JoinableByToJSON,
+    JoinableByToJSONTyped,
+} from './JoinableBy.js';
+import type { CallType } from './CallType.js';
+import {
+    CallTypeFromJSON,
+    CallTypeFromJSONTyped,
+    CallTypeToJSON,
+    CallTypeToJSONTyped,
+} from './CallType.js';
 import type { Genre } from './Genre.js';
 import {
     GenreFromJSON,
@@ -81,10 +95,10 @@ export interface ConferenceCall {
     bumpParams?: BumpParams | null;
     /**
      * 
-     * @type {string}
+     * @type {CallType}
      * @memberof ConferenceCall
      */
-    callType?: string | null;
+    callType?: CallType | null;
     /**
      * 
      * @type {string}
@@ -141,10 +155,10 @@ export interface ConferenceCall {
     isActive?: boolean | null;
     /**
      * 
-     * @type {string}
+     * @type {JoinableBy}
      * @memberof ConferenceCall
      */
-    joinableBy?: string | null;
+    joinableBy?: JoinableBy | null;
     /**
      * 
      * @type {number}
@@ -158,6 +172,8 @@ export interface ConferenceCall {
      */
     postId?: number | null;
 }
+
+
 
 /**
  * Check if a given object implements the ConferenceCall interface.
@@ -180,7 +196,7 @@ export function ConferenceCallFromJSONTyped(json: any, ignoreDiscriminator: bool
         'agoraToken': json['agora_token'] == null ? undefined : json['agora_token'],
         'anonymousCallUsersCount': json['anonymous_call_users_count'] == null ? undefined : json['anonymous_call_users_count'],
         'bumpParams': json['bump_params'] == null ? undefined : BumpParamsFromJSON(json['bump_params']),
-        'callType': json['call_type'] == null ? undefined : json['call_type'],
+        'callType': json['call_type'] == null ? undefined : CallTypeFromJSON(json['call_type']),
         'conferenceCallUserUuid': json['conference_call_user_uuid'] == null ? undefined : json['conference_call_user_uuid'],
         'conferenceCallUsers': json['conference_call_users'] == null ? undefined : ((json['conference_call_users'] as Array<any>).map(UserFromJSON)),
         'conferenceCallUsersRole': json['conference_call_users_role'] == null ? undefined : ((json['conference_call_users_role'] as Array<any>).map(ModelConferenceCallUserRoleFromJSON)),
@@ -190,7 +206,7 @@ export function ConferenceCallFromJSONTyped(json: any, ignoreDiscriminator: bool
         'groupId': json['group_id'] == null ? undefined : json['group_id'],
         'id': json['id'] == null ? undefined : json['id'],
         'isActive': json['is_active'] == null ? undefined : json['is_active'],
-        'joinableBy': json['joinable_by'] == null ? undefined : json['joinable_by'],
+        'joinableBy': json['joinable_by'] == null ? undefined : JoinableByFromJSON(json['joinable_by']),
         'maxParticipants': json['max_participants'] == null ? undefined : json['max_participants'],
         'postId': json['post_id'] == null ? undefined : json['post_id'],
     };
@@ -211,7 +227,7 @@ export function ConferenceCallToJSONTyped(value?: ConferenceCall | null, ignoreD
         'agora_token': value['agoraToken'],
         'anonymous_call_users_count': value['anonymousCallUsersCount'],
         'bump_params': BumpParamsToJSON(value['bumpParams']),
-        'call_type': value['callType'],
+        'call_type': CallTypeToJSON(value['callType']),
         'conference_call_user_uuid': value['conferenceCallUserUuid'],
         'conference_call_users': value['conferenceCallUsers'] == null ? undefined : ((value['conferenceCallUsers'] as Array<any>).map(UserToJSON)),
         'conference_call_users_role': value['conferenceCallUsersRole'] == null ? undefined : ((value['conferenceCallUsersRole'] as Array<any>).map(ModelConferenceCallUserRoleToJSON)),
@@ -221,7 +237,7 @@ export function ConferenceCallToJSONTyped(value?: ConferenceCall | null, ignoreD
         'group_id': value['groupId'],
         'id': value['id'],
         'is_active': value['isActive'],
-        'joinable_by': value['joinableBy'],
+        'joinable_by': JoinableByToJSON(value['joinableBy']),
         'max_participants': value['maxParticipants'],
         'post_id': value['postId'],
     };

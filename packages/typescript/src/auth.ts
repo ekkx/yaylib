@@ -7,7 +7,8 @@
 import type { LoginUserResponse } from "./gen/models/LoginUserResponse.js";
 
 import type { Client } from "./client.js";
-import { APIError, asAPIError } from "./errors.js";
+import { APIError, asAPIError, codeOf } from "./errors.js";
+import { ErrCodeUnauthorized } from "./error_codes.js";
 import { type Session, SessionSaveFailedError } from "./session.js";
 
 // LoginWithEmailParams is the options object — the same call shape as
@@ -90,7 +91,34 @@ async function executeLogin(
   try {
     resp = await client.usersAPI.loginWithEmail({ loginEmailUserRequest: body });
   } catch (err) {
-    throw await asAPIError(err);
+    const apiErr = await asAPIError(err);
+    // Fallback (PORTING.md §6.2): a plain "unauthorized" retries against
+    // the browser login endpoint with webApiKey. Skipped for other 401s —
+    // notably Required2FA (the caller must supply a code, not switch
+    // keys) — when the caller pinned a specific apiKey, or when webApiKey
+    // is empty (the off switch).
+    const callerPinned =
+      params.apiKey !== undefined && params.apiKey !== client.apiKey;
+    if (
+      client.webApiKey &&
+      !callerPinned &&
+      codeOf(apiErr) === ErrCodeUnauthorized
+    ) {
+      const fallback = await client.loginWithEmailWeb({
+        email: params.email,
+        password: params.password,
+        uuid: body.uuid,
+        twoFACode: params.twoFACode,
+      });
+      if (!fallback) throw apiErr; // fallback itself rejected → surface primary
+      client.logger.debug("web login fallback ok", {
+        event: "login_fallback",
+        outcome: "ok",
+      });
+      resp = fallback;
+    } else {
+      throw apiErr;
+    }
   }
 
   // Activate tokens / identity on the client.

@@ -19,8 +19,10 @@ import json
 
 from pydantic import BaseModel, ConfigDict, StrictBool, StrictInt, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from yaylib.models.call_type import CallType
 from yaylib.models.conference_call_bump_params import ConferenceCallBumpParams
 from yaylib.models.conference_call_user_role import ConferenceCallUserRole
+from yaylib.models.joinable_by import JoinableBy
 from yaylib.models.realm_game import RealmGame
 from yaylib.models.realm_genre import RealmGenre
 from yaylib.models.realm_user import RealmUser
@@ -36,7 +38,7 @@ class RealmConferenceCall(BaseModel):
     agora_token: Optional[StrictStr] = None
     anonymous_call_users_count: Optional[StrictInt] = None
     bump_params: Optional[ConferenceCallBumpParams] = None
-    call_type: Optional[StrictStr] = None
+    call_type: Optional[CallType] = None
     conference_call_user_roles: Optional[List[ConferenceCallUserRole]] = None
     conference_call_users: Optional[List[RealmUser]] = None
     conference_call_users_count: Optional[StrictInt] = None
@@ -45,7 +47,7 @@ class RealmConferenceCall(BaseModel):
     genre: Optional[RealmGenre] = None
     group_id: Optional[StrictInt] = None
     id: Optional[StrictInt] = None
-    joinable_by: Optional[StrictStr] = None
+    joinable_by: Optional[JoinableBy] = None
     max_participants: Optional[StrictInt] = None
     post_id: Optional[StrictInt] = None
     server: Optional[StrictStr] = None

@@ -1839,7 +1839,7 @@ type ApiUpdateCallRequest struct {
 	callId int64
 	categoryId *string
 	gameTitle *string
-	joinableBy *string
+	joinableBy *JoinableBy
 }
 
 func (r ApiUpdateCallRequest) CategoryId(categoryId string) ApiUpdateCallRequest {
@@ -1852,7 +1852,7 @@ func (r ApiUpdateCallRequest) GameTitle(gameTitle string) ApiUpdateCallRequest {
 	return r
 }
 
-func (r ApiUpdateCallRequest) JoinableBy(joinableBy string) ApiUpdateCallRequest {
+func (r ApiUpdateCallRequest) JoinableBy(joinableBy JoinableBy) ApiUpdateCallRequest {
 	r.joinableBy = &joinableBy
 	return r
 }

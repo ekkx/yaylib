@@ -20,6 +20,20 @@ import {
     RealmGenreToJSON,
     RealmGenreToJSONTyped,
 } from './RealmGenre.js';
+import type { JoinableBy } from './JoinableBy.js';
+import {
+    JoinableByFromJSON,
+    JoinableByFromJSONTyped,
+    JoinableByToJSON,
+    JoinableByToJSONTyped,
+} from './JoinableBy.js';
+import type { CallType } from './CallType.js';
+import {
+    CallTypeFromJSON,
+    CallTypeFromJSONTyped,
+    CallTypeToJSON,
+    CallTypeToJSONTyped,
+} from './CallType.js';
 import type { ConferenceCallBumpParams } from './ConferenceCallBumpParams.js';
 import {
     ConferenceCallBumpParamsFromJSON,
@@ -87,10 +101,10 @@ export interface RealmConferenceCall {
     bumpParams?: ConferenceCallBumpParams | null;
     /**
      * 
-     * @type {string}
+     * @type {CallType}
      * @memberof RealmConferenceCall
      */
-    callType?: string | null;
+    callType?: CallType | null;
     /**
      * 
      * @type {Array<ConferenceCallUserRole>}
@@ -141,10 +155,10 @@ export interface RealmConferenceCall {
     id?: number | null;
     /**
      * 
-     * @type {string}
+     * @type {JoinableBy}
      * @memberof RealmConferenceCall
      */
-    joinableBy?: string | null;
+    joinableBy?: JoinableBy | null;
     /**
      * 
      * @type {number}
@@ -164,6 +178,8 @@ export interface RealmConferenceCall {
      */
     server?: string | null;
 }
+
+
 
 /**
  * Check if a given object implements the RealmConferenceCall interface.
@@ -187,7 +203,7 @@ export function RealmConferenceCallFromJSONTyped(json: any, ignoreDiscriminator:
         'agoraToken': json['agora_token'] == null ? undefined : json['agora_token'],
         'anonymousCallUsersCount': json['anonymous_call_users_count'] == null ? undefined : json['anonymous_call_users_count'],
         'bumpParams': json['bump_params'] == null ? undefined : ConferenceCallBumpParamsFromJSON(json['bump_params']),
-        'callType': json['call_type'] == null ? undefined : json['call_type'],
+        'callType': json['call_type'] == null ? undefined : CallTypeFromJSON(json['call_type']),
         'conferenceCallUserRoles': json['conference_call_user_roles'] == null ? undefined : ((json['conference_call_user_roles'] as Array<any>).map(ConferenceCallUserRoleFromJSON)),
         'conferenceCallUsers': json['conference_call_users'] == null ? undefined : ((json['conference_call_users'] as Array<any>).map(RealmUserFromJSON)),
         'conferenceCallUsersCount': json['conference_call_users_count'] == null ? undefined : json['conference_call_users_count'],
@@ -196,7 +212,7 @@ export function RealmConferenceCallFromJSONTyped(json: any, ignoreDiscriminator:
         'genre': json['genre'] == null ? undefined : RealmGenreFromJSON(json['genre']),
         'groupId': json['group_id'] == null ? undefined : json['group_id'],
         'id': json['id'] == null ? undefined : json['id'],
-        'joinableBy': json['joinable_by'] == null ? undefined : json['joinable_by'],
+        'joinableBy': json['joinable_by'] == null ? undefined : JoinableByFromJSON(json['joinable_by']),
         'maxParticipants': json['max_participants'] == null ? undefined : json['max_participants'],
         'postId': json['post_id'] == null ? undefined : json['post_id'],
         'server': json['server'] == null ? undefined : json['server'],
@@ -219,7 +235,7 @@ export function RealmConferenceCallToJSONTyped(value?: RealmConferenceCall | nul
         'agora_token': value['agoraToken'],
         'anonymous_call_users_count': value['anonymousCallUsersCount'],
         'bump_params': ConferenceCallBumpParamsToJSON(value['bumpParams']),
-        'call_type': value['callType'],
+        'call_type': CallTypeToJSON(value['callType']),
         'conference_call_user_roles': value['conferenceCallUserRoles'] == null ? undefined : ((value['conferenceCallUserRoles'] as Array<any>).map(ConferenceCallUserRoleToJSON)),
         'conference_call_users': value['conferenceCallUsers'] == null ? undefined : ((value['conferenceCallUsers'] as Array<any>).map(RealmUserToJSON)),
         'conference_call_users_count': value['conferenceCallUsersCount'],
@@ -228,7 +244,7 @@ export function RealmConferenceCallToJSONTyped(value?: RealmConferenceCall | nul
         'genre': RealmGenreToJSON(value['genre']),
         'group_id': value['groupId'],
         'id': value['id'],
-        'joinable_by': value['joinableBy'],
+        'joinable_by': JoinableByToJSON(value['joinableBy']),
         'max_participants': value['maxParticipants'],
         'post_id': value['postId'],
         'server': value['server'],

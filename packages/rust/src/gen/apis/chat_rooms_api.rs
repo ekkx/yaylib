@@ -804,7 +804,7 @@ pub async fn report_chat_room(configuration: &configuration::Configuration, chat
     }
 }
 
-pub async fn send_chat_message(configuration: &configuration::Configuration, id: i64, attachment_file_name: Option<&str>, call_type: Option<&str>, font_size: Option<i32>, gif_image_id: Option<i64>, message_type: Option<models::MessageType>, parent_id: Option<i64>, sticker_id: Option<i64>, sticker_pack_id: Option<i64>, text: Option<&str>, video_file_name: Option<&str>) -> Result<models::MessageResponse, Error<SendChatMessageError>> {
+pub async fn send_chat_message(configuration: &configuration::Configuration, id: i64, attachment_file_name: Option<&str>, call_type: Option<models::CallType>, font_size: Option<i32>, gif_image_id: Option<i64>, message_type: Option<models::MessageType>, parent_id: Option<i64>, sticker_id: Option<i64>, sticker_pack_id: Option<i64>, text: Option<&str>, video_file_name: Option<&str>) -> Result<models::MessageResponse, Error<SendChatMessageError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;

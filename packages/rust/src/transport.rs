@@ -423,6 +423,7 @@ impl Default for Transport {
     fn default() -> Self {
         let config = Arc::new(crate::client::ClientConfig {
             api_key: crate::config::DEFAULT_API_KEY.into(),
+            web_api_key: crate::config::DEFAULT_WEB_API_KEY.into(),
             api_version_key: crate::config::DEFAULT_API_VERSION_KEY.into(),
             api_version_name: crate::config::DEFAULT_API_VERSION_NAME.into(),
             app_version: crate::config::DEFAULT_APP_VERSION.into(),
