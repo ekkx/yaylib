@@ -18,6 +18,7 @@ from typing_extensions import Annotated
 
 from pydantic import StrictBool, StrictInt, StrictStr
 from typing import List, Optional
+from yaylib.models.call_type import CallType
 from yaylib.models.chat_room_response import ChatRoomResponse
 from yaylib.models.chat_rooms_response import ChatRoomsResponse
 from yaylib.models.create_chat_room_response import CreateChatRoomResponse
@@ -5551,7 +5552,7 @@ class ChatRoomsApi:
         self,
         id: StrictInt,
         attachment_file_name: Optional[StrictStr] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         font_size: Optional[StrictInt] = None,
         gif_image_id: Optional[StrictInt] = None,
         message_type: Optional[MessageType] = None,
@@ -5581,7 +5582,7 @@ class ChatRoomsApi:
         :param attachment_file_name:
         :type attachment_file_name: str
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param font_size:
         :type font_size: int
         :param gif_image_id:
@@ -5657,7 +5658,7 @@ class ChatRoomsApi:
         self,
         id: StrictInt,
         attachment_file_name: Optional[StrictStr] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         font_size: Optional[StrictInt] = None,
         gif_image_id: Optional[StrictInt] = None,
         message_type: Optional[MessageType] = None,
@@ -5687,7 +5688,7 @@ class ChatRoomsApi:
         :param attachment_file_name:
         :type attachment_file_name: str
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param font_size:
         :type font_size: int
         :param gif_image_id:
@@ -5763,7 +5764,7 @@ class ChatRoomsApi:
         self,
         id: StrictInt,
         attachment_file_name: Optional[StrictStr] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         font_size: Optional[StrictInt] = None,
         gif_image_id: Optional[StrictInt] = None,
         message_type: Optional[MessageType] = None,
@@ -5793,7 +5794,7 @@ class ChatRoomsApi:
         :param attachment_file_name:
         :type attachment_file_name: str
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param font_size:
         :type font_size: int
         :param gif_image_id:

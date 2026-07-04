@@ -30,13 +30,13 @@ type ApiCreateConferenceCallPostRequest struct {
 	attachment8Filename *string
 	attachment9Filename *string
 	attachmentFilename *string
-	callType *string
+	callType *CallType
 	categoryId *int64
 	color *int32
 	fontSize *int32
 	gameTitle *string
 	groupId *int64
-	joinableBy *string
+	joinableBy *JoinableBy
 	language *string
 	messageTags *map[string]interface{}
 	signedInfo *string
@@ -95,7 +95,7 @@ func (r ApiCreateConferenceCallPostRequest) AttachmentFilename(attachmentFilenam
 	return r
 }
 
-func (r ApiCreateConferenceCallPostRequest) CallType(callType string) ApiCreateConferenceCallPostRequest {
+func (r ApiCreateConferenceCallPostRequest) CallType(callType CallType) ApiCreateConferenceCallPostRequest {
 	r.callType = &callType
 	return r
 }
@@ -125,7 +125,7 @@ func (r ApiCreateConferenceCallPostRequest) GroupId(groupId int64) ApiCreateConf
 	return r
 }
 
-func (r ApiCreateConferenceCallPostRequest) JoinableBy(joinableBy string) ApiCreateConferenceCallPostRequest {
+func (r ApiCreateConferenceCallPostRequest) JoinableBy(joinableBy JoinableBy) ApiCreateConferenceCallPostRequest {
 	r.joinableBy = &joinableBy
 	return r
 }
@@ -1144,7 +1144,7 @@ type ApiGetCallFollowersTimelineRequest struct {
 	fromTimestamp *int64
 	number *int32
 	categoryId *int64
-	callType *string
+	callType *CallType
 	includeCircleCall *bool
 	excludeRecentGomimushi *bool
 }
@@ -1164,7 +1164,7 @@ func (r ApiGetCallFollowersTimelineRequest) CategoryId(categoryId int64) ApiGetC
 	return r
 }
 
-func (r ApiGetCallFollowersTimelineRequest) CallType(callType string) ApiGetCallFollowersTimelineRequest {
+func (r ApiGetCallFollowersTimelineRequest) CallType(callType CallType) ApiGetCallFollowersTimelineRequest {
 	r.callType = &callType
 	return r
 }
@@ -1301,7 +1301,7 @@ type ApiGetCallTimelineRequest struct {
 	fromTimestamp *int64
 	number *int32
 	categoryId *int64
-	callType *string
+	callType *CallType
 	includeCircleCall *bool
 	crossGeneration *bool
 	excludeRecentGomimushi *bool
@@ -1327,7 +1327,7 @@ func (r ApiGetCallTimelineRequest) CategoryId(categoryId int64) ApiGetCallTimeli
 	return r
 }
 
-func (r ApiGetCallTimelineRequest) CallType(callType string) ApiGetCallTimelineRequest {
+func (r ApiGetCallTimelineRequest) CallType(callType CallType) ApiGetCallTimelineRequest {
 	r.callType = &callType
 	return r
 }

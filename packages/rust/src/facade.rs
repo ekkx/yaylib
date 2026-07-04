@@ -113,7 +113,7 @@ impl Client {
         crate::gen::apis::calls_api::start_conference_call(&config, call_sid, conference_id).await.map_err(Into::into)
     }
 
-    pub async fn update_call(&self, call_id: i64, category_id: Option<&str>, game_title: Option<&str>, joinable_by: Option<&str>) -> Result<(), crate::ApiError> {
+    pub async fn update_call(&self, call_id: i64, category_id: Option<&str>, game_title: Option<&str>, joinable_by: Option<crate::gen::models::JoinableBy>) -> Result<(), crate::ApiError> {
         let config = self.gen_configuration();
         crate::gen::apis::calls_api::update_call(&config, call_id, category_id, game_title, joinable_by).await.map_err(Into::into)
     }
@@ -228,7 +228,7 @@ impl Client {
         crate::gen::apis::chat_rooms_api::report_chat_room(&config, chat_room_id, category_id, opponent_id, reason, screenshot_2_filename, screenshot_3_filename, screenshot_4_filename, screenshot_filename).await.map_err(Into::into)
     }
 
-    pub async fn send_chat_message(&self, id: i64, attachment_file_name: Option<&str>, call_type: Option<&str>, font_size: Option<i32>, gif_image_id: Option<i64>, message_type: Option<crate::gen::models::MessageType>, parent_id: Option<i64>, sticker_id: Option<i64>, sticker_pack_id: Option<i64>, text: Option<&str>, video_file_name: Option<&str>) -> Result<crate::gen::models::MessageResponse, crate::ApiError> {
+    pub async fn send_chat_message(&self, id: i64, attachment_file_name: Option<&str>, call_type: Option<crate::gen::models::CallType>, font_size: Option<i32>, gif_image_id: Option<i64>, message_type: Option<crate::gen::models::MessageType>, parent_id: Option<i64>, sticker_id: Option<i64>, sticker_pack_id: Option<i64>, text: Option<&str>, video_file_name: Option<&str>) -> Result<crate::gen::models::MessageResponse, crate::ApiError> {
         let config = self.gen_configuration();
         crate::gen::apis::chat_rooms_api::send_chat_message(&config, id, attachment_file_name, call_type, font_size, gif_image_id, message_type, parent_id, sticker_id, sticker_pack_id, text, video_file_name).await.map_err(Into::into)
     }
@@ -653,7 +653,7 @@ impl Client {
         crate::gen::apis::pinned_api::unpin_review(&config, id).await.map_err(Into::into)
     }
 
-    pub async fn create_conference_call_post(&self, api_key: Option<&str>, attachment_2_filename: Option<&str>, attachment_3_filename: Option<&str>, attachment_4_filename: Option<&str>, attachment_5_filename: Option<&str>, attachment_6_filename: Option<&str>, attachment_7_filename: Option<&str>, attachment_8_filename: Option<&str>, attachment_9_filename: Option<&str>, attachment_filename: Option<&str>, call_type: Option<&str>, category_id: Option<i64>, color: Option<i32>, font_size: Option<i32>, game_title: Option<&str>, group_id: Option<i64>, joinable_by: Option<&str>, language: Option<&str>, message_tags: Option<serde_json::Value>, signed_info: Option<&str>, text: Option<&str>, timestamp: Option<i64>, uuid: Option<&str>) -> Result<crate::gen::models::CreatePostResponse, crate::ApiError> {
+    pub async fn create_conference_call_post(&self, api_key: Option<&str>, attachment_2_filename: Option<&str>, attachment_3_filename: Option<&str>, attachment_4_filename: Option<&str>, attachment_5_filename: Option<&str>, attachment_6_filename: Option<&str>, attachment_7_filename: Option<&str>, attachment_8_filename: Option<&str>, attachment_9_filename: Option<&str>, attachment_filename: Option<&str>, call_type: Option<crate::gen::models::CallType>, category_id: Option<i64>, color: Option<i32>, font_size: Option<i32>, game_title: Option<&str>, group_id: Option<i64>, joinable_by: Option<crate::gen::models::JoinableBy>, language: Option<&str>, message_tags: Option<serde_json::Value>, signed_info: Option<&str>, text: Option<&str>, timestamp: Option<i64>, uuid: Option<&str>) -> Result<crate::gen::models::CreatePostResponse, crate::ApiError> {
         let config = self.gen_configuration();
         crate::gen::apis::posts_api::create_conference_call_post(&config, api_key, attachment_2_filename, attachment_3_filename, attachment_4_filename, attachment_5_filename, attachment_6_filename, attachment_7_filename, attachment_8_filename, attachment_9_filename, attachment_filename, call_type, category_id, color, font_size, game_title, group_id, joinable_by, language, message_tags, signed_info, text, timestamp, uuid).await.map_err(Into::into)
     }
@@ -683,12 +683,12 @@ impl Client {
         crate::gen::apis::posts_api::get_active_call_post(&config, user_id).await.map_err(Into::into)
     }
 
-    pub async fn get_call_followers_timeline(&self, from_timestamp: Option<i64>, number: Option<i32>, category_id: Option<i64>, call_type: Option<&str>, include_circle_call: Option<bool>, exclude_recent_gomimushi: Option<bool>) -> Result<crate::gen::models::PostsResponse, crate::ApiError> {
+    pub async fn get_call_followers_timeline(&self, from_timestamp: Option<i64>, number: Option<i32>, category_id: Option<i64>, call_type: Option<crate::gen::models::CallType>, include_circle_call: Option<bool>, exclude_recent_gomimushi: Option<bool>) -> Result<crate::gen::models::PostsResponse, crate::ApiError> {
         let config = self.gen_configuration();
         crate::gen::apis::posts_api::get_call_followers_timeline(&config, from_timestamp, number, category_id, call_type, include_circle_call, exclude_recent_gomimushi).await.map_err(Into::into)
     }
 
-    pub async fn get_call_timeline(&self, group_id: Option<i64>, from_timestamp: Option<i64>, number: Option<i32>, category_id: Option<i64>, call_type: Option<&str>, include_circle_call: Option<bool>, cross_generation: Option<bool>, exclude_recent_gomimushi: Option<bool>) -> Result<crate::gen::models::PostsResponse, crate::ApiError> {
+    pub async fn get_call_timeline(&self, group_id: Option<i64>, from_timestamp: Option<i64>, number: Option<i32>, category_id: Option<i64>, call_type: Option<crate::gen::models::CallType>, include_circle_call: Option<bool>, cross_generation: Option<bool>, exclude_recent_gomimushi: Option<bool>) -> Result<crate::gen::models::PostsResponse, crate::ApiError> {
         let config = self.gen_configuration();
         crate::gen::apis::posts_api::get_call_timeline(&config, group_id, from_timestamp, number, category_id, call_type, include_circle_call, cross_generation, exclude_recent_gomimushi).await.map_err(Into::into)
     }

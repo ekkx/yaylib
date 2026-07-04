@@ -16,6 +16,7 @@
 
 import * as runtime from '../runtime.js';
 import type {
+  CallType,
   ChatRoomResponse,
   ChatRoomsResponse,
   CreateChatRoomResponse,
@@ -27,6 +28,8 @@ import type {
   UnreadStatusResponse,
 } from '../models/index.js';
 import {
+    CallTypeFromJSON,
+    CallTypeToJSON,
     ChatRoomResponseFromJSON,
     ChatRoomResponseToJSON,
     ChatRoomsResponseFromJSON,
@@ -147,7 +150,7 @@ export interface ReportChatRoomRequest {
 export interface SendChatMessageRequest {
     id: number;
     attachmentFileName?: string | null;
-    callType?: string | null;
+    callType?: CallType | null;
     fontSize?: number | null;
     gifImageId?: number | null;
     messageType?: MessageType;

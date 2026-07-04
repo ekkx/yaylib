@@ -18,8 +18,10 @@ from typing_extensions import Annotated
 
 from pydantic import StrictBool, StrictInt, StrictStr
 from typing import Any, Dict, List, Optional
+from yaylib.models.call_type import CallType
 from yaylib.models.create_post_response import CreatePostResponse
 from yaylib.models.gift_transactions_response import GiftTransactionsResponse
+from yaylib.models.joinable_by import JoinableBy
 from yaylib.models.like_posts_response import LikePostsResponse
 from yaylib.models.noreply_mode import NoreplyMode
 from yaylib.models.post import Post
@@ -63,13 +65,13 @@ class PostsApi:
         attachment_8_filename: Optional[StrictStr] = None,
         attachment_9_filename: Optional[StrictStr] = None,
         attachment_filename: Optional[StrictStr] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         category_id: Optional[StrictInt] = None,
         color: Optional[StrictInt] = None,
         font_size: Optional[StrictInt] = None,
         game_title: Optional[StrictStr] = None,
         group_id: Optional[StrictInt] = None,
-        joinable_by: Optional[StrictStr] = None,
+        joinable_by: Optional[JoinableBy] = None,
         language: Optional[StrictStr] = None,
         message_tags: Optional[Dict[str, Any]] = None,
         signed_info: Optional[StrictStr] = None,
@@ -113,7 +115,7 @@ class PostsApi:
         :param attachment_filename:
         :type attachment_filename: str
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param category_id:
         :type category_id: int
         :param color:
@@ -125,7 +127,7 @@ class PostsApi:
         :param group_id:
         :type group_id: int
         :param joinable_by:
-        :type joinable_by: str
+        :type joinable_by: JoinableBy
         :param language:
         :type language: str
         :param message_tags:
@@ -217,13 +219,13 @@ class PostsApi:
         attachment_8_filename: Optional[StrictStr] = None,
         attachment_9_filename: Optional[StrictStr] = None,
         attachment_filename: Optional[StrictStr] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         category_id: Optional[StrictInt] = None,
         color: Optional[StrictInt] = None,
         font_size: Optional[StrictInt] = None,
         game_title: Optional[StrictStr] = None,
         group_id: Optional[StrictInt] = None,
-        joinable_by: Optional[StrictStr] = None,
+        joinable_by: Optional[JoinableBy] = None,
         language: Optional[StrictStr] = None,
         message_tags: Optional[Dict[str, Any]] = None,
         signed_info: Optional[StrictStr] = None,
@@ -267,7 +269,7 @@ class PostsApi:
         :param attachment_filename:
         :type attachment_filename: str
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param category_id:
         :type category_id: int
         :param color:
@@ -279,7 +281,7 @@ class PostsApi:
         :param group_id:
         :type group_id: int
         :param joinable_by:
-        :type joinable_by: str
+        :type joinable_by: JoinableBy
         :param language:
         :type language: str
         :param message_tags:
@@ -371,13 +373,13 @@ class PostsApi:
         attachment_8_filename: Optional[StrictStr] = None,
         attachment_9_filename: Optional[StrictStr] = None,
         attachment_filename: Optional[StrictStr] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         category_id: Optional[StrictInt] = None,
         color: Optional[StrictInt] = None,
         font_size: Optional[StrictInt] = None,
         game_title: Optional[StrictStr] = None,
         group_id: Optional[StrictInt] = None,
-        joinable_by: Optional[StrictStr] = None,
+        joinable_by: Optional[JoinableBy] = None,
         language: Optional[StrictStr] = None,
         message_tags: Optional[Dict[str, Any]] = None,
         signed_info: Optional[StrictStr] = None,
@@ -421,7 +423,7 @@ class PostsApi:
         :param attachment_filename:
         :type attachment_filename: str
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param category_id:
         :type category_id: int
         :param color:
@@ -433,7 +435,7 @@ class PostsApi:
         :param group_id:
         :type group_id: int
         :param joinable_by:
-        :type joinable_by: str
+        :type joinable_by: JoinableBy
         :param language:
         :type language: str
         :param message_tags:
@@ -2436,7 +2438,7 @@ class PostsApi:
         from_timestamp: Optional[StrictInt] = None,
         number: Optional[StrictInt] = None,
         category_id: Optional[StrictInt] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         include_circle_call: Optional[StrictBool] = None,
         exclude_recent_gomimushi: Optional[StrictBool] = None,
         _request_timeout: Union[
@@ -2462,7 +2464,7 @@ class PostsApi:
         :param category_id:
         :type category_id: int
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param include_circle_call:
         :type include_circle_call: bool
         :param exclude_recent_gomimushi:
@@ -2522,7 +2524,7 @@ class PostsApi:
         from_timestamp: Optional[StrictInt] = None,
         number: Optional[StrictInt] = None,
         category_id: Optional[StrictInt] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         include_circle_call: Optional[StrictBool] = None,
         exclude_recent_gomimushi: Optional[StrictBool] = None,
         _request_timeout: Union[
@@ -2548,7 +2550,7 @@ class PostsApi:
         :param category_id:
         :type category_id: int
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param include_circle_call:
         :type include_circle_call: bool
         :param exclude_recent_gomimushi:
@@ -2608,7 +2610,7 @@ class PostsApi:
         from_timestamp: Optional[StrictInt] = None,
         number: Optional[StrictInt] = None,
         category_id: Optional[StrictInt] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         include_circle_call: Optional[StrictBool] = None,
         exclude_recent_gomimushi: Optional[StrictBool] = None,
         _request_timeout: Union[
@@ -2634,7 +2636,7 @@ class PostsApi:
         :param category_id:
         :type category_id: int
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param include_circle_call:
         :type include_circle_call: bool
         :param exclude_recent_gomimushi:
@@ -2728,7 +2730,7 @@ class PostsApi:
             
         if call_type is not None:
             
-            _query_params.append(('call_type', call_type))
+            _query_params.append(('call_type', call_type.value))
             
         if include_circle_call is not None:
             
@@ -2781,7 +2783,7 @@ class PostsApi:
         from_timestamp: Optional[StrictInt] = None,
         number: Optional[StrictInt] = None,
         category_id: Optional[StrictInt] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         include_circle_call: Optional[StrictBool] = None,
         cross_generation: Optional[StrictBool] = None,
         exclude_recent_gomimushi: Optional[StrictBool] = None,
@@ -2810,7 +2812,7 @@ class PostsApi:
         :param category_id:
         :type category_id: int
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param include_circle_call:
         :type include_circle_call: bool
         :param cross_generation:
@@ -2875,7 +2877,7 @@ class PostsApi:
         from_timestamp: Optional[StrictInt] = None,
         number: Optional[StrictInt] = None,
         category_id: Optional[StrictInt] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         include_circle_call: Optional[StrictBool] = None,
         cross_generation: Optional[StrictBool] = None,
         exclude_recent_gomimushi: Optional[StrictBool] = None,
@@ -2904,7 +2906,7 @@ class PostsApi:
         :param category_id:
         :type category_id: int
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param include_circle_call:
         :type include_circle_call: bool
         :param cross_generation:
@@ -2969,7 +2971,7 @@ class PostsApi:
         from_timestamp: Optional[StrictInt] = None,
         number: Optional[StrictInt] = None,
         category_id: Optional[StrictInt] = None,
-        call_type: Optional[StrictStr] = None,
+        call_type: Optional[CallType] = None,
         include_circle_call: Optional[StrictBool] = None,
         cross_generation: Optional[StrictBool] = None,
         exclude_recent_gomimushi: Optional[StrictBool] = None,
@@ -2998,7 +3000,7 @@ class PostsApi:
         :param category_id:
         :type category_id: int
         :param call_type:
-        :type call_type: str
+        :type call_type: CallType
         :param include_circle_call:
         :type include_circle_call: bool
         :param cross_generation:
@@ -3102,7 +3104,7 @@ class PostsApi:
             
         if call_type is not None:
             
-            _query_params.append(('call_type', call_type))
+            _query_params.append(('call_type', call_type.value))
             
         if include_circle_call is not None:
             

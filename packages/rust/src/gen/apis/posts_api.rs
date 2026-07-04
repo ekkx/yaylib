@@ -260,7 +260,7 @@ pub enum ViewPostVideoError {
 }
 
 
-pub async fn create_conference_call_post(configuration: &configuration::Configuration, api_key: Option<&str>, attachment_2_filename: Option<&str>, attachment_3_filename: Option<&str>, attachment_4_filename: Option<&str>, attachment_5_filename: Option<&str>, attachment_6_filename: Option<&str>, attachment_7_filename: Option<&str>, attachment_8_filename: Option<&str>, attachment_9_filename: Option<&str>, attachment_filename: Option<&str>, call_type: Option<&str>, category_id: Option<i64>, color: Option<i32>, font_size: Option<i32>, game_title: Option<&str>, group_id: Option<i64>, joinable_by: Option<&str>, language: Option<&str>, message_tags: Option<serde_json::Value>, signed_info: Option<&str>, text: Option<&str>, timestamp: Option<i64>, uuid: Option<&str>) -> Result<models::CreatePostResponse, Error<CreateConferenceCallPostError>> {
+pub async fn create_conference_call_post(configuration: &configuration::Configuration, api_key: Option<&str>, attachment_2_filename: Option<&str>, attachment_3_filename: Option<&str>, attachment_4_filename: Option<&str>, attachment_5_filename: Option<&str>, attachment_6_filename: Option<&str>, attachment_7_filename: Option<&str>, attachment_8_filename: Option<&str>, attachment_9_filename: Option<&str>, attachment_filename: Option<&str>, call_type: Option<models::CallType>, category_id: Option<i64>, color: Option<i32>, font_size: Option<i32>, game_title: Option<&str>, group_id: Option<i64>, joinable_by: Option<models::JoinableBy>, language: Option<&str>, message_tags: Option<serde_json::Value>, signed_info: Option<&str>, text: Option<&str>, timestamp: Option<i64>, uuid: Option<&str>) -> Result<models::CreatePostResponse, Error<CreateConferenceCallPostError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
@@ -607,7 +607,7 @@ pub async fn get_active_call_post(configuration: &configuration::Configuration, 
     }
 }
 
-pub async fn get_call_followers_timeline(configuration: &configuration::Configuration, from_timestamp: Option<i64>, number: Option<i32>, category_id: Option<i64>, call_type: Option<&str>, include_circle_call: Option<bool>, exclude_recent_gomimushi: Option<bool>) -> Result<models::PostsResponse, Error<GetCallFollowersTimelineError>> {
+pub async fn get_call_followers_timeline(configuration: &configuration::Configuration, from_timestamp: Option<i64>, number: Option<i32>, category_id: Option<i64>, call_type: Option<models::CallType>, include_circle_call: Option<bool>, exclude_recent_gomimushi: Option<bool>) -> Result<models::PostsResponse, Error<GetCallFollowersTimelineError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
@@ -652,7 +652,7 @@ pub async fn get_call_followers_timeline(configuration: &configuration::Configur
     }
 }
 
-pub async fn get_call_timeline(configuration: &configuration::Configuration, group_id: Option<i64>, from_timestamp: Option<i64>, number: Option<i32>, category_id: Option<i64>, call_type: Option<&str>, include_circle_call: Option<bool>, cross_generation: Option<bool>, exclude_recent_gomimushi: Option<bool>) -> Result<models::PostsResponse, Error<GetCallTimelineError>> {
+pub async fn get_call_timeline(configuration: &configuration::Configuration, group_id: Option<i64>, from_timestamp: Option<i64>, number: Option<i32>, category_id: Option<i64>, call_type: Option<models::CallType>, include_circle_call: Option<bool>, cross_generation: Option<bool>, exclude_recent_gomimushi: Option<bool>) -> Result<models::PostsResponse, Error<GetCallTimelineError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;

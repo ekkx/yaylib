@@ -16,7 +16,7 @@ type ConferenceCall struct {
 	AgoraToken NullableString `json:"agora_token,omitempty"`
 	AnonymousCallUsersCount NullableInt32 `json:"anonymous_call_users_count,omitempty"`
 	BumpParams NullableBumpParams `json:"bump_params,omitempty"`
-	CallType NullableString `json:"call_type,omitempty"`
+	CallType NullableCallType `json:"call_type,omitempty"`
 	ConferenceCallUserUuid NullableString `json:"conference_call_user_uuid,omitempty"`
 	ConferenceCallUsers []User `json:"conference_call_users,omitempty"`
 	ConferenceCallUsersRole []ModelConferenceCallUserRole `json:"conference_call_users_role,omitempty"`
@@ -26,7 +26,7 @@ type ConferenceCall struct {
 	GroupId NullableInt64 `json:"group_id,omitempty"`
 	Id NullableInt64 `json:"id,omitempty"`
 	IsActive NullableBool `json:"is_active,omitempty"`
-	JoinableBy NullableString `json:"joinable_by,omitempty"`
+	JoinableBy NullableJoinableBy `json:"joinable_by,omitempty"`
 	MaxParticipants NullableInt32 `json:"max_participants,omitempty"`
 	PostId NullableInt64 `json:"post_id,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -220,9 +220,9 @@ func (o *ConferenceCall) UnsetBumpParams() {
 }
 
 // GetCallType returns the CallType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConferenceCall) GetCallType() string {
+func (o *ConferenceCall) GetCallType() CallType {
 	if o == nil || IsNil(o.CallType.Get()) {
-		var ret string
+		var ret CallType
 		return ret
 	}
 	return *o.CallType.Get()
@@ -231,7 +231,7 @@ func (o *ConferenceCall) GetCallType() string {
 // GetCallTypeOk returns a tuple with the CallType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConferenceCall) GetCallTypeOk() (*string, bool) {
+func (o *ConferenceCall) GetCallTypeOk() (*CallType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -247,8 +247,8 @@ func (o *ConferenceCall) HasCallType() bool {
 	return false
 }
 
-// SetCallType gets a reference to the given NullableString and assigns it to the CallType field.
-func (o *ConferenceCall) SetCallType(v string) {
+// SetCallType gets a reference to the given NullableCallType and assigns it to the CallType field.
+func (o *ConferenceCall) SetCallType(v CallType) {
 	o.CallType.Set(&v)
 }
 // SetCallTypeNil sets the value for CallType to be an explicit nil
@@ -622,9 +622,9 @@ func (o *ConferenceCall) UnsetIsActive() {
 }
 
 // GetJoinableBy returns the JoinableBy field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConferenceCall) GetJoinableBy() string {
+func (o *ConferenceCall) GetJoinableBy() JoinableBy {
 	if o == nil || IsNil(o.JoinableBy.Get()) {
-		var ret string
+		var ret JoinableBy
 		return ret
 	}
 	return *o.JoinableBy.Get()
@@ -633,7 +633,7 @@ func (o *ConferenceCall) GetJoinableBy() string {
 // GetJoinableByOk returns a tuple with the JoinableBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConferenceCall) GetJoinableByOk() (*string, bool) {
+func (o *ConferenceCall) GetJoinableByOk() (*JoinableBy, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -649,8 +649,8 @@ func (o *ConferenceCall) HasJoinableBy() bool {
 	return false
 }
 
-// SetJoinableBy gets a reference to the given NullableString and assigns it to the JoinableBy field.
-func (o *ConferenceCall) SetJoinableBy(v string) {
+// SetJoinableBy gets a reference to the given NullableJoinableBy and assigns it to the JoinableBy field.
+func (o *ConferenceCall) SetJoinableBy(v JoinableBy) {
 	o.JoinableBy.Set(&v)
 }
 // SetJoinableByNil sets the value for JoinableBy to be an explicit nil

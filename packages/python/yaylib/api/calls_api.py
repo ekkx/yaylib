@@ -23,6 +23,7 @@ from yaylib.models.call_action_signature_response import CallActionSignatureResp
 from yaylib.models.call_gift_history_response import CallGiftHistoryResponse
 from yaylib.models.call_status_response import CallStatusResponse
 from yaylib.models.conference_call_response import ConferenceCallResponse
+from yaylib.models.joinable_by import JoinableBy
 from yaylib.models.rtm_token_response import RtmTokenResponse
 from yaylib.models.user_response import UserResponse
 from yaylib.models.users_by_timestamp_response import UsersByTimestampResponse
@@ -4495,7 +4496,7 @@ class CallsApi:
         call_id: StrictInt,
         category_id: Optional[StrictStr] = None,
         game_title: Optional[StrictStr] = None,
-        joinable_by: Optional[StrictStr] = None,
+        joinable_by: Optional[JoinableBy] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4519,7 +4520,7 @@ class CallsApi:
         :param game_title:
         :type game_title: str
         :param joinable_by:
-        :type joinable_by: str
+        :type joinable_by: JoinableBy
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4573,7 +4574,7 @@ class CallsApi:
         call_id: StrictInt,
         category_id: Optional[StrictStr] = None,
         game_title: Optional[StrictStr] = None,
-        joinable_by: Optional[StrictStr] = None,
+        joinable_by: Optional[JoinableBy] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4597,7 +4598,7 @@ class CallsApi:
         :param game_title:
         :type game_title: str
         :param joinable_by:
-        :type joinable_by: str
+        :type joinable_by: JoinableBy
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4651,7 +4652,7 @@ class CallsApi:
         call_id: StrictInt,
         category_id: Optional[StrictStr] = None,
         game_title: Optional[StrictStr] = None,
-        joinable_by: Optional[StrictStr] = None,
+        joinable_by: Optional[JoinableBy] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4675,7 +4676,7 @@ class CallsApi:
         :param game_title:
         :type game_title: str
         :param joinable_by:
-        :type joinable_by: str
+        :type joinable_by: JoinableBy
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of

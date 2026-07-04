@@ -2237,7 +2237,7 @@ type ApiSendChatMessageRequest struct {
 	ApiService *ChatRoomsAPIService
 	id int64
 	attachmentFileName *string
-	callType *string
+	callType *CallType
 	fontSize *int32
 	gifImageId *int64
 	messageType *MessageType
@@ -2253,7 +2253,7 @@ func (r ApiSendChatMessageRequest) AttachmentFileName(attachmentFileName string)
 	return r
 }
 
-func (r ApiSendChatMessageRequest) CallType(callType string) ApiSendChatMessageRequest {
+func (r ApiSendChatMessageRequest) CallType(callType CallType) ApiSendChatMessageRequest {
 	r.callType = &callType
 	return r
 }

@@ -656,7 +656,7 @@ pub async fn start_conference_call(configuration: &configuration::Configuration,
     }
 }
 
-pub async fn update_call(configuration: &configuration::Configuration, call_id: i64, category_id: Option<&str>, game_title: Option<&str>, joinable_by: Option<&str>) -> Result<(), Error<UpdateCallError>> {
+pub async fn update_call(configuration: &configuration::Configuration, call_id: i64, category_id: Option<&str>, game_title: Option<&str>, joinable_by: Option<models::JoinableBy>) -> Result<(), Error<UpdateCallError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;

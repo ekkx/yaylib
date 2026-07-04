@@ -16,8 +16,10 @@
 
 import * as runtime from '../runtime.js';
 import type {
+  CallType,
   CreatePostResponse,
   GiftTransactionsResponse,
+  JoinableBy,
   LikePostsResponse,
   NoreplyMode,
   Post,
@@ -31,10 +33,14 @@ import type {
   ValidationPostResponse,
 } from '../models/index.js';
 import {
+    CallTypeFromJSON,
+    CallTypeToJSON,
     CreatePostResponseFromJSON,
     CreatePostResponseToJSON,
     GiftTransactionsResponseFromJSON,
     GiftTransactionsResponseToJSON,
+    JoinableByFromJSON,
+    JoinableByToJSON,
     LikePostsResponseFromJSON,
     LikePostsResponseToJSON,
     NoreplyModeFromJSON,
@@ -70,13 +76,13 @@ export interface CreateConferenceCallPostRequest {
     attachment8Filename?: string | null;
     attachment9Filename?: string | null;
     attachmentFilename?: string | null;
-    callType?: string | null;
+    callType?: CallType | null;
     categoryId?: number | null;
     color?: number | null;
     fontSize?: number | null;
     gameTitle?: string | null;
     groupId?: number | null;
-    joinableBy?: string | null;
+    joinableBy?: JoinableBy | null;
     language?: string | null;
     messageTags?: object | null;
     signedInfo?: string;
@@ -137,7 +143,7 @@ export interface GetCallFollowersTimelineRequest {
     fromTimestamp?: number | null;
     number?: number | null;
     categoryId?: number | null;
-    callType?: string | null;
+    callType?: CallType | null;
     includeCircleCall?: boolean | null;
     excludeRecentGomimushi?: boolean | null;
 }
@@ -147,7 +153,7 @@ export interface GetCallTimelineRequest {
     fromTimestamp?: number | null;
     number?: number | null;
     categoryId?: number | null;
-    callType?: string | null;
+    callType?: CallType | null;
     includeCircleCall?: boolean | null;
     crossGeneration?: boolean | null;
     excludeRecentGomimushi?: boolean | null;
