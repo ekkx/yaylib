@@ -214,3 +214,138 @@ async def test_file_store_round_trip(tmp_path):
             assert client2.user_id == 11
         finally:
             await client2.close()
+
+
+# --- Browser-login fallback (PORTING.md §6.2) --------------------------------
+
+from yaylib import ErrCodeRequired2FA, ErrCodeUnauthorized, code_of
+from yaylib.exceptions import ApiException
+
+DEFAULT_WEB_KEY = "e9f1ae4c4470f29a92c0168dc42b13637cc332692103f23e626bc2b016f66603"
+
+
+def _reject_401(code=401):
+    return 401, json.dumps({"result": "error", "message": "unauthorized",
+                            "error_code": code}), {}
+
+
+async def test_falls_back_to_web_on_401():
+    seen = {}
+
+    def handler(path, method, body):
+        if path == "/v3/users/login_with_email":
+            return _reject_401()
+        if path == "/v2/users/login_with_email":
+            seen["key"] = json.loads(body or "{}").get("api_key")
+            return (200, json.dumps(
+                {"access_token": "WEBACC", "refresh_token": "WEBREF",
+                 "user_id": 7777}), {})
+        return 404, "", {}
+
+    async with serve(handler) as base_url:
+        client = Client(base_url=base_url)
+        try:
+            res = await client.login_with_email(
+                email="u@example.com", password="pw")
+            assert res.user_id == 7777
+            assert client.tokens.access == "WEBACC"
+            assert client.tokens.refresh == "WEBREF"
+            assert seen["key"] == DEFAULT_WEB_KEY
+        finally:
+            await client.close()
+
+
+async def test_no_fallback_on_2fa():
+    v2_hits = 0
+
+    def handler(path, method, body):
+        nonlocal v2_hits
+        if path == "/v3/users/login_with_email":
+            return _reject_401(code=ErrCodeRequired2FA)
+        if path == "/v2/users/login_with_email":
+            v2_hits += 1
+            return (200, json.dumps(
+                {"access_token": "X", "refresh_token": "Y", "user_id": 1}), {})
+        return 404, "", {}
+
+    async with serve(handler) as base_url:
+        client = Client(base_url=base_url)
+        try:
+            with pytest.raises(ApiException) as ei:
+                await client.login_with_email(
+                    email="u@example.com", password="pw")
+            assert code_of(ei.value) == ErrCodeRequired2FA
+            assert v2_hits == 0
+            assert client.tokens.access == ""
+        finally:
+            await client.close()
+
+
+async def test_no_fallback_when_api_key_pinned():
+    v2_hits = 0
+
+    def handler(path, method, body):
+        nonlocal v2_hits
+        if path == "/v3/users/login_with_email":
+            return _reject_401()
+        if path == "/v2/users/login_with_email":
+            v2_hits += 1
+            return (200, "{}", {})
+        return 404, "", {}
+
+    async with serve(handler) as base_url:
+        client = Client(base_url=base_url)
+        try:
+            with pytest.raises(ApiException) as ei:
+                await client.login_with_email(
+                    email="u@example.com", password="pw",
+                    api_key="caller-pinned-key")
+            assert code_of(ei.value) == ErrCodeUnauthorized
+            assert v2_hits == 0
+        finally:
+            await client.close()
+
+
+async def test_fallback_disabled_surfaces_401():
+    v2_hits = 0
+
+    def handler(path, method, body):
+        nonlocal v2_hits
+        if path == "/v3/users/login_with_email":
+            return _reject_401()
+        if path == "/v2/users/login_with_email":
+            v2_hits += 1
+            return (200, "{}", {})
+        return 404, "", {}
+
+    async with serve(handler) as base_url:
+        client = Client(base_url=base_url, web_api_key="")
+        try:
+            with pytest.raises(ApiException) as ei:
+                await client.login_with_email(
+                    email="u@example.com", password="pw")
+            assert code_of(ei.value) == ErrCodeUnauthorized
+            assert v2_hits == 0
+        finally:
+            await client.close()
+
+
+async def test_web_decode_failure_surfaced():
+    def handler(path, method, body):
+        if path == "/v3/users/login_with_email":
+            return _reject_401()
+        if path == "/v2/users/login_with_email":
+            return (200, "{ this is not valid json", {})
+        return 404, "", {}
+
+    async with serve(handler) as base_url:
+        client = Client(base_url=base_url)
+        try:
+            with pytest.raises(ApiException) as ei:
+                await client.login_with_email(
+                    email="u@example.com", password="pw")
+            # Not masked as the primary auth rejection.
+            assert code_of(ei.value) != ErrCodeUnauthorized
+            assert client.tokens.access == ""
+        finally:
+            await client.close()

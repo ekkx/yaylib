@@ -296,6 +296,42 @@ Other invariants:
 > not the raw one.) On re-issue, also refresh per-request headers that
 > go stale — at minimum `X-Timestamp`.
 
+### 6.2 Alternate login fallback
+
+`loginWithEmail` makes a second login attempt when the primary email
+login is rejected with a plain `Unauthorized` (error code 401): it
+retries once against `POST /v2/users/login_with_email` with a separate
+`webApiKey`. Some accounts are accepted only on this alternate endpoint.
+Reference: Go `auth.go` (`loginWithEmailWeb`); mirrored in every port.
+
+The `webApiKey` is an embedded wire constant like `apiKey` (§3.1), with a
+per-language default and an override (`WithWebAPIKey` / `webApiKey:` /
+`web_api_key=` / `.web_api_key()`). Setting it to `""` disables the
+fallback.
+
+Invariants every port MUST match:
+
+- Fire the fallback ONLY on error code `Unauthorized`, never on other
+  401s — in particular `Required2FA` must fall straight through (the
+  caller supplies a code, not a different key). Gate on the parsed error
+  code (`codeOf`), NOT on the bare HTTP status.
+- Skip the fallback when the caller pinned a specific `apiKey` (i.e. the
+  resolved key differs from the client's `apiKey`), and when `webApiKey`
+  is empty (the off switch).
+- Issue the fallback through the UNWRAPPED HTTP layer (§6.1): no header
+  injection, no Bearer, no 401-refresh. Send the browser client's
+  minimal headers only (Content-Type, User-Agent, `Agent`,
+  `X-Device-Info`), and put `webApiKey` in the body's `api_key`.
+- On a fallback that returns 2xx but fails to decode, surface that result
+  (raw body intact, as an `APIError`), NOT the primary 401.
+- On any other fallback failure (non-2xx / transport error), surface the
+  original primary error unchanged.
+- On success, activate tokens and persist the session exactly as the
+  primary path does.
+
+Parity scenarios live in each `auth` test suite (fires on 401 / no fire
+on 2FA / no fire when key pinned / disabled / 2xx-decode-fail surfaced).
+
 ---
 
 ## 7. Signing helpers

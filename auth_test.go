@@ -232,3 +232,213 @@ func TestLoginWithEmail_TwoFARequiredSurfacesErrorCode(t *testing.T) {
 		t.Errorf("tokens should not be set on 2FA-required, got %q", c.Tokens().Access)
 	}
 }
+
+// fallbackLoginServer rejects the primary (v3) login with 401 and, when
+// webOK is true, accepts the alternate (v2) login — recording the api_key
+// the v2 request carried so tests can assert the fallback key was used.
+func fallbackLoginServer(t *testing.T, webOK bool, seenWebKey *string) *httptest.Server {
+	t.Helper()
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		reject := func() {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"result": "error", "message": "unauthorized", "error_code": 401,
+			})
+		}
+		switch {
+		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
+			reject()
+		case strings.HasPrefix(r.URL.Path, "/v2/users/login_with_email"):
+			var body map[string]any
+			_ = json.NewDecoder(r.Body).Decode(&body)
+			if seenWebKey != nil {
+				k, _ := body["api_key"].(string)
+				*seenWebKey = k
+			}
+			if !webOK {
+				reject()
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"access_token": "WEBACC", "refresh_token": "WEBREF", "user_id": 7777,
+			})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+}
+
+// PORTING §6.2 — alternate login fallback (browser login endpoint).
+func TestLoginWithEmail_FallsBackToWebOn401(t *testing.T) {
+	var seenKey string
+	srv := fallbackLoginServer(t, true, &seenKey)
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	resp, _, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute()
+	if err != nil {
+		t.Fatalf("LoginWithEmail with fallback: %v", err)
+	}
+	if resp.GetUserId() != 7777 {
+		t.Errorf("UserID = %d, want 7777 (web response)", resp.GetUserId())
+	}
+	if c.Tokens().Access != "WEBACC" || c.Tokens().Refresh != "WEBREF" {
+		t.Errorf("tokens = %+v, want WEBACC/WEBREF from fallback", c.Tokens())
+	}
+	if seenKey != DefaultWebAPIKey {
+		t.Errorf("fallback api_key = %q, want DefaultWebAPIKey", seenKey)
+	}
+}
+
+// When the fallback is disabled (WebAPIKey==""), a primary 401 is surfaced
+// unchanged and no v2 request is attempted.
+func TestLoginWithEmail_FallbackDisabledSurfaces401(t *testing.T) {
+	var seenKey string
+	srv := fallbackLoginServer(t, true, &seenKey)
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}), WithWebAPIKey(""))
+	_, _, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute()
+	if err == nil {
+		t.Fatal("expected primary 401 to surface when fallback disabled")
+	}
+	if CodeOf(err) != ErrCodeUnauthorized {
+		t.Errorf("CodeOf(err) = %v, want ErrCodeUnauthorized", CodeOf(err))
+	}
+	if seenKey != "" {
+		t.Errorf("v2 endpoint should not have been called, saw api_key %q", seenKey)
+	}
+	if c.Tokens().Access != "" {
+		t.Errorf("tokens should stay empty, got %q", c.Tokens().Access)
+	}
+}
+
+// When both primary and fallback fail, the original primary 401 (a proper
+// *APIError) is surfaced rather than the fallback's error.
+func TestLoginWithEmail_FallbackAlsoFailsSurfacesPrimary401(t *testing.T) {
+	srv := fallbackLoginServer(t, false, nil)
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	_, _, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute()
+	if err == nil {
+		t.Fatal("expected error when both logins fail")
+	}
+	if CodeOf(err) != ErrCodeUnauthorized {
+		t.Errorf("CodeOf(err) = %v, want ErrCodeUnauthorized", CodeOf(err))
+	}
+	if c.Tokens().Access != "" {
+		t.Errorf("tokens should stay empty, got %q", c.Tokens().Access)
+	}
+}
+
+// A 2FA-required rejection is also HTTP 401 but carries ErrCodeRequired2FA;
+// the fallback must NOT fire (the caller has to supply a code, not switch
+// keys), so the v2 endpoint is never called and the 2FA code surfaces.
+func TestLoginWithEmail_NoFallbackOn2FA(t *testing.T) {
+	var v2Hit int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch {
+		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
+			w.WriteHeader(http.StatusUnauthorized)
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"error_code": int(ErrCodeRequired2FA), "message": "2FA required",
+			})
+		case strings.HasPrefix(r.URL.Path, "/v2/users/login_with_email"):
+			atomic.AddInt32(&v2Hit, 1)
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"access_token": "WEBACC", "refresh_token": "WEBREF", "user_id": 7777,
+			})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	_, _, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute()
+	if err == nil {
+		t.Fatal("expected 2FA-required error")
+	}
+	if CodeOf(err) != ErrCodeRequired2FA {
+		t.Errorf("CodeOf(err) = %v, want ErrCodeRequired2FA", CodeOf(err))
+	}
+	if n := atomic.LoadInt32(&v2Hit); n != 0 {
+		t.Errorf("v2 endpoint hit %d times, want 0 (no fallback on 2FA)", n)
+	}
+	if c.Tokens().Access != "" {
+		t.Errorf("tokens should stay empty, got %q", c.Tokens().Access)
+	}
+}
+
+// When the caller pins a specific api_key via .ApiKey(), the fallback is
+// skipped (it would otherwise authenticate under a different key), so a
+// primary 401 surfaces unchanged and the v2 endpoint is never called.
+func TestLoginWithEmail_NoFallbackWhenApiKeyPinned(t *testing.T) {
+	seenKey := "SENTINEL"
+	srv := fallbackLoginServer(t, true, &seenKey)
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	_, _, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").ApiKey("caller-pinned-key").Execute()
+	if err == nil {
+		t.Fatal("expected primary 401 when caller pinned a custom api_key")
+	}
+	if CodeOf(err) != ErrCodeUnauthorized {
+		t.Errorf("CodeOf(err) = %v, want ErrCodeUnauthorized", CodeOf(err))
+	}
+	if seenKey != "SENTINEL" {
+		t.Errorf("v2 endpoint should not have been called, saw api_key %q", seenKey)
+	}
+}
+
+// A web response that is 2xx but undecodable is a genuine login result, so
+// its decode error (carrying the raw body on the response) is surfaced
+// rather than masked behind the primary 401.
+func TestLoginWithEmail_WebDecodeFailureSurfaced(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"result": "error", "message": "unauthorized", "error_code": 401,
+			})
+		case strings.HasPrefix(r.URL.Path, "/v2/users/login_with_email"):
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write([]byte("{ this is not valid json"))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	_, httpResp, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute()
+	if err == nil {
+		t.Fatal("expected a decode error to surface")
+	}
+	// Not masked as the primary auth rejection.
+	if CodeOf(err) == ErrCodeUnauthorized {
+		t.Errorf("decode failure was masked as ErrCodeUnauthorized: %v", err)
+	}
+	if !strings.Contains(err.Error(), "decode") {
+		t.Errorf("err = %v, want a decode error", err)
+	}
+	// The raw web body is still readable on the returned response.
+	if httpResp == nil || httpResp.StatusCode != http.StatusOK {
+		t.Fatalf("want the 2xx web response surfaced, got %v", httpResp)
+	}
+	if c.Tokens().Access != "" {
+		t.Errorf("tokens should stay empty, got %q", c.Tokens().Access)
+	}
+}

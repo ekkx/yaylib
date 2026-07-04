@@ -39,6 +39,10 @@ import { Configuration, ResponseError, type ApiResponse } from "./gen/runtime.js
 
 import { APIError, asAPIError } from "./errors.js";
 import {
+  type LoginUserResponse,
+  LoginUserResponseFromJSON,
+} from "./gen/models/LoginUserResponse.js";
+import {
   type Upload,
   type UploadCategory,
   type UploadDeps,
@@ -72,6 +76,7 @@ import type { SignaturePayload } from "./gen/models/index.js";
 import {
   DEFAULT_ACCEPT_LANGUAGE,
   DEFAULT_API_KEY,
+  DEFAULT_WEB_API_KEY,
   DEFAULT_API_VERSION_KEY,
   DEFAULT_API_VERSION_NAME,
   DEFAULT_APP_VERSION,
@@ -110,6 +115,9 @@ export interface ClientOptions {
   cassandraBaseURL?: string;
   eventStreamURL?: string;
   apiKey?: string;
+  // Key for the browser-login fallback (see DEFAULT_WEB_API_KEY). Set to
+  // "" to disable the fallback: a primary 401 then surfaces unchanged.
+  webApiKey?: string;
   apiVersionKey?: string;
   apiVersionName?: string;
   appVersion?: string;
@@ -153,6 +161,7 @@ export class Client {
   readonly cassandraBaseURL: string;
   readonly eventStreamURL: string;
   readonly apiKey: string;
+  readonly webApiKey: string;
   readonly apiVersionKey: string;
   readonly apiVersionName: string;
   readonly appVersion: string;
@@ -213,6 +222,8 @@ export class Client {
     this.cassandraBaseURL = opts.cassandraBaseURL ?? DEFAULT_CASSANDRA_BASE_URL;
     this.eventStreamURL = opts.eventStreamURL ?? DEFAULT_EVENT_STREAM_URL;
     this.apiKey = opts.apiKey ?? DEFAULT_API_KEY;
+    // `??` preserves an explicit "" (the fallback off switch).
+    this.webApiKey = opts.webApiKey ?? DEFAULT_WEB_API_KEY;
     this.apiVersionKey = opts.apiVersionKey ?? DEFAULT_API_VERSION_KEY;
     this.apiVersionName = opts.apiVersionName ?? DEFAULT_API_VERSION_NAME;
     this.appVersion = opts.appVersion ?? DEFAULT_APP_VERSION;
@@ -769,6 +780,80 @@ export class Client {
     }
 
     return true;
+  }
+
+  /**
+   * Fallback login against the browser endpoint (POST
+   * /v2/users/login_with_email) using webApiKey. Some accounts are
+   * accepted only there.
+   *
+   * Issued through the bare fetch (no middleware / Yay! headers / Bearer
+   * / 401-refresh): a login must authenticate purely by its body
+   * credentials, and the browser endpoint expects the browser client's
+   * minimal header set (PORTING.md §6.1/§6.2). Only the body's api_key
+   * and the endpoint version differ from the app login.
+   *
+   * Resolves to the decoded response on success, or null when the
+   * fallback is itself rejected (non-2xx) so the caller surfaces the
+   * primary error. Throws an APIError carrying the raw body when a 2xx
+   * response fails to decode (§15), rather than masking it behind the
+   * primary 401.
+   *
+   * @internal — used by the loginWithEmail wrapper (auth.ts).
+   */
+  async loginWithEmailWeb(params: {
+    email: string;
+    password: string;
+    uuid: string;
+    twoFACode?: string;
+  }): Promise<LoginUserResponse | null> {
+    const payload: Record<string, string> = {
+      email: params.email,
+      password: params.password,
+      api_key: this.webApiKey,
+      uuid: params.uuid,
+    };
+    if (params.twoFACode) payload.two_fa_code = params.twoFACode;
+
+    // Present as the browser client. The web version string is not
+    // otherwise known to the SDK, so appVersion stands in for it.
+    const webUA =
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
+      "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+    const fetchImpl = this._fetchApi ?? globalThis.fetch;
+
+    let res: Response;
+    try {
+      res = await fetchImpl(`${this.baseURL}/v2/users/login_with_email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=UTF-8",
+          "User-Agent": webUA,
+          Agent: `YayWeb ${this.appVersion}`,
+          "X-Device-Info": `Yay ${this.appVersion} Web (${webUA})`,
+        },
+        body: JSON.stringify(payload),
+      });
+    } catch {
+      return null;
+    }
+
+    const raw = await res.text();
+    if (!res.ok) return null;
+    try {
+      return LoginUserResponseFromJSON(JSON.parse(raw));
+    } catch (err) {
+      // A 2xx we couldn't decode is a genuine login result: surface it
+      // with the raw body, not the primary 401.
+      throw new APIError({
+        message: `yaylib: web login decode failed: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+        response: res,
+        body: new TextEncoder().encode(raw),
+        cause: err,
+      });
+    }
   }
 }
 

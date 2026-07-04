@@ -51,6 +51,7 @@ from yaylib._facade import GeneratedFacade
 from yaylib._config import (
     DEFAULT_ACCEPT_LANGUAGE,
     DEFAULT_API_KEY,
+    DEFAULT_WEB_API_KEY,
     DEFAULT_API_VERSION_KEY,
     DEFAULT_API_VERSION_NAME,
     DEFAULT_APP_VERSION,
@@ -125,6 +126,7 @@ class Client(GeneratedFacade):
         cassandra_base_url: Optional[str] = None,
         event_stream_url: Optional[str] = None,
         api_key: Optional[str] = None,
+        web_api_key: Optional[str] = None,
         api_version_key: Optional[str] = None,
         api_version_name: Optional[str] = None,
         app_version: Optional[str] = None,
@@ -142,6 +144,11 @@ class Client(GeneratedFacade):
         self.cassandra_base_url = cassandra_base_url or DEFAULT_CASSANDRA_BASE_URL
         self.event_stream_url = event_stream_url or DEFAULT_EVENT_STREAM_URL
         self.api_key = api_key or DEFAULT_API_KEY
+        # Empty string is a meaningful value here (disables the login
+        # fallback), so only fall back to the default when unset.
+        self.web_api_key = (
+            web_api_key if web_api_key is not None else DEFAULT_WEB_API_KEY
+        )
         self.api_version_key = api_version_key or DEFAULT_API_VERSION_KEY
         self.api_version_name = api_version_name or DEFAULT_API_VERSION_NAME
         self.app_version = app_version or DEFAULT_APP_VERSION

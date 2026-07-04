@@ -11,6 +11,15 @@ import { join } from "node:path";
 import { Client } from "../src/client";
 import { newSessionStore, FileSessionStore } from "../src/session_file";
 import { MemorySessionStore, SessionSaveFailedError } from "../src/session";
+import { codeOf } from "../src/errors";
+import { ErrCodeUnauthorized, ErrCodeRequired2FA } from "../src/error_codes";
+
+const DEFAULT_WEB_KEY =
+  "e9f1ae4c4470f29a92c0168dc42b13637cc332692103f23e626bc2b016f66603";
+const reject401 = (code = 401) => ({
+  status: 401,
+  body: JSON.stringify({ result: "error", message: "unauthorized", error_code: code }),
+});
 
 type Handler = (path: string, method: string, body: string) => {
   status: number;
@@ -271,12 +280,154 @@ async function scenarioFileStoreRoundTrip(): Promise<void> {
   });
 }
 
+// --- Browser-login fallback (PORTING.md §6.2) --------------------------------
+
+async function scenarioFallbackToWeb(): Promise<void> {
+  let seenKey: unknown;
+  await withServer(
+    (path, _method, body) => {
+      if (path === "/v3/users/login_with_email") return reject401();
+      if (path === "/v2/users/login_with_email") {
+        seenKey = (JSON.parse(body || "{}") as Record<string, unknown>).api_key;
+        return {
+          status: 200,
+          body: JSON.stringify({
+            access_token: "WEBACC",
+            refresh_token: "WEBREF",
+            user_id: 7777,
+          }),
+        };
+      }
+      return { status: 404, body: "" };
+    },
+    async (baseURL) => {
+      const client = new Client({ baseURL });
+      const resp = await client.loginWithEmail({ email: "u@example.com", password: "pw" });
+      assertEq("fallback: userId from web", resp.userId, 7777);
+      assertEq("fallback: access token", client.tokens().access, "WEBACC");
+      assertEq("fallback: web api_key used", seenKey, DEFAULT_WEB_KEY);
+    },
+  );
+}
+
+async function scenarioNoFallbackOn2FA(): Promise<void> {
+  let v2Hits = 0;
+  await withServer(
+    (path) => {
+      if (path === "/v3/users/login_with_email") return reject401(ErrCodeRequired2FA);
+      if (path === "/v2/users/login_with_email") {
+        v2Hits++;
+        return { status: 200, body: "{}" };
+      }
+      return { status: 404, body: "" };
+    },
+    async (baseURL) => {
+      const client = new Client({ baseURL });
+      let caught: unknown;
+      try {
+        await client.loginWithEmail({ email: "u@example.com", password: "pw" });
+      } catch (e) {
+        caught = e;
+      }
+      assertEq("2FA: code is Required2FA", codeOf(caught), ErrCodeRequired2FA);
+      assertEq("2FA: no v2 fallback attempted", v2Hits, 0);
+      assertEq("2FA: tokens stay empty", client.tokens().access, "");
+    },
+  );
+}
+
+async function scenarioNoFallbackWhenApiKeyPinned(): Promise<void> {
+  let v2Hits = 0;
+  await withServer(
+    (path) => {
+      if (path === "/v3/users/login_with_email") return reject401();
+      if (path === "/v2/users/login_with_email") {
+        v2Hits++;
+        return { status: 200, body: "{}" };
+      }
+      return { status: 404, body: "" };
+    },
+    async (baseURL) => {
+      const client = new Client({ baseURL });
+      let caught: unknown;
+      try {
+        await client.loginWithEmail({
+          email: "u@example.com",
+          password: "pw",
+          apiKey: "caller-pinned-key",
+        });
+      } catch (e) {
+        caught = e;
+      }
+      assertEq("pinned: code is Unauthorized", codeOf(caught), ErrCodeUnauthorized);
+      assertEq("pinned: no v2 fallback attempted", v2Hits, 0);
+    },
+  );
+}
+
+async function scenarioFallbackDisabled(): Promise<void> {
+  let v2Hits = 0;
+  await withServer(
+    (path) => {
+      if (path === "/v3/users/login_with_email") return reject401();
+      if (path === "/v2/users/login_with_email") {
+        v2Hits++;
+        return { status: 200, body: "{}" };
+      }
+      return { status: 404, body: "" };
+    },
+    async (baseURL) => {
+      const client = new Client({ baseURL, webApiKey: "" });
+      let caught: unknown;
+      try {
+        await client.loginWithEmail({ email: "u@example.com", password: "pw" });
+      } catch (e) {
+        caught = e;
+      }
+      assertEq("disabled: code is Unauthorized", codeOf(caught), ErrCodeUnauthorized);
+      assertEq("disabled: no v2 fallback attempted", v2Hits, 0);
+    },
+  );
+}
+
+async function scenarioWebDecodeFailureSurfaced(): Promise<void> {
+  await withServer(
+    (path) => {
+      if (path === "/v3/users/login_with_email") return reject401();
+      if (path === "/v2/users/login_with_email") {
+        return { status: 200, body: "{ this is not valid json" };
+      }
+      return { status: 404, body: "" };
+    },
+    async (baseURL) => {
+      const client = new Client({ baseURL });
+      let caught: unknown;
+      try {
+        await client.loginWithEmail({ email: "u@example.com", password: "pw" });
+      } catch (e) {
+        caught = e;
+      }
+      assertEq(
+        "decode-fail: not masked as Unauthorized",
+        codeOf(caught) !== ErrCodeUnauthorized,
+        true,
+      );
+      assertEq("decode-fail: tokens stay empty", client.tokens().access, "");
+    },
+  );
+}
+
 (async () => {
   await scenarioFreshLogin();
   await scenarioCacheHit();
   await scenarioNoCacheBypass();
   await scenarioSavePersistFailure();
   await scenarioFileStoreRoundTrip();
+  await scenarioFallbackToWeb();
+  await scenarioNoFallbackOn2FA();
+  await scenarioNoFallbackWhenApiKeyPinned();
+  await scenarioFallbackDisabled();
+  await scenarioWebDecodeFailureSurfaced();
   process.exit(failed === 0 ? 0 : 1);
 })().catch((e) => {
   // eslint-disable-next-line no-console

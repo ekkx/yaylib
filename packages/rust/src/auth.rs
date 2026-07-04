@@ -118,6 +118,10 @@ impl<'a> LoginWithEmailRequest<'a> {
             }
         }
 
+        // Whether the caller pinned a specific api_key (vs. the client
+        // default). A pinned key opts out of the browser-login fallback.
+        let caller_pinned = api_key.as_str() != self.client.api_key();
+
         // Build and execute the HTTP login request.
         let body = LoginEmailUserRequestBody {
             email: email.clone(),
@@ -127,7 +131,38 @@ impl<'a> LoginWithEmailRequest<'a> {
             two_fa_code: self.two_fa_code,
         };
 
-        let resp = self.client.do_login_with_email(body).await?;
+        let resp = match self.client.do_login_with_email(body.clone()).await {
+            Ok(resp) => resp,
+            Err(e) => {
+                // Fallback (PORTING.md §6.2): a plain "unauthorized"
+                // retries against the browser login endpoint with
+                // web_api_key. Skipped for other 401s — notably
+                // Required2FA (the caller must supply a code, not switch
+                // keys) — when the caller pinned a specific api_key, or
+                // when web_api_key is empty (the off switch).
+                if !self.client.web_api_key().is_empty()
+                    && !caller_pinned
+                    && crate::errors::code_of(&e)
+                        == crate::error_codes::ErrorCode::Unauthorized
+                {
+                    match self.client.do_login_with_email_web(&body).await {
+                        Ok(Some(resp)) => {
+                            tracing::debug!(
+                                event = "login_fallback",
+                                outcome = "ok"
+                            );
+                            resp
+                        }
+                        // Fallback rejected → surface the primary error.
+                        Ok(None) => return Err(e),
+                        // 2xx decode failure → surface the web error.
+                        Err(we) => return Err(we),
+                    }
+                } else {
+                    return Err(e);
+                }
+            }
+        };
 
         // Activate tokens immediately so follow-up requests work even if
         // session persistence fails below.
@@ -180,4 +215,155 @@ pub struct LoginResponse {
     pub user_id: i64,
     pub access_token: String,
     pub refresh_token: String,
+}
+
+// Browser-login fallback (PORTING.md §6.2).
+#[cfg(test)]
+mod fallback_tests {
+    use crate::client::Client;
+    use crate::error_codes::ErrorCode;
+    use crate::errors::code_of;
+    use wiremock::matchers::{body_string_contains, method, path};
+    use wiremock::{Mock, MockServer, ResponseTemplate};
+
+    const WEB_KEY: &str =
+        "e9f1ae4c4470f29a92c0168dc42b13637cc332692103f23e626bc2b016f66603";
+
+    fn reject_401(code: i32) -> ResponseTemplate {
+        ResponseTemplate::new(401).set_body_string(format!(
+            r#"{{"result":"error","message":"unauthorized","error_code":{code}}}"#
+        ))
+    }
+
+    async fn mock_v3_reject(server: &MockServer, code: i32) {
+        Mock::given(method("POST"))
+            .and(path("/v3/users/login_with_email"))
+            .respond_with(reject_401(code))
+            .mount(server)
+            .await;
+    }
+
+    #[tokio::test]
+    async fn falls_back_to_web_on_401() {
+        let server = MockServer::start().await;
+        mock_v3_reject(&server, 401).await;
+        // Matching on the web key asserts the fallback carried it.
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .and(body_string_contains(WEB_KEY))
+            .respond_with(ResponseTemplate::new(200).set_body_string(
+                r#"{"access_token":"WEBACC","refresh_token":"WEBREF","user_id":7777}"#,
+            ))
+            .mount(&server)
+            .await;
+
+        let client = Client::builder().base_url(server.uri()).build();
+        let resp = client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect("fallback login should succeed");
+        assert_eq!(resp.user_id, 7777);
+        assert_eq!(resp.access_token, "WEBACC");
+        assert_eq!(client.tokens().access, "WEBACC");
+    }
+
+    #[tokio::test]
+    async fn no_fallback_on_2fa() {
+        let server = MockServer::start().await;
+        mock_v3_reject(&server, ErrorCode::Required2FA as i32).await;
+        // The v2 endpoint must never be hit.
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(200).set_body_string("{}"))
+            .expect(0)
+            .mount(&server)
+            .await;
+
+        let client = Client::builder().base_url(server.uri()).build();
+        let err = client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect_err("2FA-required must not fall back");
+        assert_eq!(code_of(&err), ErrorCode::Required2FA);
+        assert_eq!(client.tokens().access, "");
+    }
+
+    #[tokio::test]
+    async fn no_fallback_when_api_key_pinned() {
+        let server = MockServer::start().await;
+        mock_v3_reject(&server, 401).await;
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(200).set_body_string("{}"))
+            .expect(0)
+            .mount(&server)
+            .await;
+
+        let client = Client::builder().base_url(server.uri()).build();
+        let err = client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .api_key("caller-pinned-key")
+            .execute()
+            .await
+            .expect_err("pinned api_key must not fall back");
+        assert_eq!(code_of(&err), ErrorCode::Unauthorized);
+    }
+
+    #[tokio::test]
+    async fn fallback_disabled_surfaces_401() {
+        let server = MockServer::start().await;
+        mock_v3_reject(&server, 401).await;
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(200).set_body_string("{}"))
+            .expect(0)
+            .mount(&server)
+            .await;
+
+        let client = Client::builder()
+            .base_url(server.uri())
+            .web_api_key("")
+            .build();
+        let err = client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect_err("disabled fallback must surface the primary 401");
+        assert_eq!(code_of(&err), ErrorCode::Unauthorized);
+    }
+
+    #[tokio::test]
+    async fn web_decode_failure_surfaced() {
+        let server = MockServer::start().await;
+        mock_v3_reject(&server, 401).await;
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .respond_with(
+                ResponseTemplate::new(200).set_body_string("{ this is not valid json"),
+            )
+            .mount(&server)
+            .await;
+
+        let client = Client::builder().base_url(server.uri()).build();
+        let err = client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect_err("a 2xx decode failure should surface as an error");
+        // Not masked as the primary auth rejection.
+        assert_ne!(code_of(&err), ErrorCode::Unauthorized);
+        assert_eq!(client.tokens().access, "");
+    }
 }
