@@ -112,6 +112,10 @@ func (r LoginWithEmailRequest) Execute() (*gen.LoginUserResponse, *http.Response
 	if ok {
 		return resp, nil, nil
 	}
+	// oauthKey tracks the API key that establishes the session; it becomes
+	// the Basic credential for later token refresh. The primary login uses
+	// the body's api_key; the fallback switches it to WebAPIKey below.
+	oauthKey := body.GetApiKey()
 	resp, httpResp, err := r.client.UsersAPIService.
 		LoginWithEmail(r.ctx).
 		LoginEmailUserRequest(body).
@@ -135,6 +139,9 @@ func (r LoginWithEmailRequest) Execute() (*gen.LoginUserResponse, *http.Response
 				r.client.Logger.Debug("web login fallback ok",
 					"event", "login_fallback", "outcome", "ok")
 				resp, httpResp, err = wResp, wHTTP, nil
+				// This session was established with the web key, so its
+				// token refresh must use it too.
+				oauthKey = r.client.WebAPIKey
 			} else {
 				r.client.Logger.Debug("web login fallback failed",
 					"event", "login_fallback", "outcome", "failed")
@@ -152,7 +159,7 @@ func (r LoginWithEmailRequest) Execute() (*gen.LoginUserResponse, *http.Response
 			return resp, httpResp, err
 		}
 	}
-	if perr := r.client.acceptLogin(email, resp); perr != nil {
+	if perr := r.client.acceptLogin(email, resp, oauthKey); perr != nil {
 		return resp, httpResp, perr
 	}
 	return resp, httpResp, nil
@@ -276,6 +283,9 @@ func (c *Client) maybeRestore(email string, skip bool) (*gen.LoginUserResponse, 
 	if err != nil {
 		return nil, false, fmt.Errorf("yaylib: load session: %w", err)
 	}
+	// Restore which key refreshes this session (empty → app key), so a
+	// cached web session refreshes with the web key after a restart.
+	c.setOAuthKey(sess.OAuthKey)
 	resp := gen.NewLoginUserResponse()
 	resp.SetUserId(sess.UserID)
 	resp.SetAccessToken(sess.AccessToken)
@@ -289,8 +299,10 @@ func (c *Client) maybeRestore(email string, skip bool) (*gen.LoginUserResponse, 
 // a store is configured. Persistence errors are wrapped with
 // ErrSessionSaveFailed so the caller can detect them, but the tokens are
 // already active on the client either way.
-func (c *Client) acceptLogin(email string, resp *gen.LoginUserResponse) error {
+func (c *Client) acceptLogin(email string, resp *gen.LoginUserResponse, oauthKey string) error {
 	c.setLoginIdentity(email, resp.GetUserId())
+	// Record which key refreshes this session before activating tokens.
+	c.setOAuthKey(oauthKey)
 	// Activate tokens unconditionally so an immediate follow-up request
 	// works even when a later session-store write fails.
 	c.SetTokens(resp.GetAccessToken(), resp.GetRefreshToken())
@@ -300,6 +312,7 @@ func (c *Client) acceptLogin(email string, resp *gen.LoginUserResponse) error {
 			UserID:       resp.GetUserId(),
 			AccessToken:  resp.GetAccessToken(),
 			RefreshToken: resp.GetRefreshToken(),
+			OAuthKey:     c.sessionOAuthKey(),
 		}); err != nil {
 			return fmt.Errorf("%w: %v", ErrSessionSaveFailed, err)
 		}
@@ -352,6 +365,7 @@ func (c *Client) refreshTokens(ctx context.Context, staleToken string) error {
 			UserID:       resp.GetId(),
 			AccessToken:  resp.GetAccessToken(),
 			RefreshToken: resp.GetRefreshToken(),
+			OAuthKey:     c.sessionOAuthKey(),
 		}); err != nil {
 			// The transport path can't bubble this error to the
 			// user — the refreshed tokens are already active in

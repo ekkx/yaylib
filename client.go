@@ -222,6 +222,14 @@ type Client struct {
 	// writes when an access token is refreshed. Guarded by authMu.
 	currentEmail string
 
+	// oauthKey is the API key that established the active session, used
+	// as the Basic credential for OAuth token refresh. It defaults to
+	// APIKey but becomes WebAPIKey for a session obtained via the
+	// browser-login fallback (§6.2) — refreshing such a session with the
+	// app key would 401. Signing (signed_info) is unaffected and keeps
+	// using APIKey. Empty means "use APIKey". Guarded by authMu.
+	oauthKey string
+
 	httpClient *http.Client
 
 	sessionStore SessionStore
@@ -535,6 +543,36 @@ func (c *Client) setLoginIdentity(email string, userID int64) {
 		c.UserID = userID
 	}
 	c.authMu.Unlock()
+}
+
+// setOAuthKey records the API key that established the active session
+// (see the oauthKey field). Passing "" resets to the default (APIKey).
+func (c *Client) setOAuthKey(key string) {
+	c.authMu.Lock()
+	c.oauthKey = key
+	c.authMu.Unlock()
+}
+
+// oauthKeySnapshot returns the Basic credential to use for OAuth token
+// refresh: the session's oauthKey, or APIKey when none was recorded.
+func (c *Client) oauthKeySnapshot() string {
+	c.authMu.RLock()
+	k := c.oauthKey
+	c.authMu.RUnlock()
+	if k == "" {
+		return c.APIKey
+	}
+	return k
+}
+
+// sessionOAuthKey returns the value to persist in Session.OAuthKey: empty
+// for a default (APIKey) session so app-session files stay unchanged, or
+// the actual key for a web / caller-pinned session.
+func (c *Client) sessionOAuthKey() string {
+	if k := c.oauthKeySnapshot(); k != c.APIKey {
+		return k
+	}
+	return ""
 }
 
 // deviceUUIDSnapshot returns the current device UUID under uuidMu so
