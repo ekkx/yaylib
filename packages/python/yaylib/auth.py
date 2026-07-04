@@ -61,6 +61,9 @@ def _activate_cached_session(client, session: Session) -> None:
     if session.device_uuid:
         client.set_device_uuid(session.device_uuid)
     client.set_login_identity(session.email, session.user_id)
+    # Restore which key refreshes this session (empty → app key) so a
+    # cached web session refreshes with the web key after a restart.
+    client.set_oauth_key(session.oauth_key)
 
 
 async def _login_with_email_web(
@@ -153,13 +156,17 @@ async def _execute_login(
             _activate_cached_session(client, cached)
             return _synthesize_login_response(cached)
 
+    login_key = api_key or client.api_key
     body = LoginEmailUserRequest(
-        api_key=api_key or client.api_key,
+        api_key=login_key,
         email=email,
         password=password,
         uuid=uuid or client.device_uuid,
         two_f_a_code=two_fa_code,
     )
+    # The key that establishes the session also refreshes its tokens;
+    # the fallback switches it to web_api_key below.
+    oauth_key = login_key
 
     try:
         resp = await client.users_api.login_with_email(
@@ -193,6 +200,9 @@ async def _execute_login(
                 extra={"event": "login_fallback", "outcome": "ok"},
             )
             resp = fallback
+            # This session was established with the web key, so its token
+            # refresh must use it too.
+            oauth_key = client.web_api_key
         else:
             raise api_err
 
@@ -201,6 +211,7 @@ async def _execute_login(
     user_id = resp.user_id or 0
     client.set_tokens(access, refresh)
     client.set_login_identity(email, user_id)
+    client.set_oauth_key(oauth_key)
 
     if client.session_store is not None:
         session = Session(
@@ -209,6 +220,7 @@ async def _execute_login(
             access_token=access,
             refresh_token=refresh,
             device_uuid=client.device_uuid,
+            oauth_key=client._session_oauth_key(),
             updated_at="",
         )
         try:

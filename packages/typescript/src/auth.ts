@@ -79,13 +79,17 @@ async function executeLogin(
   }
 
   // Fresh HTTP login. APIKey / Uuid auto-fill matches the Go reference.
+  const loginKey = params.apiKey ?? client.apiKey;
   const body = {
     email: params.email,
     password: params.password,
-    apiKey: params.apiKey ?? client.apiKey,
+    apiKey: loginKey,
     uuid: params.uuid ?? client.deviceUUID,
     twoFACode: params.twoFACode,
   };
+  // The key that establishes the session also refreshes its tokens; the
+  // fallback switches it to webApiKey below.
+  let oauthKey = loginKey;
 
   let resp: LoginUserResponse;
   try {
@@ -116,6 +120,9 @@ async function executeLogin(
         outcome: "ok",
       });
       resp = fallback;
+      // This session was established with the web key, so its token
+      // refresh must use it too.
+      oauthKey = client.webApiKey;
     } else {
       throw apiErr;
     }
@@ -127,6 +134,7 @@ async function executeLogin(
   const userID = resp.userId ?? 0;
   client.setTokens(access, refresh);
   client.setLoginIdentity(params.email, userID);
+  client.setOAuthKey(oauthKey);
 
   // Persist the session. PORTING.md §5: a persist failure here returns
   // SessionSaveFailedError, but the tokens are still active in memory so
@@ -138,6 +146,8 @@ async function executeLogin(
       accessToken: access,
       refreshToken: refresh,
       deviceUUID: client.deviceUUID,
+      // Omit for a default (app) session so its file stays unchanged.
+      oauthKey: oauthKey === client.apiKey ? undefined : oauthKey,
       updatedAt: new Date().toISOString(),
     };
     try {
@@ -155,6 +165,9 @@ function activateCachedSession(client: Client, session: Session): void {
   if (session.deviceUUID) {
     client.setDeviceUUID(session.deviceUUID);
   }
+  // Restore which key refreshes this session (empty → app key) so a cached
+  // web session refreshes with the web key after a restart.
+  client.setOAuthKey(session.oauthKey ?? "");
   client.setLoginIdentity(session.email, session.userID);
 }
 

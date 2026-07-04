@@ -9,6 +9,11 @@ export interface Session {
   accessToken: string;
   refreshToken: string;
   deviceUUID: string;
+  // API key used to refresh this session's tokens. Empty/absent means the
+  // default app key; set for sessions obtained via the browser-login
+  // fallback (§6.2). Older session files without it restore as app
+  // sessions.
+  oauthKey?: string;
   updatedAt: string; // RFC3339
 }
 

@@ -122,6 +122,10 @@ impl<'a> LoginWithEmailRequest<'a> {
         // default). A pinned key opts out of the browser-login fallback.
         let caller_pinned = api_key.as_str() != self.client.api_key();
 
+        // The key that establishes the session also refreshes its tokens;
+        // the fallback switches it to web_api_key below.
+        let mut oauth_key = api_key.clone();
+
         // Build and execute the HTTP login request.
         let body = LoginEmailUserRequestBody {
             email: email.clone(),
@@ -151,6 +155,8 @@ impl<'a> LoginWithEmailRequest<'a> {
                                 event = "login_fallback",
                                 outcome = "ok"
                             );
+                            // Established with the web key → refresh with it.
+                            oauth_key = self.client.web_api_key().to_string();
                             resp
                         }
                         // Fallback rejected → surface the primary error.
@@ -168,6 +174,7 @@ impl<'a> LoginWithEmailRequest<'a> {
         // session persistence fails below.
         self.client.set_login_identity(&email, resp.user_id);
         self.client.set_tokens(&resp.access_token, &resp.refresh_token);
+        self.client.set_oauth_key(&oauth_key);
 
         if let Some(store) = self.client.session_store() {
             if !email.is_empty() {
@@ -177,6 +184,7 @@ impl<'a> LoginWithEmailRequest<'a> {
                     access_token: resp.access_token.clone(),
                     refresh_token: resp.refresh_token.clone(),
                     device_uuid,
+                    oauth_key: self.client.session_oauth_key(),
                     updated_at: Utc::now(),
                 };
                 if let Err(e) = store.save(&session).await {
@@ -223,11 +231,12 @@ mod fallback_tests {
     use crate::client::Client;
     use crate::error_codes::ErrorCode;
     use crate::errors::code_of;
-    use wiremock::matchers::{body_string_contains, method, path};
+    use wiremock::matchers::{body_string_contains, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     const WEB_KEY: &str =
         "e9f1ae4c4470f29a92c0168dc42b13637cc332692103f23e626bc2b016f66603";
+    const APP_KEY: &str = crate::config::DEFAULT_API_KEY;
 
     fn reject_401(code: i32) -> ResponseTemplate {
         ResponseTemplate::new(401).set_body_string(format!(
@@ -365,5 +374,135 @@ mod fallback_tests {
         // Not masked as the primary auth rejection.
         assert_ne!(code_of(&err), ErrorCode::Unauthorized);
         assert_eq!(client.tokens().access, "");
+    }
+
+    // --- OAuth refresh uses the session's key (PORTING.md §6.2) --------------
+
+    // Mount the timestamp endpoint to 401 once (triggering a refresh) then
+    // 200, and the oauth endpoint to accept ONLY the given Basic key — so a
+    // successful get_user_timestamp proves the refresh used that key.
+    async fn mock_refresh_flow(server: &MockServer, expected_key: &str) {
+        Mock::given(method("GET"))
+            .and(path("/v2/users/timestamp"))
+            .respond_with(ResponseTemplate::new(401).set_body_string(r#"{"error_code":-1}"#))
+            .up_to_n_times(1)
+            .with_priority(1)
+            .mount(server)
+            .await;
+        Mock::given(method("GET"))
+            .and(path("/v2/users/timestamp"))
+            .respond_with(ResponseTemplate::new(200).set_body_string(r#"{"time":1700000000}"#))
+            .with_priority(2)
+            .mount(server)
+            .await;
+        Mock::given(method("POST"))
+            .and(path("/api/v1/oauth/token"))
+            .and(header(
+                "authorization",
+                format!("Basic {}", crate::transport::basic_credentials(expected_key)),
+            ))
+            .respond_with(ResponseTemplate::new(200).set_body_string(
+                r#"{"access_token":"A2","refresh_token":"R2","id":1}"#,
+            ))
+            .mount(server)
+            .await;
+    }
+
+    #[tokio::test]
+    async fn web_session_refreshes_with_web_key() {
+        let server = MockServer::start().await;
+        mock_v3_reject(&server, 401).await;
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(200).set_body_string(
+                r#"{"access_token":"A1","refresh_token":"R1","user_id":1}"#,
+            ))
+            .mount(&server)
+            .await;
+        mock_refresh_flow(&server, WEB_KEY).await;
+
+        let client = Client::builder().base_url(server.uri()).build();
+        client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect("web login");
+        assert_eq!(client.oauth_key_snapshot(), WEB_KEY);
+        // 401 on the timestamp GET triggers a refresh; it succeeds only if
+        // the oauth request carried the web key.
+        let ts = client
+            .get_user_timestamp()
+            .await
+            .expect("timestamp after web-key refresh");
+        assert_eq!(ts.time.flatten().unwrap_or(0), 1700000000);
+    }
+
+    #[tokio::test]
+    async fn app_session_refreshes_with_app_key() {
+        let server = MockServer::start().await;
+        Mock::given(method("POST"))
+            .and(path("/v3/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(200).set_body_string(
+                r#"{"access_token":"A1","refresh_token":"R1","user_id":1}"#,
+            ))
+            .mount(&server)
+            .await;
+        mock_refresh_flow(&server, APP_KEY).await;
+
+        let client = Client::builder().base_url(server.uri()).build();
+        client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect("app login");
+        assert_eq!(client.oauth_key_snapshot(), APP_KEY);
+        let ts = client
+            .get_user_timestamp()
+            .await
+            .expect("timestamp after app-key refresh");
+        assert_eq!(ts.time.flatten().unwrap_or(0), 1700000000);
+    }
+
+    #[tokio::test]
+    async fn restored_web_session_tracks_web_key() {
+        use std::sync::Arc;
+        let server = MockServer::start().await;
+        mock_v3_reject(&server, 401).await;
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(200).set_body_string(
+                r#"{"access_token":"A1","refresh_token":"R1","user_id":1}"#,
+            ))
+            .mount(&server)
+            .await;
+
+        let store = Arc::new(crate::session::MemorySessionStore::new());
+        let c1 = Client::builder()
+            .base_url(server.uri())
+            .session_store_arc(store.clone())
+            .build();
+        c1.login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect("web login");
+
+        // A fresh client restores the cached web session and tracks the key.
+        let c2 = Client::builder()
+            .base_url(server.uri())
+            .session_store_arc(store)
+            .build();
+        c2.login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect("restore login");
+        assert_eq!(c2.oauth_key_snapshot(), WEB_KEY);
     }
 }

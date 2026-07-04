@@ -417,6 +417,111 @@ async function scenarioWebDecodeFailureSurfaced(): Promise<void> {
   );
 }
 
+// --- OAuth refresh uses the session's key (PORTING.md §6.2) ------------------
+
+const APP_KEY =
+  "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6";
+const basic = (key: string) => `Basic ${Buffer.from(key).toString("base64")}`;
+
+// Server that captures the Authorization header on the oauth/token path.
+async function withRefreshServer<T>(
+  loginHandler: (path: string) => { status: number; body: string } | null,
+  fn: (baseURL: string, getOauthAuth: () => string) => Promise<T>,
+): Promise<T> {
+  let oauthAuth = "";
+  const server: Server = createServer((req, res) => {
+    const chunks: Buffer[] = [];
+    req.on("data", (c) => chunks.push(c));
+    req.on("end", () => {
+      const path = req.url ?? "";
+      res.setHeader("Content-Type", "application/json");
+      if (path.includes("/api/v1/oauth/token")) {
+        oauthAuth = req.headers["authorization"] ?? "";
+        res.writeHead(200);
+        res.end(
+          JSON.stringify({ access_token: "A2", refresh_token: "R2", id: 1 }),
+        );
+        return;
+      }
+      const out = loginHandler(path);
+      if (out) {
+        res.writeHead(out.status);
+        res.end(out.body);
+      } else {
+        res.writeHead(404);
+        res.end("");
+      }
+    });
+  });
+  await new Promise<void>((resolve) => server.listen(0, resolve));
+  const addr = server.address() as AddressInfo;
+  try {
+    return await fn(`http://127.0.0.1:${addr.port}`, () => oauthAuth);
+  } finally {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  }
+}
+
+const webLoginHandler = (path: string) => {
+  if (path === "/v3/users/login_with_email") return reject401();
+  if (path === "/v2/users/login_with_email")
+    return {
+      status: 200,
+      body: JSON.stringify({ access_token: "A1", refresh_token: "R1", user_id: 1 }),
+    };
+  return null;
+};
+
+async function scenarioRefreshWebSessionUsesWebKey(): Promise<void> {
+  await withRefreshServer(webLoginHandler, async (baseURL, getOauthAuth) => {
+    const client = new Client({ baseURL });
+    await client.loginWithEmail({ email: "u@example.com", password: "pw" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ok = await (client as any)._doRefresh(client.tokens().access);
+    assertEq("refresh web: succeeds", ok, true);
+    assertEq("refresh web: uses web-key Basic", getOauthAuth(), basic(DEFAULT_WEB_KEY));
+    assertEq("refresh web: tokens rotated", client.tokens().access, "A2");
+  });
+}
+
+async function scenarioRefreshAppSessionUsesAppKey(): Promise<void> {
+  const appLogin = (path: string) =>
+    path.endsWith("/login_with_email")
+      ? {
+          status: 200,
+          body: JSON.stringify({ access_token: "A1", refresh_token: "R1", user_id: 1 }),
+        }
+      : null;
+  await withRefreshServer(appLogin, async (baseURL, getOauthAuth) => {
+    const store = new MemorySessionStore();
+    const client = new Client({ baseURL, sessionStore: store });
+    await client.loginWithEmail({ email: "u@example.com", password: "pw" });
+    const sess = await store.load("u@example.com");
+    assertEq("refresh app: no oauthKey persisted", sess.oauthKey, undefined);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (client as any)._doRefresh(client.tokens().access);
+    assertEq("refresh app: uses app-key Basic", getOauthAuth(), basic(APP_KEY));
+  });
+}
+
+async function scenarioRefreshRestoredWebSessionUsesWebKey(): Promise<void> {
+  await withRefreshServer(webLoginHandler, async (baseURL, getOauthAuth) => {
+    const store = new MemorySessionStore();
+    const c1 = new Client({ baseURL, sessionStore: store });
+    await c1.loginWithEmail({ email: "u@example.com", password: "pw" });
+    assertEq(
+      "restore: web oauthKey persisted",
+      (await store.load("u@example.com")).oauthKey,
+      DEFAULT_WEB_KEY,
+    );
+    const c2 = new Client({ baseURL, sessionStore: store });
+    await c2.loginWithEmail({ email: "u@example.com", password: "pw" }); // cache hit
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (c2 as any)._doRefresh(c2.tokens().access);
+    assertEq("restore: refresh uses web-key Basic", getOauthAuth(), basic(DEFAULT_WEB_KEY));
+  });
+}
+
 (async () => {
   await scenarioFreshLogin();
   await scenarioCacheHit();
@@ -428,6 +533,9 @@ async function scenarioWebDecodeFailureSurfaced(): Promise<void> {
   await scenarioNoFallbackWhenApiKeyPinned();
   await scenarioFallbackDisabled();
   await scenarioWebDecodeFailureSurfaced();
+  await scenarioRefreshWebSessionUsesWebKey();
+  await scenarioRefreshAppSessionUsesAppKey();
+  await scenarioRefreshRestoredWebSessionUsesWebKey();
   process.exit(failed === 0 ? 0 : 1);
 })().catch((e) => {
   // eslint-disable-next-line no-console

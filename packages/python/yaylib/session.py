@@ -31,6 +31,11 @@ class Session:
     access_token: str = ""
     refresh_token: str = ""
     device_uuid: str = ""
+    # API key used to refresh this session's tokens. Empty means the
+    # default app key; set for sessions obtained via the browser-login
+    # fallback. Absent on older session files, which restore as app
+    # sessions.
+    oauth_key: str = ""
     updated_at: str = ""  # RFC3339
 
 

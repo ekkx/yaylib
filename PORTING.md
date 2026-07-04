@@ -329,8 +329,26 @@ Invariants every port MUST match:
 - On success, activate tokens and persist the session exactly as the
   primary path does.
 
+**OAuth refresh MUST use the session's establishing key.** A web-fallback
+session is issued under `webApiKey`, so its token refresh (`POST
+/api/v1/oauth/token`, `Authorization: Basic base64(key)`) MUST use that
+same key — refreshing a web session with the app key 401s. Every port:
+
+- Tracks, as mutable client state, the key that established the active
+  session (defaults to `apiKey`; set to `webApiKey` on a fallback login,
+  or to a caller-pinned key). Call it the *OAuth key*.
+- Uses the OAuth key as the Basic credential everywhere the OAuth token
+  endpoint is hit (both the transport's header injection and any bespoke
+  refresh call).
+- Persists it in the session as `oauth_key` (OMITTED for a default app
+  session so those files stay byte-identical; §5.1) and restores it on a
+  cache hit, so a restored web session refreshes correctly.
+- Leaves **signing (`signed_info`) on `apiKey`** — only the OAuth Basic
+  credential is session-scoped. This is the app-key/OAuth-key split.
+
 Parity scenarios live in each `auth` test suite (fires on 401 / no fire
-on 2FA / no fire when key pinned / disabled / 2xx-decode-fail surfaced).
+on 2FA / no fire when key pinned / disabled / 2xx-decode-fail surfaced;
+refresh uses web key / app key / restored web key).
 
 ---
 

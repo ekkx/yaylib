@@ -14,7 +14,7 @@
 """  # noqa: E501
 
 
-__version__ = "2.2.0"
+__version__ = "2.2.1"
 
 # import apis into sdk package
 from yaylib.api.activities_api import ActivitiesApi

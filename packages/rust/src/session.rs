@@ -16,6 +16,12 @@ pub struct Session {
     pub refresh_token: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub device_uuid: String,
+    /// API key used to refresh this session's tokens. Empty means the
+    /// default app key; set for sessions obtained via the browser-login
+    /// fallback (§6.2). Absent on older session files, which restore as
+    /// app sessions.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub oauth_key: String,
     pub updated_at: DateTime<Utc>,
 }
 
@@ -241,6 +247,7 @@ mod tests {
             access_token: "access".into(),
             refresh_token: "refresh".into(),
             device_uuid: "00000000-0000-0000-0000-000000000000".into(),
+            oauth_key: String::new(),
             updated_at: Utc::now(),
         };
 
@@ -275,6 +282,7 @@ mod tests {
             access_token: "a".into(),
             refresh_token: "r".into(),
             device_uuid: String::new(),
+            oauth_key: String::new(),
             updated_at: Utc::now(),
         };
         assert!(matches!(
@@ -301,6 +309,7 @@ mod tests {
             access_token: "at".into(),
             refresh_token: "rt".into(),
             device_uuid: "dev-uuid".into(),
+            oauth_key: String::new(),
             updated_at: Utc::now(),
         };
 
