@@ -442,3 +442,130 @@ func TestLoginWithEmail_WebDecodeFailureSurfaced(t *testing.T) {
 		t.Errorf("tokens should stay empty, got %q", c.Tokens().Access)
 	}
 }
+
+// PORTING §6.2 — a session obtained via the web fallback must refresh its
+// tokens with the web key (Basic), not the app key, or the refresh 401s.
+func TestRefresh_WebSessionUsesWebKeyForBasic(t *testing.T) {
+	var oauthAuth string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch {
+		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
+			w.WriteHeader(http.StatusUnauthorized)
+			_ = json.NewEncoder(w).Encode(map[string]any{"result": "error", "error_code": 401})
+		case strings.HasPrefix(r.URL.Path, "/v2/users/login_with_email"):
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "A1", "refresh_token": "R1", "user_id": 1})
+		case strings.Contains(r.URL.Path, "/api/v1/oauth/token"):
+			oauthAuth = r.Header.Get("Authorization")
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "A2", "refresh_token": "R2", "id": 1})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	if _, _, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute(); err != nil {
+		t.Fatalf("login: %v", err)
+	}
+	if got := c.oauthKeySnapshot(); got != DefaultWebAPIKey {
+		t.Fatalf("oauthKeySnapshot = %q, want web key", got)
+	}
+	if err := c.refreshTokens(context.Background(), c.Tokens().Access); err != nil {
+		t.Fatalf("refresh: %v", err)
+	}
+	if want := "Basic " + basicCredentials(DefaultWebAPIKey); oauthAuth != want {
+		t.Errorf("oauth Basic = %q, want web-key Basic", oauthAuth)
+	}
+	if c.Tokens().Access != "A2" {
+		t.Errorf("access after refresh = %q, want A2", c.Tokens().Access)
+	}
+}
+
+// A normal (app) login refreshes with the app key, and does not persist an
+// oauth_key (app sessions stay byte-identical on disk).
+func TestRefresh_AppSessionUsesAppKey(t *testing.T) {
+	var oauthAuth string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch {
+		case strings.HasSuffix(r.URL.Path, "/login_with_email"):
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "A1", "refresh_token": "R1", "user_id": 1})
+		case strings.Contains(r.URL.Path, "/api/v1/oauth/token"):
+			oauthAuth = r.Header.Get("Authorization")
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "A2", "refresh_token": "R2", "id": 1})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer srv.Close()
+
+	store := NewMemoryStore()
+	c := NewClient(WithBaseURL(srv.URL), WithSessionStore(store), WithRetryPolicy(RetryPolicy{}))
+	if _, _, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute(); err != nil {
+		t.Fatalf("login: %v", err)
+	}
+	if got := c.oauthKeySnapshot(); got != DefaultAPIKey {
+		t.Errorf("oauthKeySnapshot = %q, want app key", got)
+	}
+	sess, _ := store.Load("u@example.com")
+	if sess.OAuthKey != "" {
+		t.Errorf("app session persisted oauth_key=%q, want empty", sess.OAuthKey)
+	}
+	if err := c.refreshTokens(context.Background(), c.Tokens().Access); err != nil {
+		t.Fatalf("refresh: %v", err)
+	}
+	if want := "Basic " + basicCredentials(DefaultAPIKey); oauthAuth != want {
+		t.Errorf("oauth Basic = %q, want app-key Basic", oauthAuth)
+	}
+}
+
+// A cached web session, restored on a fresh client, still refreshes with the
+// web key — the oauth_key round-trips through the session store.
+func TestRefresh_RestoredWebSessionUsesWebKey(t *testing.T) {
+	var oauthAuth string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch {
+		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
+			w.WriteHeader(http.StatusUnauthorized)
+			_ = json.NewEncoder(w).Encode(map[string]any{"result": "error", "error_code": 401})
+		case strings.HasPrefix(r.URL.Path, "/v2/users/login_with_email"):
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "A1", "refresh_token": "R1", "user_id": 1})
+		case strings.Contains(r.URL.Path, "/api/v1/oauth/token"):
+			oauthAuth = r.Header.Get("Authorization")
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "A2", "refresh_token": "R2", "id": 1})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer srv.Close()
+
+	store := NewMemoryStore()
+	c1 := NewClient(WithBaseURL(srv.URL), WithSessionStore(store), WithRetryPolicy(RetryPolicy{}))
+	if _, _, err := c1.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute(); err != nil {
+		t.Fatalf("login: %v", err)
+	}
+	if sess, _ := store.Load("u@example.com"); sess.OAuthKey != DefaultWebAPIKey {
+		t.Fatalf("persisted oauth_key = %q, want web key", sess.OAuthKey)
+	}
+
+	// Fresh client restores the web session from the store (cache hit).
+	c2 := NewClient(WithBaseURL(srv.URL), WithSessionStore(store), WithRetryPolicy(RetryPolicy{}))
+	if _, _, err := c2.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute(); err != nil {
+		t.Fatalf("restore login: %v", err)
+	}
+	if got := c2.oauthKeySnapshot(); got != DefaultWebAPIKey {
+		t.Errorf("restored oauthKeySnapshot = %q, want web key", got)
+	}
+	if err := c2.refreshTokens(context.Background(), c2.Tokens().Access); err != nil {
+		t.Fatalf("refresh: %v", err)
+	}
+	if want := "Basic " + basicCredentials(DefaultWebAPIKey); oauthAuth != want {
+		t.Errorf("restored-session oauth Basic = %q, want web-key Basic", oauthAuth)
+	}
+}

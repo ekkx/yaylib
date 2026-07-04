@@ -153,11 +153,13 @@ func (t *Transport) setHeaders(r *http.Request, accessToken string) {
 		r.Header.Set("Content-Type", "application/json;charset=UTF-8")
 	}
 
-	// Authorization: Basic base64(apiKey) for oauth/token endpoints,
-	// Bearer <access> for everything else.
+	// Authorization: Basic base64(oauthKey) for oauth/token endpoints,
+	// Bearer <access> for everything else. The Basic key is the one that
+	// established the session (APIKey, or WebAPIKey for a browser-login
+	// session) — refreshing a web session with the app key would 401.
 	if r.Header.Get("Authorization") == "" {
 		if isOAuthTokenPath(r.URL.Path) {
-			r.Header.Set("Authorization", "Basic "+basicCredentials(c.APIKey))
+			r.Header.Set("Authorization", "Basic "+basicCredentials(c.oauthKeySnapshot()))
 		} else if accessToken != "" {
 			r.Header.Set("Authorization", "Bearer "+accessToken)
 		}

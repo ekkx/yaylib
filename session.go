@@ -17,7 +17,12 @@ type Session struct {
 	AccessToken  string    `json:"access_token"`
 	RefreshToken string    `json:"refresh_token"`
 	DeviceUUID   string    `json:"device_uuid,omitempty"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	// OAuthKey is the API key used to refresh this session's tokens (see
+	// Client.oauthKey). Empty means the default app key; set for sessions
+	// obtained via the browser-login fallback. Absent on older session
+	// files, which correctly restore as app sessions.
+	OAuthKey  string    `json:"oauth_key,omitempty"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // ErrNoSession is returned by SessionStore.Load when no record exists for
