@@ -173,6 +173,10 @@ class Client(GeneratedFacade):
         self._tokens: Tokens = empty_tokens()
         self._user_id = 0
         self._current_email = ""
+        # API key that established the active session, used as the Basic
+        # credential for OAuth token refresh. Empty means "use api_key";
+        # becomes web_api_key for a browser-login session (§6.2).
+        self._oauth_key = ""
         self._client_ip = ""
         self._client_ip_fetching = False
         self._bg_tasks: "set[asyncio.Task]" = set()
@@ -191,6 +195,7 @@ class Client(GeneratedFacade):
                 api_key=self.api_key,
                 client_ip=lambda: self._client_ip,
                 access_token=lambda: self._tokens.access,
+                oauth_key=lambda: self._oauth_key_snapshot(),
                 cassandra_base_url=self.cassandra_base_url,
                 logger=self._logger,
             ),
@@ -258,6 +263,22 @@ class Client(GeneratedFacade):
         """Internal — used by auth.py when activating a session."""
         self._current_email = email
         self._user_id = user_id
+
+    def set_oauth_key(self, key: str) -> None:
+        """Internal — record the key that established the session (see
+        _oauth_key). Passing "" resets to the default (api_key)."""
+        self._oauth_key = key
+
+    def _oauth_key_snapshot(self) -> str:
+        """Basic credential for OAuth token refresh: the session's
+        oauth_key, or api_key when none was recorded."""
+        return self._oauth_key or self.api_key
+
+    def _session_oauth_key(self) -> str:
+        """Value to persist in Session.oauth_key: empty for a default
+        (app) session, the actual key for a web / pinned session."""
+        k = self._oauth_key_snapshot()
+        return k if k != self.api_key else ""
 
     def set_device_uuid(self, uuid: str) -> None:
         """Internal — used by auth.py when a restored session carries a
@@ -611,7 +632,12 @@ class Client(GeneratedFacade):
         url = f"{self.base_url}/api/v1/oauth/token"
         import base64
 
-        basic = base64.b64encode(self.api_key.encode("utf-8")).decode("ascii")
+        # Basic credential is the key that established this session (app
+        # key, or web_api_key for a browser-login session) — refreshing a
+        # web session with the app key would 401.
+        basic = base64.b64encode(
+            self._oauth_key_snapshot().encode("utf-8")
+        ).decode("ascii")
         form = urlencode(
             {
                 "grant_type": "refresh_token",
@@ -672,6 +698,7 @@ class Client(GeneratedFacade):
                 access_token=self._tokens.access,
                 refresh_token=self._tokens.refresh,
                 device_uuid=self._device_uuid,
+                oauth_key=self._session_oauth_key(),
                 updated_at="",
             )
             try:

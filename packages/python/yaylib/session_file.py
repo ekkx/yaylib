@@ -36,6 +36,7 @@ def _session_from_dict(email: str, raw: dict) -> Session:
         access_token=raw.get("access_token") or "",
         refresh_token=raw.get("refresh_token") or "",
         device_uuid=raw.get("device_uuid") or "",
+        oauth_key=raw.get("oauth_key") or "",
         updated_at=raw.get("updated_at") or "",
     )
 
@@ -72,9 +73,12 @@ class FileSessionStore(SessionStore):
             data = self._read_all()
             record = dataclasses.asdict(session)
             record["updated_at"] = session.updated_at or _now_rfc3339()
-            data["sessions"][session.email] = {
-                k: record[k] for k in _FIELDS
-            }
+            out = {k: record[k] for k in _FIELDS}
+            # Omit oauth_key for default (app) sessions so their files stay
+            # unchanged; write it only for web / caller-pinned sessions.
+            if session.oauth_key:
+                out["oauth_key"] = session.oauth_key
+            data["sessions"][session.email] = out
             self._write_all(data)
 
     async def delete(self, email: str) -> None:

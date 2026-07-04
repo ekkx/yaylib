@@ -151,16 +151,25 @@ impl Transport {
     }
 
     fn set_headers(&self, req: &mut reqwest::Request) {
-        let (access_token, device_uuid, client_ip) = {
+        let (access_token, device_uuid, client_ip, oauth_key) = {
             let state = self.state.read().unwrap_or_else(|e| e.into_inner());
             (
                 state.access_token.clone(),
                 state.device_uuid.clone(),
                 state.client_ip.clone(),
+                state.oauth_key.clone(),
             )
         };
 
         let config = &self.config;
+        // Basic credential for the OAuth endpoint is the key that
+        // established the session (app key, or web key for a browser-login
+        // session) — refreshing a web session with the app key would 401.
+        let oauth_key = if oauth_key.is_empty() {
+            config.api_key.as_str()
+        } else {
+            oauth_key.as_str()
+        };
 
         // Snapshot the path before taking a mutable borrow on headers.
         let is_oauth = is_oauth_token_path(req.url().path());
@@ -228,7 +237,7 @@ impl Transport {
         // Authorization: Basic for oauth/token, Bearer otherwise.
         if !headers.contains_key(AUTHORIZATION) {
             if is_oauth {
-                let cred = basic_credentials(&config.api_key);
+                let cred = basic_credentials(oauth_key);
                 if let Ok(v) = HeaderValue::from_str(&format!("Basic {}", cred)) {
                     headers.insert(AUTHORIZATION, v);
                 }
@@ -297,15 +306,25 @@ impl Transport {
         let _guard = self.refresh_lock.lock().await;
 
         // Another task may have already refreshed while we waited for the lock.
-        let (current_email, device_uuid) = {
+        let (current_email, device_uuid, oauth_key) = {
             let state = self.state.read().unwrap_or_else(|e| e.into_inner());
             if state.access_token != stale_access {
                 return Ok(());
             }
-            (state.current_email.clone(), state.device_uuid.clone())
+            (
+                state.current_email.clone(),
+                state.device_uuid.clone(),
+                state.oauth_key.clone(),
+            )
         };
 
         let config = &self.config;
+        // Refresh with the key that established the session (§6.2).
+        let oauth_key = if oauth_key.is_empty() {
+            config.api_key.as_str()
+        } else {
+            oauth_key.as_str()
+        };
 
         tracing::debug!(event = crate::logging::LOG_EVENT_TOKEN_REFRESH, outcome = "start");
 
@@ -320,7 +339,7 @@ impl Transport {
             .post(format!("{}/api/v1/oauth/token", config.base_url))
             .header(
                 AUTHORIZATION,
-                format!("Basic {}", basic_credentials(&config.api_key)),
+                format!("Basic {}", basic_credentials(oauth_key)),
             )
             .header(USER_AGENT, config.user_agent.as_str())
             .header("x-app-version", config.api_version_name.as_str())
@@ -374,6 +393,13 @@ impl Transport {
                     access_token: new_access,
                     refresh_token: new_refresh,
                     device_uuid,
+                    // Omit for a default (app) session so its file stays
+                    // unchanged; carry it forward for web / pinned sessions.
+                    oauth_key: if oauth_key == config.api_key.as_str() {
+                        String::new()
+                    } else {
+                        oauth_key.to_string()
+                    },
                     updated_at: chrono::Utc::now(),
                 };
                 tokio::spawn(async move {
@@ -444,6 +470,7 @@ impl Default for Transport {
             current_email: String::new(),
             device_uuid: crate::uuid::new_uuid_v4(),
             client_ip: String::new(),
+            oauth_key: String::new(),
             client_ip_fetching: false,
         }));
         Self {

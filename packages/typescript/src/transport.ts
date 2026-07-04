@@ -25,6 +25,10 @@ export interface TransportContext {
   apiKey: string;
   clientIP(): string;
   accessToken(): string;
+  // Basic credential for the OAuth token endpoint: the key that
+  // established the active session (apiKey, or webApiKey for a
+  // browser-login session). See PORTING.md §6.2.
+  oauthKey(): string;
 }
 
 // RefreshFn attempts a one-shot refresh of the access token using the
@@ -184,7 +188,7 @@ export function buildHeadersMiddleware(ctx: TransportContext): Middleware {
       );
       if (!hasAuth) {
         if (isOAuthTokenPath(req.url)) {
-          headers["Authorization"] = `Basic ${base64Encode(ctx.apiKey)}`;
+          headers["Authorization"] = `Basic ${base64Encode(ctx.oauthKey())}`;
         } else {
           const access = ctx.accessToken();
           if (access) headers["Authorization"] = `Bearer ${access}`;

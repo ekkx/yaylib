@@ -349,3 +349,102 @@ async def test_web_decode_failure_surfaced():
             assert client.tokens.access == ""
         finally:
             await client.close()
+
+
+# --- OAuth refresh uses the session's key (PORTING.md §6.2) -------------------
+
+import base64 as _b64
+
+APP_KEY = "ccd59ee269c01511ba763467045c115779fcae3050238a252f1bd1a4b65cfec6"
+
+
+def _basic(key):
+    return "Basic " + _b64.b64encode(key.encode("utf-8")).decode("ascii")
+
+
+async def test_refresh_web_session_uses_web_key():
+    seen = {}
+
+    def handler(path, method, body, headers):
+        if path == "/v3/users/login_with_email":
+            return _reject_401()
+        if path == "/v2/users/login_with_email":
+            return (200, json.dumps(
+                {"access_token": "A1", "refresh_token": "R1", "user_id": 1}), {})
+        if "/api/v1/oauth/token" in path:
+            seen["auth"] = headers.get("Authorization")
+            return (200, json.dumps(
+                {"access_token": "A2", "refresh_token": "R2", "id": 1}), {})
+        return 404, "", {}
+
+    async with serve(handler) as base_url:
+        client = Client(base_url=base_url)
+        try:
+            await client.login_with_email(email="u@example.com", password="pw")
+            assert client._oauth_key_snapshot() == DEFAULT_WEB_KEY
+            assert await client._do_refresh(client.tokens.access) is True
+            assert seen["auth"] == _basic(DEFAULT_WEB_KEY)
+            assert client.tokens.access == "A2"
+        finally:
+            await client.close()
+
+
+async def test_refresh_app_session_uses_app_key(tmp_path):
+    seen = {}
+
+    def handler(path, method, body, headers):
+        if path.endswith("/login_with_email"):
+            return (200, json.dumps(
+                {"access_token": "A1", "refresh_token": "R1", "user_id": 1}), {})
+        if "/api/v1/oauth/token" in path:
+            seen["auth"] = headers.get("Authorization")
+            return (200, json.dumps(
+                {"access_token": "A2", "refresh_token": "R2", "id": 1}), {})
+        return 404, "", {}
+
+    async with serve(handler) as base_url:
+        store = MemorySessionStore()
+        client = Client(base_url=base_url, session_store=store)
+        try:
+            await client.login_with_email(email="u@example.com", password="pw")
+            assert client._oauth_key_snapshot() == APP_KEY
+            sess = await store.load("u@example.com")
+            assert sess.oauth_key == ""  # app sessions don't persist a key
+            assert await client._do_refresh(client.tokens.access) is True
+            assert seen["auth"] == _basic(APP_KEY)
+        finally:
+            await client.close()
+
+
+async def test_refresh_restored_web_session_uses_web_key():
+    seen = {}
+
+    def handler(path, method, body, headers):
+        if path == "/v3/users/login_with_email":
+            return _reject_401()
+        if path == "/v2/users/login_with_email":
+            return (200, json.dumps(
+                {"access_token": "A1", "refresh_token": "R1", "user_id": 1}), {})
+        if "/api/v1/oauth/token" in path:
+            seen["auth"] = headers.get("Authorization")
+            return (200, json.dumps(
+                {"access_token": "A2", "refresh_token": "R2", "id": 1}), {})
+        return 404, "", {}
+
+    async with serve(handler) as base_url:
+        store = MemorySessionStore()
+        c1 = Client(base_url=base_url, session_store=store)
+        try:
+            await c1.login_with_email(email="u@example.com", password="pw")
+            assert (await store.load("u@example.com")).oauth_key == DEFAULT_WEB_KEY
+        finally:
+            await c1.close()
+
+        c2 = Client(base_url=base_url, session_store=store)
+        try:
+            await c2.login_with_email(email="u@example.com", password="pw")
+            assert c2._oauth_key_snapshot() == DEFAULT_WEB_KEY  # restored
+            assert await c2._do_refresh(c2.tokens.access) is True
+            assert seen["auth"] == _basic(DEFAULT_WEB_KEY)
+        finally:
+            await c2.close()

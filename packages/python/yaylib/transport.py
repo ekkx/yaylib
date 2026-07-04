@@ -100,6 +100,10 @@ class TransportContext:
     api_key: str
     client_ip: Callable[[], str]
     access_token: Callable[[], str]
+    # Basic credential for the OAuth token endpoint: the key that
+    # established the active session (api_key, or web_api_key for a
+    # browser-login session). See PORTING.md §6.2.
+    oauth_key: Callable[[], str]
     # Auxiliary host for activity-feed operations (see
     # yaylib._host_routes). The transport rewrites the request origin to
     # this for host-routed operations; everything else stays on the
@@ -280,7 +284,7 @@ class Transport:
         if _find_header(headers, "authorization") is None:
             if _is_oauth_token_path(url):
                 token = base64.b64encode(
-                    ctx.api_key.encode("utf-8")
+                    ctx.oauth_key().encode("utf-8")
                 ).decode("ascii")
                 headers["Authorization"] = f"Basic {token}"
             else:

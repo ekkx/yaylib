@@ -41,6 +41,10 @@ pub(crate) struct SharedState {
     pub(crate) current_email: String,
     pub(crate) device_uuid: String,
     pub(crate) client_ip: String,
+    /// API key that established the active session, used as the Basic
+    /// credential for OAuth token refresh. Empty means "use api_key";
+    /// becomes web_api_key for a browser-login session (§6.2).
+    pub(crate) oauth_key: String,
     /// Reserved for lazy IP fetch (not yet implemented).
     #[allow(dead_code)]
     pub(crate) client_ip_fetching: bool,
@@ -216,6 +220,7 @@ impl ClientBuilder {
             current_email: String::new(),
             device_uuid: self.device_uuid.unwrap_or_else(new_uuid_v4),
             client_ip: self.client_ip.unwrap_or_default(),
+            oauth_key: String::new(),
             client_ip_fetching: false,
         }));
 
@@ -346,6 +351,34 @@ impl Client {
         let mut state = self.state.write().unwrap_or_else(|e| e.into_inner());
         state.access_token = access.to_string();
         state.refresh_token = refresh.to_string();
+    }
+
+    /// Records the key that established the session (see SharedState.oauth_key).
+    /// Passing "" resets to the default (api_key).
+    pub(crate) fn set_oauth_key(&self, key: &str) {
+        self.state.write().unwrap_or_else(|e| e.into_inner()).oauth_key = key.to_string();
+    }
+
+    /// Basic credential for OAuth token refresh: the session's oauth_key,
+    /// or api_key when none was recorded.
+    pub(crate) fn oauth_key_snapshot(&self) -> String {
+        let k = self.state.read().unwrap_or_else(|e| e.into_inner()).oauth_key.clone();
+        if k.is_empty() {
+            self.config.api_key.clone()
+        } else {
+            k
+        }
+    }
+
+    /// Value to persist in Session.oauth_key: empty for a default (app)
+    /// session, the actual key for a web / caller-pinned session.
+    pub(crate) fn session_oauth_key(&self) -> String {
+        let k = self.oauth_key_snapshot();
+        if k == self.config.api_key {
+            String::new()
+        } else {
+            k
+        }
     }
 
     pub fn user_id(&self) -> i64 {
@@ -491,6 +524,9 @@ impl Client {
                     self.set_device_uuid(session.device_uuid);
                 }
                 self.set_login_identity(email, session.user_id);
+                // Restore which key refreshes this session (empty → app key)
+                // so a cached web session refreshes with the web key.
+                self.set_oauth_key(&session.oauth_key);
                 Ok(Some(LoginResponse {
                     user_id: session.user_id,
                     access_token: session.access_token,

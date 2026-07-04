@@ -180,6 +180,10 @@ export class Client {
   private _tokens: Tokens = emptyTokens();
   private _userID = 0;
   private _currentEmail = "";
+  // API key that established the active session, used as the Basic
+  // credential for OAuth token refresh. Empty means "use apiKey"; becomes
+  // webApiKey for a browser-login session (§6.2). Signing is unaffected.
+  private _oauthKey = "";
   private _clientIP = "";
   private _clientIPFetching = false;
   // Single-flight refresh tracking — concurrent 401s collapse onto one
@@ -277,6 +281,7 @@ export class Client {
           apiKey: this.apiKey,
           clientIP: () => this._clientIP,
           accessToken: () => this._tokens.access,
+          oauthKey: () => this._oauthKeySnapshot(),
         }),
         buildAuthRefreshMiddleware({
           refresh: (stale) => this._tryRefresh(stale),
@@ -349,6 +354,26 @@ export class Client {
   setLoginIdentity(email: string, userID: number): void {
     this._currentEmail = email;
     this._userID = userID;
+  }
+
+  /**
+   * Internal — records the key that established the session (see _oauthKey).
+   * Passing "" resets to the default (apiKey).
+   */
+  setOAuthKey(key: string): void {
+    this._oauthKey = key;
+  }
+
+  /** Basic credential for OAuth token refresh: the session's key or apiKey. */
+  private _oauthKeySnapshot(): string {
+    return this._oauthKey || this.apiKey;
+  }
+
+  /** Value to persist in Session.oauthKey: undefined for a default (app)
+   *  session so its file stays unchanged, the key for a web/pinned one. */
+  private _sessionOAuthKey(): string | undefined {
+    const k = this._oauthKeySnapshot();
+    return k !== this.apiKey ? k : undefined;
   }
 
   /** Internal — used by auth.ts when LoadSession restores a persisted UUID. */
@@ -700,7 +725,10 @@ export class Client {
       res = await fetchImpl(`${this.baseURL}/api/v1/oauth/token`, {
         method: "POST",
         headers: {
-          Authorization: `Basic ${btoa(this.apiKey)}`,
+          // The key that established this session (app key, or web key
+          // for a browser-login session) — refreshing a web session with
+          // the app key would 401.
+          Authorization: `Basic ${btoa(this._oauthKeySnapshot())}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: form.toString(),
@@ -766,6 +794,7 @@ export class Client {
         accessToken: this._tokens.access,
         refreshToken: this._tokens.refresh,
         deviceUUID: this._deviceUUID,
+        oauthKey: this._sessionOAuthKey(),
         updatedAt: new Date().toISOString(),
       };
       try {
