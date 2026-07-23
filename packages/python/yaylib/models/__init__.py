@@ -6,7 +6,7 @@
 
     No description provided
 
-    Schema version: 4.26.1
+    Schema version: 4.26.5
     Code generated; DO NOT EDIT
 
     Do not edit the class manually.
@@ -210,7 +210,6 @@ from yaylib.models.invitation_code_response import InvitationCodeResponse
 from yaylib.models.invited_user_dto import InvitedUserDTO
 from yaylib.models.invited_user_details_dto import InvitedUserDetailsDTO
 from yaylib.models.item import Item
-from yaylib.models.j0_a import J0A
 from yaylib.models.js_event import JSEvent
 from yaylib.models.joinable_by import JoinableBy
 from yaylib.models.last_status_screen_user_rank import LastStatusScreenUserRank

@@ -53,6 +53,16 @@ export async function loginWithEmail(
   });
 }
 
+// LoginBody is the resolved login request (apiKey / uuid filled in),
+// shared by the web and app login helpers.
+interface LoginBody {
+  email: string;
+  password: string;
+  apiKey: string;
+  uuid: string;
+  twoFACode?: string;
+}
+
 async function executeLogin(
   client: Client,
   params: LoginParams,
@@ -61,12 +71,13 @@ async function executeLogin(
     throw new Error("yaylib: loginWithEmail requires email and password");
   }
 
-  // Cache lookup — only when a session store is configured and the
-  // caller has not opted out via .noCache().
-  if (client.sessionStore && !params.bypassCache) {
+  // Cache lookup — only when a session store is configured and the caller
+  // has not opted out via .noCache(). loadSession fully activates the
+  // session (tokens, device UUID, OAuth key, identity), matching the Go
+  // maybeRestore path.
+  if (client.sessionStore && !params.bypassCache && params.email) {
     try {
-      const cached = await client.sessionStore.load(params.email);
-      activateCachedSession(client, cached);
+      const cached = await client.loadSession(params.email);
       return synthesizeLoginResponse(cached);
     } catch (err) {
       // NoSessionError → cache miss, fall through to HTTP login. Other
@@ -79,54 +90,15 @@ async function executeLogin(
   }
 
   // Fresh HTTP login. APIKey / Uuid auto-fill matches the Go reference.
-  const loginKey = params.apiKey ?? client.apiKey;
-  const body = {
+  const body: LoginBody = {
     email: params.email,
     password: params.password,
-    apiKey: loginKey,
+    apiKey: params.apiKey ?? client.apiKey,
     uuid: params.uuid ?? client.deviceUUID,
     twoFACode: params.twoFACode,
   };
-  // The key that establishes the session also refreshes its tokens; the
-  // fallback switches it to webApiKey below.
-  let oauthKey = loginKey;
 
-  let resp: LoginUserResponse;
-  try {
-    resp = await client.usersAPI.loginWithEmail({ loginEmailUserRequest: body });
-  } catch (err) {
-    const apiErr = await asAPIError(err);
-    // Fallback (PORTING.md §6.2): a plain "unauthorized" retries against
-    // the browser login endpoint with webApiKey. Skipped for other 401s —
-    // notably Required2FA (the caller must supply a code, not switch
-    // keys) — when the caller pinned a specific apiKey, or when webApiKey
-    // is empty (the off switch).
-    const callerPinned =
-      params.apiKey !== undefined && params.apiKey !== client.apiKey;
-    if (
-      client.webApiKey &&
-      !callerPinned &&
-      codeOf(apiErr) === ErrCodeUnauthorized
-    ) {
-      const fallback = await client.loginWithEmailWeb({
-        email: params.email,
-        password: params.password,
-        uuid: body.uuid,
-        twoFACode: params.twoFACode,
-      });
-      if (!fallback) throw apiErr; // fallback itself rejected → surface primary
-      client.logger.debug("web login fallback ok", {
-        event: "login_fallback",
-        outcome: "ok",
-      });
-      resp = fallback;
-      // This session was established with the web key, so its token
-      // refresh must use it too.
-      oauthKey = client.webApiKey;
-    } else {
-      throw apiErr;
-    }
-  }
+  const { resp, oauthKey } = await doFreshLogin(client, body);
 
   // Activate tokens / identity on the client.
   const access = resp.accessToken ?? "";
@@ -160,15 +132,83 @@ async function executeLogin(
   return resp;
 }
 
-function activateCachedSession(client: Client, session: Session): void {
-  client.setTokens(session.accessToken, session.refreshToken);
-  if (session.deviceUUID) {
-    client.setDeviceUUID(session.deviceUUID);
+// doFreshLogin performs a fresh (non-cached) email login and reports which
+// key established the session — the Basic credential later token refreshes
+// must use (PORTING.md §6.2). Web-first: the browser login is primary; the
+// app login is the fallback, the sole path when the browser endpoint is
+// switched off (webApiKey === "") or the caller pinned a specific apiKey,
+// and never silently replaced by webApiKey. Mirrors Go doFreshLogin.
+async function doFreshLogin(
+  client: Client,
+  body: LoginBody,
+): Promise<{ resp: LoginUserResponse; oauthKey: string }> {
+  // A caller-pinned api_key (resolved key differs from the client default)
+  // means "use the app login with exactly this key"; skip the browser path
+  // so we never authenticate under webApiKey instead.
+  const callerPinnedKey = body.apiKey !== client.apiKey;
+
+  if (!client.webApiKey || callerPinnedKey) {
+    const resp = await loginWithEmailApp(client, body);
+    return { resp, oauthKey: body.apiKey };
   }
-  // Restore which key refreshes this session (empty → app key) so a cached
-  // web session refreshes with the web key after a restart.
-  client.setOAuthKey(session.oauthKey ?? "");
-  client.setLoginIdentity(session.email, session.userID);
+
+  // Primary: browser login with the web key.
+  let webErr: APIError;
+  try {
+    const resp = await client.loginWithEmailWeb({
+      email: body.email,
+      password: body.password,
+      uuid: body.uuid,
+      twoFACode: body.twoFACode,
+    });
+    return { resp, oauthKey: client.webApiKey };
+  } catch (err) {
+    webErr = await asAPIError(err);
+  }
+
+  // Fall back to the app login ONLY on a plain unauthorized. Any other
+  // typed rejection surfaces unchanged — notably Required2FA (the caller
+  // must supply a code, not switch endpoints), and a 2xx that failed to
+  // decode (a genuine login result whose raw body rides on the error, §15),
+  // which is not Unauthorized.
+  if (codeOf(webErr) !== ErrCodeUnauthorized) {
+    throw webErr;
+  }
+  client.logger.debug("app login fallback", {
+    event: "login_fallback",
+    outcome: "attempt",
+  });
+  try {
+    const resp = await loginWithEmailApp(client, body);
+    client.logger.debug("app login fallback ok", {
+      event: "login_fallback",
+      outcome: "ok",
+    });
+    return { resp, oauthKey: body.apiKey };
+  } catch {
+    client.logger.debug("app login fallback failed", {
+      event: "login_fallback",
+      outcome: "failed",
+    });
+    // Both paths failed: surface the primary (web) error, which carries the
+    // parsed error code and raw body.
+    throw webErr;
+  }
+}
+
+// loginWithEmailApp issues the app login through the wrapped generated
+// client (header injection, retry, host routing), converting the thrown
+// generated error into our stable APIError so codeOf / errorResponseOf
+// work on it uniformly.
+async function loginWithEmailApp(
+  client: Client,
+  body: LoginBody,
+): Promise<LoginUserResponse> {
+  try {
+    return await client.usersAPI.loginWithEmail({ loginEmailUserRequest: body });
+  } catch (err) {
+    throw await asAPIError(err);
+  }
 }
 
 // Synthesize a LoginUserResponse from a cached Session so callers can

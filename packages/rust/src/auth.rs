@@ -119,14 +119,11 @@ impl<'a> LoginWithEmailRequest<'a> {
         }
 
         // Whether the caller pinned a specific api_key (vs. the client
-        // default). A pinned key opts out of the browser-login fallback.
+        // default). A pinned key opts out of the web-first path and logs in
+        // through the app endpoint with exactly that key.
         let caller_pinned = api_key.as_str() != self.client.api_key();
 
-        // The key that establishes the session also refreshes its tokens;
-        // the fallback switches it to web_api_key below.
-        let mut oauth_key = api_key.clone();
-
-        // Build and execute the HTTP login request.
+        // Build the login request body.
         let body = LoginEmailUserRequestBody {
             email: email.clone(),
             password: self.password.unwrap_or_default(),
@@ -135,40 +132,10 @@ impl<'a> LoginWithEmailRequest<'a> {
             two_fa_code: self.two_fa_code,
         };
 
-        let resp = match self.client.do_login_with_email(body.clone()).await {
-            Ok(resp) => resp,
-            Err(e) => {
-                // Fallback (PORTING.md §6.2): a plain "unauthorized"
-                // retries against the browser login endpoint with
-                // web_api_key. Skipped for other 401s — notably
-                // Required2FA (the caller must supply a code, not switch
-                // keys) — when the caller pinned a specific api_key, or
-                // when web_api_key is empty (the off switch).
-                if !self.client.web_api_key().is_empty()
-                    && !caller_pinned
-                    && crate::errors::code_of(&e)
-                        == crate::error_codes::ErrorCode::Unauthorized
-                {
-                    match self.client.do_login_with_email_web(&body).await {
-                        Ok(Some(resp)) => {
-                            tracing::debug!(
-                                event = "login_fallback",
-                                outcome = "ok"
-                            );
-                            // Established with the web key → refresh with it.
-                            oauth_key = self.client.web_api_key().to_string();
-                            resp
-                        }
-                        // Fallback rejected → surface the primary error.
-                        Ok(None) => return Err(e),
-                        // 2xx decode failure → surface the web error.
-                        Err(we) => return Err(we),
-                    }
-                } else {
-                    return Err(e);
-                }
-            }
-        };
+        // Web-first fresh login (PORTING.md §6.2). do_fresh_login runs the
+        // browser endpoint as primary and the app endpoint as fallback,
+        // reporting which key established the session so token refresh uses it.
+        let (resp, oauth_key) = self.client.do_fresh_login(body, caller_pinned).await?;
 
         // Activate tokens immediately so follow-up requests work even if
         // session persistence fails below.
@@ -225,44 +192,51 @@ pub struct LoginResponse {
     pub refresh_token: String,
 }
 
-// Browser-login fallback (PORTING.md §6.2).
+// Web-first login (PORTING.md §6.2): the browser endpoint is primary, the
+// app endpoint is the fallback.
 #[cfg(test)]
-mod fallback_tests {
+mod web_first_tests {
+    use std::sync::Arc;
+
     use crate::client::Client;
     use crate::error_codes::ErrorCode;
-    use crate::errors::code_of;
+    use crate::errors::{code_of, error_response_of, ApiError};
+    use crate::session::{MemorySessionStore, Session, SessionStore};
     use wiremock::matchers::{body_string_contains, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
-    const WEB_KEY: &str =
-        "e9f1ae4c4470f29a92c0168dc42b13637cc332692103f23e626bc2b016f66603";
+    const WEB_KEY: &str = crate::config::DEFAULT_WEB_API_KEY;
     const APP_KEY: &str = crate::config::DEFAULT_API_KEY;
 
-    fn reject_401(code: i32) -> ResponseTemplate {
+    fn reject(code: i32) -> ResponseTemplate {
         ResponseTemplate::new(401).set_body_string(format!(
             r#"{{"result":"error","message":"unauthorized","error_code":{code}}}"#
         ))
     }
 
-    async fn mock_v3_reject(server: &MockServer, code: i32) {
-        Mock::given(method("POST"))
-            .and(path("/v3/users/login_with_email"))
-            .respond_with(reject_401(code))
-            .mount(server)
-            .await;
-    }
-
-    #[tokio::test]
-    async fn falls_back_to_web_on_401() {
-        let server = MockServer::start().await;
-        mock_v3_reject(&server, 401).await;
-        // Matching on the web key asserts the fallback carried it.
+    // Browser (v2) login succeeds, returning a distinct user_id/tokens.
+    async fn mount_web_ok(server: &MockServer) {
         Mock::given(method("POST"))
             .and(path("/v2/users/login_with_email"))
             .and(body_string_contains(WEB_KEY))
             .respond_with(ResponseTemplate::new(200).set_body_string(
                 r#"{"access_token":"WEBACC","refresh_token":"WEBREF","user_id":7777}"#,
             ))
+            .mount(server)
+            .await;
+    }
+
+    // The browser endpoint is primary: it succeeds directly and the app (v3)
+    // endpoint is never touched.
+    #[tokio::test]
+    async fn web_primary_succeeds() {
+        let server = MockServer::start().await;
+        mount_web_ok(&server).await;
+        // The v3 endpoint must never be hit.
+        Mock::given(method("POST"))
+            .and(path("/v3/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(200).set_body_string("{}"))
+            .expect(0)
             .mount(&server)
             .await;
 
@@ -273,19 +247,129 @@ mod fallback_tests {
             .password("pw")
             .execute()
             .await
-            .expect("fallback login should succeed");
-        assert_eq!(resp.user_id, 7777);
-        assert_eq!(resp.access_token, "WEBACC");
+            .expect("web primary login should succeed");
+        assert_eq!(resp.user_id, 7777, "want the web response");
         assert_eq!(client.tokens().access, "WEBACC");
+        assert_eq!(client.tokens().refresh, "WEBREF");
+        assert_eq!(
+            client.oauth_key_snapshot(),
+            WEB_KEY,
+            "session must track the web key"
+        );
     }
 
+    // A primary web 401 falls back to the app (v3) endpoint under the app key;
+    // the session then tracks the app key for refresh. Both endpoints are hit.
     #[tokio::test]
-    async fn no_fallback_on_2fa() {
+    async fn falls_back_to_app_on_401() {
         let server = MockServer::start().await;
-        mock_v3_reject(&server, ErrorCode::Required2FA as i32).await;
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .respond_with(reject(401))
+            .expect(1)
+            .mount(&server)
+            .await;
+        Mock::given(method("POST"))
+            .and(path("/v3/users/login_with_email"))
+            .and(body_string_contains(APP_KEY))
+            .respond_with(ResponseTemplate::new(200).set_body_string(
+                r#"{"access_token":"APPACC","refresh_token":"APPREF","user_id":4242}"#,
+            ))
+            .expect(1)
+            .mount(&server)
+            .await;
+
+        let client = Client::builder().base_url(server.uri()).build();
+        let resp = client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect("app fallback should succeed");
+        assert_eq!(resp.user_id, 4242, "want the app response");
+        assert_eq!(client.tokens().access, "APPACC");
+        assert_eq!(
+            client.oauth_key_snapshot(),
+            APP_KEY,
+            "session must track the app key after fallback"
+        );
+    }
+
+    // With the web path switched off (web_api_key==""), login goes straight to
+    // the app endpoint and no v2 request is attempted; an app 401 surfaces.
+    #[tokio::test]
+    async fn web_disabled_uses_app_only() {
+        let server = MockServer::start().await;
         // The v2 endpoint must never be hit.
         Mock::given(method("POST"))
             .and(path("/v2/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(200).set_body_string("{}"))
+            .expect(0)
+            .mount(&server)
+            .await;
+        Mock::given(method("POST"))
+            .and(path("/v3/users/login_with_email"))
+            .respond_with(reject(401))
+            .mount(&server)
+            .await;
+
+        let client = Client::builder()
+            .base_url(server.uri())
+            .web_api_key("")
+            .build();
+        let err = client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect_err("app 401 must surface when web is disabled");
+        assert_eq!(code_of(&err), ErrorCode::Unauthorized);
+        assert_eq!(client.tokens().access, "", "tokens must stay empty");
+    }
+
+    // When both the primary web login and the app fallback fail, the primary
+    // (web) 401 is surfaced.
+    #[tokio::test]
+    async fn both_fail_surfaces_web_401() {
+        let server = MockServer::start().await;
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .respond_with(reject(401))
+            .mount(&server)
+            .await;
+        Mock::given(method("POST"))
+            .and(path("/v3/users/login_with_email"))
+            .respond_with(reject(401))
+            .mount(&server)
+            .await;
+
+        let client = Client::builder().base_url(server.uri()).build();
+        let err = client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect_err("both logins failing must surface an error");
+        assert_eq!(code_of(&err), ErrorCode::Unauthorized);
+        assert_eq!(client.tokens().access, "");
+    }
+
+    // A 2FA-required rejection is also HTTP 401 but carries Required2FA; the
+    // app fallback must NOT fire (the caller supplies a code, not a different
+    // endpoint), so the web login's 2FA surfaces and v3 is never called.
+    #[tokio::test]
+    async fn no_fallback_on_2fa() {
+        let server = MockServer::start().await;
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .respond_with(reject(ErrorCode::Required2FA as i32))
+            .mount(&server)
+            .await;
+        Mock::given(method("POST"))
+            .and(path("/v3/users/login_with_email"))
             .respond_with(ResponseTemplate::new(200).set_body_string("{}"))
             .expect(0)
             .mount(&server)
@@ -303,14 +387,26 @@ mod fallback_tests {
         assert_eq!(client.tokens().access, "");
     }
 
+    // When the caller pins a specific api_key via .api_key(), the web-first
+    // path is skipped (it would otherwise authenticate under web_api_key), so
+    // login goes straight to the app endpoint under the pinned key and v2 is
+    // never called.
     #[tokio::test]
     async fn no_fallback_when_api_key_pinned() {
         let server = MockServer::start().await;
-        mock_v3_reject(&server, 401).await;
+        // The v2 endpoint must never be hit.
         Mock::given(method("POST"))
             .and(path("/v2/users/login_with_email"))
             .respond_with(ResponseTemplate::new(200).set_body_string("{}"))
             .expect(0)
+            .mount(&server)
+            .await;
+        // The app endpoint sees exactly the caller-pinned key.
+        Mock::given(method("POST"))
+            .and(path("/v3/users/login_with_email"))
+            .and(body_string_contains("caller-pinned-key"))
+            .respond_with(reject(401))
+            .expect(1)
             .mount(&server)
             .await;
 
@@ -322,44 +418,26 @@ mod fallback_tests {
             .api_key("caller-pinned-key")
             .execute()
             .await
-            .expect_err("pinned api_key must not fall back");
+            .expect_err("pinned api_key must not fall back to web");
         assert_eq!(code_of(&err), ErrorCode::Unauthorized);
     }
 
+    // A primary web response that is 2xx but undecodable is a genuine login
+    // result: its raw body rides on a typed APIError. Since it is not
+    // Unauthorized the app fallback does not fire.
     #[tokio::test]
-    async fn fallback_disabled_surfaces_401() {
+    async fn web_2xx_decode_failure_surfaced() {
         let server = MockServer::start().await;
-        mock_v3_reject(&server, 401).await;
         Mock::given(method("POST"))
             .and(path("/v2/users/login_with_email"))
-            .respond_with(ResponseTemplate::new(200).set_body_string("{}"))
-            .expect(0)
+            .respond_with(ResponseTemplate::new(200).set_body_string("{ this is not valid json"))
             .mount(&server)
             .await;
-
-        let client = Client::builder()
-            .base_url(server.uri())
-            .web_api_key("")
-            .build();
-        let err = client
-            .login_with_email()
-            .email("u@example.com")
-            .password("pw")
-            .execute()
-            .await
-            .expect_err("disabled fallback must surface the primary 401");
-        assert_eq!(code_of(&err), ErrorCode::Unauthorized);
-    }
-
-    #[tokio::test]
-    async fn web_decode_failure_surfaced() {
-        let server = MockServer::start().await;
-        mock_v3_reject(&server, 401).await;
+        // No app fallback on a 2xx decode failure.
         Mock::given(method("POST"))
-            .and(path("/v2/users/login_with_email"))
-            .respond_with(
-                ResponseTemplate::new(200).set_body_string("{ this is not valid json"),
-            )
+            .and(path("/v3/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(200).set_body_string("{}"))
+            .expect(0)
             .mount(&server)
             .await;
 
@@ -371,12 +449,94 @@ mod fallback_tests {
             .execute()
             .await
             .expect_err("a 2xx decode failure should surface as an error");
-        // Not masked as the primary auth rejection.
+        // Not masked as an auth rejection.
         assert_ne!(code_of(&err), ErrorCode::Unauthorized);
+        // Typed APIError carrying the raw web body.
+        match &err {
+            ApiError::Response { status, body, .. } => {
+                assert_eq!(*status, 200, "want the 2xx web response surfaced");
+                assert!(
+                    String::from_utf8_lossy(body).contains("not valid json"),
+                    "raw web body must be attached, got {:?}",
+                    String::from_utf8_lossy(body)
+                );
+            }
+            other => panic!("want a typed ApiError::Response, got {other:?}"),
+        }
         assert_eq!(client.tokens().access, "");
     }
 
-    // --- OAuth refresh uses the session's key (PORTING.md §6.2) --------------
+    // A primary web login rejected with a NON-Unauthorized typed error (a
+    // temporary ban carrying ban_until) surfaces directly — no app fallback
+    // (it is not Unauthorized), and error_response_of / matching read the
+    // parsed fields and raw body.
+    #[tokio::test]
+    async fn web_primary_typed_error_surfaced() {
+        let server = MockServer::start().await;
+        Mock::given(method("POST"))
+            .and(path("/v2/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(403).set_body_string(format!(
+                r#"{{"result":"error","message":"temporarily banned","error_code":{},"ban_until":1893456000}}"#,
+                ErrorCode::UserTemporaryBanned as i32
+            )))
+            .mount(&server)
+            .await;
+        Mock::given(method("POST"))
+            .and(path("/v3/users/login_with_email"))
+            .respond_with(ResponseTemplate::new(200).set_body_string("{}"))
+            .expect(0)
+            .mount(&server)
+            .await;
+
+        let client = Client::builder().base_url(server.uri()).build();
+        let err = client
+            .login_with_email()
+            .email("u@example.com")
+            .password("pw")
+            .execute()
+            .await
+            .expect_err("the web ban error must surface");
+        assert_eq!(code_of(&err), ErrorCode::UserTemporaryBanned);
+        let parsed = error_response_of(&err).expect("ban error must parse an error response");
+        assert_eq!(
+            parsed.ban_until,
+            Some(1893456000),
+            "error_response_of must read ban_until from the web error"
+        );
+        match &err {
+            ApiError::Response { body, .. } => assert!(
+                String::from_utf8_lossy(body).contains("temporarily banned"),
+                "raw web body must be accessible"
+            ),
+            other => panic!("want a typed ApiError::Response, got {other:?}"),
+        }
+    }
+
+    // signed_info is keyed on api_key, NOT the session's OAuth key. Under
+    // web-first a web session (oauth key = web_api_key) is the common case, so
+    // this app-key/OAuth-key split must hold: setting the OAuth key to the web
+    // key must not change the signature.
+    #[test]
+    fn signed_info_ignores_oauth_key() {
+        let reference = Client::builder()
+            .api_key("app-key")
+            .device_uuid("uuid-shared")
+            .build();
+
+        let web = Client::builder()
+            .api_key("app-key")
+            .device_uuid("uuid-shared")
+            .build();
+        web.set_oauth_key("web-key"); // establish a web session
+
+        assert_eq!(
+            web.generate_signed_info_at(1700000000).value,
+            reference.generate_signed_info_at(1700000000).value,
+            "signed_info must stay on api_key, not the OAuth key"
+        );
+    }
+
+    // --- OAuth refresh uses the session's establishing key (PORTING.md §6.2)
 
     // Mount the timestamp endpoint to 401 once (triggering a refresh) then
     // 200, and the oauth endpoint to accept ONLY the given Basic key — so a
@@ -408,10 +568,10 @@ mod fallback_tests {
             .await;
     }
 
+    // A web session refreshes its tokens with the web key (Basic).
     #[tokio::test]
     async fn web_session_refreshes_with_web_key() {
         let server = MockServer::start().await;
-        mock_v3_reject(&server, 401).await;
         Mock::given(method("POST"))
             .and(path("/v2/users/login_with_email"))
             .respond_with(ResponseTemplate::new(200).set_body_string(
@@ -430,8 +590,8 @@ mod fallback_tests {
             .await
             .expect("web login");
         assert_eq!(client.oauth_key_snapshot(), WEB_KEY);
-        // 401 on the timestamp GET triggers a refresh; it succeeds only if
-        // the oauth request carried the web key.
+        // 401 on the timestamp GET triggers a refresh; it succeeds only if the
+        // oauth request carried the web key.
         let ts = client
             .get_user_timestamp()
             .await
@@ -439,6 +599,9 @@ mod fallback_tests {
         assert_eq!(ts.time.flatten().unwrap_or(0), 1700000000);
     }
 
+    // An app login (reached by disabling the web-first path with
+    // web_api_key("")) refreshes with the app key, and does not persist an
+    // oauth_key (app sessions stay byte-identical on disk).
     #[tokio::test]
     async fn app_session_refreshes_with_app_key() {
         let server = MockServer::start().await;
@@ -451,7 +614,12 @@ mod fallback_tests {
             .await;
         mock_refresh_flow(&server, APP_KEY).await;
 
-        let client = Client::builder().base_url(server.uri()).build();
+        let store = Arc::new(MemorySessionStore::new());
+        let client = Client::builder()
+            .base_url(server.uri())
+            .session_store_arc(store.clone())
+            .web_api_key("")
+            .build();
         client
             .login_with_email()
             .email("u@example.com")
@@ -460,6 +628,10 @@ mod fallback_tests {
             .await
             .expect("app login");
         assert_eq!(client.oauth_key_snapshot(), APP_KEY);
+        // App sessions omit oauth_key on disk.
+        let sess = store.load("u@example.com").await.expect("session persisted");
+        assert_eq!(sess.oauth_key, "", "app session must persist an empty oauth_key");
+
         let ts = client
             .get_user_timestamp()
             .await
@@ -467,11 +639,12 @@ mod fallback_tests {
         assert_eq!(ts.time.flatten().unwrap_or(0), 1700000000);
     }
 
+    // A cached web session, restored on a fresh client via the cached-login
+    // path, still refreshes with the web key — the oauth_key round-trips
+    // through the session store.
     #[tokio::test]
     async fn restored_web_session_tracks_web_key() {
-        use std::sync::Arc;
         let server = MockServer::start().await;
-        mock_v3_reject(&server, 401).await;
         Mock::given(method("POST"))
             .and(path("/v2/users/login_with_email"))
             .respond_with(ResponseTemplate::new(200).set_body_string(
@@ -480,7 +653,7 @@ mod fallback_tests {
             .mount(&server)
             .await;
 
-        let store = Arc::new(crate::session::MemorySessionStore::new());
+        let store = Arc::new(MemorySessionStore::new());
         let c1 = Client::builder()
             .base_url(server.uri())
             .session_store_arc(store.clone())
@@ -491,8 +664,11 @@ mod fallback_tests {
             .execute()
             .await
             .expect("web login");
+        let persisted = store.load("u@example.com").await.expect("persisted");
+        assert_eq!(persisted.oauth_key, WEB_KEY, "web key must round-trip on disk");
 
-        // A fresh client restores the cached web session and tracks the key.
+        // A fresh client restores the cached web session (cache hit) and
+        // tracks the key.
         let c2 = Client::builder()
             .base_url(server.uri())
             .session_store_arc(store)
@@ -504,5 +680,114 @@ mod fallback_tests {
             .await
             .expect("restore login");
         assert_eq!(c2.oauth_key_snapshot(), WEB_KEY);
+    }
+
+    // A web session restored directly with the PUBLIC load_session (not the
+    // cached-login path) must also refresh with the web key. This is the
+    // regression the oauth_key restore fixes: load_session used to apply
+    // tokens, device UUID, and identity but not the establishing key, so a web
+    // session loaded straight from disk refreshed with the app key and 401'd.
+    #[tokio::test]
+    async fn load_session_restores_web_oauth_key() {
+        let server = MockServer::start().await;
+        mock_refresh_flow(&server, WEB_KEY).await;
+
+        // A web session persisted to the store (oauth_key == web key).
+        let store = Arc::new(MemorySessionStore::new());
+        store
+            .save(&Session {
+                email: "u@example.com".into(),
+                user_id: 1,
+                access_token: "A1".into(),
+                refresh_token: "R1".into(),
+                device_uuid: String::new(),
+                oauth_key: WEB_KEY.into(),
+                updated_at: chrono::Utc::now(),
+            })
+            .await
+            .expect("seed session");
+
+        let client = Client::builder()
+            .base_url(server.uri())
+            .session_store_arc(store)
+            .build();
+        client
+            .load_session("u@example.com")
+            .await
+            .expect("load_session");
+        assert_eq!(
+            client.oauth_key_snapshot(),
+            WEB_KEY,
+            "load_session must restore the web key"
+        );
+        // A refresh (triggered by the 401 timestamp) must carry the web key.
+        let ts = client
+            .get_user_timestamp()
+            .await
+            .expect("timestamp after web-key refresh via load_session");
+        assert_eq!(ts.time.flatten().unwrap_or(0), 1700000000);
+        assert_eq!(client.tokens().access, "A2");
+    }
+
+    // App sessions carry an empty oauth_key; load_session must leave refresh on
+    // the app key (empty → app-key default).
+    #[tokio::test]
+    async fn load_session_app_session_keeps_app_key() {
+        let store = Arc::new(MemorySessionStore::new());
+        store
+            .save(&Session {
+                email: "u@example.com".into(),
+                user_id: 1,
+                access_token: "A1".into(),
+                refresh_token: "R1".into(),
+                device_uuid: String::new(),
+                oauth_key: String::new(), // an app session
+                updated_at: chrono::Utc::now(),
+            })
+            .await
+            .expect("seed session");
+
+        let client = Client::builder().session_store_arc(store).build();
+        client
+            .load_session("u@example.com")
+            .await
+            .expect("load_session");
+        assert_eq!(client.oauth_key_snapshot(), APP_KEY);
+    }
+
+    // A web session injected directly via save_session (not through login) also
+    // activates its establishing key, so its refresh uses the web key. Mirrors
+    // load_session — save_session is a full activation, not just a write.
+    #[tokio::test]
+    async fn save_session_activates_web_oauth_key() {
+        let server = MockServer::start().await;
+        mock_refresh_flow(&server, WEB_KEY).await;
+
+        let client = Client::builder()
+            .base_url(server.uri())
+            .session_store_arc(Arc::new(MemorySessionStore::new()))
+            .build();
+        client
+            .save_session(&mut Session {
+                email: "u@example.com".into(),
+                user_id: 1,
+                access_token: "A1".into(),
+                refresh_token: "R1".into(),
+                device_uuid: String::new(),
+                oauth_key: WEB_KEY.into(),
+                updated_at: chrono::Utc::now(),
+            })
+            .await
+            .expect("save_session");
+        assert_eq!(
+            client.oauth_key_snapshot(),
+            WEB_KEY,
+            "save_session must activate the web key"
+        );
+        let ts = client
+            .get_user_timestamp()
+            .await
+            .expect("timestamp after web-key refresh via save_session");
+        assert_eq!(ts.time.flatten().unwrap_or(0), 1700000000);
     }
 }

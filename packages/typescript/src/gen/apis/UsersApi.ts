@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -124,7 +124,7 @@ export interface BlockUserRequest {
 export interface ChangeEmailRequest {
     apiKey?: string;
     email?: string;
-    emailGrantToken?: string | null;
+    emailGrantToken?: string;
     password?: string;
 }
 
@@ -168,16 +168,16 @@ export interface DisableTwoFactorAuthRequest {
 
 export interface EditUserRequest {
     apiKey?: string;
-    biography?: string | null;
-    countryCode?: string | null;
-    coverImageFilename?: string | null;
-    gender?: number | null;
+    biography?: string;
+    countryCode?: string;
+    coverImageFilename?: string;
+    gender?: number;
     nickname?: string;
-    prefecture?: string | null;
-    profileIconFilename?: string | null;
+    prefecture?: string;
+    profileIconFilename?: string;
     signedInfo?: string;
     timestamp?: number;
-    username?: string | null;
+    username?: string;
     uuid?: string;
 }
 
@@ -205,38 +205,38 @@ export interface FollowUsersRequest {
 
 export interface GetActiveFollowingsRequest {
     onlyOnline?: boolean;
-    fromLoggedinAt?: number | null;
+    fromLoggedinAt?: number;
 }
 
 export interface GetBlockedUsersRequest {
     searchUsersRequest: SearchUsersRequest;
-    fromId?: number | null;
+    fromId?: number;
 }
 
 export interface GetBookmarkedPostsRequest {
     userId: number;
-    from?: string | null;
+    from?: string;
 }
 
 export interface GetChatableFollowingsRequest {
     searchUsersRequest: SearchUsersRequest;
-    fromFollowId?: number | null;
-    fromTimestamp?: number | null;
-    orderBy?: string | null;
+    fromFollowId?: number;
+    fromTimestamp?: number;
+    orderBy?: string;
 }
 
 export interface GetFollowRequestsRequest {
-    fromTimestamp?: number | null;
+    fromTimestamp?: number;
 }
 
 export interface GetFollowingsBornTodayRequest {
-    birthdate?: number | null;
+    birthdate?: number;
 }
 
 export interface GetFootprintsRequest {
-    mode?: string | null;
+    mode?: string;
     number?: number;
-    from?: string | null;
+    from?: string;
 }
 
 export interface GetFreshUserRequest {
@@ -244,18 +244,18 @@ export interface GetFreshUserRequest {
 }
 
 export interface GetHimaUsersRequest {
-    fromHimaId?: number | null;
-    number?: number | null;
+    fromHimaId?: number;
+    number?: number;
 }
 
 export interface GetMyReviewsRequest {
-    fromId?: number | null;
+    fromId?: number;
 }
 
 export interface GetRecommendedFollowUsersRequest {
     id: number;
-    number?: number | null;
-    page?: number | null;
+    number?: number;
+    page?: number;
 }
 
 export interface GetUserRequest {
@@ -268,23 +268,23 @@ export interface GetUserByQrRequest {
 
 export interface GetUserFollowersRequest {
     id: number;
-    from?: number | null;
-    followedByMe?: boolean | null;
-    userNickname?: string | null;
+    from?: number;
+    followedByMe?: boolean;
+    userNickname?: string;
 }
 
 export interface GetUserFollowingsRequest {
     id: number;
-    from?: number | null;
-    fromTimestamp?: number | null;
-    orderBy?: string | null;
-    userNickname?: string | null;
+    from?: number;
+    fromTimestamp?: number;
+    orderBy?: string;
+    userNickname?: string;
 }
 
 export interface GetUserGiftTransactionsRequest {
     userId: number;
-    number?: number | null;
-    from?: string | null;
+    number?: number;
+    from?: string;
 }
 
 export interface GetUserInfoRequest {
@@ -297,7 +297,7 @@ export interface GetUserPresignedUrlRequest {
 
 export interface GetUserReviewsRequest {
     id: number;
-    fromId?: number | null;
+    fromId?: number;
 }
 
 export interface GetUsersByIdsRequest {
@@ -317,7 +317,7 @@ export interface ReplyToReviewRequest {
     id: number;
     apiKey?: string;
     comment?: string;
-    context?: string | null;
+    context?: string;
     signedInfo?: string;
     timestamp?: number;
     uuid?: string;
@@ -326,11 +326,11 @@ export interface ReplyToReviewRequest {
 export interface ReportUserRequest {
     userId: number;
     categoryId?: number;
-    reason?: string | null;
-    screenshot2Filename?: string | null;
-    screenshot3Filename?: string | null;
-    screenshot4Filename?: string | null;
-    screenshotFilename?: string | null;
+    reason?: string;
+    screenshot2Filename?: string;
+    screenshot3Filename?: string;
+    screenshot4Filename?: string;
+    screenshotFilename?: string;
 }
 
 export interface RequestFollowRequest {
@@ -349,16 +349,16 @@ export interface ResetPasswordRequest {
 }
 
 export interface SearchUsersRequest {
-    gender?: number | null;
-    nickname?: string | null;
-    title?: string | null;
-    biography?: string | null;
-    fromTimestamp?: number | null;
-    similarAge?: boolean | null;
-    notRecentGomimushi?: boolean | null;
-    recentlyCreated?: boolean | null;
-    samePrefecture?: boolean | null;
-    saveRecentSearch?: boolean | null;
+    gender?: number;
+    nickname?: string;
+    title?: string;
+    biography?: string;
+    fromTimestamp?: number;
+    similarAge?: boolean;
+    notRecentGomimushi?: boolean;
+    recentlyCreated?: boolean;
+    samePrefecture?: boolean;
+    saveRecentSearch?: boolean;
 }
 
 export interface UnblockUserRequest {
@@ -384,10 +384,10 @@ export interface UpdateLanguageRequest {
 
 export interface UpdateLoginRequest {
     apiKey?: string;
-    currentPassword?: string | null;
+    currentPassword?: string;
     email?: string;
-    emailGrantToken?: string | null;
-    password?: string | null;
+    emailGrantToken?: string;
+    password?: string;
 }
 
 export interface UpdateUserInterestsRequest {

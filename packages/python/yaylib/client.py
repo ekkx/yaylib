@@ -13,6 +13,7 @@ import contextlib
 import json
 import logging
 import uuid as _uuid
+from dataclasses import replace as _replace
 from typing import List, Optional
 
 import yaylib.upload as _upload
@@ -285,6 +286,61 @@ class Client(GeneratedFacade):
         persisted device UUID (PORTING.md §14)."""
         self._device_uuid = uuid
         self._transport._ctx.device_uuid = uuid
+
+    # ---- session activation / persistence (PORTING.md §5 / §6.2) ----
+
+    def _apply_session(self, session: Session) -> None:
+        """Activate a session on the client: tokens, device UUID, login
+        identity, and the establishing OAuth key. This is the single
+        activation path shared by the cached-login flow and the public
+        load_session / save_session, so restoring the OAuth key can never
+        diverge between them (PORTING.md §6.2 — a web session restored
+        straight from disk must refresh with the web key). Restoring the
+        persisted device UUID keeps device identity continuous across
+        restarts; an empty oauth_key resets refresh to the app-key
+        default.
+        """
+        self.set_tokens(session.access_token, session.refresh_token)
+        if session.device_uuid:
+            self.set_device_uuid(session.device_uuid)
+        self.set_login_identity(session.email, session.user_id)
+        self.set_oauth_key(session.oauth_key)
+
+    async def load_session(self, email: str) -> Session:
+        """Load the cached session for ``email`` and fully activate it on
+        the client — tokens, device UUID, user id, email binding, AND the
+        establishing OAuth key — so subsequent calls behave exactly as if
+        login_with_email had just succeeded (PORTING.md §6.2). Raises
+        NoSessionError when nothing is cached; raises when no session
+        store is configured.
+        """
+        if self.session_store is None:
+            raise RuntimeError(
+                "yaylib: session store not configured (use session_store=)"
+            )
+        session = await self.session_store.load(email)
+        if not session.email:
+            session = _replace(session, email=email)
+        self._apply_session(session)
+        return session
+
+    async def save_session(self, session: Session) -> None:
+        """Persist ``session`` and also fully activate it on the client
+        (tokens / device UUID / identity / OAuth key), symmetric with
+        load_session. A session injected directly this way (rather than
+        through login) therefore refreshes with the correct key
+        (PORTING.md §6.2). The persisted record always carries the active
+        device UUID so a later load_session can restore it. Raises when no
+        session store is configured.
+        """
+        if self.session_store is None:
+            raise RuntimeError(
+                "yaylib: session store not configured (use session_store=)"
+            )
+        if not session.device_uuid:
+            session = _replace(session, device_uuid=self.device_uuid)
+        await self.session_store.save(session)
+        self._apply_session(session)
 
     # ---- lifecycle ----
 

@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -49,12 +49,12 @@ import {
 
 export interface BulkInviteToCallRequest {
     callId: number;
-    groupId?: number | null;
+    groupId?: number;
 }
 
 export interface BumpCallRequest {
     callId: number;
-    participantLimit?: number | null;
+    participantLimit?: number;
 }
 
 export interface GenerateCallActionSignatureRequest {
@@ -69,8 +69,8 @@ export interface GetAgoraRtmTokenRequest {
 
 export interface GetCallGiftHistoryRequest {
     callId: number;
-    from?: string | null;
-    number?: number | null;
+    from?: string;
+    number?: number;
 }
 
 export interface GetCallParticipantRequest {
@@ -84,8 +84,8 @@ export interface GetConferenceCallRequest {
 
 export interface GetInvitableCallUsersRequest {
     callId: number;
-    fromTimestamp?: number | null;
-    userNickname?: string | null;
+    fromTimestamp?: number;
+    userNickname?: string;
 }
 
 export interface GetPhoneStatusRequest {
@@ -117,8 +117,8 @@ export interface LeaveAgoraChannelRequest {
 export interface LeaveConferenceCallRequest {
     callSid?: string;
     conferenceId?: number;
-    duration?: number | null;
-    totalUsersInCall?: number | null;
+    duration?: number;
+    totalUsersInCall?: number;
 }
 
 export interface StartConferenceCallRequest {
@@ -128,8 +128,8 @@ export interface StartConferenceCallRequest {
 
 export interface UpdateCallRequest {
     callId: number;
-    categoryId?: string | null;
-    gameTitle?: string | null;
+    categoryId?: string;
+    gameTitle?: string;
     joinableBy?: JoinableBy;
 }
 

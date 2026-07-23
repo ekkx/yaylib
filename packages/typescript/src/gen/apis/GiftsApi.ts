@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -24,9 +24,9 @@ import {
 } from '../models/index.js';
 
 export interface ListGiftsRequest {
-    currency?: string | null;
-    number?: number | null;
-    from?: string | null;
+    currency?: string;
+    number?: number;
+    from?: string;
 }
 
 /**

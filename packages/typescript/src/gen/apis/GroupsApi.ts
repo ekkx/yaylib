@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -93,28 +93,28 @@ export interface CancelGroupTransferRequest {
 }
 
 export interface CreateGroupRequest {
-    allowMembersToPostImageAndVideo?: boolean | null;
-    allowMembersToPostUrl?: boolean | null;
-    allowOwnershipTransfer?: boolean | null;
-    allowThreadCreationBy?: string | null;
+    allowMembersToPostImageAndVideo?: boolean;
+    allowMembersToPostUrl?: boolean;
+    allowOwnershipTransfer?: boolean;
+    allowThreadCreationBy?: string;
     apiKey?: string;
-    callTimelineDisplay?: boolean | null;
-    coverImageFilename?: string | null;
-    description?: string | null;
-    gender?: number | null;
-    generationGroupsLimit?: number | null;
-    groupCategoryId?: number | null;
-    groupIconFilename?: string | null;
-    guidelines?: string | null;
-    hideConferenceCall?: boolean | null;
+    callTimelineDisplay?: boolean;
+    coverImageFilename?: string;
+    description?: string;
+    gender?: number;
+    generationGroupsLimit?: number;
+    groupCategoryId?: number;
+    groupIconFilename?: string;
+    guidelines?: string;
+    hideConferenceCall?: boolean;
     hideFromGameEight?: boolean;
-    hideReportedPosts?: boolean | null;
-    isPrivate?: boolean | null;
-    onlyMobileVerified?: boolean | null;
-    onlyVerifiedAge?: boolean | null;
-    secret?: boolean | null;
+    hideReportedPosts?: boolean;
+    isPrivate?: boolean;
+    onlyMobileVerified?: boolean;
+    onlyVerifiedAge?: boolean;
+    secret?: boolean;
     signedInfo?: string;
-    subCategoryId?: string | null;
+    subCategoryId?: string;
     timestamp?: number;
     topic?: string;
     uuid?: string;
@@ -158,20 +158,20 @@ export interface GetGroupBanListRequest {
 
 export interface GetGroupGiftHistoryRequest {
     groupId: number;
-    number?: number | null;
-    from?: string | null;
+    number?: number;
+    from?: string;
 }
 
 export interface GetGroupGiftTransactionsRequest {
     groupId: number;
-    number?: number | null;
-    from?: string | null;
+    number?: number;
+    from?: string;
 }
 
 export interface GetGroupHighlightsRequest {
     groupId: number;
-    from?: number | null;
-    number?: number | null;
+    from?: number;
+    number?: number;
 }
 
 export interface GetGroupMemberRequest {
@@ -181,8 +181,8 @@ export interface GetGroupMemberRequest {
 
 export interface GetGroupMembersRequest {
     id: number;
-    number?: number | null;
-    fromId?: number | null;
+    number?: number;
+    fromId?: number;
 }
 
 export interface GetGroupReceivedGiftSendersRequest {
@@ -190,17 +190,17 @@ export interface GetGroupReceivedGiftSendersRequest {
     giftId: number;
     userId?: number;
     timestamp?: number;
-    number?: number | null;
+    number?: number;
 }
 
 export interface GetGroupUnreadStatusRequest {
-    fromTime?: number | null;
+    fromTime?: number;
 }
 
 export interface GetInvitableGroupUsersRequest {
     groupId: number;
-    fromTimestamp?: number | null;
-    userNickname?: string | null;
+    fromTimestamp?: number;
+    userNickname?: string;
 }
 
 export interface GetJoinedGroupStatusesRequest {
@@ -209,14 +209,14 @@ export interface GetJoinedGroupStatusesRequest {
 
 export interface GetRelatableGroupsRequest {
     id: number;
-    keyword?: string | null;
-    from?: string | null;
+    keyword?: string;
+    from?: string;
 }
 
 export interface GetRelatedGroupsRequest {
     id: number;
-    keyword?: string | null;
-    from?: string | null;
+    keyword?: string;
+    from?: string;
 }
 
 export interface GetUserGroupListRequest {
@@ -239,18 +239,18 @@ export interface LeaveGroupRequest {
 
 export interface ListGroupCategoriesRequest {
     page?: number;
-    number?: number | null;
+    number?: number;
 }
 
 export interface ListGroupsRequest {
-    groupCategoryId?: number | null;
-    keyword?: string | null;
-    fromTimestamp?: number | null;
-    subCategoryId?: number | null;
+    groupCategoryId?: number;
+    keyword?: string;
+    fromTimestamp?: number;
+    subCategoryId?: number;
 }
 
 export interface ListMyGroupsRequest {
-    fromTimestamp?: number | null;
+    fromTimestamp?: number;
 }
 
 export interface PinGroupHighlightPostRequest {
@@ -279,11 +279,11 @@ export interface ReportGroupRequest {
     groupId: number;
     categoryId?: number;
     opponentId?: number;
-    reason?: string | null;
-    screenshot2Filename?: string | null;
-    screenshot3Filename?: string | null;
-    screenshot4Filename?: string | null;
-    screenshotFilename?: string | null;
+    reason?: string;
+    screenshot2Filename?: string;
+    screenshot3Filename?: string;
+    screenshot4Filename?: string;
+    screenshotFilename?: string;
 }
 
 export interface RequestGroupWalkthroughRequest {
@@ -293,8 +293,8 @@ export interface RequestGroupWalkthroughRequest {
 export interface SearchGroupPostsRequest {
     id: number;
     keyword?: string;
-    fromPostId?: number | null;
-    number?: number | null;
+    fromPostId?: number;
+    number?: number;
     onlyThreadPosts?: boolean;
 }
 
@@ -328,30 +328,30 @@ export interface UnpinGroupHighlightPostRequest {
 
 export interface UpdateGroupRequest {
     id: number;
-    allowMembersToPostImageAndVideo?: boolean | null;
-    allowMembersToPostUrl?: boolean | null;
-    allowOwnershipTransfer?: boolean | null;
-    allowThreadCreationBy?: string | null;
+    allowMembersToPostImageAndVideo?: boolean;
+    allowMembersToPostUrl?: boolean;
+    allowOwnershipTransfer?: boolean;
+    allowThreadCreationBy?: string;
     apiKey?: string;
-    callTimelineDisplay?: boolean | null;
-    coverImageFilename?: string | null;
-    description?: string | null;
-    gender?: number | null;
-    generationGroupsLimit?: number | null;
-    groupCategoryId?: number | null;
-    groupIconFilename?: string | null;
-    guidelines?: string | null;
-    hideConferenceCall?: boolean | null;
-    hideFromGameEight?: boolean | null;
-    hideReportedPosts?: boolean | null;
-    isPrivate?: boolean | null;
-    onlyMobileVerified?: boolean | null;
-    onlyVerifiedAge?: boolean | null;
-    secret?: boolean | null;
+    callTimelineDisplay?: boolean;
+    coverImageFilename?: string;
+    description?: string;
+    gender?: number;
+    generationGroupsLimit?: number;
+    groupCategoryId?: number;
+    groupIconFilename?: string;
+    guidelines?: string;
+    hideConferenceCall?: boolean;
+    hideFromGameEight?: boolean;
+    hideReportedPosts?: boolean;
+    isPrivate?: boolean;
+    onlyMobileVerified?: boolean;
+    onlyVerifiedAge?: boolean;
+    secret?: boolean;
     signedInfo?: string;
-    subCategoryId?: string | null;
+    subCategoryId?: string;
     timestamp?: number;
-    topic?: string | null;
+    topic?: string;
     uuid?: string;
 }
 

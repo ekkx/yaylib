@@ -416,6 +416,67 @@ export class Client {
     return loginWithEmailWrapper(this, params);
   }
 
+  /**
+   * Internal — the single session-activation helper. Applies a session's
+   * tokens, device UUID, establishing OAuth key, and login identity to the
+   * client so subsequent calls behave as if login had just succeeded. Both
+   * the cached-login restore path (auth.ts) and the public loadSession /
+   * saveSession below route through this so they never diverge (PORTING.md
+   * §6.2). An empty/absent oauthKey resets refresh to the app-key default.
+   */
+  activateSession(session: Session): void {
+    this.setTokens(session.accessToken, session.refreshToken);
+    if (session.deviceUUID) {
+      this.setDeviceUUID(session.deviceUUID);
+    }
+    this.setOAuthKey(session.oauthKey ?? "");
+    this.setLoginIdentity(session.email, session.userID);
+  }
+
+  /**
+   * Loads the cached session for email and fully activates it on the
+   * client — tokens, DeviceUUID, UserID, email-binding, AND the
+   * establishing OAuth key (empty → app key). Restoring the persisted
+   * DeviceUUID keeps device identity continuous across restarts so
+   * signed_info still matches; restoring the OAuth key is what lets a
+   * web session loaded straight from disk refresh with the web key
+   * (PORTING.md §6.2). Rejects with NoSessionError when nothing is cached,
+   * or a plain Error when no session store is configured.
+   */
+  async loadSession(email: string): Promise<Session> {
+    if (!this.sessionStore) {
+      throw new Error(
+        "yaylib: session store not configured (pass sessionStore to the Client)",
+      );
+    }
+    const s = await this.sessionStore.load(email);
+    this.activateSession({ ...s, email: s.email || email });
+    return s;
+  }
+
+  /**
+   * Writes the session AND activates its tokens, DeviceUUID, UserID,
+   * email-binding, and establishing OAuth key on the client — symmetric
+   * with loadSession, so a session injected directly (not via login)
+   * refreshes with the correct key (PORTING.md §6.2). The persisted record
+   * always carries the active DeviceUUID so a later loadSession can restore
+   * it. Rejects when no session store is configured.
+   */
+  async saveSession(session: Session): Promise<void> {
+    if (!this.sessionStore) {
+      throw new Error(
+        "yaylib: session store not configured (pass sessionStore to the Client)",
+      );
+    }
+    const s: Session = {
+      ...session,
+      deviceUUID: session.deviceUUID || this._deviceUUID,
+      updatedAt: session.updatedAt || new Date().toISOString(),
+    };
+    await this.sessionStore.save(s);
+    this.activateSession(s);
+  }
+
   // rawFetch is the unwrapped fetch — no generated middleware, so no
   // Yay! headers and no `Authorization: Bearer …`. Used for the S3
   // presigned PUT (whose own signature would clash) and the WebSocket
@@ -812,9 +873,12 @@ export class Client {
   }
 
   /**
-   * Fallback login against the browser endpoint (POST
-   * /v2/users/login_with_email) using webApiKey. Some accounts are
-   * accepted only there.
+   * Primary login against the browser endpoint (POST
+   * /v2/users/login_with_email) using webApiKey (PORTING.md §6.2). The app
+   * login (POST /v3/users/login_with_email) is gated server-side on a
+   * device attestation (Play Integrity) that only the official app can
+   * satisfy, so the browser endpoint is the path SDK device UUIDs are
+   * accepted on; the app login stands in only as a fallback.
    *
    * Issued through the bare fetch (no middleware / Yay! headers / Bearer
    * / 401-refresh): a login must authenticate purely by its body
@@ -822,11 +886,14 @@ export class Client {
    * minimal header set (PORTING.md §6.1/§6.2). Only the body's api_key
    * and the endpoint version differ from the app login.
    *
-   * Resolves to the decoded response on success, or null when the
-   * fallback is itself rejected (non-2xx) so the caller surfaces the
-   * primary error. Throws an APIError carrying the raw body when a 2xx
-   * response fails to decode (§15), rather than masking it behind the
-   * primary 401.
+   * Resolves to the decoded response on success. On any failure it throws
+   * the SAME typed error the generated clients surface (APIError) with the
+   * raw body attached — so codeOf / errorResponseOf / instanceof matching
+   * work uniformly now that this is the primary login path: a non-2xx
+   * carries its error envelope (the caller keys the app fallback off
+   * codeOf(err) === Unauthorized), and a 2xx that fails to decode is a
+   * genuine login result surfaced with its raw body (§15), not masked as
+   * an auth rejection.
    *
    * @internal — used by the loginWithEmail wrapper (auth.ts).
    */
@@ -835,7 +902,7 @@ export class Client {
     password: string;
     uuid: string;
     twoFACode?: string;
-  }): Promise<LoginUserResponse | null> {
+  }): Promise<LoginUserResponse> {
     const payload: Record<string, string> = {
       email: params.email,
       password: params.password,
@@ -863,23 +930,39 @@ export class Client {
         },
         body: JSON.stringify(payload),
       });
-    } catch {
-      return null;
+    } catch (err) {
+      // Transport failure — no HTTP response / body to attach.
+      throw new APIError({
+        message: `yaylib: web login failed: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+        cause: err,
+      });
     }
 
     const raw = await res.text();
-    if (!res.ok) return null;
+    const rawBytes = new TextEncoder().encode(raw);
+    if (!res.ok) {
+      // Non-2xx → typed error carrying the raw envelope so the caller can
+      // read the parsed code (Unauthorized → app fallback; anything else →
+      // surface directly).
+      throw new APIError({
+        message: `yaylib: web login failed: status ${res.status}`,
+        response: res,
+        body: rawBytes,
+      });
+    }
     try {
       return LoginUserResponseFromJSON(JSON.parse(raw));
     } catch (err) {
       // A 2xx we couldn't decode is a genuine login result: surface it
-      // with the raw body, not the primary 401.
+      // with the raw body, not as Unauthorized (so no app fallback).
       throw new APIError({
         message: `yaylib: web login decode failed: ${
           err instanceof Error ? err.message : String(err)
         }`,
         response: res,
-        body: new TextEncoder().encode(raw),
+        body: rawBytes,
         cause: err,
       });
     }

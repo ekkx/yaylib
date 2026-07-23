@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -24,12 +24,12 @@ import {
 } from '../models/index.js';
 
 export interface GetUserActivitiesRequest {
-    fromTimestamp?: number | null;
+    fromTimestamp?: number;
 }
 
 export interface GetUserActivitiesV1Request {
     important?: boolean;
-    fromTimestamp?: number | null;
+    fromTimestamp?: number;
     number?: number;
 }
 

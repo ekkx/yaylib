@@ -195,7 +195,6 @@ export * from './InvitationCodeResponse.js';
 export * from './InvitedUserDTO.js';
 export * from './InvitedUserDetailsDTO.js';
 export * from './Item.js';
-export * from './J0A.js';
 export * from './JSEvent.js';
 export * from './JoinableBy.js';
 export * from './LastStatusScreenUserRank.js';
