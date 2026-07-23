@@ -296,59 +296,80 @@ Other invariants:
 > not the raw one.) On re-issue, also refresh per-request headers that
 > go stale — at minimum `X-Timestamp`.
 
-### 6.2 Alternate login fallback
+### 6.2 Web-first login (browser endpoint primary, app fallback)
 
-`loginWithEmail` makes a second login attempt when the primary email
-login is rejected with a plain `Unauthorized` (error code 401): it
-retries once against `POST /v2/users/login_with_email` with a separate
-`webApiKey`. Some accounts are accepted only on this alternate endpoint.
-Reference: Go `auth.go` (`loginWithEmailWeb`); mirrored in every port.
+`loginWithEmail` is **web-first**: the browser login endpoint (`POST
+/v2/users/login_with_email`, authenticated by a separate `webApiKey`) is
+the primary path. The app login (`POST /v3/users/login_with_email`,
+authenticated by `apiKey`) is gated server-side on a device attestation
+(Play Integrity) that only the official Google-Play-signed app on a
+genuine device can satisfy, so it rejects SDK-issued device UUIDs with a
+plain 401. The app login is kept only as a fallback for the narrow cases
+the browser endpoint doesn't serve, and as the sole path when the browser
+endpoint is switched off or the caller pinned a specific `apiKey`.
+Reference: Go `auth.go` (`doFreshLogin` / `loginWithEmailWeb` /
+`loginWithEmailApp`); mirrored in every port.
 
 The `webApiKey` is an embedded wire constant like `apiKey` (§3.1), with a
 per-language default and an override (`WithWebAPIKey` / `webApiKey:` /
-`web_api_key=` / `.web_api_key()`). Setting it to `""` disables the
-fallback.
+`web_api_key=` / `.web_api_key()`). Setting it to `""` switches web off
+and reverts to app-only login.
 
 Invariants every port MUST match:
 
-- Fire the fallback ONLY on error code `Unauthorized`, never on other
-  401s — in particular `Required2FA` must fall straight through (the
-  caller supplies a code, not a different key). Gate on the parsed error
-  code (`codeOf`), NOT on the bare HTTP status.
-- Skip the fallback when the caller pinned a specific `apiKey` (i.e. the
-  resolved key differs from the client's `apiKey`), and when `webApiKey`
-  is empty (the off switch).
-- Issue the fallback through the UNWRAPPED HTTP layer (§6.1): no header
-  injection, no Bearer, no 401-refresh. Send the browser client's
-  minimal headers only (Content-Type, User-Agent, `Agent`,
-  `X-Device-Info`), and put `webApiKey` in the body's `api_key`.
-- On a fallback that returns 2xx but fails to decode, surface that result
-  (raw body intact, as an `APIError`), NOT the primary 401.
-- On any other fallback failure (non-2xx / transport error), surface the
-  original primary error unchanged.
-- On success, activate tokens and persist the session exactly as the
-  primary path does.
+- **Primary = web** unless `webApiKey` is empty (off switch) or the caller
+  pinned a specific `apiKey` (resolved key differs from the client's
+  `apiKey`); in either case use the app login only. A caller-pinned key
+  must never be silently replaced by `webApiKey`.
+- Issue the web login through the UNWRAPPED HTTP layer (§6.1): no header
+  injection, no Bearer, no 401-refresh. Send the browser client's minimal
+  headers only (Content-Type, User-Agent, `Agent`, `X-Device-Info`), and
+  put `webApiKey` in the body's `api_key`.
+- The web login MUST surface failures as the SAME typed error the
+  generated clients return (raw body attached), so `codeOf` /
+  `errorResponseOf` / typed-error matching work uniformly now that it is
+  the primary path.
+- Fall back to the app login ONLY on error code `Unauthorized`. Any other
+  typed rejection surfaces unchanged — in particular `Required2FA` (the
+  caller supplies a code, not a different endpoint), and a 2xx response
+  that failed to decode (a genuine login result, surfaced with its raw
+  body as an `APIError`, §15; it is not `Unauthorized` so no fallback).
+  Gate on the parsed error code (`codeOf`), NOT the bare HTTP status.
+- When both the web login and the app fallback fail, surface the PRIMARY
+  (web) error, which carries the parsed code and raw body.
+- On success, activate tokens and persist the session exactly the same
+  way regardless of which path won.
 
-**OAuth refresh MUST use the session's establishing key.** A web-fallback
-session is issued under `webApiKey`, so its token refresh (`POST
+**OAuth refresh MUST use the session's establishing key.** A web session
+is issued under `webApiKey`, so its token refresh (`POST
 /api/v1/oauth/token`, `Authorization: Basic base64(key)`) MUST use that
-same key — refreshing a web session with the app key 401s. Every port:
+same key — refreshing a web session with the app key 401s. Under
+web-first, the common session is a web session; an app session arises only
+via the fallback, a pinned key, or web being switched off. Every port:
 
 - Tracks, as mutable client state, the key that established the active
-  session (defaults to `apiKey`; set to `webApiKey` on a fallback login,
-  or to a caller-pinned key). Call it the *OAuth key*.
+  session (`webApiKey` on a web login, `apiKey`/caller-pinned key on an
+  app login). Call it the *OAuth key*. Empty means the app-key default.
 - Uses the OAuth key as the Basic credential everywhere the OAuth token
   endpoint is hit (both the transport's header injection and any bespoke
   refresh call).
 - Persists it in the session as `oauth_key` (OMITTED for a default app
-  session so those files stay byte-identical; §5.1) and restores it on a
-  cache hit, so a restored web session refreshes correctly.
+  session so those files stay byte-identical; §5.1).
+- **Restores it in BOTH restore paths** — the cached-login path AND the
+  public `loadSession` (`LoadSession` / `load_session`) — so a web session
+  loaded straight from disk refreshes correctly. Applying it only on the
+  cached-login path was a bug: `loadSession` alone left refresh on the app
+  key and 401'd. Keep the two paths from diverging (a shared activation
+  helper, or `loadSession` doing the full activation and the cached path
+  delegating to it).
 - Leaves **signing (`signed_info`) on `apiKey`** — only the OAuth Basic
   credential is session-scoped. This is the app-key/OAuth-key split.
 
-Parity scenarios live in each `auth` test suite (fires on 401 / no fire
-on 2FA / no fire when key pinned / disabled / 2xx-decode-fail surfaced;
-refresh uses web key / app key / restored web key).
+Parity scenarios live in each `auth` test suite (web primary succeeds /
+falls back to app on 401 / no fallback on 2FA / no fallback when key
+pinned / web disabled → app-only / 2xx-decode-fail surfaced; refresh uses
+web key / app key / restored web key via cached login AND via
+`loadSession`).
 
 ---
 

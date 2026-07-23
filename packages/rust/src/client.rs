@@ -418,6 +418,21 @@ impl Client {
 
     // -- Session convenience --------------------------------------------------
 
+    /// Applies a session's tokens, device UUID, login identity, and
+    /// establishing OAuth key to the client. This is the single activation
+    /// used by every restore path (public `load_session`, the cached-login
+    /// path in `maybe_restore`, and `save_session`) so they cannot diverge —
+    /// in particular so a web session restored straight from disk refreshes
+    /// with the web key rather than the app key (empty → app key default).
+    fn apply_session(&self, email: &str, session: &Session) {
+        self.set_tokens(&session.access_token, &session.refresh_token);
+        if !session.device_uuid.is_empty() {
+            self.set_device_uuid(session.device_uuid.clone());
+        }
+        self.set_login_identity(email, session.user_id);
+        self.set_oauth_key(&session.oauth_key);
+    }
+
     pub async fn load_session(&self, email: &str) -> Result<Session, ApiError> {
         let store = self
             .session_store
@@ -427,11 +442,7 @@ impl Client {
             SessionError::NoSession => ApiError::Other("no session for that email".into()),
             other => ApiError::Other(format!("load session: {}", other)),
         })?;
-        self.set_tokens(&session.access_token, &session.refresh_token);
-        if !session.device_uuid.is_empty() {
-            self.set_device_uuid(session.device_uuid.clone());
-        }
-        self.set_login_identity(email, session.user_id);
+        self.apply_session(email, &session);
         Ok(session)
     }
 
@@ -447,11 +458,7 @@ impl Client {
             .save(session)
             .await
             .map_err(|e| ApiError::Other(format!("save session: {}", e)))?;
-        self.set_tokens(&session.access_token, &session.refresh_token);
-        if !session.device_uuid.is_empty() {
-            self.set_device_uuid(session.device_uuid.clone());
-        }
-        self.set_login_identity(&session.email, session.user_id);
+        self.apply_session(&session.email, session);
         Ok(())
     }
 
@@ -519,14 +526,10 @@ impl Client {
         };
         match store.load(email).await {
             Ok(session) => {
-                self.set_tokens(&session.access_token, &session.refresh_token);
-                if !session.device_uuid.is_empty() {
-                    self.set_device_uuid(session.device_uuid);
-                }
-                self.set_login_identity(email, session.user_id);
-                // Restore which key refreshes this session (empty → app key)
-                // so a cached web session refreshes with the web key.
-                self.set_oauth_key(&session.oauth_key);
+                // Same full activation as the public load_session, so the
+                // cached-login and load_session paths cannot diverge (the
+                // establishing OAuth key is restored either way).
+                self.apply_session(email, &session);
                 Ok(Some(LoginResponse {
                     user_id: session.user_id,
                     access_token: session.access_token,
@@ -558,8 +561,66 @@ impl Client {
         })
     }
 
-    /// Fallback login against the browser endpoint (POST
-    /// /v2/users/login_with_email) using [`web_api_key`](Client::web_api_key).
+    /// Performs a fresh (non-cached) email login and reports which API key
+    /// established the resulting session — the Basic credential later token
+    /// refreshes must use (see `set_oauth_key`).
+    ///
+    /// Web-first (PORTING §6.2): the browser login (POST
+    /// /v2/users/login_with_email, authenticated by web_api_key) is the
+    /// primary path. The app login (POST /v3/users/login_with_email,
+    /// authenticated by api_key) is gated server-side on a device
+    /// attestation (Play Integrity) that only the official app can satisfy,
+    /// so it rejects SDK-issued device UUIDs with a plain 401. The app login
+    /// is kept only as a fallback for the narrow cases the browser endpoint
+    /// doesn't serve, and as the sole path when the browser endpoint is
+    /// switched off (web_api_key == "") or the caller pinned a specific
+    /// api_key.
+    pub(crate) async fn do_fresh_login(
+        &self,
+        body: LoginEmailUserRequestBody,
+        caller_pinned: bool,
+    ) -> Result<(LoginResponse, String), ApiError> {
+        // A caller-pinned api_key (resolved key differs from the client
+        // default) means "use the app login with exactly this key"; skip the
+        // browser path so we never silently authenticate under web_api_key.
+        if self.web_api_key().is_empty() || caller_pinned {
+            let app_key = body.api_key.clone();
+            let resp = self.do_login_with_email(body).await?;
+            return Ok((resp, app_key));
+        }
+
+        // Primary: browser login with the web key.
+        let web_err = match self.do_login_with_email_web(&body).await {
+            Ok(resp) => return Ok((resp, self.web_api_key().to_string())),
+            Err(e) => e,
+        };
+
+        // Fall back to the app login ONLY on a plain unauthorized. Any other
+        // typed rejection surfaces unchanged — notably Required2FA (the caller
+        // must supply a 2FA code rather than switch endpoints) and a 2xx
+        // response that failed to decode (a genuine login result carrying its
+        // raw body, §15), which is not Unauthorized.
+        if crate::errors::code_of(&web_err) != crate::error_codes::ErrorCode::Unauthorized {
+            return Err(web_err);
+        }
+        tracing::debug!(event = "login_fallback", outcome = "attempt");
+        let app_key = body.api_key.clone();
+        match self.do_login_with_email(body).await {
+            Ok(resp) => {
+                tracing::debug!(event = "login_fallback", outcome = "ok");
+                Ok((resp, app_key))
+            }
+            Err(_) => {
+                tracing::debug!(event = "login_fallback", outcome = "failed");
+                // Both paths failed: surface the primary (web) error, which
+                // carries the parsed error code and raw body.
+                Err(web_err)
+            }
+        }
+    }
+
+    /// Browser login against POST /v2/users/login_with_email using
+    /// [`web_api_key`](Client::web_api_key).
     ///
     /// Issued directly through the raw `reqwest::Client`, bypassing the
     /// transport's header injection / Bearer / 401-refresh: a login must
@@ -568,14 +629,17 @@ impl Client {
     /// §6.1/§6.2). Only the body's api_key and the endpoint version
     /// differ from the app login.
     ///
-    /// Returns `Ok(Some(resp))` on success, `Ok(None)` when the fallback
-    /// is itself rejected (non-2xx) so the caller surfaces the primary
-    /// error, or `Err` carrying the raw body when a 2xx response fails to
-    /// decode (§15) — rather than masking it behind the primary 401.
+    /// Failures surface as the SAME typed error the generated clients
+    /// return ([`ApiError::Response`] with the raw body attached), so
+    /// `code_of` / `error_response_of` / matching work uniformly now that
+    /// this is the primary login path. A non-2xx yields that typed error; a
+    /// 2xx that fails to decode is a genuine login result surfaced with its
+    /// raw body (§15) — not masked as an auth rejection, so it is not
+    /// Unauthorized and the caller does not fall back.
     pub(crate) async fn do_login_with_email_web(
         &self,
         body: &LoginEmailUserRequestBody,
-    ) -> Result<Option<LoginResponse>, ApiError> {
+    ) -> Result<LoginResponse, ApiError> {
         let cfg = &self.config;
         // Present as the browser client. The web version string is not
         // otherwise known to the SDK, so app_version stands in for it.
@@ -611,17 +675,21 @@ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
         let status = resp.status();
         let bytes = resp.bytes().await.map_err(ApiError::Http)?;
         if !status.is_success() {
-            // Fallback itself rejected: caller surfaces the primary error.
-            return Ok(None);
+            // Surface as the same typed error the generated clients return,
+            // carrying the raw body, so code_of / error_response_of / matching
+            // work uniformly; the caller keys its app-login fallback off
+            // code_of(err) == Unauthorized.
+            return Err(ApiError::from_response(status.as_u16(), bytes.to_vec()));
         }
         match serde_json::from_slice::<crate::gen::models::LoginUserResponse>(&bytes) {
-            Ok(r) => Ok(Some(LoginResponse {
+            Ok(r) => Ok(LoginResponse {
                 user_id: r.user_id.flatten().unwrap_or(0),
                 access_token: r.access_token.flatten().unwrap_or_default(),
                 refresh_token: r.refresh_token.flatten().unwrap_or_default(),
-            })),
-            // A 2xx we couldn't decode is a genuine login result: surface
-            // it with the raw body, not the primary 401.
+            }),
+            // A 2xx we couldn't decode is a genuine login result, not an auth
+            // rejection: keep the raw body on the error (§15). Since it is not
+            // Unauthorized, do_fresh_login surfaces it without falling back.
             Err(_) => Err(ApiError::from_response(status.as_u16(), bytes.to_vec())),
         }
     }

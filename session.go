@@ -223,6 +223,12 @@ func (c *Client) LoadSession(email string) (*Session, error) {
 		c.setDeviceUUID(s.DeviceUUID)
 	}
 	c.setLoginIdentity(email, s.UserID)
+	// Restore which key refreshes this session (empty → app key). Without
+	// this a web-fallback session (OAuthKey == webApiKey) restored straight
+	// from disk would refresh its tokens with the app key and 401. Applying
+	// it here — not only on the cache-restore path — makes LoadSession a
+	// complete activation, matching SaveSession and the cached-login flow.
+	c.setOAuthKey(s.OAuthKey)
 	return s, nil
 }
 
@@ -248,6 +254,10 @@ func (c *Client) SaveSession(s *Session) error {
 		c.setDeviceUUID(s.DeviceUUID)
 	}
 	c.setLoginIdentity(s.Email, s.UserID)
+	// Activate the establishing key too, so a session injected directly via
+	// SaveSession (rather than through login) refreshes with the correct key
+	// (empty → app key). Symmetric with LoadSession.
+	c.setOAuthKey(s.OAuthKey)
 	return nil
 }
 

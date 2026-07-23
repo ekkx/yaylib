@@ -112,57 +112,74 @@ func (r LoginWithEmailRequest) Execute() (*gen.LoginUserResponse, *http.Response
 	if ok {
 		return resp, nil, nil
 	}
-	// oauthKey tracks the API key that establishes the session; it becomes
-	// the Basic credential for later token refresh. The primary login uses
-	// the body's api_key; the fallback switches it to WebAPIKey below.
-	oauthKey := body.GetApiKey()
-	resp, httpResp, err := r.client.UsersAPIService.
-		LoginWithEmail(r.ctx).
-		LoginEmailUserRequest(body).
-		Execute()
+	resp, httpResp, oauthKey, err := r.doFreshLogin(body)
 	if err != nil {
-		// Fallback: when the primary (app) login is rejected with a plain
-		// "unauthorized", retry against the browser login endpoint, which
-		// authenticates with a different key (WebAPIKey). On success the
-		// web response replaces the failed one; if the fallback also fails,
-		// the original error (a proper *APIError) is surfaced unchanged.
-		//
-		// The fallback is gated on ErrCodeUnauthorized specifically, not on
-		// a bare 401 status: other rejections are also 401 but must NOT be
-		// retried — notably ErrCodeRequired2FA (the caller has to supply a
-		// code, not switch keys). It is also skipped when the caller pinned
-		// a specific api_key via .ApiKey(), since the fallback would
-		// otherwise silently authenticate under a different key.
-		callerPinnedKey := body.GetApiKey() != r.client.APIKey
-		if r.client.WebAPIKey != "" && !callerPinnedKey && CodeOf(err) == ErrCodeUnauthorized {
-			if wResp, wHTTP, wErr := r.client.loginWithEmailWeb(r.ctx, body); wErr == nil {
-				r.client.Logger.Debug("web login fallback ok",
-					"event", "login_fallback", "outcome", "ok")
-				resp, httpResp, err = wResp, wHTTP, nil
-				// This session was established with the web key, so its
-				// token refresh must use it too.
-				oauthKey = r.client.WebAPIKey
-			} else {
-				r.client.Logger.Debug("web login fallback failed",
-					"event", "login_fallback", "outcome", "failed")
-				// A 2xx web response we couldn't decode is a genuine
-				// login result, not an auth rejection: surface it (with
-				// its raw body, readable on wHTTP) rather than masking it
-				// behind the primary 401. Non-2xx / transport errors fall
-				// through and the primary error is returned unchanged.
-				if wHTTP != nil && wHTTP.StatusCode >= 200 && wHTTP.StatusCode < 300 {
-					return nil, wHTTP, wErr
-				}
-			}
-		}
-		if err != nil {
-			return resp, httpResp, err
-		}
+		return resp, httpResp, err
 	}
 	if perr := r.client.acceptLogin(email, resp, oauthKey); perr != nil {
 		return resp, httpResp, perr
 	}
 	return resp, httpResp, nil
+}
+
+// doFreshLogin performs a fresh (non-cached) email login and reports which
+// API key established the resulting session — the Basic credential later
+// token refreshes must use (see acceptLogin / oauthKey).
+//
+// Web-first: the browser login endpoint (POST /v2/users/login_with_email,
+// authenticated by WebAPIKey) is the primary path. The app login (POST
+// /v3/users/login_with_email, authenticated by APIKey) is gated server-side
+// on a device attestation that only the official app — Google-Play-signed,
+// running on a genuine device with Play Integrity — can satisfy, so it
+// rejects SDK-issued device UUIDs with a plain 401. The app login is kept
+// only as a fallback for the narrow cases the browser endpoint doesn't serve,
+// and as the sole path when the browser endpoint is switched off
+// (WebAPIKey == "") or the caller pinned a specific api_key via .ApiKey().
+func (r LoginWithEmailRequest) doFreshLogin(body gen.LoginEmailUserRequest) (*gen.LoginUserResponse, *http.Response, string, error) {
+	// A caller-pinned api_key (resolved key differs from the client default)
+	// means "use the app login with exactly this key"; skip the browser path
+	// so we never silently authenticate under WebAPIKey instead.
+	callerPinnedKey := body.GetApiKey() != r.client.APIKey
+
+	if r.client.WebAPIKey == "" || callerPinnedKey {
+		resp, httpResp, err := r.loginWithEmailApp(body)
+		return resp, httpResp, body.GetApiKey(), err
+	}
+
+	// Primary: browser login with the web key.
+	resp, httpResp, err := r.client.loginWithEmailWeb(r.ctx, body)
+	if err == nil {
+		return resp, httpResp, r.client.WebAPIKey, nil
+	}
+	// Fall back to the app login ONLY on a plain unauthorized. Any other
+	// typed rejection surfaces unchanged — notably ErrCodeRequired2FA, where
+	// the caller must supply a 2FA code rather than switch endpoints, and a
+	// 2xx response that failed to decode (a genuine login result whose raw
+	// body rides on httpResp, §15), which is not an ErrCodeUnauthorized.
+	if CodeOf(err) != ErrCodeUnauthorized {
+		return resp, httpResp, r.client.WebAPIKey, err
+	}
+	r.client.Logger.Debug("app login fallback",
+		"event", "login_fallback", "outcome", "attempt")
+	if aResp, aHTTP, aErr := r.loginWithEmailApp(body); aErr == nil {
+		r.client.Logger.Debug("app login fallback ok",
+			"event", "login_fallback", "outcome", "ok")
+		return aResp, aHTTP, body.GetApiKey(), nil
+	}
+	r.client.Logger.Debug("app login fallback failed",
+		"event", "login_fallback", "outcome", "failed")
+	// Both paths failed: surface the primary (web) error, which carries the
+	// parsed error code and raw body.
+	return resp, httpResp, r.client.WebAPIKey, err
+}
+
+// loginWithEmailApp issues the app login through the wrapped generated client
+// (header injection, retry, host routing). body.api_key carries the key.
+func (r LoginWithEmailRequest) loginWithEmailApp(body gen.LoginEmailUserRequest) (*gen.LoginUserResponse, *http.Response, error) {
+	return r.client.UsersAPIService.
+		LoginWithEmail(r.ctx).
+		LoginEmailUserRequest(body).
+		Execute()
 }
 
 // ---- internal helpers ----
@@ -238,12 +255,23 @@ func (c *Client) loginWithEmailWeb(ctx context.Context, body gen.LoginEmailUserR
 	// inspect the returned *http.Response see the same bytes we decoded,
 	// matching the primary login path's semantics.
 	httpResp.Body = io.NopCloser(bytes.NewReader(respBody))
+	// Surface failures as the same typed error the generated clients return
+	// (APIError = gen.GenericOpenAPIError) with the raw body attached, so
+	// CodeOf / ErrorResponseOf / errors.As work uniformly now that this is
+	// the primary login path — the caller (doFreshLogin) also keys its
+	// app-login fallback off CodeOf(err) == ErrCodeUnauthorized.
 	if httpResp.StatusCode < 200 || httpResp.StatusCode >= 300 {
-		return nil, httpResp, fmt.Errorf("yaylib: web login failed: status %d", httpResp.StatusCode)
+		return nil, httpResp, gen.NewAPIError(respBody,
+			fmt.Sprintf("yaylib: web login failed: status %d", httpResp.StatusCode))
 	}
 	var out gen.LoginUserResponse
 	if err := json.Unmarshal(respBody, &out); err != nil {
-		return nil, httpResp, fmt.Errorf("yaylib: web login decode: %w", err)
+		// A 2xx we can't decode is a genuine login result, not an auth
+		// rejection: keep the raw body on the error (§15) and, since this is
+		// not ErrCodeUnauthorized, doFreshLogin surfaces it without falling
+		// back to the app login.
+		return nil, httpResp, gen.NewAPIError(respBody,
+			fmt.Sprintf("yaylib: web login decode: %v", err))
 	}
 	return &out, httpResp, nil
 }
@@ -283,9 +311,8 @@ func (c *Client) maybeRestore(email string, skip bool) (*gen.LoginUserResponse, 
 	if err != nil {
 		return nil, false, fmt.Errorf("yaylib: load session: %w", err)
 	}
-	// Restore which key refreshes this session (empty → app key), so a
-	// cached web session refreshes with the web key after a restart.
-	c.setOAuthKey(sess.OAuthKey)
+	// LoadSession already activated tokens, device UUID, login identity, and
+	// the establishing oauth key, so no further restore is needed here.
 	resp := gen.NewLoginUserResponse()
 	resp.SetUserId(sess.UserID)
 	resp.SetAccessToken(sess.AccessToken)

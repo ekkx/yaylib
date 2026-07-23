@@ -45,6 +45,26 @@ func TestGenerateSignedInfoAt_DependsOnClientCredentials(t *testing.T) {
 	}
 }
 
+// signed_info is keyed on APIKey, NOT the session's OAuth key. Under
+// web-first a web session (oauth key = webApiKey) is the common case, so this
+// app-key/OAuth-key split must hold: setting the OAuth key to the web key
+// must not change the signature. A regression here would break signed
+// requests for every web-session user.
+func TestGenerateSignedInfoAt_IgnoresOAuthKey(t *testing.T) {
+	ref := NewClient()
+	ref.APIKey = "app-key"
+	ref.DeviceUUID = "uuid-shared"
+
+	web := NewClient()
+	web.APIKey = "app-key"
+	web.DeviceUUID = "uuid-shared"
+	web.setOAuthKey("web-key") // establish a web session
+
+	if got, want := web.GenerateSignedInfoAt(1700000000).Value, ref.GenerateSignedInfoAt(1700000000).Value; got != want {
+		t.Errorf("signed_info changed with the OAuth key: got %q, want %q (must stay on APIKey)", got, want)
+	}
+}
+
 func TestGenerateSignedInfo_UsesServerTimestamp(t *testing.T) {
 	const serverTime int64 = 1750000000
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

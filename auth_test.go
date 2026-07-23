@@ -233,36 +233,56 @@ func TestLoginWithEmail_TwoFARequiredSurfacesErrorCode(t *testing.T) {
 	}
 }
 
-// fallbackLoginServer rejects the primary (v3) login with 401 and, when
-// webOK is true, accepts the alternate (v2) login — recording the api_key
-// the v2 request carried so tests can assert the fallback key was used.
-func fallbackLoginServer(t *testing.T, webOK bool, seenWebKey *string) *httptest.Server {
+// webFirstLoginServer models the web-first flow. The browser login (v2) is
+// primary: it succeeds when webOK is true and otherwise rejects with 401. The
+// app login (v3) is the fallback: it succeeds when appOK is true, else 401.
+// Hits on each endpoint and the api_key each request carried are recorded so
+// tests can assert which path ran and under which key.
+func webFirstLoginServer(t *testing.T, webOK, appOK bool, seenWebKey, seenAppKey *string, webHit, appHit *int32) *httptest.Server {
 	t.Helper()
-	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		reject := func() {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusUnauthorized)
-			_ = json.NewEncoder(w).Encode(map[string]any{
-				"result": "error", "message": "unauthorized", "error_code": 401,
-			})
+	reject := func(w http.ResponseWriter) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"result": "error", "message": "unauthorized", "error_code": 401,
+		})
+	}
+	record := func(r *http.Request, dst *string) {
+		if dst == nil {
+			return
 		}
+		var body map[string]any
+		_ = json.NewDecoder(r.Body).Decode(&body)
+		k, _ := body["api_key"].(string)
+		*dst = k
+	}
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
-		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
-			reject()
 		case strings.HasPrefix(r.URL.Path, "/v2/users/login_with_email"):
-			var body map[string]any
-			_ = json.NewDecoder(r.Body).Decode(&body)
-			if seenWebKey != nil {
-				k, _ := body["api_key"].(string)
-				*seenWebKey = k
+			if webHit != nil {
+				atomic.AddInt32(webHit, 1)
 			}
+			record(r, seenWebKey)
 			if !webOK {
-				reject()
+				reject(w)
 				return
 			}
 			w.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "WEBACC", "refresh_token": "WEBREF", "user_id": 7777,
+			})
+		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
+			if appHit != nil {
+				atomic.AddInt32(appHit, 1)
+			}
+			record(r, seenAppKey)
+			if !appOK {
+				reject(w)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"access_token": "APPACC", "refresh_token": "APPREF", "user_id": 4242,
 			})
 		default:
 			http.NotFound(w, r)
@@ -270,57 +290,97 @@ func fallbackLoginServer(t *testing.T, webOK bool, seenWebKey *string) *httptest
 	}))
 }
 
-// PORTING §6.2 — alternate login fallback (browser login endpoint).
-func TestLoginWithEmail_FallsBackToWebOn401(t *testing.T) {
+// PORTING §6.2 — web-first: the browser login endpoint is the primary path.
+// It succeeds directly and the app (v3) endpoint is never touched.
+func TestLoginWithEmail_WebPrimarySucceeds(t *testing.T) {
 	var seenKey string
-	srv := fallbackLoginServer(t, true, &seenKey)
+	var appHit int32
+	srv := webFirstLoginServer(t, true, true, &seenKey, nil, nil, &appHit)
 	defer srv.Close()
 
 	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
 	resp, _, err := c.LoginWithEmail(context.Background()).
 		Email("u@example.com").Password("pw").Execute()
 	if err != nil {
-		t.Fatalf("LoginWithEmail with fallback: %v", err)
+		t.Fatalf("LoginWithEmail: %v", err)
 	}
 	if resp.GetUserId() != 7777 {
 		t.Errorf("UserID = %d, want 7777 (web response)", resp.GetUserId())
 	}
 	if c.Tokens().Access != "WEBACC" || c.Tokens().Refresh != "WEBREF" {
-		t.Errorf("tokens = %+v, want WEBACC/WEBREF from fallback", c.Tokens())
+		t.Errorf("tokens = %+v, want WEBACC/WEBREF from web login", c.Tokens())
 	}
 	if seenKey != DefaultWebAPIKey {
-		t.Errorf("fallback api_key = %q, want DefaultWebAPIKey", seenKey)
+		t.Errorf("web api_key = %q, want DefaultWebAPIKey", seenKey)
+	}
+	if c.oauthKeySnapshot() != DefaultWebAPIKey {
+		t.Errorf("oauthKeySnapshot = %q, want web key", c.oauthKeySnapshot())
+	}
+	if n := atomic.LoadInt32(&appHit); n != 0 {
+		t.Errorf("app (v3) endpoint hit %d times, want 0 (web is primary)", n)
 	}
 }
 
-// When the fallback is disabled (WebAPIKey==""), a primary 401 is surfaced
-// unchanged and no v2 request is attempted.
-func TestLoginWithEmail_FallbackDisabledSurfaces401(t *testing.T) {
-	var seenKey string
-	srv := fallbackLoginServer(t, true, &seenKey)
+// When the primary web login is rejected with a plain 401, the login falls
+// back to the app (v3) endpoint under the app key, and the session tracks the
+// app key for refresh.
+func TestLoginWithEmail_FallsBackToAppOn401(t *testing.T) {
+	var seenAppKey string
+	var webHit, appHit int32
+	srv := webFirstLoginServer(t, false, true, nil, &seenAppKey, &webHit, &appHit)
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	resp, _, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute()
+	if err != nil {
+		t.Fatalf("LoginWithEmail with app fallback: %v", err)
+	}
+	if resp.GetUserId() != 4242 {
+		t.Errorf("UserID = %d, want 4242 (app response)", resp.GetUserId())
+	}
+	if c.Tokens().Access != "APPACC" {
+		t.Errorf("tokens = %+v, want APPACC from app fallback", c.Tokens())
+	}
+	if seenAppKey != DefaultAPIKey {
+		t.Errorf("app api_key = %q, want DefaultAPIKey", seenAppKey)
+	}
+	if c.oauthKeySnapshot() != DefaultAPIKey {
+		t.Errorf("oauthKeySnapshot = %q, want app key after app fallback", c.oauthKeySnapshot())
+	}
+	if atomic.LoadInt32(&webHit) != 1 || atomic.LoadInt32(&appHit) != 1 {
+		t.Errorf("hits web=%d app=%d, want 1/1 (web tried then app)", webHit, appHit)
+	}
+}
+
+// With the web path switched off (WebAPIKey==""), login goes straight to the
+// app endpoint and no v2 request is attempted; an app 401 surfaces unchanged.
+func TestLoginWithEmail_WebDisabledUsesAppOnly(t *testing.T) {
+	var webHit int32
+	srv := webFirstLoginServer(t, true, false, nil, nil, &webHit, nil)
 	defer srv.Close()
 
 	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}), WithWebAPIKey(""))
 	_, _, err := c.LoginWithEmail(context.Background()).
 		Email("u@example.com").Password("pw").Execute()
 	if err == nil {
-		t.Fatal("expected primary 401 to surface when fallback disabled")
+		t.Fatal("expected app 401 to surface when web is disabled")
 	}
 	if CodeOf(err) != ErrCodeUnauthorized {
 		t.Errorf("CodeOf(err) = %v, want ErrCodeUnauthorized", CodeOf(err))
 	}
-	if seenKey != "" {
-		t.Errorf("v2 endpoint should not have been called, saw api_key %q", seenKey)
+	if n := atomic.LoadInt32(&webHit); n != 0 {
+		t.Errorf("web (v2) endpoint hit %d times, want 0 (web disabled)", n)
 	}
 	if c.Tokens().Access != "" {
 		t.Errorf("tokens should stay empty, got %q", c.Tokens().Access)
 	}
 }
 
-// When both primary and fallback fail, the original primary 401 (a proper
-// *APIError) is surfaced rather than the fallback's error.
-func TestLoginWithEmail_FallbackAlsoFailsSurfacesPrimary401(t *testing.T) {
-	srv := fallbackLoginServer(t, false, nil)
+// When both the primary web login and the app fallback fail, the primary
+// (web) 401 — a proper *APIError — is surfaced rather than the fallback's.
+func TestLoginWithEmail_BothFailSurfacesWeb401(t *testing.T) {
+	srv := webFirstLoginServer(t, false, false, nil, nil, nil, nil)
 	defer srv.Close()
 
 	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
@@ -338,22 +398,23 @@ func TestLoginWithEmail_FallbackAlsoFailsSurfacesPrimary401(t *testing.T) {
 }
 
 // A 2FA-required rejection is also HTTP 401 but carries ErrCodeRequired2FA;
-// the fallback must NOT fire (the caller has to supply a code, not switch
-// keys), so the v2 endpoint is never called and the 2FA code surfaces.
+// the app fallback must NOT fire (the caller has to supply a code, not switch
+// endpoints), so the primary web login's 2FA surfaces and the app (v3)
+// endpoint is never called.
 func TestLoginWithEmail_NoFallbackOn2FA(t *testing.T) {
-	var v2Hit int32
+	var v3Hit int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch {
-		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
+		case strings.HasPrefix(r.URL.Path, "/v2/users/login_with_email"):
 			w.WriteHeader(http.StatusUnauthorized)
 			_ = json.NewEncoder(w).Encode(map[string]any{
 				"error_code": int(ErrCodeRequired2FA), "message": "2FA required",
 			})
-		case strings.HasPrefix(r.URL.Path, "/v2/users/login_with_email"):
-			atomic.AddInt32(&v2Hit, 1)
+		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
+			atomic.AddInt32(&v3Hit, 1)
 			_ = json.NewEncoder(w).Encode(map[string]any{
-				"access_token": "WEBACC", "refresh_token": "WEBREF", "user_id": 7777,
+				"access_token": "APPACC", "refresh_token": "APPREF", "user_id": 7777,
 			})
 		default:
 			http.NotFound(w, r)
@@ -370,51 +431,58 @@ func TestLoginWithEmail_NoFallbackOn2FA(t *testing.T) {
 	if CodeOf(err) != ErrCodeRequired2FA {
 		t.Errorf("CodeOf(err) = %v, want ErrCodeRequired2FA", CodeOf(err))
 	}
-	if n := atomic.LoadInt32(&v2Hit); n != 0 {
-		t.Errorf("v2 endpoint hit %d times, want 0 (no fallback on 2FA)", n)
+	if n := atomic.LoadInt32(&v3Hit); n != 0 {
+		t.Errorf("app (v3) endpoint hit %d times, want 0 (no fallback on 2FA)", n)
 	}
 	if c.Tokens().Access != "" {
 		t.Errorf("tokens should stay empty, got %q", c.Tokens().Access)
 	}
 }
 
-// When the caller pins a specific api_key via .ApiKey(), the fallback is
-// skipped (it would otherwise authenticate under a different key), so a
-// primary 401 surfaces unchanged and the v2 endpoint is never called.
+// When the caller pins a specific api_key via .ApiKey(), the web-first path
+// is skipped (it would otherwise authenticate under WebAPIKey), so login goes
+// straight to the app endpoint under the pinned key and the browser (v2)
+// endpoint is never called.
 func TestLoginWithEmail_NoFallbackWhenApiKeyPinned(t *testing.T) {
-	seenKey := "SENTINEL"
-	srv := fallbackLoginServer(t, true, &seenKey)
+	var seenAppKey string
+	var webHit int32
+	srv := webFirstLoginServer(t, true, false, nil, &seenAppKey, &webHit, nil)
 	defer srv.Close()
 
 	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
 	_, _, err := c.LoginWithEmail(context.Background()).
 		Email("u@example.com").Password("pw").ApiKey("caller-pinned-key").Execute()
 	if err == nil {
-		t.Fatal("expected primary 401 when caller pinned a custom api_key")
+		t.Fatal("expected app 401 when caller pinned a custom api_key")
 	}
 	if CodeOf(err) != ErrCodeUnauthorized {
 		t.Errorf("CodeOf(err) = %v, want ErrCodeUnauthorized", CodeOf(err))
 	}
-	if seenKey != "SENTINEL" {
-		t.Errorf("v2 endpoint should not have been called, saw api_key %q", seenKey)
+	if n := atomic.LoadInt32(&webHit); n != 0 {
+		t.Errorf("web (v2) endpoint should not have been called, hit %d times", n)
+	}
+	if seenAppKey != "caller-pinned-key" {
+		t.Errorf("app api_key = %q, want the caller-pinned key", seenAppKey)
 	}
 }
 
-// A web response that is 2xx but undecodable is a genuine login result, so
-// its decode error (carrying the raw body on the response) is surfaced
-// rather than masked behind the primary 401.
+// A primary web response that is 2xx but undecodable is a genuine login
+// result, so its decode error (carrying the raw body on the response) is
+// surfaced as a typed APIError; since it is not ErrCodeUnauthorized the app
+// fallback does not fire.
 func TestLoginWithEmail_WebDecodeFailureSurfaced(t *testing.T) {
+	var appHit int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
-		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusUnauthorized)
-			_ = json.NewEncoder(w).Encode(map[string]any{
-				"result": "error", "message": "unauthorized", "error_code": 401,
-			})
 		case strings.HasPrefix(r.URL.Path, "/v2/users/login_with_email"):
 			w.Header().Set("Content-Type", "application/json")
 			_, _ = w.Write([]byte("{ this is not valid json"))
+		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
+			atomic.AddInt32(&appHit, 1)
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"access_token": "APPACC", "refresh_token": "APPREF", "user_id": 1,
+			})
 		default:
 			http.NotFound(w, r)
 		}
@@ -427,16 +495,24 @@ func TestLoginWithEmail_WebDecodeFailureSurfaced(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected a decode error to surface")
 	}
-	// Not masked as the primary auth rejection.
+	// Not masked as an auth rejection, and no app fallback.
 	if CodeOf(err) == ErrCodeUnauthorized {
 		t.Errorf("decode failure was masked as ErrCodeUnauthorized: %v", err)
 	}
 	if !strings.Contains(err.Error(), "decode") {
 		t.Errorf("err = %v, want a decode error", err)
 	}
-	// The raw web body is still readable on the returned response.
+	if n := atomic.LoadInt32(&appHit); n != 0 {
+		t.Errorf("app (v3) endpoint hit %d times, want 0 (2xx decode fail is not 401)", n)
+	}
+	// The raw web body is still readable on the returned response and on the
+	// typed error.
 	if httpResp == nil || httpResp.StatusCode != http.StatusOK {
 		t.Fatalf("want the 2xx web response surfaced, got %v", httpResp)
+	}
+	var apiErr *APIError
+	if !errors.As(err, &apiErr) || !strings.Contains(string(apiErr.Body()), "not valid json") {
+		t.Errorf("want a typed APIError carrying the raw web body, got %T %v", err, err)
 	}
 	if c.Tokens().Access != "" {
 		t.Errorf("tokens should stay empty, got %q", c.Tokens().Access)
@@ -483,7 +559,8 @@ func TestRefresh_WebSessionUsesWebKeyForBasic(t *testing.T) {
 	}
 }
 
-// A normal (app) login refreshes with the app key, and does not persist an
+// An app login (reached here by disabling the web-first path with
+// WithWebAPIKey("")) refreshes with the app key, and does not persist an
 // oauth_key (app sessions stay byte-identical on disk).
 func TestRefresh_AppSessionUsesAppKey(t *testing.T) {
 	var oauthAuth string
@@ -502,7 +579,7 @@ func TestRefresh_AppSessionUsesAppKey(t *testing.T) {
 	defer srv.Close()
 
 	store := NewMemoryStore()
-	c := NewClient(WithBaseURL(srv.URL), WithSessionStore(store), WithRetryPolicy(RetryPolicy{}))
+	c := NewClient(WithBaseURL(srv.URL), WithSessionStore(store), WithRetryPolicy(RetryPolicy{}), WithWebAPIKey(""))
 	if _, _, err := c.LoginWithEmail(context.Background()).
 		Email("u@example.com").Password("pw").Execute(); err != nil {
 		t.Fatalf("login: %v", err)
@@ -567,5 +644,154 @@ func TestRefresh_RestoredWebSessionUsesWebKey(t *testing.T) {
 	}
 	if want := "Basic " + basicCredentials(DefaultWebAPIKey); oauthAuth != want {
 		t.Errorf("restored-session oauth Basic = %q, want web-key Basic", oauthAuth)
+	}
+}
+
+// PORTING §6.2 — a web session restored directly with LoadSession (not through
+// the cached-login path) must also refresh with the web key. This is the
+// regression the oauth_key restore fixes: LoadSession used to apply tokens,
+// device UUID, and identity but not the establishing key, so a web session
+// loaded straight from disk refreshed with the app key and 401'd.
+func TestLoadSession_RestoresWebOAuthKey(t *testing.T) {
+	var oauthAuth string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.Contains(r.URL.Path, "/api/v1/oauth/token") {
+			oauthAuth = r.Header.Get("Authorization")
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "A2", "refresh_token": "R2", "id": 1})
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer srv.Close()
+
+	// A web-fallback session persisted to the store (OAuthKey == web key).
+	store := NewMemoryStore()
+	if err := store.Save(&Session{
+		Email: "u@example.com", UserID: 1,
+		AccessToken: "A1", RefreshToken: "R1",
+		OAuthKey: DefaultWebAPIKey,
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	c := NewClient(WithBaseURL(srv.URL), WithSessionStore(store), WithRetryPolicy(RetryPolicy{}))
+	if _, err := c.LoadSession("u@example.com"); err != nil {
+		t.Fatalf("LoadSession: %v", err)
+	}
+	if got := c.oauthKeySnapshot(); got != DefaultWebAPIKey {
+		t.Fatalf("after LoadSession oauthKeySnapshot = %q, want web key", got)
+	}
+	if err := c.refreshTokens(context.Background(), c.Tokens().Access); err != nil {
+		t.Fatalf("refresh: %v", err)
+	}
+	if want := "Basic " + basicCredentials(DefaultWebAPIKey); oauthAuth != want {
+		t.Errorf("refresh Basic = %q, want web-key Basic after LoadSession", oauthAuth)
+	}
+	if c.Tokens().Access != "A2" {
+		t.Errorf("access after refresh = %q, want A2", c.Tokens().Access)
+	}
+}
+
+// App sessions carry an empty OAuthKey; LoadSession must leave refresh on the
+// app key (the empty → app-key default), unchanged from before.
+func TestLoadSession_AppSessionKeepsAppKey(t *testing.T) {
+	store := NewMemoryStore()
+	if err := store.Save(&Session{
+		Email: "u@example.com", UserID: 1,
+		AccessToken: "A1", RefreshToken: "R1",
+		// no OAuthKey — an app session
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	c := NewClient(WithSessionStore(store))
+	if _, err := c.LoadSession("u@example.com"); err != nil {
+		t.Fatalf("LoadSession: %v", err)
+	}
+	if got := c.oauthKeySnapshot(); got != DefaultAPIKey {
+		t.Errorf("after LoadSession oauthKeySnapshot = %q, want app key", got)
+	}
+}
+
+// A web session injected directly via SaveSession (not through login) also
+// activates its establishing key, so its refresh uses the web key. This
+// mirrors LoadSession — SaveSession is a full activation, not just a write.
+func TestSaveSession_ActivatesWebOAuthKey(t *testing.T) {
+	var oauthAuth string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.Contains(r.URL.Path, "/api/v1/oauth/token") {
+			oauthAuth = r.Header.Get("Authorization")
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "A2", "refresh_token": "R2", "id": 1})
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithSessionStore(NewMemoryStore()), WithRetryPolicy(RetryPolicy{}))
+	if err := c.SaveSession(&Session{
+		Email: "u@example.com", UserID: 1,
+		AccessToken: "A1", RefreshToken: "R1",
+		OAuthKey: DefaultWebAPIKey,
+	}); err != nil {
+		t.Fatalf("SaveSession: %v", err)
+	}
+	if got := c.oauthKeySnapshot(); got != DefaultWebAPIKey {
+		t.Fatalf("after SaveSession oauthKeySnapshot = %q, want web key", got)
+	}
+	if err := c.refreshTokens(context.Background(), c.Tokens().Access); err != nil {
+		t.Fatalf("refresh: %v", err)
+	}
+	if want := "Basic " + basicCredentials(DefaultWebAPIKey); oauthAuth != want {
+		t.Errorf("refresh Basic = %q, want web-key Basic after SaveSession", oauthAuth)
+	}
+}
+
+// A primary web login rejected with a NON-Unauthorized typed error (here a
+// temporary ban carrying ban_until) surfaces directly as a typed *APIError —
+// no app fallback fires (it is not ErrCodeUnauthorized), and ErrorResponseOf
+// / errors.As read the parsed fields and raw body. This locks the
+// loginWithEmailWeb typed-error upgrade now that web is the primary path.
+func TestLoginWithEmail_WebPrimaryTypedErrorSurfaced(t *testing.T) {
+	var appHit int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.HasPrefix(r.URL.Path, "/v2/users/login_with_email"):
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusForbidden)
+			_ = json.NewEncoder(w).Encode(map[string]any{
+				"result": "error", "message": "temporarily banned",
+				"error_code": int(ErrCodeUserTemporaryBanned), "ban_until": 1893456000,
+			})
+		case strings.HasPrefix(r.URL.Path, "/v3/users/login_with_email"):
+			atomic.AddInt32(&appHit, 1)
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]any{"access_token": "APPACC", "user_id": 1})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer srv.Close()
+
+	c := NewClient(WithBaseURL(srv.URL), WithRetryPolicy(RetryPolicy{}))
+	_, _, err := c.LoginWithEmail(context.Background()).
+		Email("u@example.com").Password("pw").Execute()
+	if err == nil {
+		t.Fatal("expected the web ban error to surface")
+	}
+	if CodeOf(err) != ErrCodeUserTemporaryBanned {
+		t.Errorf("CodeOf(err) = %v, want ErrCodeUserTemporaryBanned", CodeOf(err))
+	}
+	if n := atomic.LoadInt32(&appHit); n != 0 {
+		t.Errorf("app (v3) endpoint hit %d times, want 0 (non-401 does not fall back)", n)
+	}
+	if r := ErrorResponseOf(err); r == nil || r.BanUntil == nil || *r.BanUntil != 1893456000 {
+		t.Errorf("ErrorResponseOf did not parse ban_until from the web error: %+v", r)
+	}
+	var apiErr *APIError
+	if !errors.As(err, &apiErr) || !strings.Contains(string(apiErr.Body()), "temporarily banned") {
+		t.Errorf("want a typed APIError carrying the raw web body, got %T %v", err, err)
 	}
 }

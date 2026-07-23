@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 import json
-from typing import Optional
+from typing import Optional, Tuple
 
 from yaylib._error_codes import ErrCodeUnauthorized
 from yaylib.errors import as_api_error, code_of
@@ -57,13 +57,33 @@ def _synthesize_login_response(session: Session) -> LoginUserResponse:
 
 
 def _activate_cached_session(client, session: Session) -> None:
-    client.set_tokens(session.access_token, session.refresh_token)
-    if session.device_uuid:
-        client.set_device_uuid(session.device_uuid)
-    client.set_login_identity(session.email, session.user_id)
-    # Restore which key refreshes this session (empty → app key) so a
-    # cached web session refreshes with the web key after a restart.
-    client.set_oauth_key(session.oauth_key)
+    # Delegate to the client's single activation path so the cache-restore
+    # flow and the public load_session / save_session never diverge
+    # (PORTING.md §6.2: restore the establishing key in BOTH paths).
+    client._apply_session(session)
+
+
+async def _login_with_email_app(
+    client,
+    *,
+    api_key: str,
+    email: str,
+    password: str,
+    uuid: str,
+    two_fa_code: Optional[str],
+) -> LoginUserResponse:
+    """App login (POST /v3/users/login_with_email) via the wrapped
+    generated client — header injection, retry, host routing all apply.
+    ``api_key`` carries the key the body authenticates under.
+    """
+    body = LoginEmailUserRequest(
+        api_key=api_key,
+        email=email,
+        password=password,
+        uuid=uuid,
+        two_f_a_code=two_fa_code,
+    )
+    return await client.users_api.login_with_email(login_email_user_request=body)
 
 
 async def _login_with_email_web(
@@ -73,8 +93,8 @@ async def _login_with_email_web(
     password: str,
     uuid: str,
     two_fa_code: Optional[str],
-) -> Optional[LoginUserResponse]:
-    """Fallback login against the browser endpoint (POST
+) -> LoginUserResponse:
+    """Primary login against the browser endpoint (POST
     /v2/users/login_with_email) using the client's ``web_api_key``.
 
     Sent through the UNWRAPPED transport (``send_unwrapped``): no header
@@ -82,11 +102,13 @@ async def _login_with_email_web(
     purely by its body credentials (PORTING.md §6.1/§6.2). Only the
     body's api_key and the endpoint version differ from the app login.
 
-    Returns the decoded response on success, or ``None`` when the
-    fallback is itself rejected (non-2xx) so the caller surfaces the
-    primary error. Raises an ``ApiException`` carrying the raw body when
-    a 2xx response fails to decode (§15), rather than masking it behind
-    the primary 401.
+    Failures surface as the SAME typed error the generated clients raise
+    (``ApiException`` / its status subclasses) with the raw body
+    attached, so ``code_of`` / ``error_response_of`` / ``except
+    APIError`` work uniformly now that this is the primary path
+    (PORTING.md §6.2). A non-2xx response becomes a typed error carrying
+    the body; a 2xx response that fails to decode is a genuine login
+    result surfaced with its raw body (§15), not masked as a 401.
     """
     payload = {
         "email": email,
@@ -111,21 +133,111 @@ async def _login_with_email_web(
         "X-Device-Info": f"Yay {client.app_version} Web ({web_ua})",
     }
     url = f"{client.base_url}/v2/users/login_with_email"
-    try:
-        res = await client._transport.send_unwrapped(
-            "POST", url, headers, json.dumps(payload)
-        )
-    except Exception:  # noqa: BLE001
-        return None
-    if not (200 <= res.status <= 299):
-        return None
+
+    # A transport-level failure (aiohttp error) surfaces from send_unwrapped
+    # as a status-0 ApiException; it is not ErrCodeUnauthorized, so the
+    # caller surfaces it directly without falling back to the app login.
+    res = await client._transport.send_unwrapped(
+        "POST", url, headers, json.dumps(payload)
+    )
+
     raw = res.data.decode("utf-8", "replace")
+    if not (200 <= res.status <= 299):
+        # Same typed error the generated client raises for a non-2xx,
+        # carrying the raw body so code_of / error_response_of work.
+        raise ApiException.from_response(http_resp=res, body=raw, data=None)
     try:
         return LoginUserResponse.from_json(raw)
+    except ApiException:
+        raise
     except Exception as err:  # noqa: BLE001
         # A 2xx we couldn't decode is a genuine login result: surface it
-        # with the raw body, not the primary 401.
-        raise ApiException(status=res.status, reason=res.reason, body=raw) from err
+        # with the raw body (typed error), not a bare decode error.
+        raise ApiException.from_response(
+            http_resp=res, body=raw, data=None
+        ) from err
+
+
+async def _do_fresh_login(
+    client,
+    *,
+    email: str,
+    password: str,
+    api_key: str,
+    uuid: str,
+    two_fa_code: Optional[str],
+    caller_pinned: bool,
+) -> Tuple[LoginUserResponse, str]:
+    """Perform a fresh (non-cached) email login and report which API key
+    established the session — the Basic credential the later token
+    refreshes must use (PORTING.md §6.2).
+
+    Web-first: the browser login (``web_api_key``) is the primary path.
+    The app login (``api_key``) is only a fallback for the narrow cases
+    the browser endpoint doesn't serve, and the sole path when the
+    browser endpoint is switched off (``web_api_key == ""``) or the
+    caller pinned a specific api_key.
+    """
+    # Empty web key (off switch) or a caller-pinned key means "use the app
+    # login with exactly this key"; skip the browser path so we never
+    # silently authenticate under web_api_key instead.
+    if not client.web_api_key or caller_pinned:
+        resp = await _login_with_email_app(
+            client,
+            api_key=api_key,
+            email=email,
+            password=password,
+            uuid=uuid,
+            two_fa_code=two_fa_code,
+        )
+        return resp, api_key
+
+    # Primary: browser login with the web key.
+    try:
+        resp = await _login_with_email_web(
+            client,
+            email=email,
+            password=password,
+            uuid=uuid,
+            two_fa_code=two_fa_code,
+        )
+        return resp, client.web_api_key
+    except Exception as err:  # noqa: BLE001
+        api_err = as_api_error(err)
+        # Fall back to the app login ONLY on a plain unauthorized. Any
+        # other typed rejection surfaces unchanged — notably
+        # ErrCodeRequired2FA (the caller must supply a code, not switch
+        # endpoints) and a 2xx that failed to decode (a genuine login
+        # result carrying its raw body, §15), neither of which is
+        # ErrCodeUnauthorized. Gate on the parsed code, not the status.
+        if code_of(api_err) != ErrCodeUnauthorized:
+            raise api_err
+        client._logger.debug(
+            "app login fallback",
+            extra={"event": "login_fallback", "outcome": "attempt"},
+        )
+        try:
+            app_resp = await _login_with_email_app(
+                client,
+                api_key=api_key,
+                email=email,
+                password=password,
+                uuid=uuid,
+                two_fa_code=two_fa_code,
+            )
+        except Exception:  # noqa: BLE001
+            client._logger.debug(
+                "app login fallback failed",
+                extra={"event": "login_fallback", "outcome": "failed"},
+            )
+            # Both paths failed: surface the primary (web) error, which
+            # carries the parsed error code and raw body.
+            raise api_err
+        client._logger.debug(
+            "app login fallback ok",
+            extra={"event": "login_fallback", "outcome": "ok"},
+        )
+        return app_resp, api_key
 
 
 async def _execute_login(
@@ -156,62 +268,29 @@ async def _execute_login(
             _activate_cached_session(client, cached)
             return _synthesize_login_response(cached)
 
-    login_key = api_key or client.api_key
-    body = LoginEmailUserRequest(
-        api_key=login_key,
+    resolved_key = api_key or client.api_key
+    resolved_uuid = uuid or client.device_uuid
+    # A caller-pinned api_key (resolved key differs from the client
+    # default) forces the app login under exactly that key.
+    caller_pinned = resolved_key != client.api_key
+
+    resp, oauth_key = await _do_fresh_login(
+        client,
         email=email,
         password=password,
-        uuid=uuid or client.device_uuid,
-        two_f_a_code=two_fa_code,
+        api_key=resolved_key,
+        uuid=resolved_uuid,
+        two_fa_code=two_fa_code,
+        caller_pinned=caller_pinned,
     )
-    # The key that establishes the session also refreshes its tokens;
-    # the fallback switches it to web_api_key below.
-    oauth_key = login_key
-
-    try:
-        resp = await client.users_api.login_with_email(
-            login_email_user_request=body
-        )
-    except Exception as err:  # noqa: BLE001
-        api_err = as_api_error(err)
-        # Fallback (PORTING.md §6.2): a plain "unauthorized" retries
-        # against the browser login endpoint with web_api_key. Skipped
-        # for other 401s — notably Required2FA (the caller must supply a
-        # code, not switch keys) — and when the caller pinned a specific
-        # api_key, or when web_api_key is empty (the off switch).
-        caller_pinned = api_key is not None and api_key != client.api_key
-        if (
-            client.web_api_key
-            and not caller_pinned
-            and code_of(api_err) == ErrCodeUnauthorized
-        ):
-            fallback = await _login_with_email_web(
-                client,
-                email=email,
-                password=password,
-                uuid=uuid or client.device_uuid,
-                two_fa_code=two_fa_code,
-            )
-            if fallback is None:
-                # Fallback itself rejected: surface the primary error.
-                raise api_err
-            client._logger.debug(
-                "web login fallback ok",
-                extra={"event": "login_fallback", "outcome": "ok"},
-            )
-            resp = fallback
-            # This session was established with the web key, so its token
-            # refresh must use it too.
-            oauth_key = client.web_api_key
-        else:
-            raise api_err
 
     access = resp.access_token or ""
     refresh = resp.refresh_token or ""
     user_id = resp.user_id or 0
-    client.set_tokens(access, refresh)
     client.set_login_identity(email, user_id)
+    # Record which key refreshes this session before activating tokens.
     client.set_oauth_key(oauth_key)
+    client.set_tokens(access, refresh)
 
     if client.session_store is not None:
         session = Session(
