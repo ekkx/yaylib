@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -24,10 +24,10 @@ import {
 } from '../models/index.js';
 
 export interface OauthTokenRequest {
-    email?: string | null;
+    email?: string;
     grantType?: string;
-    password?: string | null;
-    refreshToken?: string | null;
+    password?: string;
+    refreshToken?: string;
 }
 
 /**

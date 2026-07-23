@@ -7,7 +7,7 @@
 
     No description provided
 
-    Schema version: 4.26.1
+    Schema version: 4.26.5
     Code generated; DO NOT EDIT
 
     Do not edit the class manually.
@@ -92,6 +92,7 @@ from yaylib.models.call_finished_data import CallFinishedData
 from yaylib.models.call_gift_history_response import CallGiftHistoryResponse
 from yaylib.models.call_message import CallMessage
 from yaylib.models.call_status_response import CallStatusResponse
+from yaylib.models.call_type import CallType
 from yaylib.models.callback import Callback
 from yaylib.models.campaign_dto import CampaignDTO
 from yaylib.models.campaign_invited_users_response import CampaignInvitedUsersResponse
@@ -248,8 +249,8 @@ from yaylib.models.invitation_code_response import InvitationCodeResponse
 from yaylib.models.invited_user_dto import InvitedUserDTO
 from yaylib.models.invited_user_details_dto import InvitedUserDetailsDTO
 from yaylib.models.item import Item
-from yaylib.models.j0_a import J0A
 from yaylib.models.js_event import JSEvent
+from yaylib.models.joinable_by import JoinableBy
 from yaylib.models.last_status_screen_user_rank import LastStatusScreenUserRank
 from yaylib.models.level_up import LevelUp
 from yaylib.models.level_up_details import LevelUpDetails

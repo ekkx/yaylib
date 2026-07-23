@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -40,10 +40,10 @@ export interface UpdateChatRoomNotificationSettingsRequest {
 
 export interface UpdateGroupNotificationSettingsRequest {
     id: number;
-    notificationGroupJoin?: number | null;
-    notificationGroupMessageTagAll?: number | null;
-    notificationGroupPost?: number | null;
-    notificationGroupRequest?: number | null;
+    notificationGroupJoin?: number;
+    notificationGroupMessageTagAll?: number;
+    notificationGroupPost?: number;
+    notificationGroupRequest?: number;
 }
 
 /**

@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -25,7 +25,7 @@ import {
 
 export interface ListMutedGroupUsersRequest {
     id: number;
-    keyword?: string | null;
+    keyword?: string;
     cursor?: string;
     size?: number;
 }

@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -55,15 +55,15 @@ export interface AcceptChatRequestRequest {
 }
 
 export interface CreateChatRoomRequest {
-    backgroundFilename?: string | null;
-    iconFilename?: string | null;
+    backgroundFilename?: string;
+    iconFilename?: string;
     name?: string;
     withUserIds?: Array<number>;
 }
 
 export interface CreateChatRoomV1Request {
     himaChat?: boolean;
-    matchingId?: number | null;
+    matchingId?: number;
     withUserId?: number;
 }
 
@@ -78,13 +78,13 @@ export interface DeleteChatRoomsRequest {
 
 export interface GetChatMessagesRequest {
     id: number;
-    number?: number | null;
-    fromMessageId?: number | null;
-    toMessageId?: number | null;
+    number?: number;
+    fromMessageId?: number;
+    toMessageId?: number;
 }
 
 export interface GetChatRequestsRequest {
-    fromTimestamp?: number | null;
+    fromTimestamp?: number;
 }
 
 export interface GetChatRoomRequest {
@@ -92,15 +92,15 @@ export interface GetChatRoomRequest {
 }
 
 export interface GetChatUnreadStatusRequest {
-    fromTime?: number | null;
+    fromTime?: number;
 }
 
 export interface GetMainChatRoomsRequest {
-    fromTimestamp?: number | null;
+    fromTimestamp?: number;
 }
 
 export interface GetUpdatedChatRoomsRequest {
-    fromTime?: number | null;
+    fromTime?: number;
 }
 
 export interface InviteToChatRoomRequest {
@@ -140,25 +140,25 @@ export interface ReportChatRoomRequest {
     chatRoomId: number;
     categoryId?: number;
     opponentId?: number;
-    reason?: string | null;
-    screenshot2Filename?: string | null;
-    screenshot3Filename?: string | null;
-    screenshot4Filename?: string | null;
-    screenshotFilename?: string | null;
+    reason?: string;
+    screenshot2Filename?: string;
+    screenshot3Filename?: string;
+    screenshot4Filename?: string;
+    screenshotFilename?: string;
 }
 
 export interface SendChatMessageRequest {
     id: number;
-    attachmentFileName?: string | null;
-    callType?: CallType | null;
-    fontSize?: number | null;
-    gifImageId?: number | null;
+    attachmentFileName?: string;
+    callType?: CallType;
+    fontSize?: number;
+    gifImageId?: number;
     messageType?: MessageType;
-    parentId?: number | null;
-    stickerId?: number | null;
-    stickerPackId?: number | null;
-    text?: string | null;
-    videoFileName?: string | null;
+    parentId?: number;
+    stickerId?: number;
+    stickerPackId?: number;
+    text?: string;
+    videoFileName?: string;
 }
 
 export interface UnpinChatRoomRequest {
@@ -167,9 +167,9 @@ export interface UnpinChatRoomRequest {
 
 export interface UpdateChatRoomRequest {
     id: number;
-    backgroundFilename?: string | null;
-    iconFilename?: string | null;
-    name?: string | null;
+    backgroundFilename?: string;
+    iconFilename?: string;
+    name?: string;
 }
 
 /**

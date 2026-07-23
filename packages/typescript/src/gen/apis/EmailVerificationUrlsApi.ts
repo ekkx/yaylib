@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -26,7 +26,7 @@ import {
 export interface RequestEmailVerificationRequest {
     deviceUuid?: string;
     email?: string;
-    intent?: string | null;
+    intent?: string;
     locale?: string;
 }
 

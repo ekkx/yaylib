@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -25,10 +25,10 @@ import {
 
 export interface GetConversationRequest {
     id: number;
-    groupId?: number | null;
-    threadId?: number | null;
-    number?: number | null;
-    fromPostId?: number | null;
+    groupId?: number;
+    threadId?: number;
+    number?: number;
+    fromPostId?: number;
     reverse?: boolean;
 }
 

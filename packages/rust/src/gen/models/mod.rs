@@ -390,8 +390,6 @@ pub mod invited_user_dto;
 pub use self::invited_user_dto::InvitedUserDto;
 pub mod item;
 pub use self::item::Item;
-pub mod j0_a;
-pub use self::j0_a::J0A;
 pub mod joinable_by;
 pub use self::joinable_by::JoinableBy;
 pub mod js_event;

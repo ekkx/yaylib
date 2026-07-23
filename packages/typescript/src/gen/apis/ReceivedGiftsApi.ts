@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -31,7 +31,7 @@ import {
 
 export interface GetReceivedGiftSendersRequest {
     giftId: number;
-    number?: number | null;
+    number?: number;
 }
 
 export interface GetReceivedGiftTransactionRequest {
@@ -39,8 +39,8 @@ export interface GetReceivedGiftTransactionRequest {
 }
 
 export interface ListReceivedGiftsV1Request {
-    from?: string | null;
-    number?: number | null;
+    from?: string;
+    number?: number;
 }
 
 /**

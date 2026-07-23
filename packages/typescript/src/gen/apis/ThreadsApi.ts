@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -50,27 +50,27 @@ export interface CreateThreadRequest {
 export interface CreateThreadPostRequest {
     id: number;
     xJwt?: string;
-    attachment2Filename?: string | null;
-    attachment3Filename?: string | null;
-    attachment4Filename?: string | null;
-    attachment5Filename?: string | null;
-    attachment6Filename?: string | null;
-    attachment7Filename?: string | null;
-    attachment8Filename?: string | null;
-    attachment9Filename?: string | null;
-    attachmentFilename?: string | null;
-    choices?: Array<string> | null;
-    color?: number | null;
-    fontSize?: number | null;
-    groupId?: number | null;
-    inReplyTo?: number | null;
-    language?: string | null;
-    mentionIds?: Array<number> | null;
-    messageTags?: object | null;
-    postType?: PostType | null;
-    sharedUrl?: object | null;
-    text?: string | null;
-    videoFileName?: string | null;
+    attachment2Filename?: string;
+    attachment3Filename?: string;
+    attachment4Filename?: string;
+    attachment5Filename?: string;
+    attachment6Filename?: string;
+    attachment7Filename?: string;
+    attachment8Filename?: string;
+    attachment9Filename?: string;
+    attachmentFilename?: string;
+    choices?: Array<string>;
+    color?: number;
+    fontSize?: number;
+    groupId?: number;
+    inReplyTo?: number;
+    language?: string;
+    mentionIds?: Array<number>;
+    messageTags?: object;
+    postType?: PostType;
+    sharedUrl?: object;
+    text?: string;
+    videoFileName?: string;
 }
 
 export interface DeleteThreadRequest {
@@ -87,15 +87,15 @@ export interface GetThreadRequest {
 
 export interface GetThreadPostsRequest {
     id: number;
-    postType?: PostType | null;
-    number?: number | null;
-    from?: number | null;
+    postType?: PostType;
+    number?: number;
+    from?: number;
 }
 
 export interface ListThreadsRequest {
     groupId?: number;
-    from?: string | null;
-    joinStatus?: string | null;
+    from?: string;
+    joinStatus?: string;
 }
 
 export interface RemoveThreadMemberRequest {
@@ -105,7 +105,7 @@ export interface RemoveThreadMemberRequest {
 
 export interface UpdateThreadRequest {
     id: number;
-    threadIconFilename?: string | null;
+    threadIconFilename?: string;
     title?: string;
 }
 

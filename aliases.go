@@ -204,7 +204,6 @@ type (
 	InvitedUserDTO                                        = gen.InvitedUserDTO
 	InvitedUserDetailsDTO                                 = gen.InvitedUserDetailsDTO
 	Item                                                  = gen.Item
-	J0A                                                   = gen.J0A
 	JSEvent                                               = gen.JSEvent
 	JoinableBy                                            = gen.JoinableBy
 	LastStatusScreenUserRank                              = gen.LastStatusScreenUserRank
@@ -480,7 +479,6 @@ type (
 	NullableInvitedUserDTO                                = gen.NullableInvitedUserDTO
 	NullableInvitedUserDetailsDTO                         = gen.NullableInvitedUserDetailsDTO
 	NullableItem                                          = gen.NullableItem
-	NullableJ0A                                           = gen.NullableJ0A
 	NullableJSEvent                                       = gen.NullableJSEvent
 	NullableJoinableBy                                    = gen.NullableJoinableBy
 	NullableLastStatusScreenUserRank                      = gen.NullableLastStatusScreenUserRank
@@ -1381,7 +1379,6 @@ var (
 	NewInvitedUserDetailsDTOWithDefaults                         = gen.NewInvitedUserDetailsDTOWithDefaults
 	NewItem                                                      = gen.NewItem
 	NewItemWithDefaults                                          = gen.NewItemWithDefaults
-	NewJ0AFromValue                                              = gen.NewJ0AFromValue
 	NewJSEvent                                                   = gen.NewJSEvent
 	NewJSEventWithDefaults                                       = gen.NewJSEventWithDefaults
 	NewJoinableByFromValue                                       = gen.NewJoinableByFromValue
@@ -1723,7 +1720,6 @@ var (
 	NewNullableInvitedUserDTO                                    = gen.NewNullableInvitedUserDTO
 	NewNullableInvitedUserDetailsDTO                             = gen.NewNullableInvitedUserDetailsDTO
 	NewNullableItem                                              = gen.NewNullableItem
-	NewNullableJ0A                                               = gen.NewNullableJ0A
 	NewNullableJSEvent                                           = gen.NewNullableJSEvent
 	NewNullableJoinableBy                                        = gen.NewNullableJoinableBy
 	NewNullableLastStatusScreenUserRank                          = gen.NewNullableLastStatusScreenUserRank
@@ -2455,9 +2451,6 @@ var (
 const (
 	CallTypeVideo               = gen.CALLTYPE_Video
 	CallTypeVoice               = gen.CALLTYPE_Voice
-	J0AFollowingTimeline        = gen.J0A_FOLLOWING_TIMELINE
-	J0AGroupTimeline            = gen.J0A_GROUP_TIMELINE
-	J0APublicTimeline           = gen.J0A_PUBLIC_TIMELINE
 	JoinableByAnyone            = gen.JOINABLEBY_Anyone
 	JoinableByFollowersonly     = gen.JOINABLEBY_FollowersOnly
 	JoinableByInviteonly        = gen.JOINABLEBY_InviteOnly

@@ -5,7 +5,7 @@
  * Yay! API
  * No description provided
  *
- * Schema version: 4.26.1
+ * Schema version: 4.26.5
  * 
  *
  * NOTE: Code generated; DO NOT EDIT.
@@ -67,66 +67,66 @@ import {
 
 export interface CreateConferenceCallPostRequest {
     apiKey?: string;
-    attachment2Filename?: string | null;
-    attachment3Filename?: string | null;
-    attachment4Filename?: string | null;
-    attachment5Filename?: string | null;
-    attachment6Filename?: string | null;
-    attachment7Filename?: string | null;
-    attachment8Filename?: string | null;
-    attachment9Filename?: string | null;
-    attachmentFilename?: string | null;
-    callType?: CallType | null;
-    categoryId?: number | null;
-    color?: number | null;
-    fontSize?: number | null;
-    gameTitle?: string | null;
-    groupId?: number | null;
-    joinableBy?: JoinableBy | null;
-    language?: string | null;
-    messageTags?: object | null;
+    attachment2Filename?: string;
+    attachment3Filename?: string;
+    attachment4Filename?: string;
+    attachment5Filename?: string;
+    attachment6Filename?: string;
+    attachment7Filename?: string;
+    attachment8Filename?: string;
+    attachment9Filename?: string;
+    attachmentFilename?: string;
+    callType?: CallType;
+    categoryId?: number;
+    color?: number;
+    fontSize?: number;
+    gameTitle?: string;
+    groupId?: number;
+    joinableBy?: JoinableBy;
+    language?: string;
+    messageTags?: object;
     signedInfo?: string;
-    text?: string | null;
+    text?: string;
     timestamp?: number;
     uuid?: string;
 }
 
 export interface CreatePostRequest {
     xJwt?: string;
-    attachment2Filename?: string | null;
-    attachment3Filename?: string | null;
-    attachment4Filename?: string | null;
-    attachment5Filename?: string | null;
-    attachment6Filename?: string | null;
-    attachment7Filename?: string | null;
-    attachment8Filename?: string | null;
-    attachment9Filename?: string | null;
-    attachmentFilename?: string | null;
-    choices?: Array<string> | null;
-    color?: number | null;
-    fontSize?: number | null;
-    groupId?: number | null;
-    inReplyTo?: number | null;
-    language?: string | null;
-    mentionIds?: Array<number> | null;
-    messageTags?: object | null;
-    postType?: PostType | null;
-    sharedUrl?: object | null;
-    text?: string | null;
-    videoFileName?: string | null;
+    attachment2Filename?: string;
+    attachment3Filename?: string;
+    attachment4Filename?: string;
+    attachment5Filename?: string;
+    attachment6Filename?: string;
+    attachment7Filename?: string;
+    attachment8Filename?: string;
+    attachment9Filename?: string;
+    attachmentFilename?: string;
+    choices?: Array<string>;
+    color?: number;
+    fontSize?: number;
+    groupId?: number;
+    inReplyTo?: number;
+    language?: string;
+    mentionIds?: Array<number>;
+    messageTags?: object;
+    postType?: PostType;
+    sharedUrl?: object;
+    text?: string;
+    videoFileName?: string;
 }
 
 export interface CreateSharePostRequest {
     apiKey?: string;
-    color?: number | null;
-    fontSize?: number | null;
-    groupId?: number | null;
-    language?: string | null;
-    messageTags?: object | null;
+    color?: number;
+    fontSize?: number;
+    groupId?: number;
+    language?: string;
+    messageTags?: object;
     shareableId?: number;
     shareableType?: string;
     signedInfo?: string;
-    text?: string | null;
+    text?: string;
     timestamp?: number;
     uuid?: string;
 }
@@ -140,77 +140,77 @@ export interface GetActiveCallPostRequest {
 }
 
 export interface GetCallFollowersTimelineRequest {
-    fromTimestamp?: number | null;
-    number?: number | null;
-    categoryId?: number | null;
-    callType?: CallType | null;
-    includeCircleCall?: boolean | null;
-    excludeRecentGomimushi?: boolean | null;
+    fromTimestamp?: number;
+    number?: number;
+    categoryId?: number;
+    callType?: CallType;
+    includeCircleCall?: boolean;
+    excludeRecentGomimushi?: boolean;
 }
 
 export interface GetCallTimelineRequest {
-    groupId?: number | null;
-    fromTimestamp?: number | null;
-    number?: number | null;
-    categoryId?: number | null;
-    callType?: CallType | null;
-    includeCircleCall?: boolean | null;
-    crossGeneration?: boolean | null;
-    excludeRecentGomimushi?: boolean | null;
+    groupId?: number;
+    fromTimestamp?: number;
+    number?: number;
+    categoryId?: number;
+    callType?: CallType;
+    includeCircleCall?: boolean;
+    crossGeneration?: boolean;
+    excludeRecentGomimushi?: boolean;
 }
 
 export interface GetFollowingTimelineRequest {
-    from?: string | null;
-    fromPostId?: number | null;
-    onlyRoot?: boolean | null;
+    from?: string;
+    fromPostId?: number;
+    onlyRoot?: boolean;
     orderBy?: string;
-    number?: number | null;
-    mxn?: number | null;
-    reduceSelfie?: boolean | null;
-    customGenerationRange?: boolean | null;
+    number?: number;
+    mxn?: number;
+    reduceSelfie?: boolean;
+    customGenerationRange?: boolean;
 }
 
 export interface GetGroupCallsRequest {
-    number?: number | null;
-    groupCategoryId?: number | null;
-    fromTimestamp?: number | null;
-    scope?: string | null;
+    number?: number;
+    groupCategoryId?: number;
+    fromTimestamp?: number;
+    scope?: string;
 }
 
 export interface GetGroupTimelineRequest {
     groupId?: number;
-    fromPostId?: number | null;
-    reverse?: boolean | null;
-    postType?: PostType | null;
-    number?: number | null;
-    onlyRoot?: boolean | null;
+    fromPostId?: number;
+    reverse?: boolean;
+    postType?: PostType;
+    number?: number;
+    onlyRoot?: boolean;
 }
 
 export interface GetMyPostsRequest {
-    fromPostId?: number | null;
+    fromPostId?: number;
     number?: number;
-    includeGroupPost?: boolean | null;
+    includeGroupPost?: boolean;
 }
 
 export interface GetPostRequest {
     id: number;
-    cacheControl?: string | null;
+    cacheControl?: string;
 }
 
 export interface GetPostGiftTransactionsRequest {
     postId: number;
-    number?: number | null;
-    from?: string | null;
+    number?: number;
+    from?: string;
 }
 
 export interface GetPostLikersRequest {
     id: number;
-    fromId?: number | null;
+    fromId?: number;
 }
 
 export interface GetPostRepostsRequest {
     id: number;
-    fromPostId?: number | null;
+    fromPostId?: number;
 }
 
 export interface GetPostUrlMetadataRequest {
@@ -223,8 +223,8 @@ export interface GetPostsByIdsRequest {
 
 export interface GetPostsByTagRequest {
     tag: string;
-    fromPostId?: number | null;
-    number?: number | null;
+    fromPostId?: number;
+    number?: number;
 }
 
 export interface GetRecentEngagementPostsRequest {
@@ -245,22 +245,22 @@ export interface GetRecommendedTimelineRequest {
 export interface GetTimelineRequest {
     noreplyMode: NoreplyMode;
     orderBy?: string;
-    experimentOlderAgeRules?: boolean | null;
-    from?: string | null;
-    fromPostId?: number | null;
-    number?: number | null;
-    mxn?: number | null;
-    en?: number | null;
-    vn?: number | null;
-    reduceSelfie?: boolean | null;
-    customGenerationRange?: boolean | null;
+    experimentOlderAgeRules?: boolean;
+    from?: string;
+    fromPostId?: number;
+    number?: number;
+    mxn?: number;
+    en?: number;
+    vn?: number;
+    reduceSelfie?: boolean;
+    customGenerationRange?: boolean;
 }
 
 export interface GetUserTimelineRequest {
     userId?: number;
-    fromPostId?: number | null;
-    postType?: PostType | null;
-    number?: number | null;
+    fromPostId?: number;
+    postType?: PostType;
+    number?: number;
 }
 
 export interface LikePostsRequest {
@@ -274,8 +274,8 @@ export interface MovePostToSpecificThreadRequest {
 
 export interface MovePostToThreadRequest {
     id: number;
-    threadIconFilename?: string | null;
-    title?: string | null;
+    threadIconFilename?: string;
+    title?: string;
 }
 
 export interface PinGroupPostRequest {
@@ -287,45 +287,45 @@ export interface ReportPostRequest {
     postId: number;
     categoryId?: number;
     opponentId?: number;
-    reason?: string | null;
-    screenshot2Filename?: string | null;
-    screenshot3Filename?: string | null;
-    screenshot4Filename?: string | null;
-    screenshotFilename?: string | null;
+    reason?: string;
+    screenshot2Filename?: string;
+    screenshot3Filename?: string;
+    screenshot4Filename?: string;
+    screenshotFilename?: string;
 }
 
 export interface RepostRequest {
     xJwt?: string;
-    attachment2Filename?: string | null;
-    attachment3Filename?: string | null;
-    attachment4Filename?: string | null;
-    attachment5Filename?: string | null;
-    attachment6Filename?: string | null;
-    attachment7Filename?: string | null;
-    attachment8Filename?: string | null;
-    attachment9Filename?: string | null;
-    attachmentFilename?: string | null;
-    choices?: Array<string> | null;
-    color?: number | null;
-    fontSize?: number | null;
-    groupId?: number | null;
-    inReplyTo?: number | null;
-    language?: string | null;
-    mentionIds?: Array<number> | null;
-    messageTags?: object | null;
+    attachment2Filename?: string;
+    attachment3Filename?: string;
+    attachment4Filename?: string;
+    attachment5Filename?: string;
+    attachment6Filename?: string;
+    attachment7Filename?: string;
+    attachment8Filename?: string;
+    attachment9Filename?: string;
+    attachmentFilename?: string;
+    choices?: Array<string>;
+    color?: number;
+    fontSize?: number;
+    groupId?: number;
+    inReplyTo?: number;
+    language?: string;
+    mentionIds?: Array<number>;
+    messageTags?: object;
     postId?: number;
-    postType?: PostType | null;
-    sharedUrl?: object | null;
-    text?: string | null;
-    videoFileName?: string | null;
+    postType?: PostType;
+    sharedUrl?: object;
+    text?: string;
+    videoFileName?: string;
 }
 
 export interface SearchPostsRequest {
     keyword?: string;
     postOwnerScope?: string;
     onlyMedia?: boolean;
-    fromPostId?: number | null;
-    number?: number | null;
+    fromPostId?: number;
+    number?: number;
 }
 
 export interface UnlikePostRequest {
@@ -339,20 +339,20 @@ export interface UnpinGroupPostRequest {
 export interface UpdatePostRequest {
     id: number;
     apiKey?: string;
-    color?: number | null;
-    fontSize?: number | null;
-    language?: string | null;
-    messageTags?: object | null;
+    color?: number;
+    fontSize?: number;
+    language?: string;
+    messageTags?: object;
     signedInfo?: string;
-    text?: string | null;
+    text?: string;
     timestamp?: number;
     uuid?: string;
 }
 
 export interface ValidatePostRequest {
-    groupId?: number | null;
+    groupId?: number;
     text?: string;
-    threadId?: number | null;
+    threadId?: number;
 }
 
 export interface ViewPostVideoRequest {
